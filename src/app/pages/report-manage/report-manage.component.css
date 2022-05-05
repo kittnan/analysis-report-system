@@ -1,0 +1,42 @@
+.item-hover {
+    transition: all ease 0.25s;
+    font-size: 1.5rem;
+}
+
+.item-hover:hover {
+    transition: all ease 0.25s;
+    cursor: pointer;
+    opacity: 50%;
+}
+
+.box-content {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);
+    transition: all ease 0.5s;
+}
+
+.item-icon {
+    font-size: 1.2rem;
+    /* transition: ease all 0.25s; */
+}
+
+
+/* .item-icon :hover {
+    opacity: 30%;
+    transition: ease all 0.25s;
+    cursor: pointer;
+} */
+
+.tableFixHead {
+    overflow: auto;
+    height: 600px;
+    width: 100%;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}

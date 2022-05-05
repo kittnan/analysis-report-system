@@ -1,0 +1,178 @@
+<div class="box-content col-8 mx-auto">
+
+    <div class="row">
+        <!-- <div class="col-lg-4">
+            <button class="btn btn-block btn-primary" style="height: 50px; font-size: larger;" (click)="onClick('request');">REQUEST ITEM MANAGE</button>
+        </div> -->
+        <div class="col-lg-6">
+            <button class="btn btn-block btn-info" style="height: 50px; font-size: larger;" (click)="onClick('defective');">DEFECTIVE MANAGE</button>
+
+        </div>
+        <div class="col-lg-6">
+            <button class="btn btn-block btn-secondary" style="height: 50px; font-size: larger;" (click)="onClick('result');">ANALYSIS RESULT MANAGE</button>
+
+        </div>
+    </div>
+
+
+</div>
+
+<div class="box-content mt-5 col-10 mx-auto" *ngIf="toggleRequestItem">
+    <div class="row">
+        <h5>REQUEST ITEM MANAGE</h5>
+        <table class="table table-striped">
+            <thead>
+
+                <tr>
+                    <td>#</td>
+                    <td width="80%" class="text-center">NAME</td>
+                    <td width="20%" class="text-center"> <button class="btn btn-success" (click)="onClickAdd(add);"><i
+                                class="bi bi-plus-circle"></i> Request item </button> </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of Report; let i=index">
+                    <th>{{i +1}}</th>
+                    <td class="text-center" width="80%">{{item.modelName}}</td>
+                    <td class="text-center">
+                        <a class="item-icon" (click)="onClickEdit(edit,item);"><i
+                                class="bi bi-pencil-square  text-warning"></i></a>
+                        <a class="item-icon ml-4" (click)="onClickDelete(item);"><i
+                                class="bi bi-trash  text-danger"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="box-content mt-5 col-10 mx-auto" *ngIf="toggleDefective ||toggleResult">
+    <div class="row">
+        <h5 *ngIf="toggleDefective">Defective Manage</h5>
+        <h5 *ngIf="toggleResult">Result Manage</h5>
+        <select class="custom-select" (change)="onChangeRequestItem();" [formControl]="SelectRequestItem">
+            <option class="text-center" disabled [value]="null">--SELECT REQUEST ITEM--</option>
+            <option class="text-center" *ngFor="let item of Report; let i=index" [value]="item.modelName">
+                {{item.modelName}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="box-content mt-2 col-10 mx-auto" *ngIf="toggleShowDefectiveList">
+    <div class="row">
+        <div class="tableFixHead">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr class="text-center">
+                        <th width="5%">#</th>
+                        <th>name</th>
+                        <th width="20%"><button class="btn btn-success btn-block" (click)="onClickAdd(add)">ADD</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let item of DefectiveList; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item}}</td>
+                        <td>
+                            <button class="btn btn-sm item-icon" (click)="ModalEditDefectandResult(editDefectandResult,item,i);"><i
+                                    class="bi bi-pencil-square  text-warning"></i></button>
+                            <button class="btn btn-sm item-icon ml-4" (click)="onDeleteDefectandResult(item,i);"><i
+                                    class="bi bi-trash  text-danger"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="box-content mt-2 col-10 mx-auto" *ngIf="toggleShowResultList">
+    <div class="row">
+        <div class="tableFixHead">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr class="text-center">
+                        <th width="5%">#</th>
+                        <th>name</th>
+                        <th width="20%"><button class="btn btn-success btn-block" (click)="onClickAdd(add)">ADD</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" *ngFor="let item of ResultList; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item}}</td>
+                        <td>
+                            <button class="btn btn-sm item-icon" (click)="ModalEditDefectandResult(editDefectandResult,item,i);"><i
+                                    class="bi bi-pencil-square  text-warning"></i></button>
+                            <button class="btn btn-sm item-icon ml-4" (click)="onDeleteDefectandResult(item,i);"><i
+                                    class="bi bi-trash  text-danger"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<ng-template #add let-modal>
+    <div class="modal-header">
+        <!-- <h4 class="modal-title">Reject Note</h4> -->
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" [formControl]="NameToAdd">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="NameToAdd.invalid" class="btn btn-success" (click)="modal.dismiss('Cross click'); onAdd();">Add <i class="bi bi-check-square-fill"></i></button>
+    </div>
+</ng-template>
+
+<ng-template #editDefectandResult let-modal>
+    <div class="modal-header">
+        <!-- <h4 class="modal-title">Reject Note</h4> -->
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" [formControl]="NameToEdit">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="!NameToEdit.touched" class="btn btn-warning" (click)="modal.dismiss('Cross click'); onEditDefectandResult();"><i class="bi bi-check"
+                style="font-size: 1rem;"></i>EDIT
+        </button>
+    </div>
+</ng-template>
+<ng-template #edit let-modal>
+    <div class="modal-header">
+        <!-- <h4 class="modal-title">Reject Note</h4> -->
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" [formControl]="NameToEdit">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="!NameToEdit.touched" class="btn btn-warning" (click)="modal.dismiss('Cross click'); onEdit();"><i class="bi bi-check" style="font-size: 1rem;"></i>EDIT
+        </button>
+    </div>
+</ng-template>

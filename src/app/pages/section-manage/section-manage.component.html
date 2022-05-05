@@ -1,0 +1,220 @@
+<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+
+    <div class="row">
+
+        <div class="col-lg-12 col-md-12">
+            <div class="row">
+                <div class="col-lg-10">
+                    <label for="">Search</label>
+                    <div class="form-group">
+                        <input type="search" class="form-control " [formControl]="WordFilter" (keyup)="onFilter()" (blur)="onFilter()">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <div class="mt-3">
+                            <button class="btn btn-success" (click)="OpenModelAddSection(addSection);"><i
+                                    class="bi bi-person-plus" style="font-size: 1rem;"></i> SECTION</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row" *ngIf="Section">
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th scope="col">Section Name</th>
+                            <th scope="col">Level</th>
+                            <th width="30%" scope="col">Action</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let list  of ResultFilter; let io = index">
+                            <th scope="row">{{io +1}}</th>
+                            <td>{{list.name}}</td>
+                            <td *ngIf="list.view==1">Requestor </td>
+                            <td *ngIf="list.view==2">Analysis </td>
+
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-warning mr-2" (click)="OpenModelEditSection(editSection,list);"><i class="bi bi-gear"
+                                        style="font-size: 1rem;"></i></button>
+                                <button type="button" class="btn btn-sm btn-outline-danger mr-2" (click)="OpenModelDelSection(delSection,list);"><i class="bi bi-trash"
+                                        style="font-size: 1rem;"></i></button>
+                                <button type="button" class="btn btn-sm btn-outline-primary mr-2" (click)="OpenModalEmail(ccEmail,list);"><i class="bi bi-envelope"
+                                        style="font-size: 1rem;"></i></button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<ng-template #addSection let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Add : Section</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); Clear(); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label for="">Section Name</label>
+            <input class="form-control" type="text" [formControl]="ModalSectionName">
+            <label for="">Level</label>
+            <select class="custom-select" [formControl]="ModalSectionLevel">
+                <option value=""></option>
+                <option [value]="1">Requestor</option>
+                <option [value]="2">Analysis</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" [disabled]="ModalSectionName.invalid || ModalSectionLevel.invalid" class="btn btn-success" (click)="modal.close('Close click'); AddSection();"><i class="bi bi-plus" style="font-size: 1rem;"></i>
+            ADD</button>
+
+    </div>
+</ng-template>
+
+
+
+
+<ng-template #editSection let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Edit</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');Clear() ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+
+        <div class="form-group">
+            <label for="">Section Name</label>
+            <input class="form-control" type="text" [formControl]="ModalSectionName">
+            <label for="">Level</label>
+            <select class="custom-select" [formControl]="ModalSectionLevel">
+                <option [value]="1">Requestor issuer, Requestor approval</option>
+                <option [value]="2">AE Window person, AE Engineer, AE Section Head, AE Dep. Head</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="!ModalSectionName.touched && !ModalSectionLevel.touched" type="button" class="btn btn-outline-warning" (click)="modal.close('Close click'); EditSection();"><i class="bi bi-check"
+                style="font-size: 1rem;"></i>
+            EDIT</button>
+
+    </div>
+</ng-template>
+
+
+<ng-template #delSection let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Delete</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); Clear()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label for="">Section Name</label>
+            <input disabled class="form-control" type="text" [formControl]="ModalSectionName">
+            <label for="">Level</label>
+            <select disabled class="custom-select" [formControl]="ModalSectionLevel">
+                <option [value]="1">Requestor</option>
+                <option [value]="2">Analysis</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" (click)="modal.close('Close click'); DelSection();"><i
+                class="bi bi-trash" style="font-size: 1rem;"></i> DELETE</button>
+    </div>
+</ng-template>
+
+<ng-template #ccEmail let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Manage CC Email </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); Clear()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>FirstName</td>
+                        <td>LastName</td>
+                        <td>Employee Code</td>
+                        <td>Email</td>
+                        <td><i class="bi bi-person-plus icon-hover" style="font-size: 1.5rem; cursor: pointer;" (click)="onClickAddUserCC();"></i>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="toggleAddCC" class="" [formGroup]="ModalCC">
+                        <td colspan="2">
+                            <select class="custom-select" formControlName="section" (change)="onChangeSectionModalCC();">
+                                <option disabled [value]="null">Section</option>
+                                <option *ngFor="let item of Section; let i=index" [value]="item._id">
+                                    <span *ngIf="item.view==1">{{item.name}} || Request</span>
+                                    <span *ngIf="item.view==2">{{item.name}} || Analysis</span>
+                                </option>
+                            </select>
+                        </td>
+                        <td colspan="3">
+                            <select class="custom-select" formControlName="userId">
+                                <option disabled [value]="null">User</option>
+                                <option *ngFor="let item of Users; let i=index" [value]="item._id">{{item.FirstName}}
+                                    {{item.LastName}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button [disabled]="ModalCC.invalid" class="btn btn-outline-success btn-sm" (click)="onSubmitCC();">
+                                <i class="bi bi-person-check " style="font-size: 1.5rem;"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr *ngFor="let item of CC; let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.FirstName}}</td>
+                        <td>{{item.LastName}}</td>
+                        <td>{{item.EmployeeCode}}</td>
+                        <td>{{item.Email}}</td>
+                        <td><i class="bi bi-trash" style="font-size: 1rem; color: red; cursor: pointer;" (click)="onClickDeleteCC(i);"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" (click)="modal.close('Close click');"><i
+                class="bi bi-x-lg" style="font-size: 1rem;"></i>Close</button>
+    </div> -->
+</ng-template>

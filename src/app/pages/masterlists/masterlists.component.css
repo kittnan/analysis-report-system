@@ -1,0 +1,51 @@
+#table-wrapper {
+    position: relative;
+}
+
+#table-scroll {
+    overflow: auto;
+    margin-top: 20px;
+}
+
+#table-wrapper table {
+    width: 100%;
+}
+
+.checkbox {
+    cursor: pointer;
+}
+
+.tableFixHead {
+    overflow: auto;
+    height: 600px;
+    width: 100%;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.tableFixHead tbody th {
+    position: sticky;
+    left: 0;
+}
+
+
+/* Just common table stuff. Really. */
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    /* padding: 8px 16px; */
+    /* white-space: nowrap */
+}
+
+th {
+    background: #eee;
+}

@@ -1,0 +1,43 @@
+<div class="col-8 main mx-auto" [formGroup]="Mail" *ngIf="Mailler">
+    <div class="row">
+        <h2 class="mx-auto head-mail">
+            Setting Mailler
+        </h2>
+    </div>
+    <div class="row b-head">
+        <div class="ml-auto i-edit" (click)="onClickEdit();">
+            <span>Edit</span>
+            <i class="bi bi-pencil-square " style="font-size: 2rem;"></i>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-lg-6">
+            <label for="">From</label>
+            <p *ngIf="!ToggleBtn1" class="form-control">{{Mailler.from}}</p>
+            <input *ngIf="ToggleBtn1" formControlName="From" type="text" class="form-control">
+        </div>
+        <div class="col-lg-6">
+            <label for="">Password</label>
+            <p *ngIf="!ToggleBtn1" class="form-control">{{Mailler.password}}</p>
+            <input *ngIf="ToggleBtn1" formControlName="Password" type="text" class="form-control">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-lg-12">
+            <label for="">Subject</label>
+            <p *ngIf="!ToggleBtn1" class="form-control">{{Mailler.subject}}</p>
+            <input *ngIf="ToggleBtn1" formControlName="Subject" type="text" class="form-control">
+        </div>
+
+    </div>
+    <div class="row mt-2" *ngIf="ToggleBtn1">
+        <div class="col-lg-6">
+            <button (click)="CancelMailler();" class="btn btn-block btn-danger">Cancel <i class="bi bi-arrow-left-short"
+                    style="font-size: 1.5rem;"></i></button>
+        </div>
+        <div class="col-lg-6">
+            <button [disabled]="!Mail.touched" (click)="UpdateMailler();" class="btn btn-block btn-warning">Save <i
+                    class="bi bi-check" style="font-size: 1.5rem;"></i></button>
+        </div>
+    </div>
+</div>

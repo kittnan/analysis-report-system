@@ -1,0 +1,31 @@
+.icon-hover {
+    transition: ease all 0.5s;
+}
+
+.icon-hover:hover {
+    cursor: pointer;
+    color: lightgreen;
+    transition: ease all 0.25s;
+}
+
+.add-cc-none {
+    display: none;
+    transition: ease-in all 1s;
+}
+
+.add-cc-show {
+    display: block;
+    transition: ease-in all 1s;
+}
+
+.tableFixHead {
+    overflow: auto;
+    height: 600px;
+    width: 100%;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}

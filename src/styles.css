@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~bootstrap-icons/font/bootstrap-icons";
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "ag-grid-community/dist/styles/ag-grid.css";
+@import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+
+/* @font-face {
+    font-family: "Montserrat";
+    src: local("Montserrat"), url(./assets/fonts/Montserrat-Regular.ttf) format("truetype");
+} */
+
+
+/* @font-face {
+    font-family: "Roboto";
+    src: local("Roboto"), url(./assets/fonts/Roboto-Regular.ttf) format("truetype");
+} */
+
+
+/* html,
+body {
+    font-family: "'Montserrat', sans-serif";
+    font-size: 20px;
+    font-weight: 400;
+} */

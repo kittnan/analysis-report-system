@@ -1,0 +1,95 @@
+/* .bg-white {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);
+    cursor: pointer;
+    transition: all ease-in 0.15s;
+}
+
+.bg-white:hover {
+    color: red;
+    box-shadow: 0 6px 10px -4px rgb(0 0 0 / 75%);
+    transform: translateY(-5%);
+    transition: all ease-in 0.15s;
+    color: rgb(0, 0, 0);
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    cursor: pointer;
+    color: red;
+    transition: all ease-in 0.15s;
+} */
+
+.btn-search {
+    font-size: 1.5rem;
+    transition: all ease 0.25s;
+}
+
+.btn-search:hover {
+    opacity: 50%;
+    cursor: pointer;
+    transition: all ease 0.25s;
+}
+
+.tableRow {
+    transition: all ease 0.25s;
+}
+
+.tableRow:hover {
+    transition: all ease 0.25s;
+    background-color: rgba(124, 124, 124, 0.205);
+    cursor: pointer;
+}
+
+.status {
+    font-weight: 500;
+}
+
+.green-status {
+    color: rgb(8, 201, 8);
+}
+
+.primary-status {
+    color: rgb(19, 41, 236);
+}
+
+.red-status {
+    color: rgb(240, 36, 36);
+}
+
+.loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(180, 180, 180, 0.938);
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    animation: fade 0.25s linear 0.25s infinite alternate;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.tableFixHead tbody th {
+    position: sticky;
+    left: 0;
+}
+
+@keyframes fade {
+    0% {
+        background-color: rgba(180, 180, 180, 0.938);
+    }
+    100% {
+        background-color: rgba(136, 136, 136, 0.938);
+    }
+}

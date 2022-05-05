@@ -1,0 +1,40 @@
+<div class="wrapper" *ngIf="loginStatus">
+    <div class="sidebar" data-color="black" data-active-color="danger">
+        <sidebar-cmp></sidebar-cmp>
+    </div>
+    <div class="main-panel">
+        <navbar-cmp></navbar-cmp>
+        <div class="content">
+            <router-outlet></router-outlet>
+        </div>
+
+        <footer-cmp></footer-cmp>
+        <!-- <fixedplugin-cmp></fixedplugin-cmp> -->
+
+    </div>
+</div>
+
+<div class="wrapper" *ngIf="!loginStatus">
+    <!-- <div class="sidebar" data-color="black" data-active-color="danger">
+        <sidebar-cmp></sidebar-cmp>
+    </div> -->
+    <!-- <div class="main-panel"> -->
+    <!-- <navbar-cmp></navbar-cmp> -->
+    <!-- <div class="content mt-5"> -->
+
+    <router-outlet></router-outlet>
+
+
+    <!-- </div> -->
+
+    <!-- <footer-cmp></footer-cmp> -->
+
+    <!-- </div> -->
+</div>
+
+
+
+
+
+
+<!-- <router-outlet></router-outlet> -->

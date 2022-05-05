@@ -1,0 +1,250 @@
+<!-- <div *ngIf="toggleTable" class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <button class="btn btn-block" (click)="toggleTable=!toggleTable">Show</button>
+    </div>
+</div> -->
+<div [formGroup]="Form" class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <div class="ml-auto">
+            <button class="btn btn-sm  text-primary" style="text-align: right; cursor: pointer;" (click)="onClickExportExcel()">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
+            <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;" (click)="ResetConditionFilter()">Reset filters <i class="bi bi-bootstrap-reboot i-re" ></i></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="head-label" for="">From Date</label>
+                        <input class="form-control" type="date" formControlName="DateStart" (blur)="this.Month.reset()">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="head-label" for="">To Date</label>
+                        <input class="form-control" type="date" formControlName="DateEnd" (blur)="this.Month.reset()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Month</label>
+                        <input class="form-control" type="month" formControlName="Month" (blur)="this.DateStart.reset();this.DateEnd.reset()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="head-label" for="">KTC Model Number</label>
+
+                        <input type="search" formControlName="ModelNumber" class="form-control" (click)="ToggleFilterModelNumber();" (keyup)="OnkeyUpModelNumber();">
+                        <div class="show-select">
+                            <select *ngIf="ModelNumberToggle" [formControl]="TempModelNumber" size="5" class="custom-select" (change)="ToggleFilterModelNumber(); SetModelNum();">
+                                <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
+                                </option>
+                            </select>
+
+                        </div>
+
+
+                        <!-- <select class="custom-select" formControlName="ModelNumber">
+                            <option value=""></option>
+                            <option [value]="item.name" *ngFor="let item of ModelNumberList; let i=index">
+                                {{item.name}}
+                            </option>
+                        </select> -->
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="head-label" for="">LOT NUMBER</label>
+                        <input class="form-control" type="text" formControlName="LotNumber">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="head-label" for="">PD input q'ty</label>
+                        <input class="form-control" type="number" formControlName="InputQty" [min]="0">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label class="head-label" for="">NG q'ty</label>
+                        <input class="form-control" type="number" formControlName="NgQty" [min]="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defect Name</label>
+                        <input class="form-control" type="text" formControlName="DefectName" (click)="ToggleFilter();" (keyup)="Filter(); ClearDefectCode();" (change)="ClearDefectCode()">
+                        <div [hidden]="!ToggleDefect" class="show-select">
+                            <select class="custom-select" size="10" [formControl]="SelectDefect">
+                                <option [value]="item.defectName" *ngFor="let item of DefectFilter"
+                                    (click)="OnClickSelect(item)">
+                                    {{item.defectName}} || Code: {{item.defectCode}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defect Code</label>
+                        <p>{{TempDefectCode}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <label class="head-label">More Search</label>
+            <i class="bi bi-toggle-off tt ml-2 " style="font-size: 2rem;" [ngClass]="{'bi-toggle-on': toggleMore}" (click)="onClickMoreSearch();"></i>
+            <span></span>
+            <select *ngIf="toggleMore" class="custom-select" [formControl]="SelectAnySearch" (change)="ClearAnySearch()">
+                <option [value]="null">--select search--</option>
+                <option value="requestor">By Requestor Name</option>
+                <option value="section">By Section Requestor</option>
+                <option value="requestItem">By Request Items</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="(SelectAnySearch.value=='requestor')&& toggleMore">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="head-label">Requestor Name</label>
+                <input type="text" class="form-control" [formControl]="RequestorName" (click)="ToggleRequestName();" (keyup)="FilterUser();">
+                <div *ngIf="ToggleRequest">
+                    <select class="custom-select show-select" size="10" [formControl]="RequestorId">
+                        <option *ngFor="let item of UserFilter" [value]="item._id" (click)="OnClickUser(item);">
+                            {{item.FirstName}} - {{item.LastName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3" *ngIf="(SelectAnySearch.value=='section')&&toggleMore">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="head-label">Section Requestor</label>
+                <select class="custom-select" [formControl]="SectionName">
+                    <option *ngFor="let item of SectionList" [value]="item.name">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="(SelectAnySearch.value=='requestItem')&&toggleMore">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="head-label">Request Items</label>
+                <select class="custom-select" [formControl]="SelectRequestItem">
+                    <option *ngFor="let item of RequestItems" [value]="item.name">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-block" (click)="OnClickSearch(); setKeySearch();">Search <i class="bi bi-search"
+                    style="font-size: 1.5em;"></i></button>
+            <!-- <button class="btn btn-block" (click)="toggleTable=!toggleTable">Hide</button> -->
+
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<!-- <div [formGroup]="Form" class="col-12 mt-3" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row" *ngIf="Sum.length > 0">
+        <div class="col-lg-12">
+            <div class="tableFixHead table-responsive">
+
+                <table class="table table-bordered mt-3 text-center" *ngIf="Sum.length > 0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Req.No.</th>
+                            <th>Model</th>
+                            <th>Defect Name</th>
+                            <th>Occur Place</th>
+                            <th>Lot Number</th>
+                            <th>INPUT Qty(pcs)</th>
+                            <th>NG QTY(pcs)</th>
+                            <th>NG Ratio(%)</th>
+                            <th>Result</th>
+                            <th>Req.From</th>
+                            <th>Req.Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of Sum; let i=index" class="Row-Table" (click)="OnClickForm(item);" [ngbPopover]="item.requestNumber" [openDelay]="300" [closeDelay]="300" triggers="mouseenter:mouseleave" placement="auto">
+                      
+                            <td class="text-nowrap">{{item.requestNumber}}</td>
+                            <td class="text-nowrap">{{item.ktcModelNumber}}</td>
+                            <td>{{item.defectiveName}}</td>
+                            <td>{{item.pcLotNumber}}</td>
+                            <td>{{item.occurBName}}</td>
+                            <td>{{item.inputQuantity}}</td>
+                            <td>{{item.ngQuantity}}</td>
+                            <td>{{item.ngRatio |number : '.1-2'}}</td>
+                            <td>{{item.result}}</td>
+                            <td>{{item.requestFormSectionName}}</td>
+                            <td>{{item.issuer}}</td>
+                            <td class="status green-status" *ngIf="item.status == 1">Wait Approve Request</td>
+                            <td class="status green-status" *ngIf="item.status == 2">Analysis</td>
+                            <td class="status green-status" *ngIf="item.status == 3">Making Report</td>
+                            <td class="status green-status" *ngIf="item.status == 4">Reviewer Report</td>
+                            <td class="status green-status" *ngIf="item.status == 5">Approve Report</td>
+                            <td class="status primary-status" *ngIf="item.status == 6">Finished</td>
+                            <td class="status red-status" *ngIf="item.status == 2.1">Reject</td>
+                            <td class="status red-status" *ngIf="item.status == 3.1">Reject</td>
+                            <td class="status red-status" *ngIf="item.status == 5.4">Reject</td>
+                            <td class="status red-status" *ngIf="item.status == 6.4">Reject</td>
+                            <td class="status red-status" *ngIf="item.status == 0">Cancel</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div> -->
+
+
+<div *ngIf="rowData.length !=0" class="col-12 mt-3" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+
+    <div class="row">
+        <div class="col-lg-12" style="height: 850px;">
+            <ag-grid-angular style="width: 100%; height: 100%;" (cellClicked)="onCellClicked($event)" style="width: 100%; height: 100%;" class="ag-theme-alpine" [rowData]="rowData" [debounceVerticalScrollbar]="false" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef"
+                [pagination]="false" [paginationAutoPageSize]="false" [animateRows]="true">
+            </ag-grid-angular>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="top">
+    <button class="btn btn-sm" (click)="top();">TOP</button>
+</div> -->

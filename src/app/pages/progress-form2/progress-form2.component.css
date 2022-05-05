@@ -1,0 +1,37 @@
+.not-valid {
+    border: rgb(36, 209, 36) 1.5px solid;
+    border-radius: 5px;
+}
+
+.valid {
+    border: red 1.5px solid;
+    border-radius: 5px;
+}
+
+.head-label {
+    font-weight: 600;
+}
+
+.comment-text {
+    color: red;
+}
+
+.head-tool {
+    display: flex;
+    justify-content: center;
+    margin-right: 40px;
+}
+
+.icon-make {
+    cursor: pointer;
+    border-bottom: red 2px solid;
+    padding-bottom: 3px;
+    margin-left: 20px;
+    transition: ease all 0.25s;
+}
+
+.icon-make:hover {
+    color: red;
+    transform: translateY(-10%);
+    transition: ease all 0.25s;
+}

@@ -1,0 +1,659 @@
+<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="row">
+                <h6>Analysis Request Form</h6>
+            </div>
+        </div>
+
+        <div class="col-md-12 border-bottom">
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Item</label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestItem}}</p>
+                    </div>
+
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Number</label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestNumber}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Issued Date</label>
+                        <p class="subtext-color" *ngIf="form">{{form.issuedDate}}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Reply Date</label>
+                        <p class="subtext-color" *ngIf="form">
+                            {{form.replyDate}}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request from (Department-Section) </label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestFormSectionName}}</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="col-md-12" style="margin-top: 50px;">
+            <div class="row">
+                <h6>Detail of NG Product</h6>
+            </div>
+        </div>
+
+        <div class="col-md-12 border-bottom">
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label class="head-label" for="">Model Number</label>
+                                <p class="subtext-color" *ngIf="form">{{form.ktcModelNumber}}</p>
+                            </div>
+                            <div class="col-lg-3">
+                                <label class="head-label" for="">Size (inch)</label>
+                                <p class="subtext-color" *ngIf="form">{{form.size}}</p>
+                            </div>
+                            <div class="col-lg-5">
+                                <label class="head-label" for="">Customer</label>
+                                <p class="subtext-color" *ngIf="form">{{form.customer}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">CPR Lot Number/CRR Lot Number</label>
+                        <p class="subtext-color" *ngIf="form">{{form.pcLotNumber}}</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defective Code</label>
+                        <p class="subtext-color" *ngIf="form">{{form.defectiveCode}}</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defective Name</label>
+                        <p class="subtext-color" *ngIf="form">{{form.defectiveName}}</p>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Input Quantity (Pcs)</label>
+                        <p class="subtext-color" *ngIf="form">{{form.inputQuantity}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">NG Quantity (Pcs)</label>
+                        <p class="subtext-color" *ngIf="form">{{form.ngQuantity}}</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">NG Ratio (%)</label>
+                        <p class="subtext-color" *ngIf="form">{{form.ngRatio | number : '.1-2'}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Send NG To Analysis (Pcs)</label>
+                        <p class="subtext-color" *ngIf="form">{{form.sendNgAnalysis}}</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Production Phase</label>
+                        <p class="subtext-color" *ngIf="form">{{form.productionPhase}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defect Catagory</label>
+                        <p class="subtext-color" *ngIf="form">{{form.defectCatagory}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Claim no.</label>
+                        <p class="subtext-color" *ngIf="form">{{form.claimNo}}</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Occur Place</label>
+                        <p class="subtext-color" *ngIf="form">{{form.occurBName}}</p>
+
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Abnormal Lot Level</label>
+                        <p class="subtext-color" *ngIf="form">{{form.abnormalLotLevel}} </p>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="row">
+                <div class="col-12 mt-2">
+                    <div class="form-group">
+                        <label class="head-label">Issue Data</label>
+                        <p class="subtext-color" *ngIf="form">{{form.issuer}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-2">
+
+                    <table class="table">
+                        <thead>
+                            <th width="80%">Files</th>
+                            <th width="20%" class="text-center">Download</th>
+                        </thead>
+                        <tbody *ngIf="form" class="subtext-color">
+                            <tr *ngIf="form.files.length == 0">
+                                <td>
+                                    No files..
+                                </td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr *ngFor="let item of FileList; let i=index">
+                                <td>
+                                    {{item.name}}
+                                </td>
+                                <td class="text-center">
+                                    <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-outline-primary mr-0" style="cursor: pointer;"><i
+                                            class="bi bi-download" style="font-size: 1rem;"></i></a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <label class="head-label" for="">Comment</label>
+                    <button class="btn btn-block" (click)="showComment(comment)">Show Comment</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div class="col-12 mt-5" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <div class="col-lg-12 text-right mt-0 mb-0">
+            <button class="btn btn-sm text-primary" (click)="onSaveResult();">Draft <i
+                    class="bi bi-clipboard-check"></i></button>
+        </div>
+    </div>
+    <div class="row" [formGroup]="ResultForm">
+        <div class="col-md-12 ">
+            <div class="row">
+                <h6>Engineer Input Analysis Result</h6>
+            </div>
+        </div>
+
+        <div class="col-md-12 border-bottom">
+
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Number</label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestNumber}}</p>
+                    </div>
+
+                </div>
+                <!-- <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Analysis Report No</label>
+                        <p class="subtext-color">{{ReportNo.value}}</p>
+                    </div>
+                </div> -->
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label [ngClass]="{'text-danger': AnalyzeDate.invalid}" class="head-label">Start analyze date
+                            <i *ngIf="AnalyzeDate.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="AnalyzeDate" [min]="form.issuedDate" [max]="form.replyDate">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label [ngClass]="{'text-danger': ResultDate.invalid}" class="head-label">Finished analysis
+                            result date
+                            <i *ngIf="ResultDate.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="ResultDate" [min]="minDateFinishAnalysisDate">
+                        <!-- <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="ResultDate" [min]="form.issuedDate"> -->
+                        <!-- {{form.issuedDate |json}} -->
+                    </div>
+                </div>
+
+                <div class="col-6 mt-2">
+                    <div class="form-group">
+
+                        <label [ngClass]="{'text-danger': ReportDate.invalid}" class="head-label">Finish analysis report
+                            date
+                            <i *ngIf="ReportDate.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="ReportDate" [min]="form.issuedDate">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-6 mt-2">
+                    <div class="form-group">
+
+                        <label [ngClass]="{'text-danger': CategoryCause.invalid}" class="head-label">Category Root Cause
+                            <i *ngIf="CategoryCause.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="search" formControlName="CategoryCause" (click)="ToggleCauseFilter();" (keyup)="FilterCause();" class="form-control subtext-color">
+                        <div class="show-select">
+                            <select *ngIf="CauseToggle" class="custom-select subtext-color" size="5" formControlName="TempCause" (change)="ToggleCauseFilter(); SetCause();">
+                                <option *ngFor="let item of CauseFilter;" [value]="item.name">{{item.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-2">
+                    <div class="form-group">
+
+                        <label [ngClass]="{'text-danger': TreatmentOfNg.invalid}" class="head-label">Treatment of NG
+                            <i *ngIf="TreatmentOfNg.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <select class="custom-select subtext-color" [formControl]="TreatmentOfNg">
+                            <option [value]="null"></option>
+                            <option [value]="item.name" *ngFor="let item of TreatmentList; let i=index">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-12 mt-2">
+                    <div class="form-group">
+                        <label [ngClass]="{'text-danger': Result.invalid}" class="head-label">Analysis Result
+                            <i *ngIf="Result.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <textarea class="form-control subtext-color" formControlName="Result" cols="30" rows="10" style="height: 300px;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row ">
+
+                <div class="col-lg-6 col-md-6 col-sm-12 ">
+                    <div class="form-group ">
+                        <label [ngClass]="{'text-danger': SourceOfDefect.invalid}" class="head-label">Source Of Defect
+                            <i *ngIf="SourceOfDefect.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <div class="input-group mb-3 ">
+                            <select class="custom-select subtext-color" formControlName="SourceOfDefect">
+                                <option [value]="null"></option>
+                                <option *ngFor="let item of SourceList;" [value]="item.name">{{item.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-12 ">
+                    <div class="form-group ">
+                        <label [ngClass]="{'text-danger': AnalysisLevel.invalid}" class="head-label">AnalysisLevel
+                            <i *ngIf="AnalysisLevel.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <div class="input-group mb-3 ">
+                            <select class="custom-select subtext-color" formControlName="AnalysisLevel">
+                                <option [value]="null"></option>
+                                <option *ngFor="let item of AnalysisLevelList;" [value]="item.name">{{item.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 ">
+                    <div class="form-group">
+                        <label [ngClass]="{'text-danger': CanAnalysis.invalid}" class="head-label">Can/Can't Analysis</label>
+                        <select class="subtext-color form-control" formControlName="CanAnalysis" type="text">
+                            <option disabled value="">Select</option>
+                            <option value="can">Can</option>
+                            <option value="can't">Can't</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <table class="table table-bordered">
+                        <thead *ngIf="!toggleAttFileEng">
+                            <tr>
+                                <th *ngIf="tempFileTotal!=0">Files ( total: {{tempFileTotal|fileSize}} ) <span class="text-danger"> Limit total
+                                        30 Mb.</span></th>
+                                <th *ngIf="tempFileTotal==0">Files ( total: 0 B ) <span class="text-danger"> Limit total
+                                        30 Mb.</span></th>
+
+                                <th width="15%" class="text-center">
+                                    <input type="file" (change)="attFilesENG($event)" #fileUpload style="display: none;" [formControl]="inputFile">
+                                    <button class="btn btn-sm btn-primary" (click)="fileUpload.click()">
+                                        Attach files
+                                        <i class="bi bi-paperclip" style="font-size: 1rem;"></i>
+                                    </button>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="subtext-color" *ngIf="!toggleAttFileEng">
+                            <tr *ngFor="let item of tempFile; let i=index">
+                                <td>{{item.name}} ({{item.size |fileSize}})</td>
+                                <td class="text-center"> <button (click)="onClickDeleteFile(item)" class="btn btn-sm btn-outline-danger mr-0" style="cursor: pointer;"><i
+                                            class="bi bi-trash" style="font-size: 1rem;"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+
+
+
+                        <thead *ngIf="toggleAttFileEng">
+                            <tr>
+                                <th *ngIf="tempFileENGTotal!=0">Files ( total: {{tempFileENGTotal|fileSize}} ) <span class="text-danger"> Limit total
+                                        30 Mb.</span></th>
+                                <th *ngIf="tempFileENGTotal==0">Files ( total: 0 B ) <span class="text-danger"> Limit
+                                        total
+                                        30 Mb.</span></th>
+
+                                <th width="15%" class="text-center">
+                                    <input type="file" (change)="uploadFileNow($event)" #fileUpload style="display: none;" [formControl]="inputFile">
+                                    <button class="btn btn-sm btn-primary" (click)="fileUpload.click()">
+                                        Upload files
+                                        <i class="bi bi-upload" style="font-size: 1rem;"></i>
+                                    </button>
+                                </th>
+
+                            </tr>
+                        </thead>
+
+
+
+                        <tbody class="subtext-color" *ngIf="toggleAttFileEng">
+                            <tr *ngFor="let item of tempEngFile; let i=index">
+                                <td>{{item.name}} ({{item.size|fileSize}})</td>
+                                <td class="text-center">
+                                    <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i
+                                            class="bi bi-download" style="font-size: 1rem;"></i></a>
+
+                                    <a (click)="removeNow(item);" class="btn btn-sm btn-danger ml-2" style="cursor: pointer;"><i class="bi bi-trash"
+                                            style="font-size: 1rem;"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="row mt-2">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <table class="table table-bordered">
+
+                        <!-- * มีreport เดิม -->
+                        <thead *ngIf="toggleAttReportEng">
+                            <tr class="text-center">
+                                <th width="10%">Report file: </th>
+                                <td class="text-left">
+                                    {{tempFileReportName}}
+                                </td>
+                                <th width="20%" class="text-center" *ngIf="this.form">
+                                    <button *ngIf="this.form.requestItem=='MDL'" class="btn mt-0" (click)="onClickGenMDL(genReport);">Generate report file<i
+                                            class="bi bi-file-earmark-spreadsheet"
+                                            style="font-size: 1.2rem;"></i></button>
+
+                                    <button *ngIf="this.form.requestItem!='MDL'" class="btn mt-0" (click)="onClickGenExcel();">Generate report file<i
+                                            class="bi bi-file-earmark-spreadsheet"
+                                            style="font-size: 1.2rem;"></i></button>
+                                </th>
+                                <th width="20%" class="text-center" *ngIf="!this.form">
+
+
+                                    <th width="15%">
+                                        <button class="btn btn-primary ml-2" (click)="fileUploadReport.click()">Upload <i
+                                            class="bi bi-upload" style="font-size: 1rem;"></i></button>
+                                        <input type="file" class="form-control" #fileUploadReport (change)="uploadReportFileNow($event)" [formControl]="htmlReport" style="display: none;">
+                                    </th>
+                                    <th width="15%">
+                                        <a target="_blank" [download]="tempFileReportName" [href]="File.value" class="btn btn-primary mr-0" style="cursor: pointer;">
+                                        Download
+                                        <i class="bi bi-download" style="font-size: 1rem;"></i>
+                                    </a>
+                                    </th>
+
+                            </tr>
+                        </thead>
+
+                        <!-- * มีreport เดิม -->
+
+
+                        <!-- * ไม่มีreport เดิม -->
+                        <thead *ngIf="!toggleAttReportEng">
+                            <tr class="text-center">
+                                <th width="10%">Report file: </th>
+                                <td class="text-left">
+                                    {{tempFileReportName}}
+                                </td>
+                                <th width="20%" class="text-center" *ngIf="this.form">
+                                    <button *ngIf="this.form.requestItem=='MDL'" class="btn mt-0" (click)="onClickGenMDL(genReport);">Generate report file<i
+                                            class="bi bi-file-earmark-spreadsheet"
+                                            style="font-size: 1.2rem;"></i></button>
+
+                                    <button *ngIf="this.form.requestItem!='MDL'" class="btn mt-0" (click)="onClickGenExcel();">Generate report file<i
+                                            class="bi bi-file-earmark-spreadsheet"
+                                            style="font-size: 1.2rem;"></i></button>
+                                </th>
+                                <th width="20%" class="text-center" *ngIf="!this.form">
+
+
+                                    <th width="15%">
+                                        <button class="btn btn-primary" (click)="fileUploadReport.click()">Attach report <i
+                                            class="bi bi-paperclip" style="font-size: 1rem;"></i></button>
+                                        <input type="file" class="form-control" #fileUploadReport (change)="attReportFile($event)" [formControl]="htmlReport" style="display: none;">
+                                    </th>
+
+                            </tr>
+                        </thead>
+                        <!-- * ไม่มีreport เดิม -->
+
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-lg-6 col-md-6 col-sm-12 ">
+                    <div class="form-group ">
+                        <label [ngClass]="{'text-danger': Approve.invalid}" class="head-label">Reviewer
+                            <i *ngIf="Approve.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <div class="input-group mb-3 ">
+                            <select class="custom-select subtext-color" formControlName="Approve" (change)="OnApproveChange()">
+                                <option disabled [value]="null">--select--</option>
+                                <option *ngFor="let item of ApproveList;" value="{{item._id}}">
+                                    {{item.FirstName}} {{item.LastName}} || {{item.Email}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <button class="btn btn-danger btn-lg btn-block " type="button" (click)="ModalNote(rejectNote);">Reject</button>
+                </div>
+                <div class="col-lg-6">
+                    <button [disabled]="ResultForm.invalid && !FileReport" class="btn btn-primary btn-lg btn-block " type="button" (click)="ModalNote(approveNote);">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #approveNote let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Approve Note</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label>Note</label>
+            <textarea class="form-control" [formControl]="NoteApprove" cols="30" rows="10" style="height: 300px;"></textarea>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)="modal.dismiss('Cross click'); onSubmit();">APPROVE <i
+                class="bi bi-check-square-fill"></i></button>
+    </div>
+</ng-template>
+
+<ng-template #rejectNote let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Reject Note</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label>Note</label>
+            <textarea class="form-control" [formControl]="NoteReject" cols="30" rows="10" style="height: 300px;"></textarea>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" (click)="modal.dismiss('Cross click'); OnReject();">REJECT <i
+                class="bi bi-x-square-fill"></i></button>
+    </div>
+</ng-template>
+
+
+
+<ng-template #genReport let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">SELECT GEN REPORT</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label>SELECT TIER</label>
+            <select *ngIf="this.form.requestItem=='MDL'" class="custom-select" [formControl]="SelectMDL">
+                <option value="MDL T1">MDL T1</option>
+                <option value="MDL T2">MDL T2</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="SelectMDL.invalid" class="btn" (click)="modal.dismiss('Cross click'); onClickGenExcel();">GENERATE <i
+                class="bi bi-file-earmark-spreadsheet"></i></button>
+    </div>
+</ng-template>
+
+
+<ng-template #comment let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Comment</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="row" *ngFor="let item of CommentLists">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short"
+                            style="font-size: 1.3rem;"></i> {{item.to}}</label>
+                    <p class="box-comment" [ngClass]="item.class">{{item.note}}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</ng-template>

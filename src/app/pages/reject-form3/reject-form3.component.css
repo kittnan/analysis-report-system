@@ -1,0 +1,13 @@
+.head-label {
+    font-weight: 600;
+}
+
+.show-select {
+    position: absolute;
+    z-index: 999;
+    width: 100%;
+}
+
+.comment-text {
+    color: red;
+}

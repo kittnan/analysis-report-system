@@ -1,0 +1,682 @@
+<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label for="">Master Name</label>
+                                <div class="input-group mb-3">
+                                    <select class="custom-select" [formControl]="SelectMaster" (change)="OnSetToggleSelect()">
+                                        <option *ngFor="let i  of Master" [value]="i.name">{{i.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label for="">Sort</label>
+                                <div class="input-group mb-3">
+                                    <select disabled class="custom-select " (change)="onChangeDataNum()" [formControl]="DataNum">
+                                        <option *ngFor="let item of NumList" [value]="item">{{item}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="row">
+                                <!-- <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="">Search</label>
+                                        <input disabled type="search" class="form-control" placeholder="Name" [formControl]="WordFilter" (keyup)="onFilter()" (blur)="onFilter()">
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-12"> -->
+                                <div class="form-group">
+                                    <div class="input-group mt-3">
+
+                                        <button class="btn btn-success" (click)="OpenModalAddList(modalAddList);"><i
+                                                class="bi bi-file-earmark-plus" style="font-size: 1rem;"></i>
+                                            ADD</button>
+                                        <button class="btn btn-info" (click)="ModalExcel(modalExcel);"><i
+                                                class="bi bi-box-arrow-in-down"
+                                                style="font-size: 1rem;"></i>Excel</button>
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-sm-6 text-right">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="">Page {{PageNow}}/{{PageNum}} </label>
+                                    <div class="input-group mb-3 ">
+                                        <button class="btn ml-auto mt-0" (click)="back()">BACK</button>
+                                        <button class="btn mt-0" (click)="next()">NEXT</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="col-lg-6" *ngIf="DataNum.value=='ALL'">
+                            <div class="form-group">
+                                <label for="">Search</label>
+                                <input type="search" class="form-control">
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="col-lg-12 col-md-12" *ngIf="ToggleDefectSelect">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <label for="">Model</label>
+                        <div class="input-group mb-3">
+                            <select class="custom-select" [formControl]="SelectModel" (change)="onSelectModel()">
+                                <option *ngFor="let i  of Model" [value]="i.name">{{i.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-12 col-md-12" *ngIf="ToggleOccurSelect">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <label for="">Occur Place A</label>
+                        <div class="input-group mb-3">
+                            <select class="custom-select" [formControl]="SelectOccurA" (change)="onSelectOccurA()">
+                                <option [value]="null"></option>
+                                <option *ngFor="let i  of OccurAList" [value]="i.name">{{i.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-lg-12 col-md-12" *ngIf="ToggleCauseSelect">
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <label for="">Model</label>
+                        <div class="input-group mb-3">
+                            <select class="custom-select" [formControl]="SelectModel" (change)="onSelectCauseModel()">
+                                <option *ngFor="let i  of Model" [value]="i.name">{{i.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+
+    <!-- ? List  table  -->
+    <div class="row" *ngIf="ToggleNormalTable">
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter.length>0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th width="20%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr *ngFor="let item  of ResultFilter; let i = index">
+                            <td>{{(NoData + i)}}</td>
+                            <td>{{item.name}}
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditList(EditList,item)" style="cursor: pointer;"><i
+                                        class="bi bi-gear" style="font-size: 1rem;"></i></button>
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteList(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                        style="font-size: 1rem;"></i></button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ? Model Number Table  -->
+    <div class="row" *ngIf="ToggleModelNumberTable">
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th width="10%" scope="col">Model</th>
+                            <th width="10%" scope="col">Size</th>
+                            <th scope="col">Customer</th>
+                            <th width="20%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item  of ResultFilter; let i = index">
+                            <td>{{(NoData + i)}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.size}}</td>
+                            <td>{{item.customer}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditModelNumber(EditModelNumber,item)" style="cursor: pointer;"><i
+                                        class="bi bi-gear" style="font-size: 1rem;"></i></button>
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteList(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                        style="font-size: 1rem;"></i></button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- ? Defect NAME && CODE Table  -->
+    <div class="row" *ngIf="ToggleDefectTable">
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th width="10%" scope="col">Code</th>
+                            <th width="20%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item  of ResultFilter; let i = index">
+                            <td>{{(NoData + i)}}</td>
+                            <td>{{item.defectName}}</td>
+                            <td>{{item.defectCode}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditDefect(EditDefect,item)" style="cursor: pointer;"><i
+                                        class="bi bi-gear" style="font-size: 1rem;"></i></button>
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteDefect(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                        style="font-size: 1rem;"></i></button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ? Occur Table -->
+    <div class="row" *ngIf="ToggleOccurTable">
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th width="20%" scope="col">Occur Place A</th>
+                            <th scope="col">Occur Place B</th>
+                            <th width="20%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item of ResultFilter; let i=index">
+                            <td>{{NoData + i}}</td>
+                            <td>{{item.nameOccurA}}</td>
+                            <td>{{item.name}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditOccur(EditOccur,item)"><i class="bi bi-gear"
+                                        style="font-size: 1rem;"></i></button>
+                                <button class="btn btn-sm btn-outline-danger mr-2" (click)="onDeleteOccur(item)"><i
+                                        class="bi bi-trash" style="font-size: 1rem;"></i></button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ? CAUSE  table  -->
+    <div class="row" *ngIf="ToggleCauseTable">
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th width="20%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item  of ResultFilter; let i = index">
+                            <td>{{(NoData + i)}}</td>
+                            <td>{{item.name}}
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditCause(EditCause,item)" style="cursor: pointer;"><i
+                                        class="bi bi-gear" style="font-size: 1rem;"></i></button>
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteCause(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                        style="font-size: 1rem;"></i></button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- !       vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv USE MODEL -->
+
+
+    <!-- ?                                                    Add List -->
+    <ng-template #modalAddList let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Add : List</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="">Master Name</label>
+                <select class="custom-select" [formControl]="ModalMasterName" (change)="OnSetToggle()">
+                    <option value=""></option>
+                    <option *ngFor="let i  of Master" [value]="i.name">{{i.name}}
+                    </option>
+                </select>
+                <div class="text-danger" *ngIf="ModalMasterName.invalid">Please enter</div>
+            </div>
+            <!-- ? Normal -->
+            <div class="form-group" *ngIf="ToggleNormal" [formGroup]="Normals">
+                <label for="">List Name</label>
+                <input class="form-control" type="text" formControlName="name">
+            </div>
+            <!-- ? Normal -->
+
+            <!-- ? ModelNumber -->
+            <div class="form-group" *ngIf="ToggleModelNumber" [formGroup]="ModelNumbers">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <label for="">Model</label>
+                        <input type="text" class="form-control" formControlName="name">
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="">Size</label>
+                        <input type="text" class="form-control" formControlName="size">
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="">Customer Name</label>
+                        <input type="text" class="form-control" formControlName="customer">
+                    </div>
+                </div>
+            </div>
+            <!-- ? ModelNumber -->
+
+
+
+
+
+
+
+            <!-- ? Defect -->
+            <div class="form-group" *ngIf="ToggleDefect" [formGroup]="Defects">
+                <label for="">Request Item</label>
+                <div class="">
+                    <input class="checkbox" [formControl]="PNL" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">PNL</span>
+                    <input class="ml-3 checkbox" [formControl]="MDL" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">MDL</span>
+                    <input class="ml-3 checkbox" [formControl]="SMT" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">SMT</span>
+                    <input class="ml-3 checkbox" [formControl]="AMT" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">AMT</span>
+                    <input class="ml-3 checkbox" [formControl]="AMTFM" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">AMT_FM</span>
+                    <input class="ml-3 checkbox" [formControl]="DSTFM" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">DST_FM</span>
+
+                </div>
+                <label for="">Code</label>
+                <input class="form-control" type="text" formControlName="code">
+
+                <label for="">Name</label>
+                <input class="form-control" type="text" formControlName="name">
+
+            </div>
+            <!-- ? Defect -->
+
+
+            <!-- ? OCCur -->
+            <div class="form-group" *ngIf="ToggleOccur" [formGroup]="Occurs">
+                <label for="">Occur Place A</label>
+                <select class="custom-select" (change)="onSelectModalOccurA()" formControlName="occurA">
+                    <option [value]="null"></option>
+                    <option *ngFor="let i  of OccurAList" [value]="i.name">{{i.name}}
+                    </option>
+                </select>
+                <label for="">Occur Place B</label>
+                <input class="form-control" type="text" formControlName="name">
+            </div>
+
+            <!-- ? OCCur -->
+
+
+            <!-- ? CategoryCauseToggle -->
+            <div class="form-group" *ngIf="ToggleCause" [formGroup]="Causes">
+                <label for="">Category Cause</label>
+                <select class="custom-select" formControlName="modelName">
+                    <option [value]="item.name" *ngFor="let item of Model; let i=index">{{item.name}}</option>
+                </select>
+                <label for="">Name</label>
+                <input class="form-control" type="text" formControlName="causeName">
+
+            </div>
+            <!-- ? CategoryCauseToggle -->
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button *ngIf="ToggleModelNumber" [disabled]="ModelNumbers.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+                    style="font-size: 1rem;"></i>
+                ADD</button>
+            <button *ngIf="ToggleNormal" [disabled]="Normals.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+                    style="font-size: 1rem;"></i>
+                ADD</button>
+            <button *ngIf="ToggleDefect" [disabled]="Defects.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+                    style="font-size: 1rem;"></i>
+                ADD</button>
+            <button *ngIf="ToggleCause" [disabled]="Causes.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+                    style="font-size: 1rem;"></i>
+                ADD</button>
+            <button *ngIf="ToggleOccur" [disabled]="Occurs.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+                    style="font-size: 1rem;"></i>
+                ADD</button>
+
+
+        </div>
+    </ng-template>
+
+
+    <ng-template #EditList let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Edit</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');  ClearValue()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="">Name</label>
+                <input type="text" class="form-control" [formControl]="ModalListName" (keyup.enter)="modal.close('Close click'); onEditList();">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning" [disabled]="!ModalListName.touched" (click)="modal.close('Close click'); onEditList();"><i class="bi bi-check" style="font-size: 1rem;"></i>
+                EDIT</button>
+        </div>
+    </ng-template>
+
+
+    <!-- ?                                                    Edit Model Number -->
+    <ng-template #EditModelNumber let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Edit</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');  ClearValue()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" [formGroup]="Modal_ModelNumbers">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <label for="">Model</label>
+                        <input type="text" class="form-control" formControlName="name">
+
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="">Size</label>
+                        <input type="text" class="form-control" formControlName="size">
+
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="">Customer Name</label>
+                        <input type="text" class="form-control" formControlName="customer">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning" [disabled]="!Modal_ModelNumbers.touched" (click)="modal.close('Close click'); onEditModelNumber();"><i class="bi bi-check"
+                    style="font-size: 1rem;"></i>
+                EDIT</button>
+        </div>
+    </ng-template>
+
+
+
+    <!-- ?                                                    Edit Defect -->
+    <ng-template #EditDefect let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Edit</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ClearValue();">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <div class="" [formGroup]="Modal_CBModel">
+                    <input class="checkbox" formControlName="PNL" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">PNL</span>
+                    <input class="ml-3 checkbox" formControlName="MDL" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">MDL</span>
+                    <input class="ml-3 checkbox" formControlName="SMT" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">SMT</span>
+                    <input class="ml-3 checkbox" formControlName="AMT" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">AMT</span>
+                    <input class="ml-3 checkbox" formControlName="AMTFM" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">AMT_FM</span>
+                    <input class="ml-3 checkbox" formControlName="DSTFM" type="checkbox" (change)="checkboxDefect();">
+                    <span class="ml-1">DST_FM</span>
+
+                </div>
+                <div [formGroup]="Modal_Defects">
+
+                    <label class="" for="">Code</label>
+                    <input type="text" class="form-control" formControlName="name">
+
+                    <label class="" for="">Name</label>
+                    <input type="text" class="form-control" formControlName="code">
+                </div>
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" [disabled]="!Modal_CBModel.touched && !Modal_Defects.touched" class="btn btn-warning" (click)="modal.close('Close click'); onEditDefect();"><i class="bi bi-check"
+                    style="font-size: 1rem;"></i> EDIT</button>
+        </div>
+    </ng-template>
+    <!-- ?                                                    Edit Defect -->
+
+
+
+
+
+    <!-- ?                                                    Edit Occur -->
+    <ng-template #EditOccur let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Edit</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group" [formGroup]="Modal_Occurs">
+                <label for="">Occur Place A</label>
+                <select class="custom-select" (change)="onSelectModalOccurA()" formControlName="occurA">
+                    <option *ngFor="let i  of OccurAList" [value]="i.name">{{i.name}}
+                    </option>
+                </select>
+                <label for="">Occur Place B</label>
+                <input class="form-control" type="text" formControlName="name">
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" [disabled]="!Modal_Occurs.touched" class="btn btn-warning" (click)="modal.close('Close click'); onEditOccur();"><i class="bi bi-check"
+                    style="font-size: 1rem;"></i>
+                EDIT</button>
+        </div>
+    </ng-template>
+    <!-- ?                                                    Edit Occur -->
+
+
+    <!-- ?                                                    Edit Cause -->
+    <ng-template #EditCause let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Edit</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group" [formGroup]="Modal_Causes">
+                <label for="">Category Cause</label>
+                <select class="custom-select" formControlName="modelName">
+                    <option [value]="item.name" *ngFor="let item of Model; let i=index">{{item.name}}</option>
+                </select>
+                <label for="">Name</label>
+                <input class="form-control" type="text" formControlName="name">
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" [disabled]="!Modal_Causes.touched" class="btn btn-warning" (click)="modal.close('Close click'); onEditCause();"><i class="bi bi-check"
+                        style="font-size: 1rem;"></i>
+                    EDIT</button>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- ?                                                    Edit Cause -->
+
+
+    <!-- ?                                                    Excel -->
+
+    <ng-template #modalExcel let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Import / Export</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="form-group">
+                                <label for="">Master</label>
+                                <select [formControl]="ModalExcelMaster" class="custom-select" (change)="onSelectModalExcelMaster()">
+                                    <option [value]="item.name" *ngFor="let item of Master; let i=index">
+                                        {{item.name}}
+                                    </option>
+                                </select>
+                                <!-- <input type="text" class="form-control" [formControl]="ExcelMaster" (keyup.enter)="modal.close('Close click');"> -->
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group mt-3">
+                                <button class="btn btn-info" (click)="excelImport.click()"><i
+                                        class="bi bi-box-arrow-in-down" style="font-size: 1.5em;"></i> Import</button>
+                                <button class="btn btn-info" (click)="downloadExcel();"><i class="bi bi-box-arrow-in-up"
+                                        style="font-size: 1.5em;"></i> Export</button>
+                                <input type="file" #excelImport style="display: none;" accept=".xlsx" (change)="UploadExcel($event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-warning" (click)="modal.close('Close click'); EditList();"><i class="bi bi-check" style="font-size: 1rem;"></i>
+                Upload</button> -->
+        </div>
+    </ng-template>
+    <!-- ?                                                    Edit List -->
+
+
+
+    <!-- !       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6 USE MODEL -->
+
+</div>

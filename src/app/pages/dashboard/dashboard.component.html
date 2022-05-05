@@ -1,0 +1,631 @@
+<!-- <style>
+    #template {
+        background-color: white;
+        border-radius: 8px;
+        padding-top: 2%;
+    }
+</style> -->
+
+
+<div class="loading" *ngIf="LoadingPage">
+
+</div>
+
+<div class="row mb-3 p-2" id="template">
+    <div class="col-12 text-head">
+        <div class="row">
+            <div class="col-lg-3 mt-2">
+                <button class="btn btn-block btn-primary" (click)="onClickYear();">This Year</button>
+            </div>
+            <div class="col-lg-3">
+                <!-- <button class="btn btn-block btn-primary" (click)="onClickMonth();">This Month</button> -->
+                <span for="">Month</span>
+                <input class="form-control" type="month" [formControl]="Month" (change)="onClickMonth();">
+            </div>
+            <div class="col-lg-6">
+                <div class="row ">
+                    <div class="col-lg-6">
+                        <span for="">Date start</span>
+                        <input type="date" class="form-control" [formControl]="DateStart" (change)="onChangeDate();">
+                    </div>
+                    <div class="col-lg-6">
+                        <span for="">Date end</span>
+                        <input type="date" class="form-control" [formControl]="DateEnd" (change)="onChangeDate();">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Result on time -->
+<div class="row" id="template">
+
+    <!-- Name -->
+    <div class="col-12 text-head">
+        <h5>Result on time</h5>
+
+    </div>
+    <div class="line-under"></div>
+    <!-- ALL -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-1 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-columns-gap text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="col-11 col-md-10">
+
+                        <div class="numbers">
+                            <p class="card-category">ALL REQUEST ANALYSIS ON TIME</p>
+                            <p *ngIf="PercentAll" class="card-title">
+                                <span style="font-size: small;">Summary from ( PNL, MDL, DST FM, AMT FM, AMT, SMT
+                                    )</span> {{PercentAll}}%
+                            </p>
+                            <p *ngIf="!PercentAll" class="card-title">
+                                <span style="font-size: small;">Summary from ( PNL, MDL, DST FM, AMT FM, AMT, SMT
+                                    )</span> No have request
+                            </p>
+                            <!-- <p *ngIf="!PercentAll" class="spinner"></p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i> Update: {{OntimeAll}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PNL -->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-2 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-clipboard text-primary"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="numbers">
+                            <p class="card-category">PNL</p>
+                            <p *ngIf="PercentPNL" class="card-title">
+                                <span style="font-size: small;">On Time: </span> {{PercentPNL}}%
+                            </p>
+                            <p *ngIf="!PercentPNL" class="card-title percent-font">No have request</p>
+                            <!-- <p *ngIf="!PercentPNL" class="spinner"></p> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar-o"></i>Update: {{OntimePnl}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MDL -->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-2 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-clipboard text-primary"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="numbers">
+                            <p class="card-category">MDL</p>
+                            <p *ngIf="PercentMDL" class="card-title">
+                                <span style="font-size: small;">On Time: </span> {{PercentMDL}}%
+                            </p>
+                            <p *ngIf="!PercentMDL" class="card-title percent-font">No have request</p>
+                            <!-- <p *ngIf="!PercentMDL" class="spinner"></p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-clock-o"></i>Update: {{OntimeMdl}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- DST_FM -->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-2 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-clipboard text-primary"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="numbers">
+                            <p class="card-category">DST_FM</p>
+                            <p *ngIf="PercentDSTFM" class="card-title">
+                                <span style="font-size: small;">On Time: </span> {{PercentDSTFM}}%
+                            </p>
+                            <p *ngIf="!PercentDSTFM" class="card-title percent-font">No have request</p>
+                            <!-- <p *ngIf="!PercentDSTFM" class="spinner"></p> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>Update: {{OntimeDstFm}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- AMT_FM -->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-2 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-clipboard text-primary"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="numbers">
+                            <p class="card-category">AMT_FM</p>
+                            <p *ngIf="PercentAMTFM" class="card-title">
+                                <span style="font-size: small;">On Time: </span> {{PercentAMTFM}}%
+                            </p>
+                            <p *ngIf="!PercentAMTFM" class="card-title percent-font">No have request</p>
+                            <!-- <p *ngIf="!PercentAMTFM" class="spinner"></p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>Update: {{OntimeAmtFm}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- AMT -->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-2 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-clipboard text-primary"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="numbers">
+                            <p class="card-category">AMT</p>
+                            <p *ngIf="PercentAMT" class="card-title">
+                                <span style="font-size: small;">On Time: </span> {{PercentAMT}}%
+                            </p>
+                            <p *ngIf="!PercentAMT" class="card-title percent-font">No have request</p>
+                            <!-- <p *ngIf="!PercentAMT" class="spinner"></p> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>Update: {{OntimeAmt}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SMT -->
+    <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-stats">
+            <div class="card-body ">
+                <div class="row">
+                    <div class="col-2 col-md-2">
+                        <div class="icon-big text-center icon-warning">
+                            <i class="bi bi-clipboard text-primary"></i>
+
+                        </div>
+                    </div>
+                    <div class="col-10 col-md-10">
+                        <div class="numbers">
+                            <p class="card-category">SMT</p>
+                            <p *ngIf="PercentSMT" class="card-title">
+                                <span style="font-size: small;">On Time: </span> {{PercentSMT}}%
+                            </p>
+                            <p *ngIf="!PercentSMT" class="card-title percent-font">No have request</p>
+                            <!-- <p *ngIf="!PercentSMT" class="spinner"></p> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-refresh"></i>Update: {{OntimeSmt}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><br />
+
+<!-- Request Sheet Q'ty & Failure Rank -->
+<div class="row" id="template">
+    <!-- Request Sheet Q'ty -->
+    <div class="col-md-6">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">Request Sheet Q'ty</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="RequestSheetChart"></canvas>
+            </div>
+            <div class="card-footer ">
+                <!-- <div class="legend">
+                    <i class="fa fa-circle text-primary"></i> Opened
+                    <i class="fa fa-circle text-warning"></i> Read
+                    <i class="fa fa-circle text-danger"></i> Deleted
+                    <i class="fa fa-circle text-gray"></i> Unopened
+                </div> -->
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i>Update: {{UpdateRequestSheet}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Failure Rank -->
+    <div class="col-md-6">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">Failure Rank</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id=FailureRankChart></canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-history"></i> Update: {{UpdateRequestSheet}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br />
+
+<!-- Top 5 Defective -->
+<div class="row" id="template">
+    <!-- Name -->
+    <div class="col-12">
+        <h5 class="text-head">Top 5 Defective</h5>
+    </div>
+    <!-- PNL -->
+    <div class="col-md-12 ">
+        <div class="card">
+            <div class="card-header ">
+                <h5 class="card-title">PNL</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body">
+                <canvas id="DefectChartPnl" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i> Update: {{OntimePnl}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MDL -->
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">MDL</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="DefectChartMdl" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i> Update: {{OntimeMdl}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- DST -->
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">DST_FM</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="DefectChartDst" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i> Update: {{OntimeDstFm}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FM -->
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">AMT_FM</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="DefectChartFm" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i> Update: {{OntimeAmtFm}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- AMT -->
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">AMT</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="DefectChartAmt" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i> Update: {{OntimeAmt}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SMT -->
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">SMT</h5>
+                <!-- <p class="card-category">Last Campaign Performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="DefectChartSmt" height="70%"> </canvas>
+            </div>
+            <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                    <i class="fa fa-calendar"></i> Update: {{OntimeSmt}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><br />
+
+
+
+<!-- Top 5 Category cause -->
+<div class="row" id="template">
+    <!-- Name -->
+    <div class="col-12">
+        <h5 class="text-head">Top 5 Category cause</h5>
+    </div>
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">PNL</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="CauseChart1" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <i class="fa fa-check"></i> Update: {{OntimePnl}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">MDL</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="CauseChart2" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <i class="fa fa-check"></i> Update: {{OntimeMdl}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">DST_FM</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="CauseChart6" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <i class="fa fa-check"></i> Update: {{OntimeDstFm}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">AMT_FM</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="CauseChart3" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <i class="fa fa-check"></i> Update: {{OntimeAmtFm}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">AMT</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="CauseChart4" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <i class="fa fa-check"></i> Update: {{OntimeAmt}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">SMT</h5>
+                <!-- <p class="card-category">24 Hours performance</p> -->
+            </div>
+            <div class="card-body ">
+                <canvas id="CauseChart5" height="70%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <i class="fa fa-check"></i> Update: {{OntimeSmt}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div><br />
+
+<!-- Top5 Category cause -->
+<div class="row" id="template">
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header ">
+                <h5 class="card-title">Each Engineer</h5>
+                <!-- <p class="card-category">Coming soon....</p> -->
+            </div>
+            <div class="card-body ">
+                <!-- {{EngineerLists|json}} -->
+                <canvas id="EngineerChart" height="100%"></canvas>
+            </div>
+            <div class="card-footer ">
+                <div class="chart-legend">
+                    <!-- <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series
+                    <i class="fa fa-circle text-info"></i> Tesla Model S
+                    <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                    <!-- <i class="fa fa-circle text-warning"></i> BMW 5 Series -->
+                </div>
+                <hr />
+                <div class="card-stats">
+                    <!-- <i class="fa fa-check"></i> -->
+                    Update: {{EngineerUpdateTime}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br />

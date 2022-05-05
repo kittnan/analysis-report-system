@@ -1,0 +1,620 @@
+<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="">Authority</label>
+                        <div class="input-group mb-3">
+                            <select class="custom-select" [formControl]="SelectLevel" (change)="onSelectAuthority();">
+                                <!-- <option [value]="null"></option> -->
+                                <option value="all">All Authority</option>
+                                <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="">Section</label>
+                        <div class="input-group mb-3">
+                            <select class="custom-select" [formControl]="SelectSection" (change)="onSelectSection();">
+                                <!-- <option [value]="null"></option> -->
+                                <option value="all">All Section</option>
+                                <option *ngFor="let i  of SectionFromGroup" [value]="i.name">
+                                    <span *ngIf="i.view==1">Request : </span>
+                                    <span *ngIf="i.view==2">Analyze : </span>
+                                    {{i.name}}
+                                </option>
+                            </select>
+                            <!-- <select *ngIf="SectionFromGroup==null" class="custom-select" disabled></select> -->
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                        <div class="mt-4">
+                            <button class="btn btn-success btn-block" (click)="OpenModelAddUser(addUser);">
+                                <i class="bi bi-person-plus" style="font-size: 1rem;"></i> USER</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row" *ngIf="Users">
+        <div class="col-lg-3">
+            <label for="">Search</label>
+            <div class="form-group">
+                <input type="search" class="form-control " [formControl]="WordFilter" (keyup)="onFilter()" (blur)="onFilter()">
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="ResultFilter">
+        <div class="col-lg-12">
+            <!-- <div class="table-responsive"> -->
+            <div class="tableFixHead">
+                <table class="table text-center" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th width="15%" scope="col">FirstName</th>
+                            <th width="15%" scope="col">LastName</th>
+                            <th width="10%" scope="col">EmployeeCode</th>
+                            <th width="20%" scope="col">Email</th>
+                            <th scope="col">Authority</th>
+                            <th width="20%" scope="col">
+                                Action
+                            </th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let list  of ResultFilter; let io = index">
+                            <th scope="row">{{io +1}}</th>
+                            <td>{{list.FirstName}}</td>
+                            <td>{{list.LastName}}</td>
+                            <td>{{list.EmployeeCode}}</td>
+                            <td>{{list.Email}} </td>
+                            <td>
+                                <tr *ngFor="let item of list.objAuthority; let i=index">
+                                    <td style="text-align: left;">
+                                        {{item.Section}} = {{item.Level}}
+                                    </td>
+                                </tr>
+                            </td>
+
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-warning mr-2" (click)="OpenModelEditSection(editUser,list);"><i class="bi bi-gear"
+                                    style="font-size: 1rem;"></i></button>
+                                <button type="button" class="btn btn-sm btn-outline-danger mr-2" (click)="OpenModalDeleteSection(deleteUser,list);"><i class="bi bi-trash"
+                                    style="font-size: 1rem;"></i></button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ? Modal เพิ่ม User -->
+<ng-template #addUser let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Add : User</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); Clear(); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="UserForm">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': FirstName.invalid}" class="head-label">First Name
+                            <i *ngIf="FirstName.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="text" class="form-control" formControlName="FirstName">
+                    </div>
+                    <div class="col-lg-6">
+
+                        <label [ngClass]="{'text-danger': LastName.invalid}" class="head-label">Last Name
+                            <i *ngIf="LastName.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="text" class="form-control" formControlName="LastName">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': EmployeeCode.invalid}" class="head-label">EmployeeCode
+                            <i *ngIf="EmployeeCode.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="text" class="form-control" formControlName="EmployeeCode">
+                    </div>
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': Email.invalid}" class="head-label">Email
+                            <i *ngIf="Email.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="email" class="form-control" formControlName="Email">
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-lg-4">
+                        <span [ngClass]="{'text-danger': Authority1.invalid}" *ngIf="Authority1.invalid">* </span><label [ngClass]="{'text-danger': Authority1.invalid}">Authority 1</label>
+                        <select class="custom-select" formControlName="Authority1" (change)="onChangeLevel(1);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority 2 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB1" (change)="onCheckBox(1)">
+                        <select class="custom-select" formControlName="Authority2" (change)="onChangeLevel(2);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority 3 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB2" (change)="onCheckBox(2)">
+                        <select class="custom-select" formControlName="Authority3" (change)="onChangeLevel(3);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row mt-3">
+                    <div class="col-lg-4">
+                        <span [ngClass]="{'text-danger': Section1.invalid}" *ngIf="Section1.invalid">* </span><label [ngClass]="{'text-danger': Section1.invalid}">Section1</label>
+                        <select class="custom-select" formControlName="Section1" (change)="onChangeSection(1)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList1; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 2 </label>
+                        <select class="custom-select" formControlName="Section2" (change)="onChangeSection(2)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList2; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 3 </label>
+                        <select class="custom-select" formControlName="Section3" (change)="onChangeSection(3)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList3; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+
+                    <div class="col-lg-4">
+                        <label for="">Authority 4 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB3" (change)="onCheckBox(3)">
+                        <select class="custom-select" formControlName="Authority4" (change)="onChangeLevel(4);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority 5 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB4" (change)="onCheckBox(4)">
+
+                        <select class="custom-select" formControlName="Authority5" (change)="onChangeLevel(5);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority 6 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB5" (change)="onCheckBox(5)">
+
+                        <select class="custom-select" formControlName="Authority6" (change)="onChangeLevel(6);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row mt-3">
+
+                    <div class="col-lg-4">
+                        <label for="">Section 4 </label>
+                        <select class="custom-select" formControlName="Section4" (change)="onChangeSection(4)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList4; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 5 </label>
+                        <select class="custom-select" formControlName="Section5" (change)="onChangeSection(5)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList5; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 6 </label>
+                        <select class="custom-select" formControlName="Section6" (change)="onChangeSection(6)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList6; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="UserForm.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); AddUser();"><i class="bi bi-plus" style="font-size: 1rem;"></i>
+            ADD</button>
+    </div>
+
+</ng-template>
+
+
+<!-- ? Modal แก้ไข User -->
+<ng-template #editUser let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Edit : User</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); Clear(); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="UserForm">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': FirstName.invalid}" class="head-label">First Name
+                            <i *ngIf="FirstName.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="text" class="form-control" formControlName="FirstName">
+                    </div>
+                    <div class="col-lg-6">
+
+                        <label [ngClass]="{'text-danger': LastName.invalid}" class="head-label">Last Name
+                            <i *ngIf="LastName.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="text" class="form-control" formControlName="LastName">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': EmployeeCode.invalid}" class="head-label">EmployeeCode
+                            <i *ngIf="EmployeeCode.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="text" class="form-control" formControlName="EmployeeCode">
+                    </div>
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': Email.invalid}" class="head-label">Email
+                            <i *ngIf="Email.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input type="email" class="form-control" formControlName="Email">
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-lg-4">
+                        <span [ngClass]="{'text-danger': Authority1.invalid}" *ngIf="Authority1.invalid">* </span><label [ngClass]="{'text-danger': Authority1.invalid}">Authority1</label>
+                        <select class="custom-select" formControlName="Authority1" (change)="onChangeLevel(1);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority2 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB1" (change)="onCheckBox(1)">
+                        <select class="custom-select" formControlName="Authority2" (change)="onChangeLevel(2);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority3 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB2" (change)="onCheckBox(2)">
+                        <select class="custom-select" formControlName="Authority3" (change)="onChangeLevel(3);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row mt-3">
+                    <div class="col-lg-4">
+                        <span [ngClass]="{'text-danger': Section1.invalid}" *ngIf="Section1.invalid">* </span><label [ngClass]="{'text-danger': Section1.invalid}">Section1</label>
+                        <select class="custom-select" formControlName="Section1" (change)="onChangeSection(1)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList1; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 2 </label>
+                        <select class="custom-select" formControlName="Section2" (change)="onChangeSection(2)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList2; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 3 </label>
+                        <select class="custom-select" formControlName="Section3" (change)="onChangeSection(3)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList3; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+
+                    <div class="col-lg-4">
+                        <label for="">Authority4 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB3" (change)="onCheckBox(3)">
+                        <select class="custom-select" formControlName="Authority4" (change)="onChangeLevel(4);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority5 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB4" (change)="onCheckBox(4)">
+
+                        <select class="custom-select" formControlName="Authority5" (change)="onChangeLevel(5);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Authority6 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB5" (change)="onCheckBox(5)">
+
+                        <select class="custom-select" formControlName="Authority6" (change)="onChangeLevel(6);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row mt-3">
+
+                    <div class="col-lg-4">
+                        <label for="">Section 4 </label>
+                        <select class="custom-select" formControlName="Section4" (change)="onChangeSection(4)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList4; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 5 </label>
+                        <select class="custom-select" formControlName="Section5" (change)="onChangeSection(5)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList5; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 6 </label>
+                        <select class="custom-select" formControlName="Section6" (change)="onChangeSection(6)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList6; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger mr-auto" (click)="onResetPassword()">Reset Password</button>
+        <button [disabled]="!UserForm.touched || UserForm.invalid" type="button" class="btn btn-outline-warning" (click)="modal.close('Close click'); EditUser();"><i class="bi bi-check" style="font-size: 1rem;"></i>
+            EDIT</button>
+    </div>
+
+</ng-template>
+
+
+
+<!-- ? Modal ลบ User -->
+<ng-template #deleteUser let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Delete : User</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); Clear(); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="UserForm">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': FirstName.invalid}" class="head-label">First Name
+                            <i *ngIf="FirstName.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input disabled type="text" class="form-control" formControlName="FirstName">
+                    </div>
+                    <div class="col-lg-6">
+
+                        <label [ngClass]="{'text-danger': LastName.invalid}" class="head-label">Last Name
+                            <i *ngIf="LastName.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input disabled type="text" class="form-control" formControlName="LastName">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': EmployeeCode.invalid}" class="head-label">EmployeeCode
+                            <i *ngIf="EmployeeCode.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input disabled type="text" class="form-control" formControlName="EmployeeCode">
+                    </div>
+                    <div class="col-lg-6">
+                        <label [ngClass]="{'text-danger': Email.invalid}" class="head-label">Email
+                            <i *ngIf="Email.invalid" class="bi bi-x-square-fill"></i>
+                        </label>
+                        <input disabled type="email" class="form-control" formControlName="Email">
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-lg-4">
+                        <span [ngClass]="{'text-danger': Authority1.invalid}" *ngIf="Authority1.invalid">* </span><label [ngClass]="{'text-danger': Authority1.invalid}">Authority1</label>
+                        <select class="custom-select" formControlName="Authority1" (change)="onChangeLevel(1);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Level 2 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB1" (change)="onCheckBox(1)">
+                        <select class="custom-select" formControlName="Authority2" (change)="onChangeLevel(2);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Level 3 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB2" (change)="onCheckBox(2)">
+                        <select class="custom-select" formControlName="Authority3" (change)="onChangeLevel(3);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row mt-3">
+                    <div class="col-lg-4">
+                        <span [ngClass]="{'text-danger': Section1.invalid}" *ngIf="Section1.invalid">* </span><label [ngClass]="{'text-danger': Section1.invalid}">Section1</label>
+                        <select class="custom-select" formControlName="Section1" (change)="onChangeSection(1)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList1; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 2 </label>
+                        <select class="custom-select" formControlName="Section2" (change)="onChangeSection(2)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList2; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 3 </label>
+                        <select class="custom-select" formControlName="Section3" (change)="onChangeSection(3)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList3; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+
+                    <div class="col-lg-4">
+                        <label for="">Level 4 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB3" (change)="onCheckBox(3)">
+                        <select class="custom-select" formControlName="Authority4" (change)="onChangeLevel(4);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Level 5 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB4" (change)="onCheckBox(4)">
+
+                        <select class="custom-select" formControlName="Authority5" (change)="onChangeLevel(5);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Level 6 </label>
+                        <input type="checkbox" class="ml-2" style="cursor: pointer;" formControlName="CB5" (change)="onCheckBox(5)">
+
+                        <select class="custom-select" formControlName="Authority6" (change)="onChangeLevel(6);">
+                            <option *ngFor="let item of LevelNameList; let i=index" [value]="LevelList[i]">{{item}}
+                            </option>
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row mt-3">
+
+                    <div class="col-lg-4">
+                        <label for="">Section 4 </label>
+                        <select class="custom-select" formControlName="Section4" (change)="onChangeSection(4)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList4; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 5 </label>
+                        <select class="custom-select" formControlName="Section5" (change)="onChangeSection(5)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList5; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <label for="">Section 6 </label>
+                        <select class="custom-select" formControlName="Section6" (change)="onChangeSection(6)">
+                            <option [value]="null"></option>
+                            <option *ngFor="let item of SectionList6; let i=index" [value]="item._id">{{item.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" (click)="modal.close('Close click'); DeleteUser();"><i
+                class="bi bi-trash" style="font-size: 1rem;"></i> DELETE</button>
+    </div>
+
+</ng-template>

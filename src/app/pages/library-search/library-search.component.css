@@ -1,0 +1,71 @@
+.head-label {
+    font-weight: 600;
+}
+
+.Row-Table {
+    transition: all ease 0.25s;
+}
+
+.Row-Table:hover {
+    transition: all ease 0.25s;
+    /* color: red; */
+    background-color: rgba(124, 124, 124, 0.205);
+    cursor: pointer;
+}
+
+.i-re {
+    transition: all ease 0.25s;
+}
+
+.i-re:hover {
+    color: red;
+    transition: all ease 0.25s;
+}
+
+.show-select {
+    position: absolute;
+    z-index: 999;
+    width: 100%;
+}
+
+.tt {
+    cursor: pointer;
+    transition: all ease 1s;
+}
+
+.status {
+    font-weight: 500;
+}
+
+.green-status {
+    color: rgb(8, 201, 8);
+}
+
+.primary-status {
+    color: rgb(19, 41, 236);
+}
+
+.red-status {
+    color: rgb(240, 36, 36);
+}
+
+.top {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    z-index: 99999;
+    width: 100px;
+    height: 100px;
+}
+
+.tableFixHead {
+    overflow: auto;
+    height: 700px;
+    width: 100%;
+}
+
+.tableFixHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}

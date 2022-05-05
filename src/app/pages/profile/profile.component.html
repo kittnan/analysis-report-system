@@ -1,0 +1,89 @@
+<div class="col-10 mx-auto" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <div class="col-md-12 text-center border-bottom">
+            <h3 style="font-weight: 900;">Profile</h3>
+        </div>
+
+        <div class="col-md-12 mt-2 border-bottom">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group" *ngIf="User">
+                        <label style="font-weight: 700;">First Name: </label>
+                        <span> {{User.FirstName}}</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group" *ngIf="User">
+                        <label style="font-weight: 700;" for="">Last Name: </label>
+                        <span>{{User.LastName}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 mt-2 border-bottom">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group" *ngIf="User">
+                        <label style="font-weight: 700;">EmployeeCode: </label>
+                        <span> {{User.EmployeeCode}}</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group" *ngIf="User">
+                        <label style="font-weight: 700;" for="">Email: </label>
+                        <span>{{User.Email}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-2 border-bottom" *ngFor="let item of Sections; let i=index">
+            <div class="form-group">
+                <label style="font-weight: 700;">Authority {{i+1}}: </label>
+                <span> {{item.aut}} :: {{item.sec}}</span>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <button class="btn btn-sm" (click)="openModalChangePassword(ChangePassword)">Change password</button>
+        </div>
+
+
+
+
+        <div class="col-md-12 mt-2 border-bottom">
+            <div class="row">
+                <div class="col-6 mx-auto">
+                    <button class="btn btn-block btn-danger" (click)="Logout()"><i class="bi bi-box-arrow-in-right"
+                            style="font-size: 1rem;"></i> LOG OUT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #ChangePassword let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Change password</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group" [formGroup]="Pass">
+            <label for="">Old password</label>
+            <input type="password" class="form-control" formControlName="OldPassword">
+            <p *ngIf="User.Password != OldPassword.value" class="text-danger">Not match.</p>
+            <label for="">New password</label>
+            <input type="password" class="form-control" formControlName="NewPassword">
+            <label for="">New password</label>
+            <input type="password" class="form-control" formControlName="NewPassword2">
+            <p *ngIf="NewPassword.value != NewPassword2.value" class="text-danger">Two new password is not match</p>
+
+        </div>
+        <div class="modal-footer">
+            <button [disabled]="Pass.invalid || NewPassword.value != NewPassword2.value || User.Password != OldPassword.value" class="btn btn-warning" (click)="onSaveChangePassword()">Save</button>
+        </div>
+    </div>
+</ng-template>
