@@ -2,9 +2,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
-import { Chart } from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-Chart.register(ChartDataLabels);
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard-guest',

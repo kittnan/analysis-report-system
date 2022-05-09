@@ -31,8 +31,8 @@ import { DashboardV2Component } from 'app/pages/dashboard-v2/dashboard-v2.compon
 // const path = "http://10.200.90.152:4014/Analysis-Report";
 
 export const AdminLayoutRoutes: Routes = [
-    { path: 'dashboard', component: DashboardComponent },
-    { path: 'dashboard2', component: DashboardV2Component },
+    // { path: 'dashboard', component: DashboardComponent },
+    { path: 'dashboard', component: DashboardV2Component },
     { path: 'requestform', component: RequestFormComponent },
     { path: 'manageForm', component: ManageFormComponent },
     { path: 'masterlists', component: MasterlistsComponent },
