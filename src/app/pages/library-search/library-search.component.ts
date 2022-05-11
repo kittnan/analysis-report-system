@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'
 import { environment } from '../../../environments/environment.prod'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, RowNode } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
 
@@ -87,6 +87,7 @@ export class LibrarySearchComponent implements OnInit {
   CountNum = 0;
 
   // ?  data table
+  gridApi: GridApi
   rowData: any = []
   defaultColDef = {
     sortable: true,
@@ -98,74 +99,75 @@ export class LibrarySearchComponent implements OnInit {
   }
   columnDefs: ColDef[] = [
     {
-      field: 'Req_No',
+      field: 'requestNumber',
       headerName: "Req No.",
       headerTooltip: "Register Number"
     },
     {
-      field: 'Model',
-      headerTooltip: "KTC Model Number"
+      field: 'ktcModelNumber',
+      headerName: "KTC Model Number",
+      headerTooltip: "KTC Model Number",
     },
     {
-      field: 'Project_Name',
+      field: 'projectName',
       headerName: "Pro Name",
       headerTooltip: "Project Name"
     },
     {
-      field: 'Defect_Name',
+      field: 'defectiveName',
       headerName: "Defect Name",
       headerTooltip: "Defect Name"
     },
     {
-      field: 'Occur_Place',
+      field: 'occurPlace',
       headerName: "Occur Place",
       headerTooltip: "Occur Place"
     },
     {
-      field: 'Lot_Number',
+      field: 'pcLotNumber',
       headerName: "Lot Number",
       headerTooltip: "Lot Number"
     },
     {
-      field: 'Input_Qty',
+      field: 'inputQuantity',
       filter: 'agNumberColumnFilter',
       headerName: "Input Qty(pcs)",
       headerTooltip: "Input Qty(pcs)"
     },
     {
-      field: 'Ng_Qty',
+      field: 'ngQuantity',
       filter: 'agNumberColumnFilter',
       headerName: "NG Qty(pcs)",
       headerTooltip: "NG Qty(pcs)"
     },
     {
-      field: 'Ng_Ratio',
+      field: 'ratio',
       filter: 'agNumberColumnFilter',
       headerName: "Ng Ratio(%)",
       headerTooltip: "Ng Ratio(%)"
     },
     {
-      field: 'Result',
+      field: 'result',
       headerName: "Result",
       headerTooltip: "Result Analysis"
     },
     {
-      field: 'REQ_From',
+      field: 'requestFormSectionName',
       headerName: "Req From",
       headerTooltip: "Request From Section"
     },
     {
-      field: 'REQ_Name',
+      field: 'issuer',
       headerName: "Req Name",
       headerTooltip: "Request User Name"
     },
     {
-      field: 'UserNow',
+      field: 'userApproveName',
       headerName: "Responsible Person",
       headerTooltip: "Responsible Person"
     },
     {
-      field: 'Status', filter: true, resizable: true, cellStyle: (params: any) => {
+      field: 'statusShow', filter: true, resizable: true, cellStyle: (params: any) => {
         if (
           params.value == 'Wait Approve Request' ||
           params.value == 'Analysis' ||
@@ -181,7 +183,9 @@ export class LibrarySearchComponent implements OnInit {
         } else {
           return { color: 'red' }
         }
-      }
+      },
+      headerName: "Status",
+      headerTooltip: "Status"
     },
 
   ];
@@ -308,7 +312,7 @@ export class LibrarySearchComponent implements OnInit {
           }
 
           if (this.GuestUserStatus == 'guest') {
-            this.rowData = this.rowData.filter(d => !(d.Req_No.toLowerCase()).includes('amt'))
+            this.rowData = this.rowData.filter(d => !(d.requestNumber.toLowerCase()).includes('amt'))
           }
 
         })
@@ -362,10 +366,20 @@ export class LibrarySearchComponent implements OnInit {
           UserNow: merge.userApproveName,
           Status: status,
         }
+        merge['projectName'] = `${merge.size} / ${merge.customer}`
+        merge['statusShow'] = status
+        merge.inputQuantity = Number(merge.inputQuantity)
+        merge.ngQuantity = Number(merge.ngQuantity)
+        merge.ratio = Number(merge.ratio)
+        merge.sendNgAnalysis = Number(merge.sendNgAnalysis)
+        merge.occurPlace = `${merge.occurBName}, ${merge.occurB}`
+        merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
+        merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
+
         // console.log(map);
 
 
-        return map
+        return merge
       })
       resolve(result_map)
     })
@@ -387,6 +401,10 @@ export class LibrarySearchComponent implements OnInit {
     return status
   }
 
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+  }
+
   onCellClicked(e: any) {
     // console.log(e);
     // console.log(e.data);
@@ -399,6 +417,10 @@ export class LibrarySearchComponent implements OnInit {
       this.route.navigate(['/viewForm'])
       // location.href = "#/viewForm";
     }
+  }
+
+  showCountRows() {
+    return this.gridApi.getDisplayedRowCount()
   }
 
   async onPageLoaded() {
@@ -538,25 +560,34 @@ export class LibrarySearchComponent implements OnInit {
 
   // * on load excel
   async onClickExportExcel() {
-    // console.log(this.Sum);
+    try {
+      const filtered: any = await this.eachNode()
+      if (filtered.length != 0) {
+        const result_build_data = await this.setDataBeforeExcel(filtered)
+        await this.onLoadingExcel(result_build_data)
 
-    if (this.Sum.length != 0) {
-      console.log(this.Sum);
-
-      const result_build_data = await this.setDataBeforeExcel(this.Sum)
-      console.log(result_build_data);
-
-      const result: any = await this.onLoadingExcel(result_build_data)
-      if (result == 'ok') {
+      } else {
+        Swal.fire({
+          title: 'Warning !',
+          icon: 'warning',
+          text: 'Please Choose data'
+        })
       }
+    } catch (error) {
 
-    } else {
-      Swal.fire({
-        title: 'Warning !',
-        icon: 'warning',
-        text: 'Please Choose data'
-      })
+    } finally {
+
     }
+  }
+
+  private eachNode() {
+    return new Promise(resolve => {
+      let temp: any[] = []
+      this.gridApi.forEachNodeAfterFilter((rowNode: RowNode, index: number) => {
+        temp.push(rowNode.data)
+      })
+      resolve(temp)
+    })
   }
   setDataBeforeExcel(datas) {
 
@@ -661,7 +692,7 @@ export class LibrarySearchComponent implements OnInit {
       // const fileName = `${date}.xlsx`;
 
       FileSaver.saveAs(data, fileName);
-      resolve('ok')
+      resolve(workbook)
     })
   }
 

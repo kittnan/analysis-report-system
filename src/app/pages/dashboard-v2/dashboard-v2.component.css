@@ -72,3 +72,32 @@
   width: 100px;
   background-color: rgba(114, 109, 109, 0.904);
 } */
+
+#myBtn {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Fixed/sticky position */
+    bottom: 2px;
+    /* Place the button at the bottom of the page */
+    right: 5px;
+    /* Place the button 30px from the right */
+    z-index: 99;
+    /* Make sure it does not overlap */
+    border: none;
+    /* Remove borders */
+    outline: none;
+    /* Remove outline */
+    cursor: pointer;
+    /* Add a mouse pointer on hover */
+    padding: 5px;
+    /* Some padding */
+    border-radius: 10px;
+    /* Rounded corners */
+    font-size: 12px;
+    /* Increase font size */
+}
+
+a {
+    cursor: pointer;
+}

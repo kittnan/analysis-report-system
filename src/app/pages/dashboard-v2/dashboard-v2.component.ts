@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
 import { Chart, registerables } from 'chart.js';
@@ -9,7 +9,20 @@ Chart.register(...registerables);
   templateUrl: './dashboard-v2.component.html',
   styleUrls: ['./dashboard-v2.component.css']
 })
+
+
 export class DashboardV2Component implements OnInit {
+
+  // @HostListener('scroll', ['$event']) // for scroll events of the current element
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  scrollFunction() {
+    var mybutton = document.getElementById("myBtn");
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      mybutton.style.display = "block";
+    } else {
+      mybutton.style.display = "none";
+    }
+  }
 
   // ? loading page
   LoadingPage: boolean = false
@@ -208,11 +221,12 @@ export class DashboardV2Component implements OnInit {
   private setExtendModel() {
     return new Promise(async resolve => {
       const requests: any = await this.getForm(this.formQuery)
+      const filteredRequests: any = await this.filterRequest(requests)
       const requestsArray: any = {
-        IDs: requests.map((r: any) => r._id)
+        IDs: filteredRequests.map((r: any) => r._id)
       }
       const results: any = await this.getResultByArray(requestsArray)
-      const merge: any = await this.MERGE(requests, results)
+      const merge: any = await this.MERGE(filteredRequests, results)
       // console.log('merge', merge);
 
       const resultAddDiffDay: any = await this.SetDiffDay(merge)
@@ -244,6 +258,13 @@ export class DashboardV2Component implements OnInit {
         const temp = data.filter(i => i.status != 0)
         resolve(temp)
       })
+    })
+  }
+
+  private filterRequest(requests: any) {
+    return new Promise((resolve) => {
+      const newRequest: any[] = requests.filter((r: any) => r.status != 0 && r.status != 1 && r.status != 2.1)
+      resolve(newRequest)
     })
   }
 
@@ -305,10 +326,10 @@ export class DashboardV2Component implements OnInit {
     ResultOnTimeData['ALL'] = this.CalOnTime(merge, 'all')
     ResultOnTimeData['PNL'] = this.CalOnTime(merge, 'PNL')
     ResultOnTimeData['MDL'] = this.CalOnTime(merge, 'MDL')
+    ResultOnTimeData['DST_FM'] = this.CalOnTime(merge, 'DST_FM')
     ResultOnTimeData['AMT_FM'] = this.CalOnTime(merge, 'AMT_FM')
     ResultOnTimeData['AMT'] = this.CalOnTime(merge, 'AMT')
     ResultOnTimeData['SMT'] = this.CalOnTime(merge, 'SMT')
-    ResultOnTimeData['DST_FM'] = this.CalOnTime(merge, 'DST_FM')
     // console.log('ResultOnTimeData', ResultOnTimeData);
     this.ChartOnTime = ResultOnTimeData
     // resolve(ResultOnTimeData)
@@ -374,26 +395,43 @@ export class DashboardV2Component implements OnInit {
     const percentRejectAMT: any = this.countRejectItem(ExtendModel.AMT).length / countAnalysis * 100
     const percentRejectSMT: any = this.countRejectItem(ExtendModel.SMT).length / countAnalysis * 100
 
-    const percentCorrectPNL: any = (100 - Number(percentRejectPNL)).toFixed(2)
-    const percentCorrectMDL: any = (100 - Number(percentRejectMDL)).toFixed(2)
-    const percentCorrectDST_FM: any = (100 - Number(percentRejectDST_FM)).toFixed(2)
-    const percentCorrectAMT_FM: any = (100 - Number(percentRejectAMT_FM)).toFixed(2)
-    const percentCorrectAMT: any = (100 - Number(percentRejectAMT)).toFixed(2)
-    const percentCorrectSMT: any = (100 - Number(percentRejectSMT)).toFixed(2)
+    // console.log(Math.round(percentRejectAMT_FM));
+    let percentCorrectALL: any = 'No result'
+    let percentCorrectPNL: any = 'No result'
+    let percentCorrectMDL: any = 'No result'
+    let percentCorrectDST_FM: any = 'No result'
+    let percentCorrectAMT_FM: any = 'No result'
+    let percentCorrectAMT: any = 'No result'
+    let percentCorrectSMT: any = 'No result'
+    if (this.findResult(ExtendModel.PNL) != 0) percentCorrectPNL = Number(percentRejectPNL) == 0 ? '100%' : (100 - Number(percentRejectPNL)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.MDL) != 0) percentCorrectMDL = Number(percentRejectMDL) == 0 ? '100%' : (100 - Number(percentRejectMDL)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.DST_FM) != 0) percentCorrectDST_FM = Number(percentRejectDST_FM) == 0 ? '100%' : (100 - Number(percentRejectDST_FM)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.AMT_FM) != 0) percentCorrectAMT_FM = Number(percentRejectAMT_FM) == 0 ? '100%' : (100 - Number(percentRejectAMT_FM)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.AMT) != 0) percentCorrectAMT = Number(percentRejectAMT) == 0 ? '100%' : (100 - Number(percentRejectAMT)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.SMT) != 0) percentCorrectSMT = Number(percentRejectSMT) == 0 ? '100%' : (100 - Number(percentRejectSMT)).toFixed(2) + '%'
+
+    percentCorrectALL = (percentCorrectPNL + percentCorrectMDL + percentCorrectDST_FM + percentCorrectAMT_FM + percentCorrectAMT + percentCorrectSMT) / 6
 
     this.ChartCorrectAnalysis = {
-      PNL: { percent: percentCorrectPNL + '%' },
-      MDL: { percent: percentCorrectMDL + '%' },
-      DST_FM: { percent: percentCorrectDST_FM + '%' },
-      AMT_FM: { percent: percentCorrectAMT_FM  + '%'},
-      AMT: { percent: percentCorrectAMT + '%' },
-      SMT: { percent: percentCorrectSMT + '%' },
+      ALL: { percent: percentCorrectALL },
+      PNL: { percent: percentCorrectPNL },
+      MDL: { percent: percentCorrectMDL },
+      DST_FM: { percent: percentCorrectDST_FM },
+      AMT_FM: { percent: percentCorrectAMT_FM },
+      AMT: { percent: percentCorrectAMT },
+      SMT: { percent: percentCorrectSMT },
     }
+    console.log('ChartCorrectAnalysis', this.ChartCorrectAnalysis);
 
+
+  }
+
+  private findResult(items: any) {
+    return items.filter(i => i.result).length
   }
   private countRejectItem(item: any) {
     const countReject: any = item.filter(i => i.noteReject5 != undefined)
-    console.log(countReject);
+    // console.log(countReject);
     return countReject
   }
 
@@ -1243,12 +1281,12 @@ export class DashboardV2Component implements OnInit {
       // console.clear()
       // console.log('DATA', DATA);
       let tempData: any = [
-        DATA.PNL ? [DATA.PNL] : [],
-        DATA.MDL ? DATA.MDL : [],
-        DATA.DST_FM ? DATA.DST_FM : [],
-        DATA.AMT_FM ? DATA.AMT_FM : [],
-        DATA.AMT ? DATA.AMT : [],
-        DATA.SMT ? DATA.SMT : [],
+        DATA.PNL,
+        DATA.MDL,
+        DATA.DST_FM,
+        DATA.AMT_FM,
+        DATA.AMT,
+        DATA.SMT,
       ]
       const newDATA: any = tempData.reduce((prev: any, now: any) => {
         return prev.concat(now)
@@ -1262,11 +1300,15 @@ export class DashboardV2Component implements OnInit {
         finish: [],
         engineerName: []
       }
+
+
       const engineers: any = await this.getEngineer()
       // console.log(engineers);
       engineers.map(async engineer => {
-        //  console.log("name",engineer.FirstName);
+        // console.log("name", engineer.FirstName);
         const requests = newDATA.filter((request: any) => request.userApprove3 == engineer._id)
+
+
         // console.log(requests);
         if (requests.length > 0) {
           const requestCounted: any = await this.countRequestEngineer(requests, engineer)
@@ -1505,4 +1547,11 @@ export class DashboardV2Component implements OnInit {
     this.ChartCauseSMT = tempChartCauseSMT
 
   }
+
+  scrollTo(element: any): void {
+    (document.getElementById(element) as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+  }
+
+
+
 }

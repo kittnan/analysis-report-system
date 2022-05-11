@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, RowNode } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
 
@@ -44,6 +44,7 @@ export class AnalysisDataListComponent implements OnInit {
 
 
   // ?  data table
+  gridApi: GridApi
   rowData: any = []
   defaultColDef = {
     sortable: true,
@@ -55,7 +56,7 @@ export class AnalysisDataListComponent implements OnInit {
   }
   columnDefs: ColDef[] = [
     {
-      field: 'Status', filter: true, resizable: true, cellStyle: (params: any) => {
+      field: 'statusShow', filter: true, resizable: true, cellStyle: (params: any) => {
         let color
         params.value == "Ongoing" ? color = "lightyellow" : false
         params.value == "Ongoing with delay" ? color = "orange" : false
@@ -69,167 +70,168 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "Status"
     },
     {
-      field: 'Reg_No',
+      field: 'requestNumber',
       headerName: "Reg No.",
       headerTooltip: "Register Number"
     },
     {
-      field: 'Model',
-      headerTooltip: "KTC Model Number"
+      field: 'ktcModelNumber',
+      headerName: "KTC Model Number",
+      headerTooltip: "KTC Model Number",
     },
     {
-      field: 'Project_Name',
+      field: 'projectName',
       headerName: "Pro Name",
       headerTooltip: "Project Name"
     },
     {
-      field: 'Defect_Name',
+      field: 'defectiveName',
       headerName: "Defect Name",
       headerTooltip: "Defect Name"
     },
     {
-      field: 'Lot_Number',
+      field: 'pcLotNumber',
       headerName: "Lot Number",
       headerTooltip: "Lot Number"
     },
     {
-      field: 'Input_Qty',
+      field: 'inputQuantity',
       filter: 'agNumberColumnFilter',
       headerName: "Input Qty(pcs)",
       headerTooltip: "Input Qty(pcs)"
     },
     {
-      field: 'NG_Qty',
+      field: 'ngQuantity',
       filter: 'agNumberColumnFilter',
       headerName: "NG Qty(pcs)",
       headerTooltip: "NG Qty(pcs)"
     },
     {
-      field: 'NG_Ratio',
+      field: 'ratio',
       filter: 'agNumberColumnFilter',
       headerName: "NG Ratio(%)",
       headerTooltip: "NG Ratio(%)"
     },
     {
-      field: 'Sent_NG_Analysis',
+      field: 'sendNgAnalysis',
       filter: 'agNumberColumnFilter',
       headerName: "Sent NG(pcs)",
       headerTooltip: "Sent NG To Analysis(pcs)"
     },
     {
-      field: 'Production_Phase',
+      field: 'productionPhase',
       headerName: "Production Phase",
       headerTooltip: "Production Phase"
     },
     {
-      field: 'Defect_Category',
+      field: 'defectCatagory',
       headerName: "Defect Category",
       headerTooltip: "Defect Category"
     },
-   
+
     {
-      field: 'Abnormal_Lot_Level',
+      field: 'abnormalLotLevel',
       headerName: "Abnormal Lot Level",
       headerTooltip: "Abnormal Lot Level"
     },
     {
-      field: 'Occur_Place',
+      field: 'occurPlace',
       headerName: "Occur Place",
       headerTooltip: "Occur Place"
     },
     {
-      field: 'Issuer',
+      field: 'issuer',
       headerName: "Issuer",
       headerTooltip: "Issuer"
     },
     {
-      field: 'Req_From',
+      field: 'requestFormSectionName',
       headerName: "Req From(dep-section)",
       headerTooltip: "Request from (Department-Section)"
     },
     {
-      field: 'Source_Of_Defect',
+      field: 'sourceOfDefect',
       headerName: "Source Of Defect",
       headerTooltip: "Source Of Defect"
     },
     {
-      field: 'Cause_Of_Defect',
+      field: 'causeOfDefect',
       headerName: "Cause Of Defect",
       headerTooltip: "Cause Of Defect"
     },
     {
-      field: 'Analysis_Result',
+      field: 'result',
       headerName: "Analysis Result",
       headerTooltip: "Analysis Result"
     },
     {
-      field: 'Can_Analysis',
+      field: 'canAnalysis',
       headerName: "Can Analysis",
       headerTooltip: "Can Analysis"
     },
     {
-      field: 'Analysis_Level',
+      field: 'analysisLevel',
       headerName: "Analysis Level",
       headerTooltip: "Analysis Level"
     },
     {
-      field: 'Category_Cause',
+      field: 'defectCatagory',
       headerName: "Category Cause",
       headerTooltip: "Category Cause"
     },
     {
-      field: 'Claim_No',
+      field: 'claimNo',
       headerName: "Claim No",
       headerTooltip: "Claim No"
     },
-    
+
     {
-      field: 'Issue_Date',
+      field: 'issueDate',
       filter: false,
       headerName: "Issue Date",
       headerTooltip: "Issue Date"
     },
     {
-      field: 'Reply_Date',
+      field: 'replyDate',
       filter: false,
       headerName: "Reply Date",
       headerTooltip: "Reply Date"
     },
     {
-      field: 'Start_Analyze_Date',
+      field: 'startAnalyzeDate',
       filter: false,
       headerName: "Start Analyze Date",
       headerTooltip: "Start Analyze Date"
     },
     {
-      field: 'Finish_Analysis_Date',
+      field: 'finishAnalyzeDate',
       filter: false,
       headerName: "Finish Analysis Date",
       headerTooltip: "Finish Analysis Date"
     },
     {
-      field: 'Finish_Analysis_Report_Date',
+      field: 'finishReportDate',
       filter: false,
       headerName: "Finish Analysis Report Date",
       headerTooltip: "Finish Analysis Report Date"
     },
     {
-      field: 'Total_Analysis_Date',
+      field: 'diffReport',
       headerName: "Total Analysis Date",
       headerTooltip: "Total Analysis Date"
     },
     {
-      field: 'Technician_PIC',
+      field: 'userApprove2Name',
       headerName: "Technician PIC",
       headerTooltip: "Technician PIC"
     },
     {
-      field: 'Engineer_PIC',
+      field: 'userApprove3Name',
       headerName: "Engineer PIC",
       headerTooltip: "Engineer PIC"
     },
     {
-      field: 'User_Now',
+      field: 'userApproveName',
       headerName: "Responsible Person",
       headerTooltip: "Responsible Person"
     },
@@ -237,11 +239,14 @@ export class AnalysisDataListComponent implements OnInit {
   ];
 
 
-
   ngOnInit(): void {
     this.CheckStatusUser();
     this.GetModelAll();
     this.loadiDataFromSessionCondition()
+
+    // this.test ={
+    //   onFilterChanged
+    // }
   }
 
 
@@ -370,7 +375,9 @@ export class AnalysisDataListComponent implements OnInit {
         const tempMap: any = await this.mapToDataTable(result_merge)
         const guest = sessionStorage.getItem('UserEmployeeCode')
         if (guest == 'guest') {
-          this.rowData = tempMap.filter(d => !(d.Reg_No.toLowerCase()).includes('amt'))
+          console.log(tempMap);
+          
+          this.rowData = tempMap.filter(d => !(d.requestNumber.toLowerCase()).includes('amt'))
         } else {
           this.rowData = tempMap
         }
@@ -486,7 +493,19 @@ export class AnalysisDataListComponent implements OnInit {
           FormId: merge.FormId
         }
 
-        return map
+        merge['projectName'] = `${merge.size} / ${merge.customer}`
+        merge.inputQuantity = Number(merge.inputQuantity)
+        merge.ngQuantity = Number(merge.ngQuantity)
+        merge.ratio = Number(merge.ratio)
+        merge.sendNgAnalysis = Number(merge.sendNgAnalysis)
+        merge.occurPlace = `${merge.occurBName}, ${merge.occurB}`
+        merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
+        merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
+        merge.startAnalyzeDate = merge.startAnalyzeDate ? new Date(merge.startAnalyzeDate).toLocaleDateString("en-US") : ""
+        merge.finishAnalyzeDate = merge.finishAnalyzeDate ? new Date(merge.finishAnalyzeDate).toLocaleDateString("en-US") : ""
+        merge.finishReportDate = merge.finishReportDate ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : ""
+
+        return merge
       })
       resolve(result_map)
     })
@@ -598,25 +617,45 @@ export class AnalysisDataListComponent implements OnInit {
 
 
   async onClickExportExcel() {
-    this.LoadingPage = true
 
-    if (this.MergeRequest.length != 0) {
-      const result_build_data = await this.setDataBeforeExcel(this.MergeRequest)
-      const result: any = await this.onLoadingExcel(result_build_data)
-      if (result == 'ok') {
-        // alert('success')
-        this.LoadingPage = false
+    try {
+      this.LoadingPage = true
+      if (this.MergeRequest.length != 0) {
+        const filtered: any = await this.eachNode()
+        // console.log('filtered', filtered);
+        const result_build_data = await this.setDataBeforeExcel(filtered)
+        await this.onLoadingExcel(result_build_data)
+
+      } else {
+        setTimeout(() => {
+          this.LoadingPage = false
+        }, 2000);
+
       }
-
-
-    } else {
-      this.LoadingPage = false
+    } catch (error) {
       Swal.fire({
         title: 'Warning !',
         icon: 'warning',
         text: 'Please Choose data'
       })
+      this.LoadingPage = false
+    } finally {
+      setTimeout(() => {
+        this.LoadingPage = false
+      }, 2000);
     }
+
+
+  }
+
+  private eachNode() {
+    return new Promise(resolve => {
+      let temp: any[] = []
+      this.gridApi.forEachNodeAfterFilter((rowNode: RowNode, index: number) => {
+        temp.push(rowNode.data)
+      })
+      resolve(temp)
+    })
   }
 
 
@@ -635,7 +674,7 @@ export class AnalysisDataListComponent implements OnInit {
           Input_Quantity: data.inputQuantity,
           NG_Quantity: data.ngQuantity,
           // NG_Ratio: data.ngRatio? data.ngRatio + '%': '',
-          NG_Ratio: data.ngRatio? (Number(data.ngRatio).toFixed(2) + '%') : '',
+          NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
           Sent_NG_To_Analysis: data.sendNgAnalysis,
           Defect_Category: data.defectCatagory,
           Abnormal_Lot_Level: data.abnormalLotLevel,
@@ -697,7 +736,7 @@ export class AnalysisDataListComponent implements OnInit {
       }
 
       FileSaver.saveAs(data, fileName);
-      resolve('ok')
+      resolve(workbook)
     })
   }
 
@@ -743,17 +782,29 @@ export class AnalysisDataListComponent implements OnInit {
 
   }
 
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+  }
+
   onCellClicked(item: any) {
-    // console.log(item.data);
+    console.log(item);
     const form = item.data
+    
 
     sessionStorage.setItem('FormId', form.FormId);
     sessionStorage.setItem('FormView', '2');
     this.route.navigate(['/viewForm'])
-    // location.href = "#/viewForm";
+    location.href = "#/viewForm";
+  }
+  showCountRows() {
+    return this.gridApi.getDisplayedRowCount()
   }
 
-
+  test() {
+    
+    this.rowData[100].requestNumber = "XXX"
+    this.gridApi.setRowData(this.rowData)
+  }
 
 
 }

@@ -9,10 +9,10 @@
 
             <div class="row">
                 <div class="col-lg-12 text-right">
-                    <button class="btn btn-sm text-primary" (click)="onClickExportExcel();">Export <i
-                            class="bi bi-file-earmark-spreadsheet"></i></button>
-                    <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;" (click)="ResetConditionFilter()">Reset filters <i
-                            class="bi bi-bootstrap-reboot i-re"></i></button>
+                    <button class="btn btn-sm text-primary" (click)="onClickExportExcel();">Export
+                        <i class="bi bi-file-earmark-spreadsheet"></i></button>
+                    <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;" (click)="ResetConditionFilter()">Reset
+                        filters <i class="bi bi-bootstrap-reboot i-re"></i></button>
 
                 </div>
             </div>
@@ -22,7 +22,8 @@
                         <label>Model </label>
                         <div class="input-group mb-3">
                             <select class="custom-select" formControlName="ModelSelect" style="cursor: pointer;">
-                                <option [value]="null" disabled>--select--</option>
+                                <option [value]="null" disabled>--select--
+                                </option>
                                 <option *ngFor="let item of RequestItems" value="{{item._id}}">
                                     {{item.name}}</option>
                             </select>
@@ -52,13 +53,15 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <div class="form-group">
-                                <label>Issue Date Start </label>
+                                <label>Issue Date Start
+                                </label>
                                 <input type="date" formControlName="DateStart" class="form-control" (blur)="handleEventDate('day')">
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <div class="form-group">
-                                <label>Issue Date End </label>
+                                <label>Issue Date End
+                                </label>
                                 <input type="date" formControlName="DateEnd" class="form-control" (blur)="handleEventDate('day')">
                             </div>
                         </div>
@@ -74,84 +77,21 @@
             </div>
 
 
-            <!-- <div class="row mt-2" *ngIf="MergeRequest.length > 0">
-
-                <div class=" table-responsive tableFixHead">
-                    <table class="table table-bordered  text-center">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-nowrap">Status</th>
-                                <th class="text-nowrap">Register No.</th>
-                                <th class="text-nowrap">KTC model number</th>
-                                <th class="text-nowrap">Project name</th>
-                                <th class="text-nowrap">Defective name</th>
-                                <th class="text-nowrap">Lot Number</th>
-                                <th class="text-nowrap">Input Quantity (Pcs)</th>
-                                <th class="text-nowrap">NG Quantity (Pcs)</th>
-                                <th class="text-nowrap">NG Ratio (%)</th>
-                                <th class="text-nowrap">Sent NG to Analysis (Pcs)</th>
-                                <th class="text-nowrap">Production phase </th>
-                                <th class="text-nowrap">Defect category</th>
-                                <th class="text-nowrap">Abnormal lot level</th>
-                                <th class="text-nowrap">Occur place </th>
-                                <th class="text-nowrap">Issuer</th>
-                                <th class="text-nowrap">Request from (Department-Section) </th>
-                                <th class="text-nowrap">Analysis Result</th>
-                                <th class="text-nowrap">Category cause </th>
-                                <th class="text-nowrap">Issue date </th>
-                                <th class="text-nowrap">Reply date</th>
-                                <th class="text-nowrap">Start analyze date</th>
-                                <th class="text-nowrap">Finish analysis date</th>
-                                <th class="text-nowrap">Finish analysis report date</th>
-                                <th class="text-nowrap">Total analysis date</th>
-                                <th class="text-nowrap">Technician PIC</th>
-                                <th class="text-nowrap">Engineer PIC</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="Row-Table" *ngFor="let item of MergeRequest; let i=index" (click)="OnClickForm(item);" [ngbPopover]="item.requestNumber" [openDelay]="300" [closeDelay]="300" triggers="mouseenter:mouseleave" placement="auto">
-                                <td class="text-nowrap" [ngClass]="item.color">{{item.statusShow}}</td>
-                                <td class="text-nowrap">{{item.requestNumber}}</td>
-                                <td class="text-nowrap">{{item.ktcModelNumber}}</td>
-                                <td class="text-nowrap">{{item.size}} / {{item.customer}}</td>
-                                <td class="text-nowrap">{{item.defectiveName}}</td>
-                                <td class="text-nowrap">{{item.pcLotNumber}} </td>
-                                <td class="text-nowrap">{{item.inputQuantity}}</td>
-                                <td class="text-nowrap">{{item.ngQuantity}}</td>
-                                <td class="text-nowrap">{{item.ngRatio |number : '.1-2' }}</td>
-                                <td class="text-nowrap">{{item.sendNgAnalysis}}</td>
-                                <td class="text-nowrap">{{item.productionPhase}} </td>
-                                <td class="text-nowrap">{{item.defectCatagory}}</td>
-                                <td class="text-nowrap">{{item.abnormalLotLevel}}</td>
-                                <td class="text-nowrap">{{item.occurBName}} , {{item.occurB}} </td>
-                                <td class="text-nowrap">{{item.issuer}}</td>
-                                <td class="text-nowrap">{{item.requestFormSectionName}} </td>
-                                <td class="text-nowrap">{{item.causeOfDefect}}</td>
-                                <td class="text-nowrap">{{item.defectCatagory}}</td>
-                                <td class="text-nowrap">{{item.issuedDate}} </td>
-                                <td class="text-nowrap">{{item.replyDate}}</td>
-                                <td class="text-nowrap">
-                                    {{item.startAnalyzeDate}}
-                                </td>
-                                <td class="text-nowrap">
-                                    {{item.finishAnalyzeDate}}
-                                </td>
-                                <td class="text-nowrap">{{item.finishReportDate}}</td>
-                                <td class="text-nowrap">{{item.diffReport}}</td>
-                                <td class="text-nowrap">{{item.userApprove2Name}}</td>
-                                <td class="text-nowrap">{{item.userApprove3Name}}</td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div> -->
 
             <div class="row mt-2" *ngIf="rowData.length !=0">
                 <div class="col-lg-12" style=" height: 850px;">
                     <ag-grid-angular style="width: 100%; height: 100%;" (cellClicked)="onCellClicked($event)" style="width: 100%; height: 100%;" class="ag-theme-alpine" [rowData]="rowData" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [pagination]="false" [paginationAutoPageSize]="true"
-                        [animateRows]="true">
+                        [animateRows]="true" (gridReady)="onGridReady($event)">
                     </ag-grid-angular>
+                </div>
+            </div>
+
+            <div class="row" *ngIf="gridApi">
+                <div class="col-12 text-right">
+
+                    <span>
+                       Rows:  {{showCountRows()}}
+                    </span>
                 </div>
             </div>
 
