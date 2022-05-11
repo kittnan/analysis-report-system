@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component,HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
 import { Chart, registerables } from 'chart.js';
@@ -12,7 +12,17 @@ Chart.register(...registerables);
   styleUrls: ['./dashboard-guest.component.css']
 })
 export class DashboardGuestComponent implements OnInit {
-
+  
+  // @HostListener('scroll', ['$event']) // for scroll events of the current element
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  scrollFunction() {
+    var mybutton = document.getElementById("myBtn");
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      mybutton.style.display = "block";
+    } else {
+      mybutton.style.display = "none";
+    }
+  }
 
   // ? loading page
   LoadingPage: boolean = false
@@ -30,19 +40,17 @@ export class DashboardGuestComponent implements OnInit {
   ChartDefectPNL: Chart
   ChartDefectMDL: Chart
   ChartDefectDST_FM: Chart
-  // ChartDefectAMT_FM: Chart
-  // ChartDefectAMT: Chart
   ChartDefectSMT: Chart
 
   ChartCausePNL: Chart
   ChartCauseMDL: Chart
   ChartCauseDST_FM: Chart
-  // ChartCauseAMT_FM: Chart
-  // ChartCauseAMT: Chart
   ChartCauseSMT: Chart
 
   ChartEngineer: Chart
 
+  ChartCorrectAnalysis:any
+  formQuery:any
   ColorStackChart = ['#B4FF9F', '#E4AEC5', '#FFD59E', '#FFA1A1', '#82A284', '#82A284', '#E4AEC5', '#FFC4DD', '#8479E1', '#8479E1', '#B4ECE3', '#FFF8D5', '#C4DDFF', '#7FB5FF', '#FEE2C5']
 
   constructor(
@@ -177,81 +185,58 @@ export class DashboardGuestComponent implements OnInit {
     this.ChartDefectPNL.destroy()
     this.ChartDefectMDL.destroy()
     this.ChartDefectDST_FM.destroy()
-    // this.ChartDefectAMT_FM.destroy()
-    // this.ChartDefectAMT.destroy()
     this.ChartDefectSMT.destroy()
 
     this.ChartCausePNL.destroy()
     this.ChartCauseMDL.destroy()
     this.ChartCauseDST_FM.destroy()
-    // this.ChartCauseAMT_FM.destroy()
-    // this.ChartCauseAMT.destroy()
     this.ChartCauseSMT.destroy()
 
     this.ChartEngineer.destroy()
   }
 
   private async callChart(data: any) {
-
-    const requests: any = await this.getForm(data)
-    // console.log(requests);
-    const filterGuest: any = requests.filter((r: any) => r.requestItem != 'AMT' && r.requestItem != 'AMT_FM')
-    // console.log(filterGuest);
-
-    const requestsArray: any = {
-      IDs: filterGuest.map((r: any) => r._id)
-    }
-    const results: any = await this.getResultByArray(requestsArray)
-    const merge: any = await this.MERGE(filterGuest, results)
-    // console.log('merge', merge);
-
-    const resultAddDiffDay: any = await this.SetDiffDay(merge)
-    // console.log('resultAddDiffDay', resultAddDiffDay);
-
-    const ExtendModel: any = await this.ExtendModel(resultAddDiffDay)
-    // console.log('ExtendModel', ExtendModel);
-    this.SetResultOnTime(resultAddDiffDay)
+    this.formQuery = data
+    const ExtendModel: any = await this.setExtendModel()
 
     this.setChartRequestSheet(ExtendModel)
     this.setChartFailureRank(ExtendModel)
-    // ExtendModel.PNL ? this.setChartDefectPNL(ExtendModel) : ''
-    // ExtendModel.MDL ? this.setChartDefectMDL(ExtendModel) : ''
-    // ExtendModel.DST_FM ? this.setChartDefectDST_FM(ExtendModel) : ''
-    // ExtendModel.AMT_FM ? this.setChartDefectAMT_FM(ExtendModel) : ''
-    // ExtendModel.AMT ? this.setChartDefectAMT(ExtendModel) : ''
-    // ExtendModel.SMT ? this.setChartDefectSMT(ExtendModel) : ''
-
-    const tempChartCausePNL: any = await this.setChartCause(ExtendModel.PNL, 'CauseChartPNL')
-    this.ChartCausePNL = tempChartCausePNL
-
-    const tempChartCauseMDL: any = await this.setChartCause(ExtendModel.MDL, 'CauseChartMDL')
-    this.ChartCauseMDL = tempChartCauseMDL
-
-    const tempChartCauseDST_FM: any = await this.setChartCause(ExtendModel.DST_FM, 'CauseChartDST_FM')
-    this.ChartCauseDST_FM = tempChartCauseDST_FM
-
-
-    const tempChartCauseSMT: any = await this.setChartCause(ExtendModel.SMT, 'CauseChartSMT')
-    this.ChartCauseSMT = tempChartCauseSMT
+    this.setCurrentAnalysis(ExtendModel)
+    this.callChartDefectModelCode(ExtendModel)
+    this.callChartCauseModelCode(ExtendModel)
 
     const tempChartENG: any = await this.setChartEngineer(ExtendModel, 'ChartEngineer')
     this.ChartEngineer = tempChartENG
-
-
-
-    const tempChartDefectPNL: any = await this.setChartDefect(ExtendModel.PNL, 'DefectChartPNL')
-    this.ChartDefectPNL = tempChartDefectPNL
-
-    const tempChartDefectMDL: any = await this.setChartDefect(ExtendModel.MDL, 'DefectChartMDL')
-    this.ChartDefectMDL = tempChartDefectMDL
-
-    const tempChartDefectDST_FM: any = await this.setChartDefect(ExtendModel.DST_FM, 'DefectChartDST_FM')
-    this.ChartDefectDST_FM = tempChartDefectDST_FM
-
-    const tempChartDefectSMT: any = await this.setChartDefect(ExtendModel.SMT, 'DefectChartSMT')
-    this.ChartDefectSMT = tempChartDefectSMT
   }
 
+  private setExtendModel() {
+    return new Promise(async resolve => {
+      const requests: any = await this.getForm(this.formQuery)
+      const filteredRequests: any = await this.filterRequest(requests)
+      const requestsArray: any = {
+        IDs: filteredRequests.map((r: any) => r._id)
+      }
+      const results: any = await this.getResultByArray(requestsArray)
+      const merge: any = await this.MERGE(filteredRequests, results)
+      // console.log('merge', merge);
+
+      const resultAddDiffDay: any = await this.SetDiffDay(merge)
+      // console.log('resultAddDiffDay', resultAddDiffDay);
+
+      const ExtendModel: any = await this.ExtendModel(resultAddDiffDay)
+      // console.log('ExtendModel', ExtendModel);
+      this.SetResultOnTime(resultAddDiffDay)
+
+      resolve(ExtendModel)
+    })
+  }
+
+  private filterRequest(requests: any) {
+    return new Promise((resolve) => {
+      const newRequest: any[] = requests.filter((r: any) => r.status != 0 && r.status != 1 && r.status != 2.1)
+      resolve(newRequest)
+    })
+  }
 
   // ? API
   getForm(data: any) {
@@ -330,8 +315,6 @@ export class DashboardGuestComponent implements OnInit {
     ResultOnTimeData['ALL'] = this.CalOnTime(merge, 'all')
     ResultOnTimeData['PNL'] = this.CalOnTime(merge, 'PNL')
     ResultOnTimeData['MDL'] = this.CalOnTime(merge, 'MDL')
-    // ResultOnTimeData['AMT_FM'] = this.CalOnTime(merge, 'AMT_FM')
-    // ResultOnTimeData['AMT'] = this.CalOnTime(merge, 'AMT')
     ResultOnTimeData['SMT'] = this.CalOnTime(merge, 'SMT')
     ResultOnTimeData['DST_FM'] = this.CalOnTime(merge, 'DST_FM')
     // console.log('ResultOnTimeData', ResultOnTimeData);
@@ -381,14 +364,61 @@ export class DashboardGuestComponent implements OnInit {
   }
 
 
+  private setCurrentAnalysis(ExtendModel: any) {
+    const arrExtendModel: any[] = [
+      ExtendModel.PNL,
+      ExtendModel.MDL,
+      ExtendModel.DST_FM,
+      ExtendModel.SMT
+    ]
+    const countAnalysis: number = arrExtendModel.reduce((prev: any, now: any) => {
+      return prev + now.length
+    }, 0)
+    const percentRejectPNL: any = this.countRejectItem(ExtendModel.PNL).length / countAnalysis * 100
+    const percentRejectMDL: any = this.countRejectItem(ExtendModel.MDL).length / countAnalysis * 100
+    const percentRejectDST_FM: any = this.countRejectItem(ExtendModel.DST_FM).length / countAnalysis * 100
+    const percentRejectSMT: any = this.countRejectItem(ExtendModel.SMT).length / countAnalysis * 100
+
+    let percentCorrectALL: any = 'No result'
+    let percentCorrectPNL: any = 'No result'
+    let percentCorrectMDL: any = 'No result'
+    let percentCorrectDST_FM: any = 'No result'
+    let percentCorrectSMT: any = 'No result'
+    if (this.findResult(ExtendModel.PNL) != 0) percentCorrectPNL = Number(percentRejectPNL) == 0 ? '100%' : (100 - Number(percentRejectPNL)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.MDL) != 0) percentCorrectMDL = Number(percentRejectMDL) == 0 ? '100%' : (100 - Number(percentRejectMDL)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.DST_FM) != 0) percentCorrectDST_FM = Number(percentRejectDST_FM) == 0 ? '100%' : (100 - Number(percentRejectDST_FM)).toFixed(2) + '%'
+    if (this.findResult(ExtendModel.SMT) != 0) percentCorrectSMT = Number(percentRejectSMT) == 0 ? '100%' : (100 - Number(percentRejectSMT)).toFixed(2) + '%'
+
+    percentCorrectALL = (percentCorrectPNL + percentCorrectMDL + percentCorrectDST_FM + percentCorrectSMT) / 6
+
+    this.ChartCorrectAnalysis = {
+      ALL: { percent: percentCorrectALL },
+      PNL: { percent: percentCorrectPNL },
+      MDL: { percent: percentCorrectMDL },
+      DST_FM: { percent: percentCorrectDST_FM },
+      SMT: { percent: percentCorrectSMT },
+    }
+    console.log('ChartCorrectAnalysis', this.ChartCorrectAnalysis);
+
+
+  }
+
+  private findResult(items: any) {
+    return items.filter(i => i.result).length
+  }
+  private countRejectItem(item: any) {
+    const countReject: any = item.filter(i => i.noteReject5 != undefined)
+    // console.log(countReject);
+    return countReject
+  }
+
+
   // ? แยก model
   ExtendModel(merge: any) {
     return new Promise((resolve) => {
       const resultExtendModel: any = {
         PNL: merge.filter((m: any) => m.requestItem == "PNL") || [],
         MDL: merge.filter((m: any) => m.requestItem == "MDL") || [],
-        // AMT_FM: merge.filter((m: any) => m.requestItem == "AMT_FM") || [],
-        // AMT: merge.filter((m: any) => m.requestItem == "AMT") || [],
         SMT: merge.filter((m: any) => m.requestItem == "SMT") || [],
         DST_FM: merge.filter((m: any) => m.requestItem == "DST_FM") || [],
       }
@@ -424,6 +454,7 @@ export class DashboardGuestComponent implements OnInit {
       this.ChartRequestSheet = new Chart(ctx, {
         type: 'bar',
         data: data,
+        plugins: [ChartDataLabels],
         options: {
           plugins: {
             legend: {
@@ -488,6 +519,7 @@ export class DashboardGuestComponent implements OnInit {
       this.ChartFailureRank = new Chart(ctx, {
         type: 'bar',
         data: data,
+        plugins: [ChartDataLabels],
         options: {
           scales: {
             x: {
@@ -505,151 +537,14 @@ export class DashboardGuestComponent implements OnInit {
   }
 
 
-  async setChartDefectPNL(rawData: any) {
-
-    const ChartData: any = await this.BuildDataForDefectChart(rawData.PNL)
-    // console.log('ChartData', ChartData);
-
-    const ctx = document.getElementById('DefectChartPNL') as HTMLCanvasElement
-    const data = {
-      labels: ChartData.labels,
-      datasets: ChartData.data
-    }
-    this.ChartDefectPNL = new Chart(ctx, {
-      type: 'bar',
-      data: data,
-      plugins: [ChartDataLabels],
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: {
-            stacked: true
-          },
-          y: {
-            stacked: true
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom'
-          }
-        }
-      }
-    })
-
-
-  }
-  async setChartDefectMDL(rawData: any) {
-
-    const ChartData: any = await this.BuildDataForDefectChart(rawData.MDL)
-    // console.log('ChartData MDL', ChartData);
-
-    const ctx = document.getElementById('DefectChartMDL') as HTMLCanvasElement
-    const data = {
-      labels: ChartData.labels,
-      datasets: ChartData.data
-    }
-    this.ChartDefectMDL = new Chart(ctx, {
-      type: 'bar',
-      data: data,
-      plugins: [ChartDataLabels],
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: {
-            stacked: true
-          },
-          y: {
-            stacked: true
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom'
-          }
-        }
-      }
-    })
-  }
-  async setChartDefectDST_FM(rawData: any) {
-
-    const ChartData: any = await this.BuildDataForDefectChart(rawData.DST_FM)
-
-    const ctx = document.getElementById('DefectChartDST_FM') as HTMLCanvasElement
-    const data = {
-      labels: ChartData.labels,
-      datasets: ChartData.data
-    }
-    this.ChartDefectDST_FM = new Chart(ctx, {
-      type: 'bar',
-      data: data,
-      plugins: [ChartDataLabels],
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: {
-            stacked: true
-          },
-          y: {
-            stacked: true
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom'
-          }
-        }
-      }
-    })
-  }
-
-
-  async setChartDefectSMT(rawData: any) {
-
-    const ChartData: any = await this.BuildDataForDefectChart(rawData.SMT)
-
-    const ctx = document.getElementById('DefectChartSMT') as HTMLCanvasElement
-    const data = {
-      labels: ChartData.labels,
-      datasets: ChartData.data
-    }
-    this.ChartDefectSMT = new Chart(ctx, {
-      type: 'bar',
-      data: data,
-      plugins: [ChartDataLabels],
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: {
-            stacked: true
-          },
-          y: {
-            stacked: true
-          }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom'
-          }
-        }
-      }
-    })
-  }
-
-  async setChartDefect(rawData: any, id: any) {
-
+  async setChartDefectModelCode(rawData: any, id: any) {
     const ChartData: any = await this.BuildDataForDefectChart(rawData)
-
     const ctx = document.getElementById(id) as HTMLCanvasElement
     const data = {
       labels: ChartData.labels,
       datasets: ChartData.data
     }
-    let newChart: Chart = new Chart(ctx, {
+    const config: any = {
       type: 'bar',
       data: data,
       plugins: [ChartDataLabels],
@@ -661,21 +556,64 @@ export class DashboardGuestComponent implements OnInit {
           },
           y: {
             stacked: true
-          }
+          },
         },
         plugins: {
           legend: {
             display: true,
             position: 'bottom'
           }
-        }
+        },
+
       }
-    })
+    }
+
+    let newChart: Chart = new Chart(ctx, config)
+
+
+    return newChart
+  }
+
+  async setChartDefectProcess(rawData: any, id: any) {
+    const ChartData: any = await this.BuildDataForDefectChartProcess(rawData)
+    const ctx = document.getElementById(id) as HTMLCanvasElement
+    const data = {
+      labels: ChartData.labels,
+      datasets: ChartData.data
+    }
+    const config: any = {
+      type: 'bar',
+      data: data,
+      plugins: [ChartDataLabels],
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom'
+          }
+        },
+
+      }
+    }
+
+    let newChart: Chart = new Chart(ctx, config)
+
+
     return newChart
   }
 
 
-  async setChartCause(rawData: any, id: any) {
+  
+  async setChartCauseModelCode(rawData: any, id: any) {
     const ChartData: any = await this.BuildDataForCauseChart(rawData)
     const ctx = document.getElementById(id) as HTMLCanvasElement
     const data = {
@@ -711,6 +649,43 @@ export class DashboardGuestComponent implements OnInit {
 
     return newChart
   }
+  async setChartCauseProcess(rawData: any, id: any) {
+    const ChartData: any = await this.BuildDataForCauseChartProcess(rawData)
+    const ctx = document.getElementById(id) as HTMLCanvasElement
+    const data = {
+      labels: ChartData.labels,
+      datasets: ChartData.data
+    }
+    const config: any = {
+      type: 'bar',
+      data: data,
+      plugins: [ChartDataLabels],
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom'
+          }
+        },
+
+      }
+    }
+
+    let newChart: Chart = new Chart(ctx, config)
+
+
+    return newChart
+  }
+
 
   async setChartEngineer(rawData: any, id: any) {
     const ChartData: any = await this.BuildDataForEngineerChart(rawData)
@@ -823,6 +798,175 @@ export class DashboardGuestComponent implements OnInit {
     }
     )
   }
+
+  private BuildDataForDefectChartProcess(DATA: any) {
+    return new Promise((resolve) => {
+      const counter = {}
+      DATA.forEach(function (obj) {
+        var key = JSON.stringify(obj.defectiveName)
+        counter[key] = (counter[key] || 0) + 1
+      })
+      let arrayCounter: any[] = []
+      for (const [key, value] of Object.entries(counter)) {
+        arrayCounter.push({
+          defectiveName: key,
+          count: value
+        })
+      }
+      const sortMax = arrayCounter.sort((firstItem, secondItem) => secondItem.count - firstItem.count);
+
+      const top5 = sortMax.slice(0, 5)
+      // console.log('top5', top5);
+      const newTop5 = top5.map((t: any) => {
+        const len: number = t.defectiveName.length
+        t.defectiveName = t.defectiveName.slice(1, len - 1)
+        return t
+      })
+      // console.log(newTop5);
+
+      const LABELS: any = newTop5.map((t: any) => t.defectiveName)
+      // console.log('label', LABELS);
+
+      const findModel: any = newTop5.map((t: any) => {
+        const a = DATA.filter((r: any) => r.defectiveName == t.defectiveName)
+        return {
+          defectiveName: t.defectiveName,
+          data: a,
+          count: a.length
+        }
+      })
+      // console.log('findModel', findModel);
+
+      const uniqueModelCode: any = findModel.map((a: any) => {
+        const data = [...new Map(a.data.map(item =>
+          [item['occurBName'], item])).values()];
+        return {
+          defectiveName: a.defectiveName,
+          data: data,
+          count: data.length
+        }
+      })
+      // console.log('uniqueModelCode', uniqueModelCode);
+
+      let uniqueArray: any = uniqueModelCode.reduce((prev: any, now: any) => {
+        return prev.concat(now.data)
+      }, [])
+
+      // console.log('uniqueArray', uniqueArray);
+
+      let uniqueMapped: any = uniqueArray.map((unique: any) => {
+        const data: any = findModel.map((find: any) => {
+          return find.data.filter((d: any) => d.occurBName == unique.occurBName && d.defectiveName == unique.defectiveName).length
+        })
+        return {
+          label: unique.occurBName,
+          data: data,
+          fill: false,
+          backgroundColor: this.getRandomColor(),
+          borderColor: 'rgb(0,0,0)',
+          hoverBorderWidth: 2,
+          maxBarThickness: 40,
+        }
+      })
+
+      const RESULT = {
+        labels: LABELS,
+        data: uniqueMapped
+      }
+      // console.log('RESULT', RESULT);
+
+      resolve(RESULT)
+    }
+    )
+  }
+
+  private BuildDataForCauseChartProcess(DATA: any) {
+    return new Promise((resolve) => {
+
+      // console.log('DATA', DATA);
+      const newData: any = DATA.filter((d: any) => d.causeOfDefect != undefined)
+      // console.log('newData', newData);
+
+      const counter = {}
+      newData.forEach(function (obj) {
+        var key = JSON.stringify(obj.causeOfDefect)
+        counter[key] = (counter[key] || 0) + 1
+      })
+      let arrayCounter: any[] = []
+      for (const [key, value] of Object.entries(counter)) {
+        arrayCounter.push({
+          causeOfDefect: key,
+          count: value
+        })
+      }
+
+
+      const sortMax = arrayCounter.sort((firstItem, secondItem) => secondItem.count - firstItem.count);
+
+      const top5 = sortMax.slice(0, 5)
+      // console.log('top5', top5);
+      const newTop5 = top5.map((t: any) => {
+        const len: number = t.causeOfDefect.length
+        t.causeOfDefect = t.causeOfDefect.slice(1, len - 1)
+        return t
+      })
+      // console.log(newTop5);
+
+      const LABELS: any = newTop5.map((t: any) => t.causeOfDefect)
+      // console.log('label', LABELS);
+
+      const findModel: any = newTop5.map((t: any) => {
+        const a = newData.filter((r: any) => r.causeOfDefect == t.causeOfDefect)
+        return {
+          causeOfDefect: t.causeOfDefect,
+          data: a,
+          count: a.length
+        }
+      })
+      // console.log('findModel', findModel);
+
+      const uniqueModelCode: any = findModel.map((a: any) => {
+        const data = [...new Map(a.data.map(item =>
+          [item['occurBName'], item])).values()];
+        return {
+          causeOfDefect: a.causeOfDefect,
+          data: data,
+          count: data.length
+        }
+      })
+      // console.log('uniqueModelCode', uniqueModelCode);
+
+      let uniqueArray: any = uniqueModelCode.reduce((prev: any, now: any) => {
+        return prev.concat(now.data)
+      }, [])
+
+      // console.log('uniqueArray', uniqueArray);
+
+      let uniqueMapped: any = uniqueArray.map((unique: any) => {
+        const data: any = findModel.map((find: any) => {
+          return find.data.filter((d: any) => d.occurBName == unique.occurBName && d.causeOfDefect == unique.causeOfDefect).length
+        })
+        return {
+          label: unique.occurBName,
+          data: data,
+          fill: false,
+          backgroundColor: this.ColorStackChart[Math.floor(Math.random() * this.ColorStackChart.length)],
+          borderColor: 'rgb(0,0,0)',
+          hoverBorderWidth: 2,
+          maxBarThickness: 40,
+        }
+      })
+
+      const RESULT = {
+        labels: LABELS,
+        data: uniqueMapped
+      }
+      // console.log('RESULT', RESULT);
+
+      resolve(RESULT)
+    }
+    )
+  }
   private BuildDataForCauseChart(DATA: any) {
     return new Promise((resolve) => {
 
@@ -918,12 +1062,10 @@ export class DashboardGuestComponent implements OnInit {
       // console.clear()
       // console.log('DATA', DATA);
       let tempData: any = [
-        DATA.PNL ? [DATA.PNL] : [],
-        DATA.MDL ? DATA.MDL : [],
-        DATA.DST_FM ? DATA.DST_FM : [],
-        // DATA.AMT_FM ? DATA.AMT_FM : [],
-        // DATA.AMT ? DATA.AMT : [],
-        DATA.SMT ? DATA.SMT : [],
+        DATA.PNL,
+        DATA.MDL,
+        DATA.DST_FM,
+        DATA.SMT,
       ]
       const newDATA: any = tempData.reduce((prev: any, now: any) => {
         return prev.concat(now)
@@ -937,11 +1079,15 @@ export class DashboardGuestComponent implements OnInit {
         finish: [],
         engineerName: []
       }
+
+
       const engineers: any = await this.getEngineer()
       // console.log(engineers);
       engineers.map(async engineer => {
-        //  console.log("name",engineer.FirstName);
+        // console.log("name", engineer.FirstName);
         const requests = newDATA.filter((request: any) => request.userApprove3 == engineer._id)
+
+
         // console.log(requests);
         if (requests.length > 0) {
           const requestCounted: any = await this.countRequestEngineer(requests, engineer)
@@ -1057,5 +1203,109 @@ export class DashboardGuestComponent implements OnInit {
     return this.ColorStackChart[number]
   }
 
+
+  
+
+  // todo on toggle Defect ---- Model and Process
+  async onClickDefectFilter(key: any) {
+    this.destroyChartDefect()
+    const ExtendModel: any = await this.setExtendModel()
+    if (key == 'process') {
+      this.callChartDefectProcess(ExtendModel)
+    }
+    if (key == 'modelCode') {
+      this.callChartDefectModelCode(ExtendModel)
+    }
+  }
+
+  private destroyChartDefect() {
+    this.ChartDefectPNL.destroy()
+    this.ChartDefectMDL.destroy()
+    this.ChartDefectDST_FM.destroy()
+    this.ChartDefectSMT.destroy()
+  }
+
+  private async callChartDefectModelCode(ExtendModel: any) {
+    const tempChartDefectPNL: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartPNL')
+    this.ChartDefectPNL = tempChartDefectPNL
+
+    const tempChartDefectMDL: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartMDL')
+    this.ChartDefectMDL = tempChartDefectMDL
+
+    const tempChartDefectDST_FM: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartDST_FM')
+    this.ChartDefectDST_FM = tempChartDefectDST_FM
+
+
+    const tempChartDefectSMT: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartSMT')
+    this.ChartDefectSMT = tempChartDefectSMT
+  }
+
+  private async callChartDefectProcess(ExtendModel: any) {
+    const tempChartDefectPNL: any = await this.setChartDefectProcess(ExtendModel.PNL, 'DefectChartPNL')
+    this.ChartDefectPNL = tempChartDefectPNL
+
+    const tempChartDefectMDL: any = await this.setChartDefectProcess(ExtendModel.MDL, 'DefectChartMDL')
+    this.ChartDefectMDL = tempChartDefectMDL
+
+    const tempChartDefectDST_FM: any = await this.setChartDefectProcess(ExtendModel.DST_FM, 'DefectChartDST_FM')
+    this.ChartDefectDST_FM = tempChartDefectDST_FM
+
+    const tempChartDefectSMT: any = await this.setChartDefectProcess(ExtendModel.SMT, 'DefectChartSMT')
+    this.ChartDefectSMT = tempChartDefectSMT
+
+  }
+
+  // todo on toggle Cause ---- Model and Process
+  async onClickCauseFilter(key: any) {
+    this.destroyChartCause()
+    const ExtendModel: any = await this.setExtendModel()
+    if (key == 'process') {
+      this.callChartCauseProcess(ExtendModel)
+    }
+    if (key == 'modelCode') {
+      this.callChartCauseModelCode(ExtendModel)
+    }
+  }
+  private destroyChartCause() {
+    this.ChartCausePNL.destroy()
+    this.ChartCauseMDL.destroy()
+    this.ChartCauseDST_FM.destroy()
+    this.ChartCauseSMT.destroy()
+  }
+  private async callChartCauseModelCode(ExtendModel: any) {
+    const tempChartCausePNL: any = await this.setChartCauseModelCode(ExtendModel.PNL, 'CauseChartPNL')
+    this.ChartCausePNL = tempChartCausePNL
+
+    const tempChartCauseMDL: any = await this.setChartCauseModelCode(ExtendModel.MDL, 'CauseChartMDL')
+    this.ChartCauseMDL = tempChartCauseMDL
+
+    const tempChartCauseDST_FM: any = await this.setChartCauseModelCode(ExtendModel.DST_FM, 'CauseChartDST_FM')
+    this.ChartCauseDST_FM = tempChartCauseDST_FM
+
+    const tempChartCauseSMT: any = await this.setChartCauseModelCode(ExtendModel.SMT, 'CauseChartSMT')
+    this.ChartCauseSMT = tempChartCauseSMT
+
+  }
+  private async callChartCauseProcess(ExtendModel: any) {
+    // console.log(ExtendModel);
+
+    const tempChartCausePNL: any = await this.setChartCauseProcess(ExtendModel.PNL, 'CauseChartPNL')
+    this.ChartCausePNL = tempChartCausePNL
+
+    const tempChartCauseMDL: any = await this.setChartCauseProcess(ExtendModel.MDL, 'CauseChartMDL')
+    this.ChartCauseMDL = tempChartCauseMDL
+
+    const tempChartCauseDST_FM: any = await this.setChartCauseProcess(ExtendModel.DST_FM, 'CauseChartDST_FM')
+    this.ChartCauseDST_FM = tempChartCauseDST_FM
+
+    const tempChartCauseSMT: any = await this.setChartCauseProcess(ExtendModel.SMT, 'CauseChartSMT')
+    this.ChartCauseSMT = tempChartCauseSMT
+
+  }
+
+  scrollTo(element: any): void {
+    (document.getElementById(element) as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+  }
+  
 
 }

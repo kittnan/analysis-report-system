@@ -46,14 +46,14 @@ export class AnalysisDataListComponent implements OnInit {
   // ?  data table
   gridApi: GridApi
   rowData: any = []
-  defaultColDef = {
+  rowData2: any = []
+  defaultColDef: ColDef = {
     sortable: true,
     resizable: true,
     floatingFilter: true,
     filter: true,
-
-
   }
+
   columnDefs: ColDef[] = [
     {
       field: 'statusShow', filter: true, resizable: true, cellStyle: (params: any) => {
@@ -240,6 +240,7 @@ export class AnalysisDataListComponent implements OnInit {
 
 
   ngOnInit(): void {
+   
     this.CheckStatusUser();
     this.GetModelAll();
     this.loadiDataFromSessionCondition()
@@ -376,7 +377,7 @@ export class AnalysisDataListComponent implements OnInit {
         const guest = sessionStorage.getItem('UserEmployeeCode')
         if (guest == 'guest') {
           console.log(tempMap);
-          
+
           this.rowData = tempMap.filter(d => !(d.requestNumber.toLowerCase()).includes('amt'))
         } else {
           this.rowData = tempMap
@@ -789,21 +790,15 @@ export class AnalysisDataListComponent implements OnInit {
   onCellClicked(item: any) {
     console.log(item);
     const form = item.data
-    
 
-    sessionStorage.setItem('FormId', form.FormId);
-    sessionStorage.setItem('FormView', '2');
-    this.route.navigate(['/viewForm'])
-    location.href = "#/viewForm";
+
+    // sessionStorage.setItem('FormId', form.FormId);
+    // sessionStorage.setItem('FormView', '2');
+    // this.route.navigate(['/viewForm'])
+    // location.href = "#/viewForm";
   }
   showCountRows() {
     return this.gridApi.getDisplayedRowCount()
-  }
-
-  test() {
-    
-    this.rowData[100].requestNumber = "XXX"
-    this.gridApi.setRowData(this.rowData)
   }
 
 

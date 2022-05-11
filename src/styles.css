@@ -4,6 +4,24 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import "ag-grid-community/dist/styles/ag-grid.css";
 @import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+@media (min-width: 800px) {
+    .ag-grid-h {
+        height: 400px;
+    }
+}
+
+@media (min-width: 1366px) {
+    .ag-grid-h {
+        height: 550px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .ag-grid-h {
+        height: 800px;
+    }
+}
+
 
 /* @font-face {
     font-family: "Montserrat";

@@ -1,8 +1,9 @@
-<div class="loading" *ngIf="LoadingPage">
+<div class="loading" *ngIf="LoadingPage"></div>
+<!--  todo --------------------------------------------------------- -->
+<button (click)="scrollTo('top')" class="btn btn-dark" id="myBtn" title="Go to top"><i class="bi bi-caret-up"></i>
+    Top</button>
 
-</div>
-
-<div class="row mb-3 p-2 text-head template">
+<div class="row mb-3 p-2 text-head template" id="top">
     <!-- <div class="col-12 text-head"> -->
 
     <div class="col-lg-3 col-sm-12">
@@ -25,177 +26,244 @@
     <!-- </div> -->
 
 </div>
-<div class="row template" *ngIf="ChartOnTime">
+
+<div class="row">
+    <div class="col-12">
+        <a (click)="scrollTo('ResultOnTime')" class="ml-2">#ResultOnTime</a>
+        <a (click)="scrollTo('RequestSheetQty')" class="ml-2">#RequestSheetQ'ty</a>
+        <a (click)="scrollTo('FailureRank')" class="ml-2">#FailureRank</a>
+        <a (click)="scrollTo('TopDefective')" class="ml-2">#TopDefective</a>
+        <a (click)="scrollTo('TopCategoryCause')" class="ml-2">#TopCategoryCause</a>
+        <a (click)="scrollTo('EachEngineer')" class="ml-2">#EachEngineer</a>
+    </div>
+</div>
+
+<div class="row template" *ngIf="ChartOnTime" #ResultOnTime id="ResultOnTime">
     <div class="col-12 text-head">
         <h5>Result On Time</h5>
     </div>
     <div class="line-under"></div>
 
-    <div class="col-lg-6 col-md-6 col-sm-12">
-        <div class="card card-stats">
-            <div class="card-body ">
-                <div class="row">
-                    <div class="col-1 col-md-2">
-                        <div class="icon-big text-center icon-warning">
-                            <i class="bi bi-columns-gap text-warning"></i>
-                        </div>
-                    </div>
-                    <div class="col-11 col-md-10">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 ">
+                <div class="card card-stats">
 
-                        <div class="numbers">
-                            <p class="card-category">ALL REQUEST ANALYSIS ON TIME</p>
-                            <p *ngIf="toggleOnTime('ALL')" class="card-title">
-                                <span style="font-size: small;">Summary from ( PNL, MDL, DST FM, SMT
-                                    )</span> {{ ChartOnTime.ALL.percent }}
-                            </p>
-                            <p *ngIf="!toggleOnTime('ALL')" class="card-title">
-                                <span style="font-size: small;">Summary from ( PNL, MDL, DST FM, SMT
-                                    )</span> No have request
-                            </p>
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-1 col-md-2">
+                                <div class="icon-big text-center icon-warning">
+                                    <i class="bi bi-columns-gap text-warning"></i>
+                                </div>
+                            </div>
+                            <div class="col-11 col-md-10">
+
+                                <div class="numbers">
+                                    <p class="card-category">ALL REQUEST ANALYSIS ON TIME</p>
+                                    <p *ngIf="toggleOnTime('ALL')" class="card-title">
+                                        <span style="font-size: small;">Summary from ( PNL, MDL, DST FM, AMT FM, AMT,
+                                            SMT
+                                            )</span>
+                                        <i class="bi bi-alarm-fill text-warning" style="font-size: 2.4rem;"></i> On Time : {{ ChartOnTime.ALL.percent }}
+                                    </p>
+                                    <p *ngIf="!toggleOnTime('ALL')" class="card-title">
+                                        <span style="font-size: small;">Summary from ( PNL, MDL, DST FM, AMT FM, AMT,
+                                            SMT
+                                            )</span> No result
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="card-footer ">
-                <hr>
-                <div class="stats" *ngIf="toggleOnTime('ALL')">
-                    <!-- <i class="fa fa-refresh"></i> Update: {{ ChartOnTime.ALL.timeUpdate |date:'dd/MM/yyyy' }} -->
+                    <div class="card-footer ">
+                        <hr>
+                        <div class="stats" *ngIf="toggleOnTime('ALL')">
+                            <!-- <i class="fa fa-refresh"></i> Update: {{ ChartOnTime.ALL.timeUpdate |date:'dd/MM/yyyy' }} -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PNL -->
-    <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="card card-stats">
-            <div class="card-body ">
-                <div class="row">
-                    <div class="col-2 col-md-2">
-                        <div class="icon-big text-center icon-warning">
-                            <i class="bi bi-clipboard text-primary"></i>
+    <div class="col-12">
+        <div class="row">
 
+            <!-- PNL -->
+            <div class="col-lg-3 col-md-3 col-sm-12 ">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="card-category">PNL</p>
+                                    <p *ngIf="ChartCorrectAnalysis" class="text-left">
+                                        <span class="font-weight-bold text-success" style="font-size: medium; ">
+                                    <i class="bi bi-check " style="font-size: 2.4rem;"></i>
+                                    Correct Analysis :
+                                </span>
+                                        <span>{{ ChartCorrectAnalysis.PNL.percent }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="text-left">
+                                        <span class="font-weight-bold text-warning" style="font-size: medium;">
+                                    <i class="bi bi-alarm-fill " style="font-size: 2.4rem;"></i>
+                                    On Time :
+                                </span>
+                                        <span *ngIf="toggleOnTime('PNL')">{{ ChartOnTime.PNL.percent }}</span>
+                                        <span *ngIf="!toggleOnTime('PNL')" class="text-left percent-font">No
+                                    result</span>
+                                    </p>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-10 col-md-10">
-                        <div class="numbers">
-                            <p class="card-category">PNL</p>
-                            <p *ngIf="toggleOnTime('PNL')" class="card-title">
-                                <span style="font-size: small;">On Time: </span> {{ ChartOnTime.PNL.percent }}
-                            </p>
-                            <p *ngIf="!toggleOnTime('PNL')" class="card-title percent-font">No have request</p>
-
-                        </div>
-                    </div>
+                    <hr>
                 </div>
             </div>
-            <div class="card-footer ">
-                <hr>
-                <div class="stats" *ngIf="toggleOnTime('PNL')">
-                    <!-- <i class="fa fa-calendar-o"></i>Update: {{ ChartOnTime.PNL.timeUpdate |date:'dd/MM/yyyy' }} -->
+
+            <!-- MDL -->
+            <div class="col-lg-3 col-md-3 col-sm-12 ">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="card-category">MDL</p>
+                                    <p *ngIf="ChartCorrectAnalysis" class="text-left">
+                                        <span class="font-weight-bold text-success" style="font-size: medium; ">
+                                    <i class="bi bi-check " style="font-size: 2.4rem;"></i>
+                                    Correct Analysis :
+                                </span>
+                                        <span>{{ ChartCorrectAnalysis.MDL.percent }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="text-left">
+                                        <span class="font-weight-bold text-warning" style="font-size: medium;">
+                                    <i class="bi bi-alarm-fill " style="font-size: 2.4rem;"></i>
+                                    On Time :
+                                </span>
+                                        <span *ngIf="toggleOnTime('MDL')">{{ ChartOnTime.MDL.percent }}</span>
+                                        <span *ngIf="!toggleOnTime('MDL')" class="text-left percent-font">No
+                                    result</span>
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+
+
+
+
+
+            <!-- DST_FM -->
+            <div class="col-lg-3 col-md-3 col-sm-12 ">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="card-category">DST_FM</p>
+                                    <p *ngIf="ChartCorrectAnalysis" class="text-left">
+                                        <span class="font-weight-bold text-success" style="font-size: medium; ">
+                                    <i class="bi bi-check " style="font-size: 2.4rem;"></i>
+                                    Correct Analysis :
+                                </span>
+                                        <span>{{ ChartCorrectAnalysis.DST_FM.percent }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="text-left">
+                                        <span class="font-weight-bold text-warning" style="font-size: medium;">
+                                    <i class="bi bi-alarm-fill " style="font-size: 2.4rem;"></i>
+                                    On Time :
+                                </span>
+                                        <span *ngIf="toggleOnTime('DST_FM')">{{ ChartOnTime.DST_FM.percent }}</span>
+                                        <span *ngIf="!toggleOnTime('DST_FM')" class="text-left percent-font">No
+                                    result</span>
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+            <!-- SMT -->
+            <div class="col-lg-3 col-md-3 col-sm-12 ">
+                <div class="card card-stats">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="card-category">SMT</p>
+                                    <p *ngIf="ChartCorrectAnalysis" class="text-left">
+                                        <span class="font-weight-bold text-success" style="font-size: medium; ">
+                                    <i class="bi bi-check " style="font-size: 2.4rem;"></i>
+                                    Correct Analysis :
+                                </span>
+                                        <span>{{ ChartCorrectAnalysis.SMT.percent }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="numbers">
+                                    <p class="text-left">
+                                        <span class="font-weight-bold text-warning" style="font-size: medium;">
+                                    <i class="bi bi-alarm-fill " style="font-size: 2.4rem;"></i>
+                                    On Time :
+                                </span>
+                                        <span *ngIf="toggleOnTime('SMT')">{{ ChartOnTime.SMT.percent }}</span>
+                                        <span *ngIf="!toggleOnTime('SMT')" class="text-left percent-font">No
+                                    result</span>
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MDL -->
-    <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="card card-stats">
-            <div class="card-body ">
-                <div class="row">
-                    <div class="col-2 col-md-2">
-                        <div class="icon-big text-center icon-warning">
-                            <i class="bi bi-clipboard text-primary"></i>
 
-                        </div>
-                    </div>
-                    <div class="col-10 col-md-10">
-                        <div class="numbers">
-                            <p class="card-category">MDL</p>
-                            <p *ngIf="toggleOnTime('MDL')" class="card-title">
-                                <span style="font-size: small;">On Time: </span> {{ ChartOnTime.MDL.percent }}
-                            </p>
-                            <p *ngIf="!toggleOnTime('MDL')" class="card-title percent-font">No have request</p>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer ">
-                <hr>
-                <div class="stats" *ngIf="toggleOnTime('MDL')">
-                    <!-- <i class="fa fa-calendar-o"></i>Update: {{ ChartOnTime.MDL.timeUpdate |date:'dd/MM/yyyy' }} -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- DST_FM -->
-    <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="card card-stats">
-            <div class="card-body ">
-                <div class="row">
-                    <div class="col-2 col-md-2">
-                        <div class="icon-big text-center icon-warning">
-                            <i class="bi bi-clipboard text-primary"></i>
-
-                        </div>
-                    </div>
-                    <div class="col-10 col-md-10">
-                        <div class="numbers">
-                            <p class="card-category">DST_FM</p>
-                            <p *ngIf="toggleOnTime('DST_FM')" class="card-title">
-                                <span style="font-size: small;">On Time: </span> {{ ChartOnTime.DST_FM.percent }}
-                            </p>
-                            <p *ngIf="!toggleOnTime('DST_FM')" class="card-title percent-font">No have request</p>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer ">
-                <hr>
-                <div class="stats" *ngIf="toggleOnTime('DST_FM')">
-                    <!-- <i class="fa fa-calendar-o"></i>Update: {{ ChartOnTime.DST_FM.timeUpdate |date:'dd/MM/yyyy' }} -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SMT -->
-    <div class="col-lg-3 col-md-3 col-sm-12">
-        <div class="card card-stats">
-            <div class="card-body ">
-                <div class="row">
-                    <div class="col-2 col-md-2">
-                        <div class="icon-big text-center icon-warning">
-                            <i class="bi bi-clipboard text-primary"></i>
-
-                        </div>
-                    </div>
-                    <div class="col-10 col-md-10">
-                        <div class="numbers">
-                            <p class="card-category">SMT</p>
-                            <p *ngIf="toggleOnTime('SMT')" class="card-title">
-                                <span style="font-size: small;">On Time: </span> {{ ChartOnTime.SMT.percent }}
-                            </p>
-                            <p *ngIf="!toggleOnTime('SMT')" class="card-title percent-font">No have request</p>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer ">
-                <hr>
-                <div class="stats" *ngIf="toggleOnTime('SMT')">
-                    <!-- <i class="fa fa-calendar-o"></i>Update: {{ ChartOnTime.SMT.timeUpdate |date:'dd/MM/yyyy' }} -->
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 
 
-<div class="row template mt-3">
+
+<div class="row template mt-3" id="RequestSheetQty">
     <div class="col-md-6">
         <div class="card ">
             <div class="card-header ">
@@ -215,7 +283,7 @@
     </div>
 
     <!-- Failure Rank -->
-    <div class="col-md-6">
+    <div class="col-md-6" id="FailureRank">
         <div class="card ">
             <div class="card-header ">
                 <h5 class="card-title">Failure Rank</h5>
@@ -235,9 +303,17 @@
 
 </div>
 
-<div class="row template mt-3">
+<div class="row template mt-3" id="TopDefective">
     <div class="col-12">
-        <h5 class="text-head">Top 5 Defective</h5>
+        <div class="row">
+            <div class="col-6">
+                <h5 class="text-head">Top 5 Defective</h5>
+            </div>
+            <div class="col-6 text-right">
+                <button class="btn btn-primary" (click)="onClickDefectFilter('modelCode')">Model Code</button>
+                <button class="btn btn-warning" (click)="onClickDefectFilter('process')">Process</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-12 ">
@@ -317,9 +393,17 @@
 
 </div>
 
-<div class="row template mt-3">
+<div class="row template mt-3" id="TopCategoryCause">
     <div class="col-12">
-        <h5 class="text-head">Top 5 Category cause</h5>
+        <div class="row">
+            <div class="col-6">
+                <h5 class="text-head">Top 5 Category cause</h5>
+            </div>
+            <div class="col-6 text-right">
+                <button class="btn btn-primary" (click)="onClickCauseFilter('modelCode')">Model Code</button>
+                <button class="btn btn-warning" (click)="onClickCauseFilter('process')">Process</button>
+            </div>
+        </div>
     </div>
 
     <div class="col-md-12">
@@ -411,7 +495,7 @@
 
 </div>
 
-<div class="row template mt-3">
+<div class="row template mt-3" id="EachEngineer">
     <div class="col-md-12">
         <div class="card ">
             <div class="card-header ">
