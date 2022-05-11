@@ -792,10 +792,10 @@ export class AnalysisDataListComponent implements OnInit {
     const form = item.data
 
 
-    // sessionStorage.setItem('FormId', form.FormId);
-    // sessionStorage.setItem('FormView', '2');
-    // this.route.navigate(['/viewForm'])
-    // location.href = "#/viewForm";
+    sessionStorage.setItem('FormId', form.FormId);
+    sessionStorage.setItem('FormView', '2');
+    this.route.navigate(['/viewForm'])
+    location.href = "#/viewForm";
   }
   showCountRows() {
     return this.gridApi.getDisplayedRowCount()

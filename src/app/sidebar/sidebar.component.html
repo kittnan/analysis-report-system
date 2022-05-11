@@ -6,7 +6,7 @@
             </div>
         </a>
         <a href="" target="" class="simple-text logo-normal">
-        KYOCERA </a>
+            KYOCERA </a>
     </div>
     <ul class="nav">
         <li *ngFor="let menuItem of menuItems" routerLinkActive="active" class="{{menuItem.class}}">
@@ -16,9 +16,20 @@
             </a>
         </li>
         <!-- <li>
-            <a href="">
+            <a class="link_name" (click)="toggleAnalysisEquipment()" routerLinkActive="active">
                 <i class="bi bi-tools"></i>
-                <p>AR Equipment</p>
+                <p>analysis equipment</p>
+            </a>
+            <ul id="sub-menu">
+                <li><a class="link_name">Category</a></li>
+                <li><a class="link_name">HTML & CSS</a></li>
+                <li><a class="link_name">JavaScript</a></li>
+                <li><a class="link_name">PHP & MySQL</a></li>
+            </ul>
+        </li> -->
+        <!-- <li>
+            <a href="">
+                <p>tets</p>
             </a>
         </li> -->
     </ul>

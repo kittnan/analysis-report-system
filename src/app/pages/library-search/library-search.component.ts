@@ -408,7 +408,7 @@ export class LibrarySearchComponent implements OnInit {
   onCellClicked(e: any) {
     // console.log(e);
     // console.log(e.data);
-    const find_data = this.Sum.find(i => i.requestNumber === e.data.Req_No)
+    const find_data = this.Sum.find(i => i.requestNumber == e.data.requestNumber)
     // console.log(find_data);
     // i.requestNumber
     if (find_data !== undefined) {

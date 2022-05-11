@@ -193,14 +193,16 @@ export class SidebarComponent implements OnInit {
         }
 
         this.menuItems = Permission
-        // console.log('rr', rr);
 
-        // console.log(this.menuItems);
-        // console.log(routesLevel3);
+    }
 
-
-
-
+    toggleAnalysisEquipment() {
+        let toggle = document.getElementById('sub-menu')
+        if (toggle.style.height) {
+            toggle.style.height = ''
+        } else {
+            toggle.style.height = '250px'
+        }
 
     }
 }
