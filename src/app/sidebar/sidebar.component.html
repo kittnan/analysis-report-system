@@ -18,16 +18,18 @@
         <!-- <li>
             <a class="link_name" (click)="toggleAnalysisEquipment()" routerLinkActive="active">
                 <i class="bi bi-tools"></i>
-                <p>analysis equipment</p>
+                <p>Equipment</p>
             </a>
             <ul id="sub-menu">
-                <li><a class="link_name">Category</a></li>
-                <li><a class="link_name">HTML & CSS</a></li>
-                <li><a class="link_name">JavaScript</a></li>
-                <li><a class="link_name">PHP & MySQL</a></li>
+                <li *ngFor="let eItem of equipmentItemsTemp; let i=index" routerLinkActive="active">
+                    <a [routerLink]="[eItem.path]">
+                        <i [class]="eItem.icon"></i> {{eItem.title}}
+                    </a>
+                </li>
+
             </ul>
-        </li> -->
-        <!-- <li>
+        </li>
+        <li>
             <a href="">
                 <p>tets</p>
             </a>

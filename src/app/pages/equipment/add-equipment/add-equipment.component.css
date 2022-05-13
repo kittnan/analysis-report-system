@@ -1,0 +1,30 @@
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.invalidLabel {
+    color: red;
+}
+
+img {
+    cursor: pointer;
+}
+
+.box-btn {
+    padding: 10px;
+    margin-right: 5px;
+}
+
+.btn-list {
+    background-color: beige;
+    border-radius: 10px;
+}
+
+.bi-x-circle {
+    cursor: pointer;
+}
+
+.bi-x-circle:hover {
+    color: red;
+}

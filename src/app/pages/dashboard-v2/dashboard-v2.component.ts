@@ -58,6 +58,7 @@ export class DashboardV2Component implements OnInit {
   formQuery: any
 
   ColorStackChart = ['#B4FF9F', '#E4AEC5', '#FFD59E', '#FFA1A1', '#82A284', '#82A284', '#E4AEC5', '#FFC4DD', '#8479E1', '#8479E1', '#B4ECE3', '#FFF8D5', '#C4DDFF', '#7FB5FF', '#FEE2C5']
+  ColorRGBChart: any[] = []
   constructor(
     private api: HttpService,
     private route: Router
@@ -207,6 +208,9 @@ export class DashboardV2Component implements OnInit {
   private async callChart(data: any) {
     this.formQuery = data
     const ExtendModel: any = await this.setExtendModel()
+
+    let newArr: any[] = Array.from(Array(50).keys())
+    this.ColorRGBChart = newArr.map(i => this.randomRgbColor(120, 247))
 
     this.setChartRequestSheet(ExtendModel)
     this.setChartFailureRank(ExtendModel)
@@ -485,6 +489,11 @@ export class DashboardV2Component implements OnInit {
           plugins: {
             legend: {
               display: false
+            },
+            datalabels: {
+              display: function (context) {
+                return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+              }
             }
           }
         },
@@ -554,6 +563,13 @@ export class DashboardV2Component implements OnInit {
             y: {
               stacked: true
             }
+          },
+          plugins: {
+            datalabels: {
+              display: function (context) {
+                return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+              }
+            }
           }
         },
 
@@ -565,7 +581,7 @@ export class DashboardV2Component implements OnInit {
 
 
   async setChartDefectModelCode(rawData: any, id: any) {
-    const ChartData: any = await this.BuildDataForDefectChart(rawData)
+    const ChartData: any = await this.BuildDataForDefectChartModelCode(rawData)
     const ctx = document.getElementById(id) as HTMLCanvasElement
     const data = {
       labels: ChartData.labels,
@@ -589,6 +605,11 @@ export class DashboardV2Component implements OnInit {
           legend: {
             display: true,
             position: 'bottom'
+          },
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
           }
         },
 
@@ -625,6 +646,11 @@ export class DashboardV2Component implements OnInit {
           legend: {
             display: true,
             position: 'bottom'
+          },
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
           }
         },
 
@@ -639,7 +665,7 @@ export class DashboardV2Component implements OnInit {
 
 
   async setChartCauseModelCode(rawData: any, id: any) {
-    const ChartData: any = await this.BuildDataForCauseChart(rawData)
+    const ChartData: any = await this.BuildDataForCauseChartModelCode(rawData)
     const ctx = document.getElementById(id) as HTMLCanvasElement
     const data = {
       labels: ChartData.labels,
@@ -663,6 +689,11 @@ export class DashboardV2Component implements OnInit {
           legend: {
             display: true,
             position: 'bottom'
+          },
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
           }
         },
 
@@ -699,6 +730,11 @@ export class DashboardV2Component implements OnInit {
           legend: {
             display: true,
             position: 'bottom'
+          },
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
           }
         },
 
@@ -734,6 +770,13 @@ export class DashboardV2Component implements OnInit {
             stacked: true
           },
         },
+        plugins: {
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
+          }
+        }
 
 
       }
@@ -741,7 +784,314 @@ export class DashboardV2Component implements OnInit {
     return newChart
   }
 
-  private BuildDataForDefectChart(DATA: any) {
+  private BuildDataForDefectChartModelCode(DATA: any) {
+    return new Promise((resolve) => {
+      const counter = {}
+      const newDATA = DATA.filter(d => d.defectiveName != undefined)
+      newDATA.forEach(function (obj) {
+        var key = JSON.stringify(obj.defectiveName)
+        counter[key] = (counter[key] || 0) + 1
+      })
+      let arrayCounter: any[] = []
+      for (const [key, value] of Object.entries(counter)) {
+        arrayCounter.push({
+          defectiveName: key,
+          count: value
+        })
+      }
+      const sortMax = arrayCounter.sort((firstItem, secondItem) => secondItem.count - firstItem.count);
+
+      const top5 = sortMax.slice(0, 5)
+      // console.log('top5', top5);
+      const newTop5 = top5.map((t: any) => {
+        const len: number = t.defectiveName.length
+        t.defectiveName = t.defectiveName.slice(1, len - 1)
+        return t
+      })
+      // console.log(newTop5);
+
+      const LABELS: any = newTop5.map((t: any) => t.defectiveName)
+      // console.log('label', LABELS);
+
+      const findModel: any = newTop5.map((t: any) => {
+        const a = newDATA.filter((r: any) => r.defectiveName == t.defectiveName)
+        return {
+          defectiveName: t.defectiveName,
+          data: a,
+          count: a.length
+        }
+      })
+      // console.log('findModel', findModel);
+
+      const mergeDataFindModel: any = findModel.reduce((prev: any, now: any) => {
+        return prev.concat(now.data)
+      }, [])
+      // console.log('mergeDataFindModel', mergeDataFindModel);
+
+      const uniqueModelCode: any = [...new Map(mergeDataFindModel.map(item => [item['ktcModelNumber'], item.ktcModelNumber])).values()]
+      // console.log('uniqueModelCode', uniqueModelCode);
+
+      const l = uniqueModelCode.map((code: any, index: any) => {
+        const temp = findModel.map((f: any) => {
+          return f.data.filter(i => i.ktcModelNumber == code).length
+        })
+        // console.log('code', code);
+        // console.log(temp);
+        const result = {
+          label: code,
+          data: temp,
+          fill: false,
+          backgroundColor: this.ColorRGBChart[index],
+          borderColor: 'rgb(0,0,0)',
+          hoverBorderWidth: 2,
+          maxBarThickness: 40,
+        }
+        return result
+      })
+
+
+      const RESULT = {
+        labels: LABELS,
+        data: l
+      }
+      // console.log('RESULT', RESULT);
+
+      resolve(RESULT)
+    }
+    )
+  }
+  private BuildDataForDefectChartProcess(DATA: any) {
+    return new Promise((resolve) => {
+      const counter = {}
+      const newDATA = DATA.filter(d => d.defectiveName != undefined)
+      newDATA.forEach(function (obj) {
+        var key = JSON.stringify(obj.defectiveName)
+        counter[key] = (counter[key] || 0) + 1
+      })
+      let arrayCounter: any[] = []
+      for (const [key, value] of Object.entries(counter)) {
+        arrayCounter.push({
+          defectiveName: key,
+          count: value
+        })
+      }
+      const sortMax = arrayCounter.sort((firstItem, secondItem) => secondItem.count - firstItem.count);
+
+      const top5 = sortMax.slice(0, 5)
+      // console.log('top5', top5);
+      const newTop5 = top5.map((t: any) => {
+        const len: number = t.defectiveName.length
+        t.defectiveName = t.defectiveName.slice(1, len - 1)
+        return t
+      })
+      // console.log(newTop5);
+
+      const LABELS: any = newTop5.map((t: any) => t.defectiveName)
+      // console.log('label', LABELS);
+
+      const findModel: any = newTop5.map((t: any) => {
+        const a = newDATA.filter((r: any) => r.defectiveName == t.defectiveName)
+        return {
+          defectiveName: t.defectiveName,
+          data: a,
+          count: a.length
+        }
+      })
+      // console.log('findModel', findModel);
+
+      const mergeDataFindModel: any = findModel.reduce((prev: any, now: any) => {
+        return prev.concat(now.data)
+      }, [])
+      // console.log('mergeDataFindModel', mergeDataFindModel);
+
+      const occur: any = [...new Map(mergeDataFindModel.map(item => [item['occurBName'], item.occurBName])).values()]
+      // console.log('uniqueModelCode', uniqueModelCode);
+
+      const l = occur.map((name: any, index: any) => {
+        const temp = findModel.map((f: any) => {
+          return f.data.filter(i => i.occurBName == name).length
+        })
+        // console.log('code', code);
+        // console.log(temp);
+        const result = {
+          label: name,
+          data: temp,
+          fill: false,
+          backgroundColor: this.ColorRGBChart[index],
+          borderColor: 'rgb(0,0,0)',
+          hoverBorderWidth: 2,
+          maxBarThickness: 40,
+        }
+        return result
+      })
+
+
+      const RESULT = {
+        labels: LABELS,
+        data: l
+      }
+      // console.log('RESULT', RESULT);
+
+      resolve(RESULT)
+    }
+    )
+  }
+  private BuildDataForCauseChartModelCode(DATA: any) {
+    return new Promise((resolve) => {
+      const counter = {}
+      const newDATA = DATA.filter(d => d.causeOfDefect != undefined)
+      newDATA.forEach(function (obj) {
+        var key = JSON.stringify(obj.causeOfDefect)
+        counter[key] = (counter[key] || 0) + 1
+      })
+      let arrayCounter: any[] = []
+      for (const [key, value] of Object.entries(counter)) {
+        arrayCounter.push({
+          causeOfDefect: key,
+          count: value
+        })
+      }
+      const sortMax = arrayCounter.sort((firstItem, secondItem) => secondItem.count - firstItem.count);
+
+      const top5 = sortMax.slice(0, 5)
+      // console.log('top5', top5);
+      const newTop5 = top5.map((t: any) => {
+        const len: number = t.causeOfDefect.length
+        t.causeOfDefect = t.causeOfDefect.slice(1, len - 1)
+        return t
+      })
+      // console.log(newTop5);
+
+      const LABELS: any = newTop5.map((t: any) => t.causeOfDefect)
+      // console.log('label', LABELS);
+
+      const findModel: any = newTop5.map((t: any) => {
+        const a = newDATA.filter((r: any) => r.causeOfDefect == t.causeOfDefect)
+        return {
+          causeOfDefect: t.causeOfDefect,
+          data: a,
+          count: a.length
+        }
+      })
+      // console.log('findModel', findModel);
+
+      const mergeDataFindModel: any = findModel.reduce((prev: any, now: any) => {
+        return prev.concat(now.data)
+      }, [])
+      // console.log('mergeDataFindModel', mergeDataFindModel);
+
+      const uniqueModelCode: any = [...new Map(mergeDataFindModel.map(item => [item['ktcModelNumber'], item.ktcModelNumber])).values()]
+      // console.log('uniqueModelCode', uniqueModelCode);
+
+      const l = uniqueModelCode.map((code: any, index: any) => {
+        const temp = findModel.map((f: any) => {
+          return f.data.filter(i => i.ktcModelNumber == code).length
+        })
+        // console.log('code', code);
+        // console.log(temp);
+        const result = {
+          label: code,
+          data: temp,
+          fill: false,
+          backgroundColor: this.ColorRGBChart[index],
+          borderColor: 'rgb(0,0,0)',
+          hoverBorderWidth: 2,
+          maxBarThickness: 40,
+        }
+        return result
+      })
+
+
+      const RESULT = {
+        labels: LABELS,
+        data: l
+      }
+      // console.log('RESULT', RESULT);
+
+      resolve(RESULT)
+    }
+    )
+  }
+  private BuildDataForCauseChartProcess(DATA: any) {
+    return new Promise((resolve) => {
+      const counter = {}
+      const newDATA = DATA.filter(d => d.causeOfDefect != undefined)
+      newDATA.forEach(function (obj) {
+        var key = JSON.stringify(obj.causeOfDefect)
+        counter[key] = (counter[key] || 0) + 1
+      })
+      let arrayCounter: any[] = []
+      for (const [key, value] of Object.entries(counter)) {
+        arrayCounter.push({
+          causeOfDefect: key,
+          count: value
+        })
+      }
+      const sortMax = arrayCounter.sort((firstItem, secondItem) => secondItem.count - firstItem.count);
+
+      const top5 = sortMax.slice(0, 5)
+      // console.log('top5', top5);
+      const newTop5 = top5.map((t: any) => {
+        const len: number = t.causeOfDefect.length
+        t.causeOfDefect = t.causeOfDefect.slice(1, len - 1)
+        return t
+      })
+      // console.log(newTop5);
+
+      const LABELS: any = newTop5.map((t: any) => t.causeOfDefect)
+      // console.log('label', LABELS);
+
+      const findModel: any = newTop5.map((t: any) => {
+        const a = newDATA.filter((r: any) => r.causeOfDefect == t.causeOfDefect)
+        return {
+          causeOfDefect: t.causeOfDefect,
+          data: a,
+          count: a.length
+        }
+      })
+      // console.log('findModel', findModel);
+
+      const mergeDataFindModel: any = findModel.reduce((prev: any, now: any) => {
+        return prev.concat(now.data)
+      }, [])
+      // console.log('mergeDataFindModel', mergeDataFindModel);
+
+      const occur: any = [...new Map(mergeDataFindModel.map(item => [item['occurBName'], item.occurBName])).values()]
+      // console.log('uniqueModelCode', uniqueModelCode);
+
+      const l = occur.map((name: any, index: any) => {
+        const temp = findModel.map((f: any) => {
+          return f.data.filter(i => i.occurBName == name).length
+        })
+        // console.log('code', code);
+        // console.log(temp);
+        const result = {
+          label: name,
+          data: temp,
+          fill: false,
+          backgroundColor: this.ColorRGBChart[index],
+          borderColor: 'rgb(0,0,0)',
+          hoverBorderWidth: 2,
+          maxBarThickness: 40,
+        }
+        return result
+      })
+
+
+      const RESULT = {
+        labels: LABELS,
+        data: l
+      }
+      // console.log('RESULT', RESULT);
+
+      resolve(RESULT)
+    }
+    )
+  }
+
+
+
+  private BuildDataForDefectChartOLD(DATA: any) {
     return new Promise((resolve) => {
       const counter = {}
       DATA.forEach(function (obj) {
@@ -821,7 +1171,7 @@ export class DashboardV2Component implements OnInit {
     }
     )
   }
-  private BuildDataForDefectChartProcess(DATA: any) {
+  private BuildDataForDefectChartProcessOLD(DATA: any) {
     return new Promise((resolve) => {
       const counter = {}
       DATA.forEach(function (obj) {
@@ -901,7 +1251,7 @@ export class DashboardV2Component implements OnInit {
     }
     )
   }
-  private BuildDataForCauseChartProcess(DATA: any) {
+  private BuildDataForCauseChartProcessOLD(DATA: any) {
     return new Promise((resolve) => {
 
       // console.log('DATA', DATA);
@@ -988,7 +1338,7 @@ export class DashboardV2Component implements OnInit {
     }
     )
   }
-  private BuildDataForCauseChart(DATA: any) {
+  private BuildDataForCauseChartOLD(DATA: any) {
     return new Promise((resolve) => {
 
       // console.log('DATA', DATA);
@@ -1214,16 +1564,23 @@ export class DashboardV2Component implements OnInit {
 
 
   private getRandomColor() {
-    //   var letters = '0123456789ABCDEF';
-    //   var color = '#';
-    //   for (var i = 0; i < 6; i++) {
-    //     color += letters[Math.floor(Math.random() * 16)];
-    //   }
-    //   return color;
-    const number = (Math.floor(Math.random() * this.ColorStackChart.length))
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
     // console.log('number', number);
+    // const number = (Math.floor(Math.random() * this.ColorStackChart.length))
 
-    return this.ColorStackChart[number]
+    // return this.ColorStackChart[number]
+  }
+
+  randomRgbColor(min: number, max: number) {
+    let r = Math.random() * (max - min) + min
+    let g = Math.random() * (max - min) + min
+    let b = Math.random() * (max - min) + min
+    return `rgb(${r},${g},${b})`
   }
 
   // todo on toggle Defect ---- Model and Process
@@ -1251,19 +1608,19 @@ export class DashboardV2Component implements OnInit {
     const tempChartDefectPNL: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartPNL')
     this.ChartDefectPNL = tempChartDefectPNL
 
-    const tempChartDefectMDL: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartMDL')
+    const tempChartDefectMDL: any = await this.setChartDefectModelCode(ExtendModel.MDL, 'DefectChartMDL')
     this.ChartDefectMDL = tempChartDefectMDL
 
-    const tempChartDefectDST_FM: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartDST_FM')
+    const tempChartDefectDST_FM: any = await this.setChartDefectModelCode(ExtendModel.DST_FM, 'DefectChartDST_FM')
     this.ChartDefectDST_FM = tempChartDefectDST_FM
 
-    const tempChartDefectAMT_FM: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartAMT_FM')
+    const tempChartDefectAMT_FM: any = await this.setChartDefectModelCode(ExtendModel.AMT_FM, 'DefectChartAMT_FM')
     this.ChartDefectAMT_FM = tempChartDefectAMT_FM
 
-    const tempChartDefectAMT: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartAMT')
+    const tempChartDefectAMT: any = await this.setChartDefectModelCode(ExtendModel.AMT, 'DefectChartAMT')
     this.ChartDefectAMT = tempChartDefectAMT
 
-    const tempChartDefectSMT: any = await this.setChartDefectModelCode(ExtendModel.PNL, 'DefectChartSMT')
+    const tempChartDefectSMT: any = await this.setChartDefectModelCode(ExtendModel.SMT, 'DefectChartSMT')
     this.ChartDefectSMT = tempChartDefectSMT
   }
 

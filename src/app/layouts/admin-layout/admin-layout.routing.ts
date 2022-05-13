@@ -26,6 +26,9 @@ import { RejectForm4Component } from 'app/pages/reject-form4/reject-form4.compon
 import { ReportManageComponent } from 'app/pages/report-manage/report-manage.component';
 import { DashboardGuestComponent } from 'app/pages/dashboard-guest/dashboard-guest.component';
 import { DashboardV2Component } from 'app/pages/dashboard-v2/dashboard-v2.component';
+import { MasterManageComponent } from 'app/pages/equipment/master-manage/master-manage.component';
+import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equipment.component';
+import { EquipmentHomeComponent } from 'app/pages/equipment/equipment-home/equipment-home.component';
 // import { LoginComponent } from 'app/pages/login/login.component';
 
 // const path = "http://10.200.90.152:4014/Analysis-Report";
@@ -60,5 +63,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'reportManage', component: ReportManageComponent },
     // { path: 'test',            component: TestComponent }
 
-    { path: 'dashboard-guest', component: DashboardGuestComponent }
+    { path: 'dashboard-guest', component: DashboardGuestComponent },
+    
+    { path: 'equipment', component: EquipmentHomeComponent },
+    { path: 'equipment-master-manage', component: MasterManageComponent },
+    { path: 'add-equipment', component: AddEquipmentComponent },
 ];

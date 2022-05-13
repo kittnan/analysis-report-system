@@ -43,6 +43,9 @@ import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { AgGridModule } from 'ag-grid-angular';
 import { DashboardGuestComponent } from 'app/pages/dashboard-guest/dashboard-guest.component';
 import { DashboardV2Component } from 'app/pages/dashboard-v2/dashboard-v2.component';
+import { EquipmentHomeComponent } from 'app/pages/equipment/equipment-home/equipment-home.component';
+import { MasterManageComponent } from 'app/pages/equipment/master-manage/master-manage.component';
+import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equipment.component';
 
 
 @NgModule({
@@ -86,7 +89,11 @@ import { DashboardV2Component } from 'app/pages/dashboard-v2/dashboard-v2.compon
     MaillerComponent,
     ReportManageComponent,
 
+    EquipmentHomeComponent,
+    MasterManageComponent,
+    AddEquipmentComponent,
 
+    
     DashboardGuestComponent
   ]
 })

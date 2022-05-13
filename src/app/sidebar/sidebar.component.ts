@@ -7,12 +7,6 @@ export interface RouteInfo {
     icon: string;
     class: string;
 }
-export interface RouteInfo {
-    path: string;
-    title: string;
-    icon: string;
-    class: string;
-}
 
 // export const ROUTES: RouteInfo[] = [
 //     { path: '/dashboard', title: 'Dashboard', icon: 'nc-chart-bar-32', class: '' },
@@ -54,6 +48,9 @@ export const routesAdmin: RouteInfo[] = [
 
 ];
 
+export let equipmentItems: RouteInfo[] = [
+]
+
 @Component({
     moduleId: module.id,
     selector: 'sidebar-cmp',
@@ -62,6 +59,7 @@ export const routesAdmin: RouteInfo[] = [
 
 export class SidebarComponent implements OnInit {
     public menuItems: any[];
+    equipmentItemsTemp:RouteInfo[]
     public UserLevel1 = sessionStorage.getItem('UserLevel1');
     public UserLevel2 = sessionStorage.getItem('UserLevel2');
     public UserLevel3 = sessionStorage.getItem('UserLevel3');
@@ -187,8 +185,18 @@ export class SidebarComponent implements OnInit {
                                             { path: '/user', title: 'Users Manage', icon: 'bi bi-people', class: '' },
                                             { path: '/mailler', title: 'Mailler Manage', icon: 'bi bi-envelope', class: '' },
                                             { path: '/reportManage', title: 'Report Manage', icon: 'bi bi-file-earmark-spreadsheet', class: '' },
+                                            { path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '' },
                                         ]
                                         Permission = temp
+                                        const eTemp: RouteInfo[] = [
+                                            {
+                                                path: 'add-equipment', title: 'Add', icon: 'bi bi-plus-lg', class: ''
+                                            },
+                                            {
+                                                path: 'equipment-master-manage', title: 'Master', icon: 'bi bi bi-gear', class: ''
+                                            },
+                                        ]
+                                        this.equipmentItemsTemp = eTemp
                                     }
         }
 
@@ -201,7 +209,7 @@ export class SidebarComponent implements OnInit {
         if (toggle.style.height) {
             toggle.style.height = ''
         } else {
-            toggle.style.height = '250px'
+            toggle.style.height = '200px'
         }
 
     }
