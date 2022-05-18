@@ -35,36 +35,32 @@
 
 </div>
 
-<div *ngIf="Select_Master" class="col-6 mt-2 mx-auto" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+<div *ngIf="checkTable()" class="col-6 mt-2 mx-auto" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
 
 
 
     <table class="table table-striped ">
         <thead>
             <tr class="text-center">
-                <td colspan="2" width="10%">Master Name:</td>
+                <td width="10%">Master Name:</td>
                 <td>
                     {{Select_Master.master}}
-                    <i class="bi bi-gear text-warning" (click)="onClickEditMasterTable(modalEditMaster)" style="font-size: 1.3rem;"></i>
+                    <i class="bi bi-gear text-warning" (click)="onClickEditMasterTable(modalEditList)" style="font-size: 1.3rem;"></i>
                 </td>
             </tr>
             <tr>
-                <td width="5%"></td>
-                <td width="5%"></td>
+                <td>
+                    <span>No.</span>
+                </td>
                 <td class="text-center">List Name</td>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let item of Select_Master.lists; let i=index">
-                <td width="5%">
-                    <button class="" (click)="onClickDeleteListTable(i)">
-                        <i class="bi bi-trash text-danger" style="font-size: 1.3rem;"></i>
-                    </button>
-                </td>
-                <td width="5%">
-                    <i class="bi bi-gear text-warning" (click)="onClickEditListTable(i,modalEditList)" style="font-size: 1.3rem;"></i>
-                </td>
                 <td>
+                    <span>{{i+1}}</span>
+                </td>
+                <td class="text-center">
                     <span>
                         {{item}}
                     </span>
@@ -75,7 +71,7 @@
 
 </div>
 
-
+<!-- todo modal add  -->
 <ng-template #modalAddMaster let-modal>
     <div class="modal-header">
         <h4 class="modal-title">add new master</h4>
@@ -160,61 +156,109 @@
 
     </div>
     <div class="modal-footer">
-        <button [disabled]="checkSave()" type="button" class="btn btn-success" (click)="onSave()"><i class="bi bi-check"
-                style="font-size: 1rem;"></i>
-            Save</button>
-    </div>
-</ng-template>
-
-<ng-template #modalEditList let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">edit list</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="col-12">
-            <div class="form-group">
-                <input type="text" class="form-control" [(ngModel)]="editItem">
-            </div>
-        </div>
-
-
-
-    </div>
-    <div class="modal-footer">
-        <button [disabled]="checkEditList()" type="button" class="btn btn-success" (click)="onEditListSave()"><i
+        <button [disabled]="checkSave()" type="button" class="btn btn-success" (click)="onSave('insert')"><i
                 class="bi bi-check" style="font-size: 1rem;"></i>
             Save</button>
     </div>
 </ng-template>
+<!-- todo modal add  -->
 
-<ng-template #modalEditMaster let-modal>
+<!-- todo modal edit  -->
+<ng-template #modalEditList let-modal>
     <div class="modal-header">
         <h4 class="modal-title">edit master</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-
-
-
-
-
     <div class="modal-body">
+
         <div class="col-12">
-            <div class="form-group">
-                <input type="text" class="form-control" [(ngModel)]="editMaster">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="">Group</label>
+                        <select [(ngModel)]="group" class="custom-select">
+                            <option value=""></option>
+                            <option value="normal">Normal</option>
+                            <option value="country">Country</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="">Master Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="master">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="">new item</label>
+                        <input type="text" class="form-control" [(ngModel)]="newItem">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <button [disabled]="checkDisableAddItem()" class="btn btn-block" (click)="addItem()">add new
+                            item</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="lists.length!=0">
+                <div class="col-10 mx-auto">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr class="text-center">
+                                <td>Master Name:</td>
+                                <td colspan="2">{{master}}</td>
+                            </tr>
+                            <tr>
+                                <td width="5%"></td>
+                                <td colspan="2" class="text-center">List Name</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of lists; let i=index">
+                                <td width="5%">
+                                    <span class="text-danger" (click)="onClickDeleteList(i)">
+                                        <i class="bi bi-trash" style="font-size: 1.3rem;"></i>
+                                    </span>
+                                </td>
+                                <td width="5%">
+                                    <span class="text-warning" (click)="toggleEditList(i)">
+                                        <i class="bi bi-pencil-square" style="font-size: 1.3rem;"></i>
+                                    </span>
+                                </td>
+                                <ng-container *ngIf="listsBoo[i]; else elseTemplate">
+                                    <td>
+                                        <span>
+                                            {{item}}
+                                        </span>
+                                    </td>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    <td>
+                                        <input type="text" class="form-control" [(ngModel)]="editItem" (change)="onChangeEditItem(i)">
+                                    </td>
+                                </ng-template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-
-
     </div>
     <div class="modal-footer">
-        <button [disabled]="checkEditList()" type="button" class="btn btn-success" (click)="onEditMasterSave()"><i
+        <button [disabled]="checkSave()" type="button" class="btn btn-success" (click)="onSave('update')"><i
                 class="bi bi-check" style="font-size: 1rem;"></i>
             Save</button>
     </div>
 </ng-template>
+<!-- todo modal edit  -->

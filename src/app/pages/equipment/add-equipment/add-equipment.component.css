@@ -28,3 +28,12 @@ img {
 .bi-x-circle:hover {
     color: red;
 }
+
+.table-box {
+    cursor: pointer;
+    color: #333;
+}
+
+.table-box-clicked {
+    background-color: rgb(141, 233, 141);
+}

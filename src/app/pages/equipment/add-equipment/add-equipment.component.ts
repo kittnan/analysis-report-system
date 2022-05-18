@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { KeyObject } from 'crypto';
 import { MasterService } from '../master-manage/master.service';
 
 @Component({
@@ -18,7 +20,7 @@ export class AddEquipmentComponent implements OnInit {
     defectMode: new FormControl([], Validators.required),
     limitationOfSample: new FormControl('', Validators.required),
     country: new FormControl('', Validators.required),
-    province: new FormControl('', Validators.required),
+    province: new FormControl([], Validators.required),
     brand: new FormControl('', Validators.required),
     analysisFee: new FormControl('', Validators.required),
     urlImage: new FormControl('', Validators.required),
@@ -31,14 +33,16 @@ export class AddEquipmentComponent implements OnInit {
   MASTER: any
   Field: any
   DefectMode: any
-  Country:any
+  Country: any
 
   constructor(
-    private middleAPI: MasterService
+    private middleAPI: MasterService,
+    private modal: NgbModal
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.MASTER = await this.middleAPI.getMaster()
+    this.setCountry()
     this.setMaster()
   }
 
@@ -47,10 +51,27 @@ export class AddEquipmentComponent implements OnInit {
     console.log(this.Field);
     this.DefectMode = this.MASTER.find(m => (m.master).toLowerCase().includes('defectmode'))
     console.log(this.DefectMode);
-    this.Country = this.MASTER.find(m => (m.master).toLowerCase().includes('country'))
-    console.log(this.Country);
 
   }
+
+  // todo set Country
+  async setCountry() {
+    const country: any = await this.middleAPI.getCountry()
+    const newCountry: any = country.map((c: any) => {
+      const newLists: any = c.lists.map((l: any) => {
+        return {
+          name: l,
+          clicked: false
+        }
+      })
+      c.lists = newLists
+      return c
+    })
+    console.log(newCountry);
+    this.Country = newCountry
+
+  }
+  // todo set Country
 
   // todo Upload Image
 
@@ -89,10 +110,52 @@ export class AddEquipmentComponent implements OnInit {
 
   onClickDeleteModelModeList(index: number) {
     let oldValue: any = this.newEquipment.controls['defectMode'].value
-    oldValue.splice(index,1)
+    oldValue.splice(index, 1)
     this.newEquipment.controls['defectMode'].setValue(oldValue)
   }
   // todo ModelMode
+
+  // todo modal
+  openModal(content: any) {
+    this.modal.open(content, { size: 'lg' })
+  }
+  onClickBox(i, i2) {
+    this.Country[i].lists[i2].clicked == true ? this.Country[i].lists[i2].clicked = false : this.Country[i].lists[i2].clicked = true
+    console.log(this.Country[i].lists[i2]);
+
+    let tempExternal: any = this.newEquipment.controls['province'].value
+
+    const resultFind: any = tempExternal.find((t: any) => t.country == this.Country[i].master)
+    console.log(resultFind);
+    if (!resultFind) {
+      tempExternal.push({
+        country: this.Country[i].master,
+        lists: [this.Country[i].lists[i2].name]
+      })
+    } else {
+      const indexExternal: number = tempExternal.indexOf(resultFind)
+      console.log(indexExternal);
+      const resultFindLists: any = tempExternal[indexExternal].lists.find(r => r == this.Country[i].lists[i2].name)
+      if (resultFindLists) {
+        const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
+        tempExternal[indexExternal].lists.splice(indexList, 1)
+        if (tempExternal[indexExternal].lists.length == 0) {
+          const indexCountry:number = tempExternal.indexOf(tempExternal[indexExternal])
+          tempExternal.splice(indexCountry,1)
+        }
+      } else {
+        tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
+      }
+    }
+    this.newEquipment.controls['province'].setValue(tempExternal)
+    console.log(this.newEquipment.controls['province'].value);
+
+  }
+  // todo modal
+
+
+
+
 
 
 }

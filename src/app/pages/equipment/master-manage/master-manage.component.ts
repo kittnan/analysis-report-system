@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EquipmentService } from 'app/service/equipment.service';
+import { timeStamp } from 'console';
 import Swal from 'sweetalert2'
 import { MasterService } from './master.service';
 
@@ -20,6 +21,7 @@ export class MasterManageComponent implements OnInit {
   group: any = ''
   master: any = ''
   lists: any[] = []
+  listsBoo: boolean[] = []
 
   newItem: any
 
@@ -27,10 +29,7 @@ export class MasterManageComponent implements OnInit {
   Select_Master: any
 
   editItem: any
-  tempEditItem: any
 
-  editMaster: any
-  tempEditMaster: any
   constructor(
     private md: NgbModal,
     // private api: EquipmentService,
@@ -42,25 +41,169 @@ export class MasterManageComponent implements OnInit {
     // this.getMaster()
   }
 
+  // ? ----------------------------------------------- top menu
   async onChangeGroupSelect(e: any) {
-    this.Select_Master = ''
+    this.Select_Master = {}
     const groupName = e.target.value
+    this.Select_Master['group'] = groupName
     if (groupName == 'country') {
       this.MASTER = await this.middleAPI.getCountry()
-    }
-    if (groupName == 'normal') {
-      this.MASTER = await this.middleAPI.getMaster()
-    }
+    } else
+      if (groupName == 'normal') {
+        this.MASTER = await this.middleAPI.getMaster()
+      } else {
+        this.MASTER = []
+      }
 
   }
 
+  onChangeMasterSelect(e: any) {
+    const resultFind: any = this.MASTER.find(m => m.master == e.target.value)
+    this.Select_Master = { ...this.Select_Master, ...resultFind }
+    console.log(this.Select_Master);
 
+  }
+
+  // todo modal add new master
   onClickModalAddMaster(content: any) {
     this.group = ''
     this.master = ''
     this.lists = []
+    this.listsBoo = []
+    this.newItem = ''
     this.md.open(content, { size: 'lg' })
   }
+
+
+  // todo delete master
+  onClickDeleteMaster() {
+
+    if (this.Select_Master) {
+      Swal.fire({
+        title: ` Do you want to delete master: ${this.Select_Master.master}?`,
+        icon: 'question',
+        showCancelButton: true
+      }).then(r => {
+        if (r.isConfirmed) {
+          this.onDeleteMaster(this.Select_Master._id)
+        }
+      })
+    } else {
+      Swal.fire('Please select master delete target!!', '', 'warning')
+    }
+
+  }
+
+
+  // ? ----------------------------------------------- top menu
+
+
+
+
+
+
+  // ? --------------------------------- table
+
+  // todo click modal edit master
+  onClickEditMasterTable(content: any) {
+    console.log(this.Select_Master);
+    this.group = this.Select_Master.group
+    this.master = this.Select_Master.master
+    this.lists = this.Select_Master.lists
+    this.listsBoo = this.lists.map(l => true)
+
+    this.md.open(content, { size: 'lg' })
+
+  }
+  // ? --------------------------------- table
+
+
+  // ? --------------------------------- option
+
+  checkTable() {
+    if (this.Select_Master && this.Select_Master.lists != undefined) {
+      return true
+    }
+    return false
+  }
+
+  // todo update master
+  async updateMaster(body: any, group: string) {
+    try {
+
+      switch (group) {
+        case 'country':
+          await this.middleAPI.updateCountry(body._id, body)
+          break;
+        case 'normal':
+          await this.middleAPI.updateMaster(body._id, body)
+          break;
+      }
+      this.md.dismissAll()
+    } catch (error) {
+      console.log(error);
+    } finally {
+      Swal.fire('Success', '', 'success')
+    }
+
+  }
+  // todo update master
+
+  // todo call master name **require group name
+  async callMasterName() {
+    if (this.Select_Master.group == 'country') {
+      this.MASTER = await this.middleAPI.getCountry()
+    } else
+      if (this.Select_Master.group == 'normal') {
+        this.MASTER = await this.middleAPI.getMaster()
+      } else {
+        this.MASTER = []
+      }
+  }
+  // todo call master name **require group name
+
+  // todo delete master
+
+  async onDeleteMaster(id: any) {
+    console.log('onDeleteMaster');
+
+    try {
+      const resultDelete: any = await this.deleteMaster(this.Select_Master.group, id)
+      console.log('resultDelete', resultDelete);
+
+      if (resultDelete.deletedCount > 0) {
+
+        this.callMasterName()
+
+        this.Select_Master = undefined
+        Swal.fire('Success', '', 'success')
+      } else {
+        Swal.fire('Fail', '', 'error')
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  deleteMaster(group: string, id: string) {
+    return new Promise(async (resolve, reject) => {
+      if (group == 'normal') {
+        const resultDelete: any = await this.middleAPI.deleteMaster(id)
+        resolve(resultDelete)
+
+      } else if (group == 'country') {
+        const resultDelete: any = await this.middleAPI.deleteCountry(id)
+        resolve(resultDelete)
+      }
+
+
+    })
+  }
+  // todo delete master
+
+
+  // todo modal
 
   addItem() {
     const trimNewItem = this.newItem.trim()
@@ -69,11 +212,22 @@ export class MasterManageComponent implements OnInit {
     } else {
       this.lists.push(trimNewItem)
       this.newItem = ''
+      this.listsBoo = this.lists.map(l => true)
     }
   }
   onClickDeleteList(index: number) {
-    this.lists.splice(index, 1)
+    Swal.fire({
+      title: `Do you want to delete ${this.lists[index]}?`,
+      icon: 'question',
+      showCancelButton: true
+    }).then(r => {
+      if (r.isConfirmed) {
+        this.lists.splice(index, 1)
+        this.listsBoo = this.lists.map(l => true)
+      }
+    })
   }
+
 
   checkDisableAddItem() {
     if (this.newItem != '' && this.newItem != null && this.newItem != undefined) {
@@ -88,23 +242,62 @@ export class MasterManageComponent implements OnInit {
     }
     return true
   }
-
-  onSave() {
+  onSave(key: string) {
     Swal.fire({
       title: 'Do you want to Save?',
       icon: 'question',
       showCancelButton: true
     }).then(result => {
       if (result.isConfirmed) {
-        this.insertMaster()
+        if (key == 'insert') {
+          this.insertMaster()
+        } else if (key == 'update') {
+          console.log(this.group, this.Select_Master.group);
+          if (this.group != this.Select_Master.group) {
+            this.onSwapGroup()
+          } else {
+            this.updateMaster(this.Select_Master, this.group)
+          }
+
+        }
       }
     })
   }
 
+  async onSwapGroup() {
+    try {
+      switch (this.group) {
+        case 'country':
+          // this.insertCountry()
+          await this.middleAPI.insertCountry(this.Select_Master)
+          await this.middleAPI.deleteMaster(this.Select_Master._id)
+          this.callMasterName()
+
+          break;
+        case 'normal':
+          // this.insertNormal()
+          await this.middleAPI.insertMaster(this.Select_Master)
+          await this.middleAPI.deleteCountry(this.Select_Master._id)
+          this.callMasterName()
+
+          break;
+      }
+      this.md.dismissAll()
+      Swal.fire('Success', '', 'success')
+
+    } catch (error) {
+      console.log(error);
+
+    }
+
+  }
+
+
+
   insertMaster() {
 
     if (this.group == 'country') {
-      this.insertGroup()
+      this.insertCountry()
     }
     if (this.group == 'normal') {
       this.insertNormal()
@@ -113,7 +306,7 @@ export class MasterManageComponent implements OnInit {
 
 
   }
-  async insertGroup() {
+  async insertCountry() {
     try {
       let data: EquipmentMasterForm = {
         master: this.master,
@@ -155,138 +348,22 @@ export class MasterManageComponent implements OnInit {
     }
   }
 
+  toggleEditList(index: number) {
+    this.listsBoo[index] == true ? this.listsBoo[index] = false : this.listsBoo[index] = true
+    this.editItem = this.lists[index]
 
-  // ? delete master
-  onClickDeleteMaster() {
-
-    if (this.Select_Master) {
-      Swal.fire({
-        title: ` Do you want to delete master: ${this.Select_Master.master}?`,
-        icon: 'question',
-        showCancelButton: true
-      }).then(r => {
-        if (r.isConfirmed) {
-          this.deleteMaster(this.Select_Master._id)
-        }
-      })
-    } else {
-      Swal.fire('Please select master delete target!!', '', 'warning')
-    }
 
   }
-  async deleteMaster(id: any) {
-
-    try {
-      const resDelete: any = await this.middleAPI.deleteMaster(id)
-      if (resDelete.deletedCount > 0) {
-        this.ngOnInit()
-        this.Select_Master = undefined
-        Swal.fire('Success', '', 'success')
-      } else {
-        Swal.fire('Fail', '', 'error')
-      }
-    } catch (error) {
-
-    }
-
+  onChangeEditItem(index: number) {
+    console.log(this.editItem);
+    this.lists[index] = this.editItem
   }
 
-  // todo table
+  // todo modal
 
-  onChangeMasterSelect(e: any) {
-    this.Select_Master = this.MASTER.find(m => m.master == e.target.value)
-    console.log(this.Select_Master);
+  // ? --------------------------------- option
 
-  }
-  onClickDeleteListTable(index: number) {
-    Swal.fire({
-      title: `Do you want to delete ${this.Select_Master.lists[index]}?`,
-      icon: 'question',
-      showCancelButton: true,
-    }).then(r => {
-      if (r.isConfirmed) {
-        this.deleteListTable(index)
-      }
-    })
-  }
 
-  async deleteListTable(index: number) {
-    try {
-      this.Select_Master.lists.splice(index, 1)
-      console.log(this.Select_Master);
 
-      await this.middleAPI.updateMaster(this.Select_Master._id, this.Select_Master)
-      this.ngOnInit()
-      Swal.fire('Success', '', 'success')
-
-    } catch (error) {
-
-    }
-
-  }
-
-  onClickEditMasterTable(content: any) {
-    this.editMaster = this.Select_Master.master
-    this.md.open(content, { size: 'lg' })
-
-  }
-
-  onClickEditListTable(index: number, content: any) {
-    console.log(index);
-    this.tempEditItem = {
-      index: index,
-      data: this.Select_Master.lists[index]
-    }
-    this.editItem = this.Select_Master.lists[index]
-    this.md.open(content, { size: 'lg' })
-  }
-  checkEditList() {
-    if (this.editItem != '') {
-      return false
-    }
-    return true
-  }
-
-  onEditListSave() {
-    Swal.fire({
-      title: 'Do you want to Save?',
-      icon: 'question',
-      showCancelButton: true
-    }).then(r => {
-      if (r.isConfirmed) {
-        this.Select_Master.lists[this.tempEditItem.index] = this.editItem
-        this.updateMaster()
-      }
-    })
-  }
-
-  async updateMaster() {
-    try {
-      await this.middleAPI.updateMaster(this.Select_Master._id, this.Select_Master)
-      this.md.dismissAll()
-    } catch (error) {
-
-    }
-
-  }
-
-  onEditMasterSave() {
-    Swal.fire({
-      title: 'Do you want to edit master?',
-      icon: 'question',
-      showCancelButton: true
-    }).then(async rr => {
-      if (rr.isConfirmed) {
-        try {
-          this.Select_Master.master = this.editMaster
-          await this.middleAPI.updateMaster(this.Select_Master._id, this.Select_Master)
-          this.md.dismissAll()
-          Swal.fire('Success', '', 'success')
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    })
-  }
 
 }

@@ -72,7 +72,8 @@
                 </div>
                 <div class="col-12">
                     <label [ngClass]="{'invalidLabel': newEquipmentControl['province'].invalid}" for="">Province</label>
-                    <input type="text" class="form-control" formControlName="province">
+                    <button class="btn btn-block" (click)="openModal(placeModal)">Click</button>
+                    <!-- <input type="text" class="form-control" formControlName="province"> -->
                 </div>
                 <div class="col-12">
                     <label [ngClass]="{'invalidLabel': newEquipmentControl['brand'].invalid}" for="">Brand</label>
@@ -92,3 +93,48 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+<!-- todo modal edit  -->
+<ng-template #placeModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Select External Laboratory</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="col-12">
+            <div class="row" *ngFor="let item of Country; let i=index">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="table-dark text-center">
+                            <td [attr.colspan]="item.lists.length">
+                                {{item.master}}
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <ng-container *ngFor="let item2 of item.lists; let i2=index">
+                                <td class="table-box text-center" [ngClass]="{'table-box-clicked': item2.clicked}" (click)="onClickBox(i,i2)">
+                                    {{item2.name}}
+                                </td>
+                            </ng-container>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" (click)="modal.dismiss('Cross click');">
+            Close</button>
+    </div>
+</ng-template>
