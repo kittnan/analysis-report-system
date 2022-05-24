@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
+import { environment } from 'environments/environment'
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
+  appVersion :any
 
   username: any;
   password: any;
@@ -34,7 +37,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private api: HttpService,
     private route: Router
-  ) { }
+  ) {
+    this.appVersion = environment.appVersion
+   }
 
   ngOnInit(): void {
     // console.log(sessionStorage.getItem('loginStatus'));

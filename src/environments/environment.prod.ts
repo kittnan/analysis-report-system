@@ -23,7 +23,9 @@ export const environment = {
   Abnormal:"Abnormal Lot Level",
   Source:"Source Of Defect",
   TreatmentNG:"Treatment of NG",
-  AnalysisLevel:"Analysis Level"
+  AnalysisLevel:"Analysis Level",
+
+  appVersion: require('../../package.json').version,
   
 
 };
