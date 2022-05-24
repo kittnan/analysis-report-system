@@ -1,0 +1,221 @@
+<!-- <div class="col-12" style="background-color: white; padding: 5px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <h1>MANAGE EQUIPMENT</h1>
+</div> -->
+<div class="col-12 mt-0">
+    <!-- <div class="row">
+        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
+        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
+        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
+        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
+        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
+    </div> -->
+    <div class="row head-menu">
+        <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
+        <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
+        <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
+        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
+        <a class="ml-2 head-item" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
+            MANAGE</a>
+    </div>
+</div>
+<div class="col-12" style="background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <h5 class="head-page">MANAGE EQUIPMENT</h5>
+    <div class="row">
+        <div class="col-12">
+            <input type="search" class="form-control" (input)="onKeyUp($event)" placeholder="search">
+        </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="EquipmentFiltered">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="2%">no.</th>
+                        <th width="15%">img</th>
+                        <th>Equipment name</th>
+                        <th>Field</th>
+                        <th>Defect mode</th>
+                        <th>Limitation of sample</th>
+                        <th>Scope</th>
+                        <th>province</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let equipment of EquipmentFiltered; let indexEQ=index">
+                        <tr id="row-hover" (click)="openModalEditEquipment(modalEquipment, equipment)">
+                            <th>{{indexEQ +1}}</th>
+                            <td>
+                                <div class="zoom" *ngIf="equipment['urlImage']">
+                                    <img [src]="equipment['urlImage']['url']" alt="" width="100%" height="150px">
+                                </div>
+                                <div class="zoom" *ngIf="!equipment['urlImage']">
+                                    <img src="#" alt="" width="100%" height="150px">
+                                </div>
+                            </td>
+                            <td>{{equipment.analysisEquipmentName}}</td>
+                            <td>{{equipment.field}}</td>
+                            <td>{{equipment.defectMode}}</td>
+                            <td>{{equipment.limitationOfSample}}</td>
+                            <td>{{equipment.analysisScope}}</td>
+                            <td>
+                                <tr *ngFor="let province of equipment.province; let indexProvince=index">
+                                    <td>{{province.country}}</td>
+                                    <td>{{province.lists}}</td>
+                                </tr>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- todo modal edit  -->
+
+<ng-template #modalEquipment let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Equipment <button class="btn btn-sm text-danger" (click)="onDeleteEquipment()"><i class="bi bi-trash3"></i>delete</button> </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="col-12">
+            <div class="row">
+                <div class="col-6">
+                    <input type="file" hidden #uploadImg (change)="onUploadImage($event)" accept="image/*">
+
+                    <button id="btnOutput" class="btn btn-block" style="height: 500px;" (click)="uploadImg.click()">Upload
+                        image</button>
+                    <div class="img-hover-zoom">
+                        <img id="output" src="#" alt="" hidden width="100%" height="100%" (click)="uploadImg.click()">
+                    </div>
+                    <p *ngIf="FileUpload">
+                        <strong>filename: </strong><span>{{FileUpload.name}}</span>
+                        <strong class="ml-2">size: </strong><span>{{FileUpload.size |fileSize}}</span>
+                    </p>
+                </div>
+
+                <div class="col-6">
+                    <div class="row" [formGroup]="EquipmentForm">
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['analysisEquipmentName'].invalid}" for="">Analysis equipment name</label>
+                            <input type="text" class="form-control" formControlName="analysisEquipmentName">
+                        </div>
+                        <div class="col-12" *ngIf="Field">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['field'].invalid}" for="">Field</label>
+                            <select class="custom-select" formControlName="field">
+                                <option value=""></option>
+                                <option [value]="item" *ngFor="let item of Field.lists ; let i=index">{{item}}</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['analysisScope'].invalid}" for="">Analysis
+                                scope</label>
+                            <input type="text" class="form-control" formControlName="analysisScope">
+                        </div>
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['defectMode'].invalid}" for="">Defect
+                                mode</label>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <input list="defectModeList" class="form-control" id="defectMode">
+                                    <datalist id="defectModeList" *ngIf="DefectMode">
+                                        <option [value]="item" *ngFor="let item of DefectMode.lists; let i=index">
+                                    </datalist>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-block mt-0" (click)="onClickAddModelCode()">ADD</button>
+                                </div>
+                                <div class="col-12">
+                                    <span class="box-btn" *ngFor="let item of EquipmentFormControl['defectMode'].value; let i=index">
+                                        <span class="btn-list">{{item}} </span><i class="bi bi-x-circle" (click)="onClickDeleteModelModeList(i)"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['limitationOfSample'].invalid}" for="">Limitation of sample</label>
+                            <input type="text" class="form-control" formControlName="limitationOfSample">
+                        </div>
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['province'].invalid}" for="">Province</label>
+                            <button class="btn btn-block" (click)="openModal(modalProvince)">Click</button>
+                        </div>
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['brand'].invalid}" for="">Brand</label>
+                            <input type="text" class="form-control" formControlName="brand">
+                        </div>
+                        <div class="col-12">
+                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['analysisFee'].invalid}" for="">Analysis
+                                fee</label>
+                            <input type="text" class="form-control" formControlName="analysisFee">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button [disabled]="EquipmentFormControl.invalid" class="btn btn-block btn-primary" (click)="onClickSave()">SAVE</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button [disabled]="EquipmentForm.invalid" type="button" class="btn" (click)="modal.dismiss('Cross click');">
+            Close</button>
+    </div>
+</ng-template>
+
+
+
+
+<!-- todo modal select province -->
+<!-- todo modal edit  -->
+<ng-template #modalProvince let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Select External Laboratory</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <div class="col-12">
+            <div class="row" *ngFor="let item of Country; let i=index">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="table-dark text-center">
+                            <td [attr.colspan]="item.lists.length">
+                                {{item.master}}
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <ng-container *ngFor="let item2 of item.lists; let i2=index">
+                                <td class="table-box text-center" [ngClass]="{'table-box-clicked': item2.clicked}" (click)="onClickBox(i,i2)">
+                                    {{item2.name}}
+                                </td>
+                            </ng-container>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" (click)="modal.dismiss('Cross click');">
+            Close</button>
+    </div>
+</ng-template>

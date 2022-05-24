@@ -81,4 +81,46 @@ export class MasterService {
   }
   // todo country master
 
+  // todo equipment
+  getEquipment() {
+    return new Promise(resolve => {
+      this.api.GetEquipment().subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+
+  insertEquipment(data: any) {
+    return new Promise(resolve => {
+      this.api.InsertEquipment(data).subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+
+  updateEquipment(id: string, data: any) {
+    return new Promise(resolve => {
+      this.api.UpdateEquipment(id, data).subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+
+  deleteEquipment(id: string) {
+    return new Promise(resolve => {
+      this.api.DeleteEquipment(id).subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+  uploadImgEquipment(formData: FormData) {
+    return new Promise(resolve => {
+      this.api.UploadImgEquipment(formData).subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+  // todo equipment
+
+
 }

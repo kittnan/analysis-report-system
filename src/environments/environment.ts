@@ -6,9 +6,10 @@
 export const environment = {
   production: false,
   UrlApi:"http://localhost:4040",
-  // UrlApi:"http://10.200.90.152:4026",
-  equipment: 'equipment',
-  country:'country',
+  // UrlApi:"http://10.200.90.152:4026", 
+  master: 'equipment/master',
+  country:'equipment/country',
+  equipment:'equipment',
   IdModelNumber:"6188a3a852435d450fa8355f",
   IdProductPhase:"6188a3c852435d450fa83561",
   IdDefectCategory:"6188a3e052435d450fa83563",

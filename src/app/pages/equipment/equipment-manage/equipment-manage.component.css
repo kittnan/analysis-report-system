@@ -1,0 +1,116 @@
+#row-hover {
+    cursor: pointer;
+    transition: ease-in all 0.1s;
+}
+
+#row-hover:hover {
+    background-color: #90909038;
+    transition: ease-in all 0.1s;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.invalidLabel {
+    color: red;
+}
+
+img {
+    cursor: pointer;
+}
+
+.box-btn {
+    padding: 10px;
+    margin-right: 5px;
+}
+
+.btn-list {
+    background-color: beige;
+    border-radius: 10px;
+}
+
+.bi-x-circle {
+    cursor: pointer;
+}
+
+.bi-x-circle:hover {
+    color: red;
+}
+
+.table-box {
+    cursor: pointer;
+    color: #333;
+}
+
+.table-box-clicked {
+    background-color: rgb(141, 233, 141);
+}
+
+
+/* [1] The container */
+
+.img-hover-zoom {
+    height: 500px;
+    width: 100%;
+    /* [1.1] Set it as per your need */
+    overflow: hidden;
+    /* [1.2] Hide the overflowing of child elements */
+}
+
+
+/* [2] Transition property for smooth transformation of images */
+
+.img-hover-zoom img {
+    transition: transform .5s ease;
+}
+
+
+/* [3] Finally, transforming the image when container gets hovered */
+
+.img-hover-zoom:hover img {
+    transform: scale(1.05);
+}
+
+img {
+    z-index: 4;
+}
+
+thead,
+tfoot {
+    background: #eee;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid #ccc;
+    z-index: 5;
+}
+
+tfoot {
+    position: sticky;
+    bottom: 0;
+    border-top: 2px solid #ccc;
+}
+
+.zoom {
+    transition: transform .2s;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.zoom:hover {
+    -ms-transform: scale(1.7);
+    /* IE 9 */
+    -webkit-transform: scale(1.7);
+    /* Safari 3-8 */
+    transform: scale(1.7);
+    position: sticky;
+    z-index: 999;
+}
+
+.head-page {
+    border-bottom: 1px solid black;
+}

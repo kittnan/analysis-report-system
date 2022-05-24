@@ -1,16 +1,3 @@
-.bi-i {
-    cursor: pointer;
-}
-
-.bi-i:hover {
-    opacity: 70%;
-    text-decoration: underline;
-}
-
-.head-page {
-    border-bottom: 1px solid black;
-}
-
 thead,
 tfoot {
     background: #eee;
@@ -27,4 +14,14 @@ tfoot {
     position: sticky;
     bottom: 0;
     border-top: 2px solid #ccc;
+}
+
+#row-hover {
+    cursor: pointer;
+    transition: ease-in all 0.1s;
+}
+
+#row-hover:hover {
+    background-color: #90909038;
+    transition: ease-in all 0.1s;
 }

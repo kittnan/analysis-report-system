@@ -37,3 +37,7 @@ img {
 .table-box-clicked {
     background-color: rgb(141, 233, 141);
 }
+
+.head-page {
+    border-bottom: 1px solid black;
+}

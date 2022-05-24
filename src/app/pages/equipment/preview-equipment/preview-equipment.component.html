@@ -1,0 +1,73 @@
+<!-- <ng-template let-modal #preview id="preview"> -->
+<div class="modal-header">
+    <h4 class="modal-title">{{fromParent.analysisEquipmentName}} </h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal('dismiss')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+</div>
+<div class="modal-body">
+
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6 " *ngIf="fromParent.urlImage">
+                <div class="img-hover-zoom" height="500px">
+                    <img [src]="fromParent.urlImage['url']">
+                </div>
+                <p>
+                    <span> <label>Filename:</label> {{fromParent.urlImage['name']}}</span>
+                    <span class="ml-2"> <label>Size:</label> {{fromParent.urlImage['size'] |fileSize}}</span>
+                </p>
+            </div>
+            <div class="col-6 " *ngIf="!fromParent.urlImage" style="border: 1px solid #333;">
+                <img src="" height="500px">
+            </div>
+
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="">Analysis equipment name</label>
+                        <p>{{fromParent.analysisEquipmentName}}</p>
+                    </div>
+                    <div class="col-12">
+                        <label>Field</label>
+                        <p>{{fromParent.field}}</p>
+                    </div>
+                    <div class="col-12">
+                        <label>Analysis scope</label>
+                        <p>{{fromParent.analysisScope}}</p>
+                    </div>
+                    <div class="col-12">
+                        <label>Defect mode</label>
+                        <p>{{fromParent.defectMode}}</p>
+                    </div>
+                    <div class="col-12">
+                        <label>Limitation of sample</label>
+                        <p>{{fromParent.limitationOfSample}}</p>
+                    </div>
+                    <div class="col-12">
+                        <label>Province</label>
+                        <ng-container *ngFor="let item of fromParent.province; let i=index">
+                            <p>- {{item.country}}</p>
+                            <ul>
+                                <li *ngFor="let item2 of item.lists; let i2=index">{{item2}}</li>
+                            </ul>
+                            <!-- <p>{{fromParent.province| json}}</p> -->
+                        </ng-container>
+
+                    </div>
+                    <div class="col-12">
+                        <label>Brand</label>
+                        <p>{{fromParent.brand}}</p>
+                    </div>
+                    <div class="col-12">
+                        <label>Analysis fee</label>
+                        <p>{{fromParent.analysisFee}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- </ng-template> -->

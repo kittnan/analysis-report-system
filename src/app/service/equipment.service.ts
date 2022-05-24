@@ -11,22 +11,23 @@ export class EquipmentService {
     private http: HttpClient
   ) { }
   Url: any = environment.UrlApi
-  Equipment: any = environment.equipment
+  Master: any = environment.master
   Country: any = environment.country
+  Equipment: any = environment.equipment
 
   // todo normal master
 
   GetMaster(): Observable<any> {
-    return this.http.get(this.Url + "/" + this.Equipment);
+    return this.http.get(this.Url + "/" + this.Master);
   }
   InsertMaster(data: any): Observable<any> {
-    return this.http.post(this.Url + "/" + this.Equipment + "/add", data);
+    return this.http.post(this.Url + "/" + this.Master + "/add", data);
   }
   UpdateMaster(id: any, data: any): Observable<any> {
-    return this.http.put(this.Url + "/" + this.Equipment + "/update/" + id, data);
+    return this.http.put(this.Url + "/" + this.Master + "/update/" + id, data);
   }
   DeleteMaster(id: any): Observable<any> {
-    return this.http.delete(this.Url + "/" + this.Equipment + "/delete/" + id);
+    return this.http.delete(this.Url + "/" + this.Master + "/delete/" + id);
   }
   // todo normal master
 
@@ -45,5 +46,24 @@ export class EquipmentService {
     return this.http.delete(this.Url + "/" + this.Country + "/delete/" + id);
   }
   // todo country master
+
+  // todo equipment
+  GetEquipment(): Observable<any> {
+    return this.http.get(this.Url + "/" + this.Equipment);
+  }
+  InsertEquipment(data: any): Observable<any> {
+    return this.http.post(this.Url + "/" + this.Equipment + "/add", data);
+  }
+  UpdateEquipment(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/" + this.Equipment + "/update/" + id, data);
+  }
+  DeleteEquipment(id: any): Observable<any> {
+    return this.http.delete(this.Url + "/" + this.Equipment + "/delete/" + id);
+  }
+  UploadImgEquipment(formData: FormData): Observable<any> {
+    return this.http.post(this.Url + "/" + this.Equipment + "/upload", formData);
+  }
+  // todo equipment
+
 
 }

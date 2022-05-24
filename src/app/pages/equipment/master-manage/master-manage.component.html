@@ -1,8 +1,25 @@
-<div class="col-12" style="background-color: white; padding: 5px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+<!-- <div class="col-12" style="background-color: white; padding: 5px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
     <h1>EQUIPMENT MASTER MANAGE</h1>
+</div> -->
+<div class="col-12 mt-0">
+    <!-- <div class="row">
+        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
+        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
+        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
+        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
+        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
+    </div> -->
+    <div class="row head-menu">
+        <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
+        <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
+        <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
+        <a class="ml-2 head-item" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
+        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
+            MANAGE</a>
+    </div>
 </div>
-
-<div class="col-12 mt-2" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <h5 class="head-page">EQUIPMENT MASTER MANAGE</h5>
 
     <div class="row">
         <div class="col-3">
@@ -45,7 +62,7 @@
                 <td width="10%">Master Name:</td>
                 <td>
                     {{Select_Master.master}}
-                    <i class="bi bi-gear text-warning" (click)="onClickEditMasterTable(modalEditList)" style="font-size: 1.3rem;"></i>
+                    <i class="bi bi-gear text-warning bi-i" (click)="onClickEditMasterTable(modalEditList)" style="font-size: 1.3rem;"></i>
                 </td>
             </tr>
             <tr>
@@ -135,7 +152,7 @@
                             <tr *ngFor="let item of lists; let i=index">
                                 <td width="5%">
                                     <span class="text-danger" (click)="onClickDeleteList(i)">
-                                        <i class="bi bi-trash" style="font-size: 1.3rem;"></i>
+                                        <i class="bi bi-trash bi-i" style="font-size: 1.3rem;"></i>
                                     </span>
                                 </td>
                                 <td>
@@ -227,12 +244,12 @@
                             <tr *ngFor="let item of lists; let i=index">
                                 <td width="5%">
                                     <span class="text-danger" (click)="onClickDeleteList(i)">
-                                        <i class="bi bi-trash" style="font-size: 1.3rem;"></i>
+                                        <i class="bi bi-trash bi-i" style="font-size: 1.3rem;"></i>
                                     </span>
                                 </td>
                                 <td width="5%">
                                     <span class="text-warning" (click)="toggleEditList(i)">
-                                        <i class="bi bi-pencil-square" style="font-size: 1.3rem;"></i>
+                                        <i class="bi bi-pencil-square bi-i" style="font-size: 1.3rem;"></i>
                                     </span>
                                 </td>
                                 <ng-container *ngIf="listsBoo[i]; else elseTemplate">

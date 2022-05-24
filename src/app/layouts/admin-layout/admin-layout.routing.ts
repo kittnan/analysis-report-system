@@ -29,6 +29,8 @@ import { DashboardV2Component } from 'app/pages/dashboard-v2/dashboard-v2.compon
 import { MasterManageComponent } from 'app/pages/equipment/master-manage/master-manage.component';
 import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equipment.component';
 import { EquipmentHomeComponent } from 'app/pages/equipment/equipment-home/equipment-home.component';
+import { EquipmentManageComponent } from 'app/pages/equipment/equipment-manage/equipment-manage.component';
+import { SearchEquipmentComponent } from 'app/pages/equipment/search-equipment/search-equipment.component';
 // import { LoginComponent } from 'app/pages/login/login.component';
 
 // const path = "http://10.200.90.152:4014/Analysis-Report";
@@ -68,4 +70,6 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'equipment', component: EquipmentHomeComponent },
     { path: 'equipment-master-manage', component: MasterManageComponent },
     { path: 'add-equipment', component: AddEquipmentComponent },
+    { path: 'manage-equipment', component: EquipmentManageComponent },
+    { path: 'search-equipment', component: SearchEquipmentComponent },
 ];

@@ -1,0 +1,77 @@
+.card {
+    width: 25rem;
+    height: 25rem;
+    /* border: 2px outset rgba(51, 51, 51, 0.274); */
+    box-shadow: 1px 0px 6px 5px rgba(0, 0, 0, 0.17);
+}
+
+.card-body {
+    /* border-top: 1px outset rgba(51, 51, 51, 0.274); */
+}
+
+.non-img {
+    height: 100%;
+    /* border-radius: 10px; */
+    width: 100%;
+}
+
+#non-img {
+    height: 100%;
+    /* border-radius: 10px; */
+    width: 100%;
+}
+
+.title-content {
+    border-left: 15px solid black;
+    border-right: 15px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    font-weight: 700;
+    border-radius: 5px;
+    background-color: rgb(33, 33, 32);
+    color: rgb(226, 217, 219);
+}
+
+
+/* todo css card */
+
+.card-title {
+    background-color: #ee8753;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 4px;
+}
+
+.zoom {
+    transition: transform 0.2s;
+    height: 15rem;
+    /* margin: 0 auto; */
+    /* margin: 10px; */
+    width: 100%;
+}
+
+.zoom:hover {
+    /* -ms-transform: scale(1.4);
+    -webkit-transform: scale(1.4);
+    transform: scale(1.4);
+    position: sticky;
+    z-index: 999999;
+    box-shadow: 2px 2px 7px 2px rgba(0, 0, 0, 0.31);
+    border-radius: 10px; */
+}
+
+.card-img-top {
+    height: 100%;
+    width: 100%;
+    /* border-radius: 10px; */
+    /* padding-top: 20px; */
+}
+
+.more {
+    cursor: pointer;
+}
+
+label {
+    font-weight: 900;
+}

@@ -46,6 +46,9 @@ import { DashboardV2Component } from 'app/pages/dashboard-v2/dashboard-v2.compon
 import { EquipmentHomeComponent } from 'app/pages/equipment/equipment-home/equipment-home.component';
 import { MasterManageComponent } from 'app/pages/equipment/master-manage/master-manage.component';
 import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equipment.component';
+import { EquipmentManageComponent } from 'app/pages/equipment/equipment-manage/equipment-manage.component';
+import { SearchEquipmentComponent } from 'app/pages/equipment/search-equipment/search-equipment.component';
+import { PreviewEquipmentComponent } from 'app/pages/equipment/preview-equipment/preview-equipment.component';
 
 
 @NgModule({
@@ -92,7 +95,9 @@ import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equ
     EquipmentHomeComponent,
     MasterManageComponent,
     AddEquipmentComponent,
-
+    EquipmentManageComponent,
+    SearchEquipmentComponent,
+    PreviewEquipmentComponent,
     
     DashboardGuestComponent
   ]

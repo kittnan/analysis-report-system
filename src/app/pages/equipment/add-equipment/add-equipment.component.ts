@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { KeyObject } from 'crypto';
+import Swal from 'sweetalert2';
 import { MasterService } from '../master-manage/master.service';
 
 @Component({
@@ -19,11 +19,11 @@ export class AddEquipmentComponent implements OnInit {
     analysisScope: new FormControl('', Validators.required),
     defectMode: new FormControl([], Validators.required),
     limitationOfSample: new FormControl('', Validators.required),
-    country: new FormControl('', Validators.required),
+    country: new FormControl(''),
     province: new FormControl([], Validators.required),
     brand: new FormControl('', Validators.required),
     analysisFee: new FormControl('', Validators.required),
-    urlImage: new FormControl('', Validators.required),
+    urlImage: new FormControl({}, Validators.required),
   })
 
   public get newEquipmentControl(): any {
@@ -77,21 +77,28 @@ export class AddEquipmentComponent implements OnInit {
 
   onUploadImage(e: any) {
 
-    var btnOutput: any = document.getElementById('btnOutput')
-    var output: any = document.getElementById('output')
-    this.FileUpload = e.target.files[0]
-    if (e.target.files.length > 0) {
-      output.src = URL.createObjectURL(this.FileUpload);
-      output.onload = function () {
-        URL.revokeObjectURL(output.src) // free memory
-      }
-      btnOutput.hidden = true
-      output.hidden = false
+    if (e.target.files[0].size > 5000000) {
+      Swal.fire('Maximum size 5Mb!', '', 'warning')
     } else {
-      btnOutput.hidden = false
-      output.hidden = true
+      var btnOutput: any = document.getElementById('btnOutput')
+      var output: any = document.getElementById('output')
+      this.FileUpload = e.target.files[0]
+      console.log(this.FileUpload);
 
+      if (e.target.files.length > 0) {
+        output.src = URL.createObjectURL(this.FileUpload);
+        output.onload = function () {
+          URL.revokeObjectURL(output.src) // free memory
+        }
+        btnOutput.hidden = true
+        output.hidden = false
+      } else {
+        btnOutput.hidden = false
+        output.hidden = true
+
+      }
     }
+
   }
 
   // todo Upload Image
@@ -140,8 +147,8 @@ export class AddEquipmentComponent implements OnInit {
         const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
         tempExternal[indexExternal].lists.splice(indexList, 1)
         if (tempExternal[indexExternal].lists.length == 0) {
-          const indexCountry:number = tempExternal.indexOf(tempExternal[indexExternal])
-          tempExternal.splice(indexCountry,1)
+          const indexCountry: number = tempExternal.indexOf(tempExternal[indexExternal])
+          tempExternal.splice(indexCountry, 1)
         }
       } else {
         tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
@@ -153,7 +160,99 @@ export class AddEquipmentComponent implements OnInit {
   }
   // todo modal
 
+  // todo submit
+  onClickSubmit() {
 
+    Swal.fire({
+      title: 'Do you want to add new equipment?',
+      icon: 'question',
+      showCancelButton: true,
+    }).then(async r => {
+      if (r.isConfirmed) {
+        this.addNewEquipment()
+      }
+    })
+
+
+  }
+
+  // ? add new equipment
+  async addNewEquipment() {
+    try {
+      const equipment: any = await this.middleAPI.getEquipment()
+      await this.checkDuplicateEquipmentName(equipment, this.newEquipmentControl['analysisEquipmentName'].value)
+
+      if (this.FileUpload) {
+        const resultUpload: any = await this.uploadImg()
+        this.newEquipment.patchValue({
+          urlImage: resultUpload
+        })
+      }
+      await this.middleAPI.insertEquipment(this.newEquipment.value)
+      console.log(this.newEquipment.value);
+      Swal.fire('Success', '', 'success')
+      this.newEquipment.patchValue({
+        analysisEquipmentName: '',
+        field: '',
+        analysisScope: '',
+        defectMode: [],
+        limitationOfSample: '',
+        country: '',
+        province: [],
+        brand: '',
+        analysisFee: '',
+        urlImage: {},
+      })
+      var btnOutput: any = document.getElementById('btnOutput')
+      var output: any = document.getElementById('output')
+      btnOutput.hidden = false
+      output.hidden = true
+      this.FileUpload = undefined
+      this.ngOnInit()
+
+    } catch (error) {
+      console.log(error);
+      Swal.fire(error, '', 'error')
+    }
+
+  }
+  // ? add new equipment
+
+
+  //  ? check duplicate
+  checkDuplicateEquipmentName(equipment: any, newEquipmentName: any) {
+    return new Promise((resolve, reject) => {
+      console.log('checkDuplicateEquipmentName');
+      if (equipment.find(eq => eq.analysisEquipmentName == newEquipmentName)) reject('equipment name as duplicate')
+      resolve(true)
+    })
+  }
+  //  ? check duplicate
+
+
+  // ? upload img
+  uploadImg() {
+    return new Promise(async resolve => {
+      let formData: FormData = new FormData()
+      const oldFileName: any = this.FileUpload.name.split('.')
+      const type = '.' + oldFileName[oldFileName.length - 1]
+      const fileName = this.newEquipment.controls['analysisEquipmentName'].value + type
+      formData.append('File', this.FileUpload, fileName)
+      console.log('form data before upload', formData);
+      const result: any = await this.middleAPI.uploadImgEquipment(formData)
+      console.log('result upload img: ', result);
+      const urlImage = {
+        size: this.FileUpload.size,
+        url: result + '?' + this.FileUpload.lastModified,
+        name: fileName
+      }
+      resolve(urlImage)
+    })
+  }
+  // ? upload img
+
+
+  // todo submit
 
 
 
