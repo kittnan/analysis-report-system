@@ -22,7 +22,7 @@ export class AddEquipmentComponent implements OnInit {
     country: new FormControl(''),
     province: new FormControl([], Validators.required),
     brand: new FormControl('', Validators.required),
-    analysisFee: new FormControl('', Validators.required),
+    // analysisFee: new FormControl('', Validators.required),
     urlImage: new FormControl({}, Validators.required),
   })
 
@@ -33,6 +33,7 @@ export class AddEquipmentComponent implements OnInit {
   MASTER: any
   Field: any
   DefectMode: any
+  Brands: any
   Country: any
 
   constructor(
@@ -51,6 +52,8 @@ export class AddEquipmentComponent implements OnInit {
     console.log(this.Field);
     this.DefectMode = this.MASTER.find(m => (m.master).toLowerCase().includes('defectmode'))
     console.log(this.DefectMode);
+    this.Brands = this.MASTER.find(m => (m.master).toLowerCase().includes('brands'))
+    console.log(this.Brands);
 
   }
 
@@ -59,9 +62,13 @@ export class AddEquipmentComponent implements OnInit {
     const country: any = await this.middleAPI.getCountry()
     const newCountry: any = country.map((c: any) => {
       const newLists: any = c.lists.map((l: any) => {
+        // return {
+        //   name: l,
+        //   clicked: false
+        // }
         return {
-          name: l,
-          clicked: false
+          clicked: false,
+          ...l
         }
       })
       c.lists = newLists
@@ -158,6 +165,10 @@ export class AddEquipmentComponent implements OnInit {
     console.log(this.newEquipment.controls['province'].value);
 
   }
+  onCheckBox(indexCountry: number, indexList: number, e: any) {
+    console.log('event',e.target.checked);
+    
+  }
   // todo modal
 
   // todo submit
@@ -200,7 +211,7 @@ export class AddEquipmentComponent implements OnInit {
         country: '',
         province: [],
         brand: '',
-        analysisFee: '',
+        // analysisFee: '',
         urlImage: {},
       })
       var btnOutput: any = document.getElementById('btnOutput')

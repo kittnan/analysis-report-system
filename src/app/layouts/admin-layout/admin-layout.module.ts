@@ -49,6 +49,7 @@ import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equ
 import { EquipmentManageComponent } from 'app/pages/equipment/equipment-manage/equipment-manage.component';
 import { SearchEquipmentComponent } from 'app/pages/equipment/search-equipment/search-equipment.component';
 import { PreviewEquipmentComponent } from 'app/pages/equipment/preview-equipment/preview-equipment.component';
+import { HeadMenuComponent } from 'app/pages/equipment/head-menu/head-menu.component';
 
 
 @NgModule({
@@ -98,6 +99,7 @@ import { PreviewEquipmentComponent } from 'app/pages/equipment/preview-equipment
     EquipmentManageComponent,
     SearchEquipmentComponent,
     PreviewEquipmentComponent,
+    HeadMenuComponent,
     
     DashboardGuestComponent
   ]

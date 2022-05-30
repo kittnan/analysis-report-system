@@ -79,6 +79,21 @@ export class MasterService {
       })
     })
   }
+  uploadQuotation(formData: FormData) {
+    return new Promise(resolve => {
+      this.api.UploadQuotation(formData).subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+  removeQuotation(filename:any) {
+    return new Promise(resolve => {
+      this.api.RemoveQuotation(filename).subscribe(res => {
+        resolve(res)
+      })
+    })
+  }
+
   // todo country master
 
   // todo equipment

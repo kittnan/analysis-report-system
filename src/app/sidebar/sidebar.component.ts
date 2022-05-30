@@ -185,7 +185,7 @@ export class SidebarComponent implements OnInit {
                                             { path: '/user', title: 'Users Manage', icon: 'bi bi-people', class: '' },
                                             { path: '/mailler', title: 'Mailler Manage', icon: 'bi bi-envelope', class: '' },
                                             { path: '/reportManage', title: 'Report Manage', icon: 'bi bi-file-earmark-spreadsheet', class: '' },
-                                            { path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '' },
+                                            // { path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '' },
                                         ]
                                         Permission = temp
                                         const eTemp: RouteInfo[] = [
@@ -201,6 +201,10 @@ export class SidebarComponent implements OnInit {
         }
 
         this.menuItems = Permission
+        const equipment = {
+            path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: ''
+        }
+        this.menuItems.push(equipment)
 
     }
 

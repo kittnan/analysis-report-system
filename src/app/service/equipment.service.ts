@@ -29,6 +29,7 @@ export class EquipmentService {
   DeleteMaster(id: any): Observable<any> {
     return this.http.delete(this.Url + "/" + this.Master + "/delete/" + id);
   }
+
   // todo normal master
 
 
@@ -45,6 +46,13 @@ export class EquipmentService {
   DeleteCountry(id: any): Observable<any> {
     return this.http.delete(this.Url + "/" + this.Country + "/delete/" + id);
   }
+  UploadQuotation(formData: FormData): Observable<any> {
+    return this.http.post(this.Url + "/" + this.Country + "/upload", formData);
+  }
+  RemoveQuotation(filename:any): Observable<any> {
+    return this.http.post(this.Url + "/" + this.Country + "/remove", filename);
+  }
+
   // todo country master
 
   // todo equipment

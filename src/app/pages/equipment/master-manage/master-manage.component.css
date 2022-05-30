@@ -28,3 +28,12 @@ tfoot {
     bottom: 0;
     border-top: 2px solid #ccc;
 }
+
+.row-text-underline {
+    cursor: pointer;
+    color: blue;
+}
+
+.row-text-underline :hover {
+    text-decoration: underline;
+}

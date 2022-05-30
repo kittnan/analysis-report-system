@@ -25,3 +25,19 @@ tfoot {
     background-color: #90909038;
     transition: ease-in all 0.1s;
 }
+
+.zoom {
+    transition: transform .2s;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.zoom:hover {
+    -ms-transform: scale(1.7);
+    /* IE 9 */
+    -webkit-transform: scale(1.7);
+    /* Safari 3-8 */
+    transform: scale(1.7);
+    position: sticky;
+    z-index: 999;
+}

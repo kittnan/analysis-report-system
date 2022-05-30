@@ -1,0 +1,13 @@
+<div class="row head-menu">
+    <a class="mr-2 head-item" routerLinkActive="text-primary" *ngFor="let item of RouterMenu; let i=index" [routerLink]="item.path"><i [class]="item.icon"></i>
+        {{item.title}}</a>
+    <!-- <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/search-equipment']"><i
+            class="bi bi-search"></i> SEARCH</a>
+    <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/add-equipment']"><i
+            class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
+    <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/manage-equipment']"><i
+            class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
+    <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/equipment-master-manage']"><i
+            class="bi bi-gear-wide"></i> MASTER
+        MANAGE</a> -->
+</div>

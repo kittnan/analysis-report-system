@@ -9,14 +9,17 @@
         <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
         <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
     </div> -->
-    <div class="row head-menu">
+    <!-- <div class="row head-menu">
         <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
         <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
         <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
         <a class="ml-2 head-item" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
-        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
+        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/equipment-master-manage']"><i
+                class="bi bi-gear-wide"></i> MASTER
             MANAGE</a>
-    </div>
+    </div> -->
+    <app-head-menu></app-head-menu>
+
 </div>
 <div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
     <h5 class="head-page">EQUIPMENT MASTER MANAGE</h5>
@@ -24,7 +27,7 @@
     <div class="row">
         <div class="col-3">
             <label for="">Group</label>
-            <select class="custom-select" (change)="onChangeGroupSelect($event)">
+            <select class="custom-select" (change)="onChangeGroupSelect($event)" id="top-group">
                 <option value=""></option>
                 <option value="normal">Normal</option>
                 <option value="country">Country</option>
@@ -55,36 +58,70 @@
 <div *ngIf="checkTable()" class="col-6 mt-2 mx-auto" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
 
 
+    <ng-container *ngIf="Select_Master.group=='normal'">
+        <table class="table table-striped ">
+            <thead>
+                <tr class="text-center">
+                    <td width="10%">Master Name:</td>
+                    <td>
+                        {{Select_Master.master}}
+                        <i class="bi bi-gear text-warning bi-i" (click)="onClickEditMasterTable(modalEditList)" style="font-size: 1.3rem;"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>No.</span>
+                    </td>
+                    <td class="text-center">List Name</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of Select_Master.lists; let i=index">
+                    <td>
+                        <span>{{i+1}}</span>
+                    </td>
+                    <td class="text-center">
+                        <span>
+                            {{item}}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-container>
 
-    <table class="table table-striped ">
-        <thead>
-            <tr class="text-center">
-                <td width="10%">Master Name:</td>
-                <td>
-                    {{Select_Master.master}}
-                    <i class="bi bi-gear text-warning bi-i" (click)="onClickEditMasterTable(modalEditList)" style="font-size: 1.3rem;"></i>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>No.</span>
-                </td>
-                <td class="text-center">List Name</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of Select_Master.lists; let i=index">
-                <td>
-                    <span>{{i+1}}</span>
-                </td>
-                <td class="text-center">
-                    <span>
-                        {{item}}
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <ng-container *ngIf="Select_Master.group=='country'">
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th [attr.colspan]="4" class="text-center">
+                        {{Select_Master.master}}
+                        <i class="bi bi-gear text-warning bi-i" style="font-size: 1.3rem;" (click)="onEditCountry(modalEditList)"></i>
+                    </th>
+                </tr>
+                <tr>
+                    <th>No.</th>
+                    <th>name</th>
+                    <th>file</th>
+                    <th>quotation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of Select_Master['lists']; let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{item.name}}</td>
+                    <td *ngIf="item.files.length >0">
+                        <a [download]="item.files[0].name" target="_blank" [href]="item.files[0].url">
+                            Quotation pdf file
+                        </a>
+                    </td>
+                    <td *ngIf="item.files.length ==0">No file</td>
+                    <td>{{item.quotation.analysisFee}} {{item.quotation.currency}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-container>
+
 
 </div>
 
@@ -103,7 +140,7 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label for="">Group</label>
-                        <select [(ngModel)]="group" class="custom-select">
+                        <select [(ngModel)]="group" class="custom-select" (change)="onChangeGroupModal();">
                             <option value=""></option>
                             <option value="normal">Normal</option>
                             <option value="country">Country</option>
@@ -111,70 +148,179 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="">Master Name</label>
-                        <input type="text" class="form-control" [(ngModel)]="master">
+            <ng-container *ngIf="group=='normal'">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">Master Name</label>
+                            <input type="text" class="form-control" [(ngModel)]="master">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="">new item</label>
-                        <input type="text" class="form-control" [(ngModel)]="newItem">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">new item</label>
+                            <input type="text" class="form-control" [(ngModel)]="newItem">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <button [disabled]="checkDisableAddItem()" class="btn btn-block" (click)="addItem()">add new
-                            item</button>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button [disabled]="checkDisableAddItem()" class="btn btn-block" (click)="addItem()">add new
+                                item</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row" *ngIf="lists.length!=0">
-                <div class="col-10 mx-auto">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr class="text-center">
-                                <td>Master Name:</td>
-                                <td>{{master}}</td>
-                            </tr>
-                            <tr>
-                                <td width="5%"></td>
-                                <td class="text-center">List Name</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of lists; let i=index">
-                                <td width="5%">
-                                    <span class="text-danger" (click)="onClickDeleteList(i)">
-                                        <i class="bi bi-trash bi-i" style="font-size: 1.3rem;"></i>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span>
-                                        {{item}}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="row" *ngIf="lists.length!=0">
+                    <div class="col-10 mx-auto">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr class="text-center">
+                                    <td>Master Name:</td>
+                                    <td>{{master}}</td>
+                                </tr>
+                                <tr>
+                                    <td width="5%"></td>
+                                    <td class="text-center">List Name</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of lists; let i=index">
+                                    <td width="5%">
+                                        <span class="text-danger" (click)="onClickDeleteList(i)">
+                                            <i class="bi bi-trash bi-i" style="font-size: 1.3rem;"></i>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            {{item}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+
+            </ng-container>
+            <ng-container *ngIf="group=='country'">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">New country name</label>
+                            <input type="text" class="form-control" [(ngModel)]="newCountry">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">New province name</label>
+                            <input type="text" class="form-control" [(ngModel)]="newProvince">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">new item</label>
+                            <!-- <input type="file" hidden #upload (change)="onUploadImage($event)" accept="image/*"> -->
+                            <input type="file" id="uploadFile" hidden #uploadFile (change)="onUploadFile($event)">
+                            <button *ngIf="!newFile" id="btnUploadFile" class="btn btn-block mt-0" (click)="uploadFile.click()">Upload quotation </button>
+                            <p *ngIf="newFile">
+                                <span style="color: blue; text-decoration: underline; cursor: pointer;" (click)="uploadFile.click()">{{newFile.name}} ({{newFile.size | fileSize}})</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">AnalysisFee</label>
+                            <input type="number" class="form-control" id="newAnalysisFee" (change)="onChangeAnalysisFee($event)" min="0">
+                        </div>
+                    </div>
+                    <div class="col-6" *ngIf="Currency">
+                        <div class="form-group">
+                            <label for="">Currency</label>
+                            <select class="custom-select" (change)="onChangeCurrency($event)" id="currency">
+                                <option value=""></option>
+                                <option *ngFor="let item of Currency['lists']; let i=index" [value]="item">{{item}}
+                                </option>
+                            </select>
+                            <!-- <input type="file" class="form-control" [(ngModel)]="newFile"> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button [disabled]="checkAddProvince()" class="btn btn-block" (click)="addProvince()">add
+                                new
+                                item</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="newLists.length!=0">
+                    <div class="col-10 mx-auto">
+                        <table class="table table-striped text-center">
+                            <thead>
+                                <tr>
+                                    <!-- <th>Master Name:</th> -->
+                                    <th colspan="2">{{newCountry}}</th>
+                                    <th>file</th>
+                                    <th>analysisFee</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container>
+                                    <tr *ngFor="let item of newLists; let i=index">
+                                        <td width="5%" class="text-center">
+                                            <i (click)="onDeleteCountryList(i)" class="bi bi-trash text-danger" style="font-size: 1.3rem; cursor: pointer;"></i>
+                                        </td>
+                                        <td class="text-center">
+                                            {{item.name}}
+                                        </td>
+                                        <td *ngIf="item.files.length>0">
+                                            <tr *ngFor="let file of item.files; let indexFile=index" class="text-center">
+                                                <span>
+                                            {{file.name}} ({{file.size |fileSize}})
+                                        </span>
+                                            </tr>
+                                        </td>
+                                        <td *ngIf="item.files.length ==0">
+                                            no file
+                                        </td>
+
+                                        <td class="text-center">
+                                            {{item.quotation.analysisFee}} {{item.quotation.currency}}
+                                        </td>
+
+                                    </tr>
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </ng-container>
+
         </div>
 
 
 
 
-
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" *ngIf="group=='normal'">
         <button [disabled]="checkSave()" type="button" class="btn btn-success" (click)="onSave('insert')"><i
                 class="bi bi-check" style="font-size: 1rem;"></i>
+            Save</button>
+    </div>
+    <div class="modal-footer" *ngIf="group=='country'">
+        <button [disabled]="newLists.length==0" type="button" class="btn btn-success" (click)="onSaveCountry('insert')"><i class="bi bi-check" style="font-size: 1rem;"></i>
             Save</button>
     </div>
 </ng-template>
@@ -195,7 +341,7 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label for="">Group</label>
-                        <select [(ngModel)]="group" class="custom-select">
+                        <select disabled [(ngModel)]="group" class="custom-select">
                             <option value=""></option>
                             <option value="normal">Normal</option>
                             <option value="country">Country</option>
@@ -203,79 +349,202 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="">Master Name</label>
-                        <input type="text" class="form-control" [(ngModel)]="master">
+
+            <ng-container *ngIf="group=='normal'">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">Master Name</label>
+                            <input type="text" class="form-control" [(ngModel)]="master">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="">new item</label>
-                        <input type="text" class="form-control" [(ngModel)]="newItem">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">new item</label>
+                            <input type="text" class="form-control" [(ngModel)]="newItem">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <button [disabled]="checkDisableAddItem()" class="btn btn-block" (click)="addItem()">add new
-                            item</button>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button [disabled]="checkDisableAddItem()" class="btn btn-block" (click)="addItem()">add new
+                                item</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row" *ngIf="lists.length!=0">
-                <div class="col-10 mx-auto">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr class="text-center">
-                                <td>Master Name:</td>
-                                <td colspan="2">{{master}}</td>
-                            </tr>
-                            <tr>
-                                <td width="5%"></td>
-                                <td colspan="2" class="text-center">List Name</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of lists; let i=index">
-                                <td width="5%">
-                                    <span class="text-danger" (click)="onClickDeleteList(i)">
-                                        <i class="bi bi-trash bi-i" style="font-size: 1.3rem;"></i>
-                                    </span>
-                                </td>
-                                <td width="5%">
-                                    <span class="text-warning" (click)="toggleEditList(i)">
-                                        <i class="bi bi-pencil-square bi-i" style="font-size: 1.3rem;"></i>
-                                    </span>
-                                </td>
-                                <ng-container *ngIf="listsBoo[i]; else elseTemplate">
-                                    <td>
-                                        <span>
-                                            {{item}}
+                <div class="row" *ngIf="lists.length!=0">
+                    <div class="col-10 mx-auto">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr class="text-center">
+                                    <td>Master Name:</td>
+                                    <td colspan="2">{{master}}</td>
+                                </tr>
+                                <tr>
+                                    <td width="5%"></td>
+                                    <td colspan="2" class="text-center">List Name</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of lists; let i=index">
+                                    <td width="5%">
+                                        <span class="text-danger" (click)="onClickDeleteList(i)">
+                                            <i class="bi bi-trash bi-i" style="font-size: 1.3rem;"></i>
                                         </span>
                                     </td>
-                                </ng-container>
-                                <ng-template #elseTemplate>
-                                    <td>
-                                        <input type="text" class="form-control" [(ngModel)]="editItem" (change)="onChangeEditItem(i)">
+                                    <td width="5%">
+                                        <span class="text-warning" (click)="toggleEditList(i)">
+                                            <i class="bi bi-pencil-square bi-i" style="font-size: 1.3rem;"></i>
+                                        </span>
                                     </td>
-                                </ng-template>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <ng-container *ngIf="listsBoo[i]; else elseTemplate">
+                                        <td>
+                                            <span>
+                                                {{item}}
+                                            </span>
+                                        </td>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                        <td>
+                                            <input type="text" class="form-control" [(ngModel)]="editItem" (change)="onChangeEditItem(i)">
+                                        </td>
+                                    </ng-template>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+
+            </ng-container>
+
+
+            <ng-container *ngIf="group=='country'">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">Country name</label>
+                            <input type="text" class="form-control" [(ngModel)]="newCountry">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">Province name</label>
+                            <input type="text" class="form-control" [(ngModel)]="newProvince">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">new item</label>
+                            <input type="file" id="uploadFile" hidden #uploadFile (change)="onUploadFile($event)">
+                            <button *ngIf="!newFile" id="btnUploadFile" class="btn btn-block mt-0" (click)="uploadFile.click()">Upload quotation </button>
+                            <p *ngIf="newFile">
+                                <span style="color: blue; text-decoration: underline; cursor: pointer;" (click)="uploadFile.click()">{{newFile.name}} ({{newFile.size | fileSize}})</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">AnalysisFee</label>
+                            <input type="number" class="form-control" id="newAnalysisFee" (change)="onChangeAnalysisFee($event)" min="0">
+                        </div>
+                    </div>
+                    <div class="col-6" *ngIf="Currency">
+                        <div class="form-group">
+                            <label for="">Currency</label>
+                            <select class="custom-select" (change)="onChangeCurrency($event)" id="currency">
+                                <option *ngFor="let item of Currency['lists']; let i=index" [value]="item">{{item}}
+                                </option>
+                            </select>
+                            <!-- <input type="file" class="form-control" [(ngModel)]="newFile"> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <button [disabled]="checkAddProvince()" class="btn btn-block" (click)="addProvince()">add
+                                new item</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="newLists.length!=0">
+                    <div class="col-10 mx-auto">
+                        <table class="table table-striped text-center">
+                            <thead>
+                                <tr>
+                                    <!-- <th>Master Name:</th> -->
+                                    <th colspan="2">{{newCountry}}</th>
+                                    <th>file</th>
+                                    <th>analysisFee</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container>
+                                    <tr *ngFor="let item of newLists; let i=index">
+                                        <td width="5%" class="text-center">
+                                            <i (click)="onDeleteCountryList(i)" class="bi bi-trash text-danger" style="font-size: 1.3rem; cursor: pointer;"></i>
+                                        </td>
+                                        <td class="text-center">
+                                            <a class="row-text-underline" (click)="onClickEditCountryList(newLists,item,i,'province')">
+                                                {{item.name}}
+                                            </a>
+                                        </td>
+                                        <td *ngIf="item.files.length>0">
+                                            <tr *ngFor="let file of item.files; let indexFile=index" class="text-center">
+                                                <a class="row-text-underline" (click)="onClickEditCountryList(newLists,item,i,'file')">
+                                            {{file.name}} ({{file.size |fileSize}})
+                                        </a>
+                                            </tr>
+                                        </td>
+                                        <td *ngIf="item.files.length ==0">
+                                            <a class="row-text-underline" (click)="onClickEditCountryList(newLists,item,i,'file')">
+                                            No file
+                                        </a>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <a class="row-text-underline" (click)="onClickEditCountryList(newLists,item,i,'analysisFee')">
+                                            {{item.quotation.analysisFee}}
+                                        </a>
+                                            <a class="row-text-underline" (click)="onClickEditCountryList(newLists,item,i,'currency')">
+                                            {{item.quotation.currency}}
+                                        </a>
+                                        </td>
+
+                                    </tr>
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+
+
+
+
+
         </div>
 
     </div>
-    <div class="modal-footer">
-        <button [disabled]="checkSave()" type="button" class="btn btn-success" (click)="onSave('update')"><i
-                class="bi bi-check" style="font-size: 1rem;"></i>
+    <div class="modal-footer" *ngIf="group=='normal'">
+        <button type="button" class="btn btn-success" (click)="onSave('update')"><i class="bi bi-check"
+                style="font-size: 1rem;"></i>
             Save</button>
     </div>
+    <div class="modal-footer" *ngIf="group=='country'">
+        <button [disabled]="newLists.length==0" type="button" class="btn btn-success" (click)="onSaveCountry('update')"><i class="bi bi-check" style="font-size: 1rem;"></i>
+            Save</button>
+    </div>
+
+
 </ng-template>
 <!-- todo modal edit  -->
