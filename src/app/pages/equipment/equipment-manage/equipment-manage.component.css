@@ -114,3 +114,9 @@ tfoot {
 .head-page {
     border-bottom: 1px solid black;
 }
+
+.checkbox {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}

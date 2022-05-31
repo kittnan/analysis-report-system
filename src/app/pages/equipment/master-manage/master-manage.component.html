@@ -1,23 +1,5 @@
-<!-- <div class="col-12" style="background-color: white; padding: 5px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
-    <h1>EQUIPMENT MASTER MANAGE</h1>
-</div> -->
 <div class="col-12 mt-0">
-    <!-- <div class="row">
-        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
-        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
-        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
-        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
-        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
-    </div> -->
-    <!-- <div class="row head-menu">
-        <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
-        <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
-        <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
-        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/equipment-master-manage']"><i
-                class="bi bi-gear-wide"></i> MASTER
-            MANAGE</a>
-    </div> -->
+
     <app-head-menu></app-head-menu>
 
 </div>
@@ -115,8 +97,11 @@
                             Quotation pdf file
                         </a>
                     </td>
-                    <td *ngIf="item.files.length ==0">No file</td>
-                    <td>{{item.quotation.analysisFee}} {{item.quotation.currency}}</td>
+                    <td *ngIf="item.files.length ==0" class="text-danger">No file</td>
+                    <td>
+                        <span *ngIf="item.quotation.analysisFee">{{item.quotation.analysisFee |currency:item.quotation.currency }}</span>
+                        <span *ngIf="!item.quotation.analysisFee" class="text-danger">No analysis fee</span>
+                    </td>
                 </tr>
             </tbody>
         </table>

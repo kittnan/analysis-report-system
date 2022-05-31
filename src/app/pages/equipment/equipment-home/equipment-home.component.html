@@ -1,19 +1,4 @@
 <div class="col-12 mt-0">
-    <!-- <div class="row">
-        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
-        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
-        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
-        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
-        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
-    </div> -->
-    <!-- <div class="row head-menu">
-        <a class="head-item" routerLinkActive="text-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
-        <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
-        <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
-            MANAGE</a>
-    </div> -->
     <app-head-menu></app-head-menu>
 
 </div>
@@ -28,12 +13,18 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let item2 of item.data; let i=index">
                 <div class="card mx-auto">
+                    <!-- {{item2|json}} -->
                     <div class="zoom">
-                        <img [src]="item2.urlImage['url']" class="card-img-top" alt="...">
+                        <ng-container *ngIf="item2.urlImage; else elseTemplate">
+                            <img [src]="item2.urlImage['url']" class="card-img-top" alt="...">
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <img src="#" alt="" class="temp-img">
+                            <!-- <p class="card-img-top">No image</p> -->
+                        </ng-template>
+
+
                     </div>
-                    <!-- <div class="non-img" *ngIf="!item.urlImage">
-                        <img src="" id="none-img" class="card-img-top" alt="...">
-                    </div> -->
                     <div class="card-body text-center">
                         <h5 class="card-title">{{item2.analysisEquipmentName}}</h5>
                         <p class="card-text">{{item2.analysisScope}}</p>
@@ -45,102 +36,3 @@
         </div>
     </div>
 </ng-container>
-
-
-
-<!-- <div class="col-12 mt-3">
-    <div class="row">
-        <div class="col-12 text-center">
-            <h4 class="title-content">Equipment Electronic</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let item of equipmentElectronic; let i=index">
-            <div class="card mx-auto">
-                <div class="zoom" *ngIf="item.urlImage">
-                    <img [src]="item.urlImage['url']" class="card-img-top" alt="...">
-                </div>
-                <div class="non-img" *ngIf="!item.urlImage">
-                    <img src="" id="none-img" class="card-img-top" alt="...">
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{item.analysisEquipmentName}}</h5>
-                    <p class="card-text">{{item.analysisScope}}</p>
-                    <a class="more" (click)="openModal(item)">More...</a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div> -->
-
-<!-- <ng-template #modalEquipment let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">{{equipmentSelected.analysisEquipmentName}} </h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-
-        <div class="col-12">
-            <div class="row">
-                <div class="col-6" *ngIf="equipmentSelected.urlImage">
-                    <img [src]="equipmentSelected.urlImage['url']" height="500px">
-                    <p>
-                        <span> <label>Filename:</label> {{equipmentSelected.urlImage['name']}}</span>
-                        <span class="ml-2"> <label>Size:</label> {{equipmentSelected.urlImage['size'] |fileSize}}</span>
-                    </p>
-                </div>
-                <div class="col-6" *ngIf="!equipmentSelected.urlImage" style="border: 1px solid #333;">
-                    <img src="" height="500px">
-                </div>
-
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-12">
-                            <label for="">Analysis equipment name</label>
-                            <p>{{equipmentSelected.analysisEquipmentName}}</p>
-                        </div>
-                        <div class="col-12">
-                            <label>Field</label>
-                            <p>{{equipmentSelected.field}}</p>
-                        </div>
-                        <div class="col-12">
-                            <label>Analysis scope</label>
-                            <p>{{equipmentSelected.analysisScope}}</p>
-                        </div>
-                        <div class="col-12">
-                            <label>Defect mode</label>
-                            <p>{{equipmentSelected.defectMode}}</p>
-                        </div>
-                        <div class="col-12">
-                            <label>Limitation of sample</label>
-                            <p>{{equipmentSelected.limitationOfSample}}</p>
-                        </div>
-                        <div class="col-12">
-                            <label>Province</label>
-                            <ng-container *ngFor="let item of equipmentSelected.province; let i=index">
-                                <p>- {{item.country}}</p>
-                                <ul>
-                                    <li *ngFor="let item2 of item.lists; let i2=index">{{item2}}</li>
-                                </ul>
-                            </ng-container>
-
-                        </div>
-                        <div class="col-12">
-                            <label>Brand</label>
-                            <p>{{equipmentSelected.brand}}</p>
-                        </div>
-                        <div class="col-12">
-                            <label>Analysis fee</label>
-                            <p>{{equipmentSelected.analysisFee}}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</ng-template> -->

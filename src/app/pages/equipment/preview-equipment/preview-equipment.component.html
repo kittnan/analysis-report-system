@@ -1,9 +1,8 @@
-<!-- <ng-template let-modal #preview id="preview"> -->
 <div class="modal-header">
     <h4 class="modal-title">{{fromParent.analysisEquipmentName}} </h4>
     <button type="button" class="close" aria-label="Close" (click)="closeModal('dismiss')">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 <div class="modal-body">
 
@@ -45,24 +44,64 @@
                         <p>{{fromParent.limitationOfSample}}</p>
                     </div>
                     <div class="col-12">
-                        <label>Province</label>
-                        <ng-container *ngFor="let item of fromParent.province; let i=index">
-                            <p>- {{item.country}}</p>
-                            <ul>
-                                <li *ngFor="let item2 of item.lists; let i2=index">{{item2}}</li>
-                            </ul>
-                            <!-- <p>{{fromParent.province| json}}</p> -->
-                        </ng-container>
-
-                    </div>
-                    <div class="col-12">
                         <label>Brand</label>
                         <p>{{fromParent.brand}}</p>
                     </div>
                     <div class="col-12">
-                        <label>Analysis fee</label>
-                        <p>{{fromParent.analysisFee}}</p>
+                        <label>Province</label>
+                        <table *ngFor="let province of fromParent.province; let indexProvince=index" class="table table-bordered">
+                            <thead>
+                                <tr class="table-dark text-center">
+                                    <th colspan="3">{{province.master}}</th>
+                                </tr>
+                                <tr>
+                                    <th>name</th>
+                                    <th>file</th>
+                                    <th>analysis fee</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let list of province.lists; let indexList=index">
+                                    <ng-container *ngIf="list.files.length>0; else elseTemplate">
+                                        <tr>
+                                            <td width="30%">
+                                                {{list.name}}
+                                            </td>
+                                            <td width="40%">
+                                                <a [href]="list.files[0].url" target="_blank" [download]="downloadFileName(province,indexList)">
+                                                    {{downloadFileName(province,indexList)}} ( {{list.files[0].size |
+                                                    fileSize}} )
+                                                </a>
+                                            </td>
+                                            <td width="30%">
+                                                {{list.quotation.analysisFee |currency:list.quotation.currency}}
+
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                        <tr>
+                                            <td width="30%">
+                                                {{list.name}}
+                                            </td>
+                                            <td class="text-danger" width="40%">
+                                                No file
+                                            </td>
+                                            <td width="30%">
+                                                {{list.quotation.analysisFee |currency:list.quotation.currency}}
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+
+
+                                </ng-container>
+
+                            </tbody>
+                        </table>
+
+
                     </div>
+
                 </div>
             </div>
         </div>
@@ -70,4 +109,3 @@
     </div>
 
 </div>
-<!-- </ng-template> -->

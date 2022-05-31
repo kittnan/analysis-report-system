@@ -24,7 +24,7 @@ export class EquipmentManageComponent implements OnInit {
     limitationOfSample: new FormControl('', Validators.required),
     province: new FormControl([], Validators.required),
     brand: new FormControl('', Validators.required),
-    analysisFee: new FormControl('', Validators.required),
+    // analysisFee: new FormControl('', Validators.required),
     urlImage: new FormControl({}, Validators.required),
   })
   public get EquipmentFormControl(): any {
@@ -36,6 +36,7 @@ export class EquipmentManageComponent implements OnInit {
   MASTER: any
   Field: any
   DefectMode: any
+  Brands: any
   Country: any
   constructor(
     private middleAPI: MasterService,
@@ -55,7 +56,8 @@ export class EquipmentManageComponent implements OnInit {
     console.log(this.Field);
     this.DefectMode = this.MASTER.find(m => (m.master).toLowerCase().includes('defectmode'))
     console.log(this.DefectMode);
-
+    this.Brands = this.MASTER.find(m => (m.master).toLowerCase().includes('brands'))
+    console.log(this.Brands);
   }
 
   // todo set Country
@@ -65,8 +67,8 @@ export class EquipmentManageComponent implements OnInit {
       const newCountry: any = country.map((c: any) => {
         const newLists: any = c.lists.map((l: any) => {
           return {
-            name: l,
-            clicked: false
+            clicked: false,
+            ...l,
           }
         })
         c.lists = newLists
@@ -78,15 +80,39 @@ export class EquipmentManageComponent implements OnInit {
 
   }
   setCountryList(equipment: any) {
-    const extendList: any = equipment.province.reduce((prev, now) => {
-      return prev.concat(...now.lists)
+
+    let temp: any = equipment.province.reduce((prev: any, current: any) => {
+      const temp2: any = current.lists.reduce((prev2: any, current2: any) => {
+        return prev2.concat(current2)
+      }, [])
+      return prev.concat(temp2)
     }, [])
-    extendList.map(list => {
-      this.Country.map(c => {
-        const find: any = c.lists.find(cList => cList.name == list)
-        if (find) find.clicked = true
+
+
+
+    this.Country.map((country: any) => {
+      const resultFind: any = country.lists.map((list: any) => {
+        // console.log('TEMP@@!@@@@@@@', temp);
+        if (temp.find((t: any) => t.name == list.name)) {
+          list.clicked = true
+        }
+        return list
       })
+      // console.log(resultFind);
+      return resultFind
     })
+    console.log(this.Country);
+
+
+    // const extendList: any = equipment.province.reduce((prev, now) => {
+    //   return prev.concat(...now.lists)
+    // }, [])
+    // extendList.map(list => {
+    //   this.Country.map(c => {
+    //     const find: any = c.lists.find(cList => cList.name == list)
+    //     if (find) find.clicked = true
+    //   })
+    // })
   }
   // todo set Country
 
@@ -102,6 +128,8 @@ export class EquipmentManageComponent implements OnInit {
   onKeyUp(e: any) {
     const keyQuery: any = e.target.value.toLowerCase()
     console.log(keyQuery);
+    console.log('this.Equipment', this.Equipment);
+
     if (keyQuery != '') {
       const filtered: any = this.Equipment.filter((equipment: any) =>
         equipment.analysisEquipmentName.toLowerCase().includes(keyQuery) ||
@@ -109,8 +137,9 @@ export class EquipmentManageComponent implements OnInit {
         equipment.limitationOfSample.toLowerCase().includes(keyQuery) ||
         equipment.analysisScope.toLowerCase().includes(keyQuery) ||
         equipment.defectMode.find((d: any) => d.toLowerCase().includes(keyQuery)) ||
+        equipment.province.find((p: any) => p.master.toLowerCase().includes(keyQuery)) ||
         equipment.province.find((p: any) => {
-          return p.lists.find((l: any) => l.toLowerCase().includes(keyQuery))
+          return p.lists.find((l: any) => l.name.toLowerCase().includes(keyQuery))
         })
       )
       console.log(filtered);
@@ -198,33 +227,59 @@ export class EquipmentManageComponent implements OnInit {
   openModal(content: any) {
     this.modal.open(content, { size: 'lg' })
   }
-  onClickBox(i, i2) {
-    this.Country[i].lists[i2].clicked == true ? this.Country[i].lists[i2].clicked = false : this.Country[i].lists[i2].clicked = true
+  // onClickBox(i, i2) {
+  //   this.Country[i].lists[i2].clicked == true ? this.Country[i].lists[i2].clicked = false : this.Country[i].lists[i2].clicked = true
 
-    let tempExternal: any = this.EquipmentForm.controls['province'].value
+  //   let tempExternal: any = this.EquipmentForm.controls['province'].value
 
-    const resultFind: any = tempExternal.find((t: any) => t.country == this.Country[i].master)
-    if (!resultFind) {
-      tempExternal.push({
-        country: this.Country[i].master,
-        lists: [this.Country[i].lists[i2].name]
-      })
-    } else {
-      const indexExternal: number = tempExternal.indexOf(resultFind)
-      const resultFindLists: any = tempExternal[indexExternal].lists.find(r => r == this.Country[i].lists[i2].name)
-      if (resultFindLists) {
-        const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
-        tempExternal[indexExternal].lists.splice(indexList, 1)
-        if (tempExternal[indexExternal].lists.length == 0) {
-          const indexCountry: number = tempExternal.indexOf(tempExternal[indexExternal])
-          tempExternal.splice(indexCountry, 1)
-        }
-      } else {
-        tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
+  //   const resultFind: any = tempExternal.find((t: any) => t.country == this.Country[i].master)
+  //   if (!resultFind) {
+  //     tempExternal.push({
+  //       country: this.Country[i].master,
+  //       lists: [this.Country[i].lists[i2].name]
+  //     })
+  //   } else {
+  //     const indexExternal: number = tempExternal.indexOf(resultFind)
+  //     const resultFindLists: any = tempExternal[indexExternal].lists.find(r => r == this.Country[i].lists[i2].name)
+  //     if (resultFindLists) {
+  //       const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
+  //       tempExternal[indexExternal].lists.splice(indexList, 1)
+  //       if (tempExternal[indexExternal].lists.length == 0) {
+  //         const indexCountry: number = tempExternal.indexOf(tempExternal[indexExternal])
+  //         tempExternal.splice(indexCountry, 1)
+  //       }
+  //     } else {
+  //       tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
+  //     }
+  //   }
+  //   this.EquipmentForm.controls['province'].setValue(tempExternal)
+  //   console.log(this.EquipmentForm.controls['province'].value);
+
+  // }
+  onCheckBox(item2: any) {
+    item2.clicked = !item2.clicked
+    // console.log('event', e.target.checked);
+    // console.log(item2);
+    // console.log(this.Country);
+    console.clear()
+    console.log(this.Country);
+
+    const selectedCountry: any = this.Country.map((country: any) => {
+      const newLists: any = country.lists.filter((list: any) => list.clicked == true)
+      const resultReduce: any = newLists.reduce((prev: any, current: any) => {
+        return prev.concat(current)
+      }, [])
+      const temp = {
+        master: country.master,
+        lists: resultReduce
       }
-    }
-    this.EquipmentForm.controls['province'].setValue(tempExternal)
-    console.log(this.EquipmentForm.controls['province'].value);
+      return temp
+    })
+    console.log(selectedCountry);
+    let province: any = selectedCountry.filter((s: any) => s.lists.length > 0)
+    console.log(province);
+    this.EquipmentForm.controls['province'].setValue(province)
+    console.log(this.EquipmentForm.value);
 
   }
   // todo modal select province
@@ -257,8 +312,8 @@ export class EquipmentManageComponent implements OnInit {
           urlImage: resultUpload
         })
       }
-      await this.middleAPI.updateEquipment(this.EquipmentFormControl['_id'].value, this.EquipmentForm.value)
       console.log(this.EquipmentForm.value);
+      await this.middleAPI.updateEquipment(this.EquipmentFormControl['_id'].value, this.EquipmentForm.value)
       Swal.fire('Success', '', 'success')
       this.modal.dismissAll()
     } catch (error) {

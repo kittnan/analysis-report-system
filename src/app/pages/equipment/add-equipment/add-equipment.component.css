@@ -34,10 +34,20 @@ img {
     color: #333;
 }
 
+.row-hover {
+    cursor: pointer;
+}
+
 .table-box-clicked {
     background-color: rgb(141, 233, 141);
 }
 
 .head-page {
     border-bottom: 1px solid black;
+}
+
+.checkbox {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
 }

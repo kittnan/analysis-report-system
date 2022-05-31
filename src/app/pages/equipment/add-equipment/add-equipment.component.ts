@@ -131,6 +131,7 @@ export class AddEquipmentComponent implements OnInit {
 
   // todo modal
   openModal(content: any) {
+
     this.modal.open(content, { size: 'lg' })
   }
   onClickBox(i, i2) {
@@ -165,9 +166,31 @@ export class AddEquipmentComponent implements OnInit {
     console.log(this.newEquipment.controls['province'].value);
 
   }
-  onCheckBox(indexCountry: number, indexList: number, e: any) {
-    console.log('event',e.target.checked);
-    
+  onCheckBox(item2: any) {
+    item2.clicked = !item2.clicked
+    // console.log('event', e.target.checked);
+    // console.log(item2);
+    // console.log(this.Country);
+    console.clear()
+    console.log(this.Country);
+
+    const selectedCountry: any = this.Country.map((country: any) => {
+      const newLists: any = country.lists.filter((list: any) => list.clicked == true)
+      const resultReduce: any = newLists.reduce((prev: any, current: any) => {
+        return prev.concat(current)
+      }, [])
+      const temp = {
+        master: country.master,
+        lists: resultReduce
+      }
+      return temp
+    })
+    console.log(selectedCountry);
+    let province: any = selectedCountry.filter((s: any) => s.lists.length > 0)
+    console.log(province);
+    this.newEquipment.controls['province'].setValue(province)
+    console.log(this.newEquipment.value);
+
   }
   // todo modal
 
@@ -183,8 +206,11 @@ export class AddEquipmentComponent implements OnInit {
         this.addNewEquipment()
       }
     })
+  }
 
+  onSubmit() {
 
+    this.addNewEquipment()
   }
 
   // ? add new equipment

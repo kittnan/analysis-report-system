@@ -1,20 +1,5 @@
 <div class="col-12 mt-0">
-    <!-- <div class="row">
-        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
-        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
-        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
-        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
-        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
-    </div> -->
-    <!-- <div class="row head-menu">
-        <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
-        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/search-equipment']"><i
-                class="bi bi-search"></i> SEARCH</a>
-        <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
-            MANAGE</a>
-    </div> -->
+
     <app-head-menu></app-head-menu>
 
 </div>
@@ -120,17 +105,27 @@
                     <td>{{equipment.defectMode}}</td>
                     <td>{{equipment.limitationOfSample}}</td>
                     <td>{{equipment.analysisScope}}</td>
+
                     <td>
                         <tr *ngFor="let province of equipment.province; let indexProvince=index">
-                            <td>{{province.country}}</td>
-                            <td>{{province.lists}}</td>
+                            <td>{{province.master}}</td>
+                            <td>
+                                <ng-container *ngFor="let list of province.lists;let indexList = index">
+                                    <ng-container *ngIf="indexList==0; else elseTemplate">
+                                        <span>{{list.name}}</span>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                        <span>, {{list.name}}</span>
+                                    </ng-template>
+
+                                </ng-container>
+                            </td>
                         </tr>
                     </td>
+
                 </tr>
             </ng-container>
         </tbody>
     </table>
     <h2 *ngIf="equipmentFiltered.length==0 && Searched">no data</h2>
 </div>
-
-<!-- <app-preview-equipment></app-preview-equipment> -->

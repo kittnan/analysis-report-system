@@ -1,22 +1,5 @@
-<!-- <div class="col-12" style="background-color: white; padding: 5px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
-    <h1>MANAGE EQUIPMENT</h1>
-</div> -->
 <div class="col-12 mt-0">
-    <!-- <div class="row">
-        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
-        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
-        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
-        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
-        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
-    </div> -->
-    <!-- <div class="row head-menu">
-        <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
-        <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
-        <a class="ml-2 head-item" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
-        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
-            MANAGE</a>
-    </div> -->
+
     <app-head-menu></app-head-menu>
 
 </div>
@@ -62,8 +45,18 @@
                             <td>{{equipment.analysisScope}}</td>
                             <td>
                                 <tr *ngFor="let province of equipment.province; let indexProvince=index">
-                                    <td>{{province.country}}</td>
-                                    <td>{{province.lists}}</td>
+                                    <td>{{province.master}}</td>
+                                    <td>
+                                        <ng-container *ngFor="let list of province.lists;let indexList = index">
+                                            <ng-container *ngIf="indexList==0; else elseTemplate">
+                                                <span>{{list.name}}</span>
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                                <span>, {{list.name}}</span>
+                                            </ng-template>
+
+                                        </ng-container>
+                                    </td>
                                 </tr>
                             </td>
                         </tr>
@@ -80,7 +73,10 @@
 
 <ng-template #modalEquipment let-modal>
     <div class="modal-header">
-        <h4 class="modal-title">Equipment <button class="btn btn-sm text-danger" (click)="onDeleteEquipment()"><i class="bi bi-trash3"></i>delete</button> </h4>
+        <h4 class="modal-title">Equipment
+            <!-- <button class="btn btn-sm text-danger" (click)="onDeleteEquipment()"><i
+                    class="bi bi-trash3"></i>delete</button> -->
+        </h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -149,16 +145,24 @@
                         <div class="col-12">
                             <label [ngClass]="{'invalidLabel': EquipmentFormControl['province'].invalid}" for="">Province</label>
                             <button class="btn btn-block" (click)="openModal(modalProvince)">Click</button>
+                            <div class="row" *ngIf="EquipmentFormControl['province']">
+                                <ul *ngFor="let item of EquipmentFormControl['province'].value; let i=index">
+                                    <li>{{item.master}}
+                                        <ul>
+                                            <li *ngFor="let list of item.lists">{{list.name}}</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12" *ngIf="Brands">
                             <label [ngClass]="{'invalidLabel': EquipmentFormControl['brand'].invalid}" for="">Brand</label>
-                            <input type="text" class="form-control" formControlName="brand">
+                            <input type="search" list="brandList" class="form-control" formControlName="brand">
+                            <datalist id="brandList">
+                                <option [value]="item" *ngFor="let item of Brands.lists; let i=index">
+                            </datalist>
                         </div>
-                        <div class="col-12">
-                            <label [ngClass]="{'invalidLabel': EquipmentFormControl['analysisFee'].invalid}" for="">Analysis
-                                fee</label>
-                            <input type="text" class="form-control" formControlName="analysisFee">
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -193,23 +197,44 @@
 
         <div class="col-12">
             <div class="row" *ngFor="let item of Country; let i=index">
+
                 <table class="table table-bordered">
                     <thead>
                         <tr class="table-dark text-center">
-                            <td [attr.colspan]="item.lists.length">
+                            <th colspan="4">
                                 {{item.master}}
-                            </td>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="2">name</th>
+                            <th>file</th>
+                            <th>analysis fee</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <ng-container *ngFor="let item2 of item.lists; let i2=index">
-                                <td class="table-box text-center" [ngClass]="{'table-box-clicked': item2.clicked}" (click)="onClickBox(i,i2)">
+                        <ng-container *ngFor="let item2 of item.lists; let i2=index">
+                            <tr [ngClass]="{'table-box-clicked': item2.clicked}">
+                                <td width="5%">
+                                    <input type="checkbox" class="checkbox" (change)="onCheckBox(item2)" [checked]="item2.clicked">
+                                </td>
+                                <td width="50%">
                                     {{item2.name}}
                                 </td>
-                            </ng-container>
+                                <td *ngIf="item2.files.length>0">
+                                    <a [download]="item2.files[0].name" target="_blank" [href]="item2.files[0].url">
+                                        Quotation pdf file
+                                    </a>
+                                </td>
+                                <td *ngIf="!item2.files.length>0">
+                                    No file
+                                </td>
+                                <td>
+                                    {{item2.quotation.analysisFee | currency:item2.quotation.currency}}
+                                </td>
 
-                        </tr>
+
+                            </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </div>

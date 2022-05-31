@@ -1,22 +1,4 @@
-<!-- <div class="col-12">
-    <h5>NEW EQUIPMENT</h5>
-</div> -->
 <div class="col-12 mt-0">
-    <!-- <div class="row">
-        <button class="btn btn-primary" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</button>
-        <button class="btn btn-primary" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</button>
-        <button class="btn btn-success" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</button>
-        <button class="btn btn-secound" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</button>
-        <button class="btn btn-info" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER MANAGE</button>
-    </div> -->
-    <!-- <div class="row head-menu">
-        <a class="head-item" [routerLink]="['/equipment']"><i class="bi bi-house"></i> HOME</a>
-        <a class="ml-2 head-item" [routerLink]="['/search-equipment']"><i class="bi bi-search"></i> SEARCH</a>
-        <a class="ml-2 head-item" routerLinkActive="text-primary" [routerLink]="['/add-equipment']"><i class="bi bi-plus-lg"></i> NEW EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/manage-equipment']"><i class="bi bi-gear"></i> MANAGE EQUIPMENT</a>
-        <a class="ml-2 head-item" [routerLink]="['/equipment-master-manage']"><i class="bi bi-gear-wide"></i> MASTER
-            MANAGE</a>
-    </div> -->
     <app-head-menu></app-head-menu>
 </div>
 <div class="col-12 " style="background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
@@ -74,44 +56,40 @@
                         </div>
                     </div>
 
-                    <!-- <input type="text" class="form-control" formControlName="defectMode"> -->
                 </div>
                 <div class="col-12">
                     <label [ngClass]="{'invalidLabel': newEquipmentControl['limitationOfSample'].invalid}" for="">Limitation of sample</label>
                     <input type="text" class="form-control" formControlName="limitationOfSample">
                 </div>
-                <!-- <div class="col-12" *ngIf="Country">
-                    <label [ngClass]="{'invalidLabel': newEquipmentControl['country'].invalid}" for="">Country</label>
-                    <select formControlName="country" class="custom-select">
-                        <option value=""></option>
-                        <option [value]="item" *ngFor="let item of Country.lists; let i=index">
-                            {{item}}
-                        </option>
-                    </select>
-                </div> -->
+
                 <div class="col-12">
                     <label [ngClass]="{'invalidLabel': newEquipmentControl['province'].invalid}" for="">Province</label>
                     <button class="btn btn-block" (click)="openModal(country)">Click</button>
+                    <div class="row" *ngIf="newEquipmentControl['province']">
+                        <ul *ngFor="let item of newEquipmentControl['province'].value; let i=index">
+                            <li>{{item.master}}
+                                <ul>
+                                    <li *ngFor="let list of item.lists">{{list.name}}</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="col-12" *ngIf="Brands">
                     <label [ngClass]="{'invalidLabel': newEquipmentControl['brand'].invalid}" for="">Brand</label>
-                    <select class="custom-select" formControlName="brand">
-                        <option value=""></option>
-                        <option [value]="item" *ngFor="let item of Brands.lists ; let i=index">{{item}}</option>
-                    </select>
-                    <!-- <input type="text" class="form-control" formControlName="brand"> -->
+                    <input type="search" list="brandList" class="form-control" formControlName="brand">
+                    <datalist id="brandList">
+                        <option [value]="item" *ngFor="let item of Brands.lists; let i=index">
+                    </datalist>
+
                 </div>
-                <!-- <div class="col-12">
-                    <label [ngClass]="{'invalidLabel': newEquipmentControl['analysisFee'].invalid}" for="">Analysis
-                        fee</label>
-                    <input type="text" class="form-control" formControlName="analysisFee">
-                </div> -->
             </div>
         </div>
     </div>
     <div class="row mt-3">
         <div class="col-12">
-            <button [disabled]="newEquipment.invalid" class="btn btn-block btn-primary" (click)="onClickSubmit()">SUBMIT</button>
+            <!-- <button [disabled]="newEquipment.invalid" class="btn btn-block btn-primary" (click)="onClickSubmit()">SUBMIT</button> -->
+            <button class="btn btn-block btn-primary" (click)="onClickSubmit()">SUBMIT</button>
         </div>
     </div>
 </div>
@@ -135,16 +113,21 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr class="table-dark text-center">
-                            <td colspan="4">
+                            <th colspan="4">
                                 {{item.master}}
-                            </td>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="2">name</th>
+                            <th>file</th>
+                            <th>analysis fee</th>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let item2 of item.lists; let i2=index">
-                            <tr>
+                            <tr [ngClass]="{'table-box-clicked': item2.clicked}">
                                 <td width="5%">
-                                    <input type="checkbox" (change)="onCheckBox(i,i2,$event)">
+                                    <input type="checkbox" class="checkbox" (change)="onCheckBox(item2)" [checked]="item2.clicked">
                                 </td>
                                 <td width="50%">
                                     {{item2.name}}
@@ -158,7 +141,7 @@
                                     No file
                                 </td>
                                 <td>
-                                    {{item2.quotation.price}}{{item2.quotation.currency}}
+                                    {{item2.quotation.analysisFee | currency:item2.quotation.currency}}
                                 </td>
                                 <!-- <td class="table-box text-center" [ngClass]="{'table-box-clicked': item2.clicked}"
                                     (click)="onClickBox(i,i2)">
@@ -171,30 +154,6 @@
                 </table>
             </div>
         </div>
-
-        <!-- <div class="col-12">
-            <div class="row" *ngFor="let item of Country; let i=index">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr class="table-dark text-center">
-                            <td [attr.colspan]="item.lists.length">
-                                {{item.master}}
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <ng-container *ngFor="let item2 of item.lists; let i2=index">
-                                <td class="table-box text-center" [ngClass]="{'table-box-clicked': item2.clicked}" (click)="onClickBox(i,i2)">
-                                    {{item2.analysisFee}}
-                                </td>
-                            </ng-container>
-
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> -->
 
     </div>
     <div class="modal-footer">

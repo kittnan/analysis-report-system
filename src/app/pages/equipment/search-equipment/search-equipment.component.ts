@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { ExportEquipmentService } from '../export-equipment.service';
 import { MasterService } from '../master-manage/master.service';
 import { PreviewEquipmentComponent } from '../preview-equipment/preview-equipment.component';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-search-equipment',
@@ -82,7 +82,11 @@ export class SearchEquipmentComponent implements OnInit {
     console.log(this.Country);
 
     this.Province = country.reduce((prev, now) => {
-      return prev.concat(now.lists)
+      const temp: any = now.lists.reduce((prev2, now2) => {
+        return prev2.concat(now2.name)
+      }, [])
+
+      return prev.concat(temp)
     }, [])
     console.log(this.Province);
   }
@@ -140,7 +144,7 @@ export class SearchEquipmentComponent implements OnInit {
         if (key == 'province') {
           equipmentFiltered = equipmentFiltered.filter(e => {
             const temp: any = e.province.find(p => {
-              return p.lists.find(l => l.toLowerCase().includes(objFiltered[key].toLowerCase()))
+              return p.lists.find(l => l.name.toLowerCase().includes(objFiltered[key].toLowerCase()))
             })
             if (temp) return true
             return false
@@ -148,7 +152,7 @@ export class SearchEquipmentComponent implements OnInit {
         }
         if (key == 'country') {
           equipmentFiltered = equipmentFiltered.filter(e => {
-            if (e.province.find(p => p.country.toLowerCase().includes(objFiltered[key].toLowerCase()))) return true
+            if (e.province.find(p => p.master.toLowerCase().includes(objFiltered[key].toLowerCase()))) return true
             return false
           })
         }
@@ -210,7 +214,7 @@ export class SearchEquipmentComponent implements OnInit {
   // todo click row
 
 
-  test(){
+  test() {
     window.open("file:\\10.200.90.12\Public")
   }
 }
