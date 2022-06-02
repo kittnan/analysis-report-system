@@ -197,6 +197,10 @@ export class HttpService {
   DeleteUser(id: any): Observable<any> {
     return this.http.delete(this.Url + "/User/" + id);
   }
+  GetRequestByUserIdFlow(id: any): Observable<any> {
+    return this.http.get(this.Url + "/RequestFormByIdRemainFlow/" + id);
+  }
+
 
   // ? section
   PostSection(data: any): Observable<any> {

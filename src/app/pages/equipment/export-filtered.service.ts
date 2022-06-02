@@ -18,26 +18,13 @@ export class ExportFilteredService {
 
 
 
-    let timerInterval
     Swal.fire({
       title: 'Generating report!',
-      // html: 'I will close in <b></b> milliseconds.',
-      // timer: 2000,
       timerProgressBar: true,
       didOpen: () => {
         Swal.showLoading()
-        // const b: any = Swal.getHtmlContainer().querySelector('b')
-        // timerInterval = setInterval(() => {
-        //   b.textContent = Swal.getTimerLeft()
-        // }, 100)
-      },
-      willClose: () => {
-        clearInterval(timerInterval)
       }
     })
-
-
-
 
     // console.log(data);
     const country: any = await this.middleAPI.getCountry()
@@ -59,10 +46,10 @@ export class ExportFilteredService {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
     })
     let fileName = new Date().toLocaleString()
-    // saveAs.saveAs(blob, fileName)
+    saveAs.saveAs(blob, fileName)
     setTimeout(() => {
-      Swal.DismissReason.close
-    }, 1000);
+      Swal.close()
+    }, 1500);
   }
 
   private setConfigWorkbook(workBook: Excel.Workbook) {

@@ -16,7 +16,7 @@ export class PreviewEquipmentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.fromParent);
+    // console.log(this.fromParent);
 
   }
   closeModal(sendData) {

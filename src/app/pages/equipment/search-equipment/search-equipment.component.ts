@@ -62,26 +62,26 @@ export class SearchEquipmentComponent implements OnInit {
   async getEquipment() {
     this.Equipment = await this.middleAPI.getEquipment()
     this.equipmentFiltered = this.Equipment
-    console.log(this.equipmentFiltered);
+    // console.log(this.equipmentFiltered);
 
   }
   async getMaster() {
     const master: any = await this.middleAPI.getMaster()
-    console.log(master);
+    // console.log(master);
     this.Field = master.find(m => m.master.toLowerCase() == 'field')
     this.defectMode = master.find(m => m.master.toLowerCase() == 'defectmode')
-    console.log('this.defectMode', this.defectMode);
+    // console.log('this.defectMode', this.defectMode);
 
   }
   async getCountry() {
     const country: any = await this.middleAPI.getCountry()
-    console.log(country)
+    // console.log(country)
     this.Country = country.reduce((prev, now) => {
       let temp: any[] = prev
       temp.push(now.master)
       return temp
     }, [])
-    console.log(this.Country);
+    // console.log(this.Country);
 
     this.Province = country.reduce((prev, now) => {
       const temp: any = now.lists.reduce((prev2, now2) => {
@@ -90,7 +90,7 @@ export class SearchEquipmentComponent implements OnInit {
 
       return prev.concat(temp)
     }, [])
-    console.log(this.Province);
+    // console.log(this.Province);
   }
 
   // todo search
@@ -101,9 +101,9 @@ export class SearchEquipmentComponent implements OnInit {
       this.Equipment = equipment
       this.equipmentFiltered = equipment
       const resultDelete: any = await this.deleteEmptyFilter(this.filterForm.value)
-      console.log('resultDelete', resultDelete);
+      // console.log('resultDelete', resultDelete);
       const filtered: any = await this.filter(resultDelete, equipment)
-      console.log('filtered', filtered);
+      // console.log('filtered', filtered);
       this.equipmentFiltered = filtered
     } catch (error) {
 
@@ -129,7 +129,7 @@ export class SearchEquipmentComponent implements OnInit {
       this.Searched = true
       let equipmentFiltered: any = equipments
       for (const key in objFiltered) {
-        console.log(objFiltered[key]);
+        // console.log(objFiltered[key]);
 
         if (key == 'analysisEquipmentName') {
           equipmentFiltered = equipmentFiltered.filter(e => e.analysisEquipmentName.toLowerCase().includes(objFiltered[key].toLowerCase()))
@@ -218,7 +218,5 @@ export class SearchEquipmentComponent implements OnInit {
   // todo click row
 
 
-  test() {
-    window.open("file:\\10.200.90.12\Public")
-  }
+ 
 }

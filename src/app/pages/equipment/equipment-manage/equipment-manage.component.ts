@@ -53,11 +53,11 @@ export class EquipmentManageComponent implements OnInit {
 
   setMaster() {
     this.Field = this.MASTER.find(m => (m.master).toLowerCase().includes('field'))
-    console.log(this.Field);
+    // console.log(this.Field);
     this.DefectMode = this.MASTER.find(m => (m.master).toLowerCase().includes('defectmode'))
-    console.log(this.DefectMode);
+    // console.log(this.DefectMode);
     this.Brands = this.MASTER.find(m => (m.master).toLowerCase().includes('brands'))
-    console.log(this.Brands);
+    // console.log(this.Brands);
   }
 
   // todo set Country
@@ -74,7 +74,7 @@ export class EquipmentManageComponent implements OnInit {
         c.lists = newLists
         return c
       })
-      console.log(newCountry);
+      // console.log(newCountry);
       resolve(newCountry)
     })
 
@@ -101,7 +101,7 @@ export class EquipmentManageComponent implements OnInit {
       // console.log(resultFind);
       return resultFind
     })
-    console.log(this.Country);
+    // console.log(this.Country);
 
 
     // const extendList: any = equipment.province.reduce((prev, now) => {
@@ -120,15 +120,15 @@ export class EquipmentManageComponent implements OnInit {
     const equipment: any = await this.middleAPI.getEquipment()
     this.Equipment = equipment
     this.EquipmentFiltered = equipment
-    console.log(equipment);
+    // console.log(equipment);
 
   }
 
   // todo get value filter
   onKeyUp(e: any) {
     const keyQuery: any = e.target.value.toLowerCase()
-    console.log(keyQuery);
-    console.log('this.Equipment', this.Equipment);
+    // console.log(keyQuery);
+    // console.log('this.Equipment', this.Equipment);
 
     if (keyQuery != '') {
       const filtered: any = this.Equipment.filter((equipment: any) =>
@@ -142,7 +142,7 @@ export class EquipmentManageComponent implements OnInit {
           return p.lists.find((l: any) => l.name.toLowerCase().includes(keyQuery))
         })
       )
-      console.log(filtered);
+      // console.log(filtered);
       this.EquipmentFiltered = filtered
     } else {
       this.EquipmentFiltered = this.Equipment
@@ -154,7 +154,7 @@ export class EquipmentManageComponent implements OnInit {
   // ! ------------------------------------ MODAL
   // todo open modal
   async openModalEditEquipment(content: any, equipment: any) {
-    console.log(equipment);
+    // console.log(equipment);
     this.modal.open(content, { size: 'xl' })
     var btnOutput: any = document.getElementById('btnOutput')
     var output: any = document.getElementById('output')
@@ -189,7 +189,7 @@ export class EquipmentManageComponent implements OnInit {
       var output: any = document.getElementById('output')
       let boxOutput: any = document.getElementById('box-output')
       this.FileUpload = e.target.files[0]
-      console.log(this.FileUpload);
+      // console.log(this.FileUpload);
 
       if (e.target.files.length > 0) {
         output.src = URL.createObjectURL(this.FileUpload);
@@ -234,42 +234,13 @@ export class EquipmentManageComponent implements OnInit {
   openModal(content: any) {
     this.modal.open(content, { size: 'lg' })
   }
-  // onClickBox(i, i2) {
-  //   this.Country[i].lists[i2].clicked == true ? this.Country[i].lists[i2].clicked = false : this.Country[i].lists[i2].clicked = true
-
-  //   let tempExternal: any = this.EquipmentForm.controls['province'].value
-
-  //   const resultFind: any = tempExternal.find((t: any) => t.country == this.Country[i].master)
-  //   if (!resultFind) {
-  //     tempExternal.push({
-  //       country: this.Country[i].master,
-  //       lists: [this.Country[i].lists[i2].name]
-  //     })
-  //   } else {
-  //     const indexExternal: number = tempExternal.indexOf(resultFind)
-  //     const resultFindLists: any = tempExternal[indexExternal].lists.find(r => r == this.Country[i].lists[i2].name)
-  //     if (resultFindLists) {
-  //       const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
-  //       tempExternal[indexExternal].lists.splice(indexList, 1)
-  //       if (tempExternal[indexExternal].lists.length == 0) {
-  //         const indexCountry: number = tempExternal.indexOf(tempExternal[indexExternal])
-  //         tempExternal.splice(indexCountry, 1)
-  //       }
-  //     } else {
-  //       tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
-  //     }
-  //   }
-  //   this.EquipmentForm.controls['province'].setValue(tempExternal)
-  //   console.log(this.EquipmentForm.controls['province'].value);
-
-  // }
   onCheckBox(item2: any) {
     item2.clicked = !item2.clicked
     // console.log('event', e.target.checked);
     // console.log(item2);
     // console.log(this.Country);
-    console.clear()
-    console.log(this.Country);
+    // console.clear()
+    // console.log(this.Country);
 
     const selectedCountry: any = this.Country.map((country: any) => {
       const newLists: any = country.lists.filter((list: any) => list.clicked == true)
@@ -282,11 +253,11 @@ export class EquipmentManageComponent implements OnInit {
       }
       return temp
     })
-    console.log(selectedCountry);
+    // console.log(selectedCountry);
     let province: any = selectedCountry.filter((s: any) => s.lists.length > 0)
-    console.log(province);
+    // console.log(province);
     this.EquipmentForm.controls['province'].setValue(province)
-    console.log(this.EquipmentForm.value);
+    // console.log(this.EquipmentForm.value);
 
   }
   // todo modal select province
@@ -319,7 +290,7 @@ export class EquipmentManageComponent implements OnInit {
           urlImage: resultUpload
         })
       }
-      console.log(this.EquipmentForm.value);
+      // console.log(this.EquipmentForm.value);
       await this.middleAPI.updateEquipment(this.EquipmentFormControl['_id'].value, this.EquipmentForm.value)
       Swal.fire('Success', '', 'success')
       this.modal.dismissAll()
@@ -337,7 +308,7 @@ export class EquipmentManageComponent implements OnInit {
   //  ? check duplicate
   checkDuplicateEquipmentName(equipment: any, updateEquipment: any) {
     return new Promise((resolve, reject) => {
-      console.log('checkDuplicateEquipmentName');
+      // console.log('checkDuplicateEquipmentName');
       if (equipment.find(eq =>
         eq.analysisEquipmentName == updateEquipment.analysisEquipmentName && eq._id != updateEquipment._id
       )) reject('equipment name as duplicate')
@@ -355,9 +326,9 @@ export class EquipmentManageComponent implements OnInit {
       const type = '.' + oldFileName[oldFileName.length - 1]
       const fileName = this.EquipmentForm.controls['analysisEquipmentName'].value + type
       formData.append('File', this.FileUpload, fileName)
-      console.log('form data before upload', formData);
+      // console.log('form data before upload', formData);
       const result: any = await this.middleAPI.uploadImgEquipment(formData)
-      console.log('result upload img: ', result);
+      // console.log('result upload img: ', result);
       const urlImage = {
         size: this.FileUpload.size,
         url: result + '?' + this.FileUpload.lastModified,
@@ -373,8 +344,8 @@ export class EquipmentManageComponent implements OnInit {
 
   // todo delete equipment
   onDeleteEquipment() {
-    console.clear()
-    console.log(this.EquipmentForm.value);
+    // console.clear()
+    // console.log(this.EquipmentForm.value);
     Swal.fire({
       title: `Do you want to delete ${this.EquipmentFormControl['analysisEquipmentName'].value}?`,
       icon: 'question',

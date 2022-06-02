@@ -943,26 +943,65 @@ export class UserComponent implements OnInit {
   }
 
   DeleteUser() {
-    let Ans = confirm("Delete ?");
-    if (Ans == true) {
-      this.api.DeleteUser(this.UserId).subscribe(async (data: any) => {
-        if (data == null) {
-          this.alertSuccess();
-          this.Clear();
-          await this.GetUsersAll()
 
-          this.onEventCRUD();
+    try {
 
-          // if (this.SelectLevel.value == "all") {
-          //   this.GetUsersAll();
-          // } else {
 
-          //   this.ChangeSection();
-          // }
+      Swal.fire({
+        title: 'Do you want to delete user?',
+        icon: 'question',
+        showCancelButton: true
+      }).then(r => {
+        if (r.isConfirmed) {
+          const id = this.UserId
+          this.api.GetRequestByUserIdFlow(id).subscribe(res => {
+            // console.log(res);
+            if (res.length > 0) {
+              Swal.fire('Can not delete user. User have remain request!', '', 'error')
+            } else {
+              this.api.DeleteUser(this.UserId).subscribe(async (data: any) => {
+                if (data == null) {
+                  this.alertSuccess();
+                  this.Clear();
+                  await this.GetUsersAll()
+                  this.onEventCRUD();
 
+                }
+              })
+            }
+          })
         }
       })
+
+
+    } catch (error) {
+
     }
+
+    // let Ans = confirm("Delete ?");
+    // if (Ans == true) {
+    //   this.api.DeleteUser(this.UserId).subscribe(async (data: any) => {
+    //     if (data == null) {
+    //       this.alertSuccess();
+    //       this.Clear();
+    //       await this.GetUsersAll()
+
+    //       this.onEventCRUD();
+
+    //       // if (this.SelectLevel.value == "all") {
+    //       //   this.GetUsersAll();
+    //       // } else {
+
+    //       //   this.ChangeSection();
+    //       // }
+
+    //     }
+    //   })
+    // }
+  }
+
+  checkUserInFlow() {
+    const requests: any = this.api
   }
 
   onResetPassword() {

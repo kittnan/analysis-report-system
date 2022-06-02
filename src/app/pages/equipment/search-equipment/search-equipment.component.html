@@ -74,6 +74,11 @@
 </div>
 
 <div *ngIf="equipmentFiltered.length>0 && Searched" class="col-12 mt-3" style="background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <strong class="ml-3">
+            COUNT: {{equipmentFiltered.length}}
+        </strong>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>

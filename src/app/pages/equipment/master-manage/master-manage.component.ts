@@ -75,16 +75,16 @@ export class MasterManageComponent implements OnInit {
 
     const resultFind: any = this.MASTER.find(m => m.master == e.target.value)
     this.Select_Master = { ...this.Select_Master, ...resultFind }
-    console.log(this.Select_Master);
+    // console.log(this.Select_Master);
     // this.testOldSelected = Object.assign({}, this.Select_Master)
 
 
     // ? country
     if (this.Select_Master['group'] == 'country') {
       const equipments: any = await this.middleAPI.getEquipment()
-      console.clear()
-      console.log('equipments', equipments);
-      console.log('this.Select_Master', this.Select_Master);
+      // console.clear()
+      // console.log('equipments', equipments);
+      // console.log('this.Select_Master', this.Select_Master);
       const temp: any = equipments.find((eq: any) => {
         return eq.province.find((pro: any) => pro._id == this.Select_Master._id)
       })
@@ -146,7 +146,7 @@ export class MasterManageComponent implements OnInit {
 
   // todo click modal edit master
   onClickEditMasterTable(content: any) {
-    console.log(this.Select_Master);
+    // console.log(this.Select_Master);
     this.group = this.Select_Master.group
     this.master = this.Select_Master.master
     this.lists = this.Select_Master.lists
@@ -157,7 +157,7 @@ export class MasterManageComponent implements OnInit {
   }
 
   async onEditCountry(content: any) {
-    console.log(this.Select_Master);
+    // console.log(this.Select_Master);
     this.group = this.Select_Master.group
     this.newLists = this.Select_Master.lists
     this.newCountry = this.Select_Master.master
@@ -168,7 +168,7 @@ export class MasterManageComponent implements OnInit {
 
     const normalMaster: any = await this.middleAPI.getMaster()
     this.Currency = normalMaster.find((m: any) => m.master.toLowerCase().includes('currency'))
-    console.log(this.Currency);
+    // console.log(this.Currency);
     this.newQuotation['currency'] = this.Currency.lists[0]
     this.md.open(content, { size: 'lg' })
   }
@@ -189,7 +189,7 @@ export class MasterManageComponent implements OnInit {
     try {
       const master = await this.middleAPI.getMaster()
       await this.checkDuplicateNormalMaster(master, this.Select_Master)
-      console.log(body);
+      // console.log(body);
 
       await this.middleAPI.updateMaster(body._id, body)
       this.md.dismissAll()
@@ -235,11 +235,11 @@ export class MasterManageComponent implements OnInit {
   // todo delete master
 
   async onDeleteMaster(id: any) {
-    console.log('onDeleteMaster');
+    // console.log('onDeleteMaster');
 
     try {
       const resultDelete: any = await this.deleteMaster(this.Select_Master.group, id)
-      console.log('resultDelete', resultDelete);
+      // console.log('resultDelete', resultDelete);
 
       if (resultDelete.deletedCount > 0) {
 
@@ -324,7 +324,7 @@ export class MasterManageComponent implements OnInit {
         if (key == 'insert') {
           this.insertNormal()
         } else if (key == 'update') {
-          console.log(this.group, this.Select_Master.group);
+          // console.log(this.group, this.Select_Master.group);
           // this.Select_Master.master = this.master
           // this.Select_Master.lists = this.lists
           let newNormal: any = Object.create(this.Select_Master)
@@ -371,7 +371,7 @@ export class MasterManageComponent implements OnInit {
 
   }
   onChangeEditItem(index: number) {
-    console.log(this.editItem);
+    // console.log(this.editItem);
     this.lists[index] = this.editItem
   }
 
@@ -384,7 +384,7 @@ export class MasterManageComponent implements OnInit {
     // this.clearAddCountry()
     const normalMaster: any = await this.middleAPI.getMaster()
     this.Currency = normalMaster.find((m: any) => m.master.toLowerCase().includes('currency'))
-    console.log(this.Currency);
+    // console.log(this.Currency);
 
     this.master = ''
     this.newItem = ''
@@ -406,7 +406,7 @@ export class MasterManageComponent implements OnInit {
 
   }
   onUploadFile(event: any) {
-    console.log(event.target.files[0]);
+    // console.log(event.target.files[0]);
     const file: File = event.target.files[0]
     if (file) {
       this.newFile = file
@@ -417,7 +417,7 @@ export class MasterManageComponent implements OnInit {
   }
   onChangeAnalysisFee(e: any) {
     const newAnalysisFee: number = Number(e.target.value)
-    console.log('analysisFee', newAnalysisFee);
+    // console.log('analysisFee', newAnalysisFee);
     if (newAnalysisFee > 0) {
       this.newQuotation['analysisFee'] = e.target.value
     } else {
@@ -429,7 +429,7 @@ export class MasterManageComponent implements OnInit {
   onChangeCurrency(e: any) {
 
     this.newQuotation['currency'] = e.target.value
-    console.log(e.target.value);
+    // console.log(e.target.value);
   }
   checkAddProvince() {
     // console.log(this.newCountry, this.newProvince);
@@ -460,7 +460,7 @@ export class MasterManageComponent implements OnInit {
         currency: this.newQuotation.currency || '',
       }
     }
-    console.log(newProvince);
+    // console.log(newProvince);
     this.newLists.push(newProvince)
     this.clearAddCountry()
   }
@@ -530,7 +530,7 @@ export class MasterManageComponent implements OnInit {
             master: this.newCountry,
             lists: this.newLists
           }
-          console.log(data);
+          // console.log(data);
           this.insertNewCountry(data)
         }
       })
@@ -576,8 +576,8 @@ export class MasterManageComponent implements OnInit {
               }
               list.files[0] = newFile
               if (c1 == data.lists.length) {
-                console.log('insert');
-                console.log(data);
+                // console.log('insert');
+                // console.log(data);
                 this.insertCountry(data)
               }
             }
@@ -585,8 +585,8 @@ export class MasterManageComponent implements OnInit {
         } else {
           c1 += 1;
           if (c1 == data.lists.length) {
-            console.log('insert');
-            console.log(data);
+            // console.log('insert');
+            // console.log(data);
             this.insertCountry(data)
           }
         }
@@ -635,8 +635,8 @@ export class MasterManageComponent implements OnInit {
       let body: any = Object.assign({}, this.Select_Master)
       body.master = this.newCountry
       body.lists = Array.from(this.newLists)
-      console.log('onUpdateCountry', body);
-      console.log('old', this.Select_Lists_Temp);
+      // console.log('onUpdateCountry', body);
+      // console.log('old', this.Select_Lists_Temp);
 
       const country: any = await this.middleAPI.getCountry()
       await this.checkDuplicateCountryMaster(country, body)
@@ -665,8 +665,8 @@ export class MasterManageComponent implements OnInit {
                 }
                 list.files[0] = newFile
                 if (c1 == body.lists.length) {
-                  console.log('update');
-                  console.log(body);
+                  // console.log('update');
+                  // console.log(body);
                   this.updateCountry(body)
                 }
               }
@@ -674,8 +674,8 @@ export class MasterManageComponent implements OnInit {
           } else {
             c1 += 1;
             if (c1 == body.lists.length) {
-              console.log('update');
-              console.log(body);
+              // console.log('update');
+              // console.log(body);
               this.updateCountry(body)
             }
           }
@@ -723,7 +723,7 @@ export class MasterManageComponent implements OnInit {
   // todo check duplicate normal master
 
   async onClickEditCountryList(newLists: any, list: any, index: number, key: any) {
-    console.log(this.newLists);
+    // console.log(this.newLists);
     if (key == 'province') {
       Swal.fire({
         input: 'text',
@@ -753,7 +753,7 @@ export class MasterManageComponent implements OnInit {
         confirmButtonText: 'OK',
       }).then(r => {
 
-        console.log(r.value);
+        // console.log(r.value);
         if (r.isConfirmed) {
           if (r.value != '') {
             this.editFile = r.value
@@ -772,7 +772,7 @@ export class MasterManageComponent implements OnInit {
 
       // <option value=""></option>
       const option: any = this.Currency.lists.map((c: any) => `<option value="${c}">${c}</option>`)
-      console.log(option);
+      // console.log(option);
 
       const { value: formValues } = await Swal.fire({
         title: 'Multiple inputs',
@@ -830,14 +830,14 @@ export class MasterManageComponent implements OnInit {
       return equipment.province.find((province: any) => province._id == updateData._id)
     })
 
-    console.log('resultFind', resultFind);
+    // console.log('resultFind', resultFind);
 
 
     let prepareUpdate: any = resultFind
 
     let dataUpdate: any = prepareUpdate.map((equipment: any) => {
-      console.log('equipment', equipment);
-      console.log('updateDarta', updateData);
+      // console.log('equipment', equipment);
+      // console.log('updateDarta', updateData);
 
       const newProvince: any = equipment.province.map((province: any) => {
         const newLists: any = province.lists.map((list: any) => {
@@ -852,10 +852,10 @@ export class MasterManageComponent implements OnInit {
       equipment.province = newProvince
       return equipment
     })
-    console.log(dataUpdate);
+    // console.log(dataUpdate);
     dataUpdate.map((data: any) => {
       this.middleAPI.updateEquipment(data._id, data).then(res => {
-        console.log('@@@@@@@@@@@RES', res);
+        // console.log('@@@@@@@@@@@RES', res);
 
       })
     })

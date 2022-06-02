@@ -25,9 +25,9 @@ export class EquipmentHomeComponent implements OnInit {
     const master: any = await this.middleAPI.getMaster()
     const tempField = master.filter((m: any) => m.master.toLowerCase().includes('field'))
     const field = tempField[0].lists
-    console.log(field);
+    // console.log(field);
     this.Equipment = await this.splitField(field, equipment)
-    console.log(this.Equipment);
+    // console.log(this.Equipment);
     
     // this.equipmentChemistry = this.Equipment.filter((e: any) => e.field.toLowerCase().includes('chemistry'))
     // this.equipmentElectronic = this.Equipment.filter((e: any) => e.field.toLowerCase().includes('electronic'))
@@ -50,7 +50,7 @@ export class EquipmentHomeComponent implements OnInit {
   }
 
   openModalEquipment(content: any, item: any) {
-    console.log('item', item);
+    // console.log('item', item);
     this.equipmentSelected = item
     this.modal.open(content, { size: 'xl' })
   }

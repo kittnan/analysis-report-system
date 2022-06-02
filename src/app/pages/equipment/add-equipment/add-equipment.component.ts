@@ -49,11 +49,11 @@ export class AddEquipmentComponent implements OnInit {
 
   setMaster() {
     this.Field = this.MASTER.find(m => (m.master).toLowerCase().includes('field'))
-    console.log(this.Field);
+    // console.log(this.Field);
     this.DefectMode = this.MASTER.find(m => (m.master).toLowerCase().includes('defectmode'))
-    console.log(this.DefectMode);
+    // console.log(this.DefectMode);
     this.Brands = this.MASTER.find(m => (m.master).toLowerCase().includes('brands'))
-    console.log(this.Brands);
+    // console.log(this.Brands);
 
   }
 
@@ -74,7 +74,7 @@ export class AddEquipmentComponent implements OnInit {
       c.lists = newLists
       return c
     })
-    console.log(newCountry);
+    // console.log(newCountry);
     this.Country = newCountry
 
   }
@@ -90,7 +90,7 @@ export class AddEquipmentComponent implements OnInit {
       var btnOutput: any = document.getElementById('btnOutput')
       var output: any = document.getElementById('output')
       this.FileUpload = e.target.files[0]
-      console.log(this.FileUpload);
+      // console.log(this.FileUpload);
 
       if (e.target.files.length > 0) {
         output.src = URL.createObjectURL(this.FileUpload);
@@ -171,8 +171,8 @@ export class AddEquipmentComponent implements OnInit {
     // console.log('event', e.target.checked);
     // console.log(item2);
     // console.log(this.Country);
-    console.clear()
-    console.log(this.Country);
+    // console.clear()
+    // console.log(this.Country);
 
     const selectedCountry: any = this.Country.map((country: any) => {
       const newLists: any = country.lists.filter((list: any) => list.clicked == true)
@@ -185,11 +185,11 @@ export class AddEquipmentComponent implements OnInit {
       }
       return temp
     })
-    console.log(selectedCountry);
+    // console.log(selectedCountry);
     let province: any = selectedCountry.filter((s: any) => s.lists.length > 0)
-    console.log(province);
+    // console.log(province);
     this.newEquipment.controls['province'].setValue(province)
-    console.log(this.newEquipment.value);
+    // console.log(this.newEquipment.value);
 
   }
   // todo modal
@@ -226,7 +226,7 @@ export class AddEquipmentComponent implements OnInit {
         })
       }
       await this.middleAPI.insertEquipment(this.newEquipment.value)
-      console.log(this.newEquipment.value);
+      // console.log(this.newEquipment.value);
       Swal.fire('Success', '', 'success')
       this.newEquipment.patchValue({
         analysisEquipmentName: '',
@@ -259,7 +259,7 @@ export class AddEquipmentComponent implements OnInit {
   //  ? check duplicate
   checkDuplicateEquipmentName(equipment: any, newEquipmentName: any) {
     return new Promise((resolve, reject) => {
-      console.log('checkDuplicateEquipmentName');
+      // console.log('checkDuplicateEquipmentName');
       if (equipment.find(eq => eq.analysisEquipmentName == newEquipmentName)) reject('equipment name as duplicate')
       resolve(true)
     })
@@ -275,9 +275,9 @@ export class AddEquipmentComponent implements OnInit {
       const type = '.' + oldFileName[oldFileName.length - 1]
       const fileName = this.newEquipment.controls['analysisEquipmentName'].value + type
       formData.append('File', this.FileUpload, fileName)
-      console.log('form data before upload', formData);
+      // console.log('form data before upload', formData);
       const result: any = await this.middleAPI.uploadImgEquipment(formData)
-      console.log('result upload img: ', result);
+      // console.log('result upload img: ', result);
       const urlImage = {
         size: this.FileUpload.size,
         url: result + '?' + this.FileUpload.lastModified,
