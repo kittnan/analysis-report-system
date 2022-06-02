@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { ExportEquipmentService } from '../export-equipment.service';
+import { ExportFilteredService } from '../export-filtered.service';
 import { MasterService } from '../master-manage/master.service';
 import { PreviewEquipmentComponent } from '../preview-equipment/preview-equipment.component';
 // import * as XLSX from 'xlsx';
@@ -44,7 +45,8 @@ export class SearchEquipmentComponent implements OnInit {
   constructor(
     private modal: NgbModal,
     private middleAPI: MasterService,
-    private exportExcel: ExportEquipmentService
+    private exportExcel: ExportEquipmentService,
+    private exportExceljs: ExportFilteredService
   ) {
     this.tableHead = [
       'No', 'equipment name', 'scope', 'Defect mode', 'Limitation of sample', 'Country && Province'
@@ -137,7 +139,7 @@ export class SearchEquipmentComponent implements OnInit {
         }
         if (key == 'country') {
           equipmentFiltered = equipmentFiltered.filter(e => {
-            if (e.province.find(p => p.country.toLowerCase().includes(objFiltered[key].toLowerCase()))) return true
+            if (e.province.find(p => p.master.toLowerCase().includes(objFiltered[key].toLowerCase()))) return true
             return false
           })
         }
@@ -182,7 +184,9 @@ export class SearchEquipmentComponent implements OnInit {
     }).then(r => {
       if (r.isConfirmed) {
         // Swal.fire('Success', '', 'success')
-        this.exportExcel.onExport(this.equipmentFiltered)
+        // this.exportExcel.onExport(this.equipmentFiltered)
+        
+        this.exportExceljs.onGenReport(this.equipmentFiltered)
       }
     })
   }

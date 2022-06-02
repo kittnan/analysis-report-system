@@ -90,7 +90,7 @@
 
                     <button id="btnOutput" class="btn btn-block" style="height: 500px;" (click)="uploadImg.click()">Upload
                         image</button>
-                    <div class="img-hover-zoom">
+                    <div class="img-hover-zoom" id="box-output">
                         <img id="output" src="#" alt="" hidden width="100%" height="100%" (click)="uploadImg.click()">
                     </div>
                     <p *ngIf="FileUpload">

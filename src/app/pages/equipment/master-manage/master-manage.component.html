@@ -412,7 +412,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="">Country name</label>
-                            <input type="text" class="form-control" [(ngModel)]="newCountry">
+                            <input [disabled]="CountryUse" type="text" class="form-control" [(ngModel)]="newCountry">
                         </div>
                     </div>
                 </div>
@@ -485,7 +485,7 @@
                                         <td *ngIf="item.files.length>0">
                                             <tr *ngFor="let file of item.files; let indexFile=index" class="text-center">
                                                 <a class="row-text-underline" (click)="onClickEditCountryList(newLists,item,i,'file')">
-                                            {{file.name}} ({{file.size |fileSize}})
+                                            Quotation ({{file.size |fileSize}})
                                         </a>
                                             </tr>
                                         </td>

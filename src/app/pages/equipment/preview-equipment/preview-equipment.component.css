@@ -74,8 +74,3 @@ img {
 .img-hover-zoom:hover img {
     transform: scale(1.05);
 }
-
-.table-dark {
-    background-color: #212120;
-    color: white;
-}

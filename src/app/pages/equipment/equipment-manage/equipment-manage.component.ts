@@ -158,14 +158,17 @@ export class EquipmentManageComponent implements OnInit {
     this.modal.open(content, { size: 'xl' })
     var btnOutput: any = document.getElementById('btnOutput')
     var output: any = document.getElementById('output')
+    let boxOutput: any = document.getElementById('box-output')
     if (equipment.urlImage) {
       output.src = equipment.urlImage.url
       this.FileUpload = equipment.urlImage
       btnOutput.hidden = true
       output.hidden = false
+      boxOutput.hidden = false
     } else {
       btnOutput.hidden = false
       output.hidden = true
+      boxOutput.hidden = true
     }
     this.EquipmentForm.patchValue(equipment)
     this.Country = await this.setCountry()
@@ -184,6 +187,7 @@ export class EquipmentManageComponent implements OnInit {
     } else {
       var btnOutput: any = document.getElementById('btnOutput')
       var output: any = document.getElementById('output')
+      let boxOutput: any = document.getElementById('box-output')
       this.FileUpload = e.target.files[0]
       console.log(this.FileUpload);
 
@@ -194,9 +198,12 @@ export class EquipmentManageComponent implements OnInit {
         }
         btnOutput.hidden = true
         output.hidden = false
+        boxOutput.hidden = false
+
       } else {
         btnOutput.hidden = false
         output.hidden = true
+        boxOutput.hidden = true
 
       }
     }
@@ -270,7 +277,7 @@ export class EquipmentManageComponent implements OnInit {
         return prev.concat(current)
       }, [])
       const temp = {
-        master: country.master,
+        ...country,
         lists: resultReduce
       }
       return temp

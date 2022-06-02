@@ -24,7 +24,7 @@ export class MasterManageComponent implements OnInit {
 
   newItem: any
 
-
+  Equipments: any
   MASTER: any
   Select_Master: any
   Select_Lists_Temp: any
@@ -40,6 +40,9 @@ export class MasterManageComponent implements OnInit {
   newLists: any = []
 
   editFile: any
+  CountryUse: boolean = false
+  BtnDeleteMaster: boolean = false
+  // testOldSelected: any
   constructor(
     private md: NgbModal,
     private api: EquipmentService,
@@ -49,7 +52,6 @@ export class MasterManageComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     // this.getMaster()
-
   }
 
   // ? ----------------------------------------------- top menu
@@ -68,10 +70,30 @@ export class MasterManageComponent implements OnInit {
 
   }
 
-  onChangeMasterSelect(e: any) {
+  async onChangeMasterSelect(e: any) {
+    this.BtnDeleteMaster = false
+
     const resultFind: any = this.MASTER.find(m => m.master == e.target.value)
     this.Select_Master = { ...this.Select_Master, ...resultFind }
     console.log(this.Select_Master);
+    // this.testOldSelected = Object.assign({}, this.Select_Master)
+
+
+    // ? country
+    if (this.Select_Master['group'] == 'country') {
+      const equipments: any = await this.middleAPI.getEquipment()
+      console.clear()
+      console.log('equipments', equipments);
+      console.log('this.Select_Master', this.Select_Master);
+      const temp: any = equipments.find((eq: any) => {
+        return eq.province.find((pro: any) => pro._id == this.Select_Master._id)
+      })
+      if (temp) {
+        this.BtnDeleteMaster = true
+      } else {
+        this.BtnDeleteMaster = false
+      }
+    }
 
   }
 
@@ -90,22 +112,28 @@ export class MasterManageComponent implements OnInit {
   // todo delete master
   onClickDeleteMaster() {
 
-    if (this.Select_Master) {
-      Swal.fire({
-        title: ` Do you want to delete master: ${this.Select_Master.master}?`,
-        icon: 'question',
-        showCancelButton: true
-      }).then(r => {
-        if (r.isConfirmed) {
-          this.onDeleteMaster(this.Select_Master._id)
-        }
-      })
+
+    if (this.BtnDeleteMaster === true) {
+      Swal.fire('Master is using!!', '', 'warning')
     } else {
-      Swal.fire('Please select master delete target!!', '', 'warning')
+      if (this.Select_Master) {
+        Swal.fire({
+          title: ` Do you want to delete master: ${this.Select_Master.master}?`,
+          icon: 'question',
+          showCancelButton: true
+        }).then(r => {
+          if (r.isConfirmed) {
+            this.onDeleteMaster(this.Select_Master._id)
+          }
+        })
+      } else {
+        Swal.fire('Please select master delete target!!', '', 'warning')
+      }
     }
 
-  }
 
+
+  }
 
   // ? ----------------------------------------------- top menu
 
@@ -125,6 +153,7 @@ export class MasterManageComponent implements OnInit {
     this.listsBoo = this.lists.map(l => true)
     this.md.open(content, { size: 'lg' })
 
+
   }
 
   async onEditCountry(content: any) {
@@ -135,6 +164,7 @@ export class MasterManageComponent implements OnInit {
 
     this.Select_Lists_Temp = Array.from(this.Select_Master.lists)
 
+    this.checkCountryUsing()
 
     const normalMaster: any = await this.middleAPI.getMaster()
     this.Currency = normalMaster.find((m: any) => m.master.toLowerCase().includes('currency'))
@@ -449,22 +479,42 @@ export class MasterManageComponent implements OnInit {
 
   }
 
-  onDeleteCountryList(index: any) {
+  async onDeleteCountryList(index: any) {
 
-    Swal.fire({
-      title: 'Do you want to delete?',
-      icon: 'question',
-      showCancelButton: true
-    }).then(async res => {
-      if (res.isConfirmed) {
-        this.middleAPI.removeQuotation({
-          filename: this.newLists[index].files[0].name
-        }).then(res => {
-          this.newLists.splice(index, 1)
-          this.onUpdateCountry()
-        })
-      }
+    const equipments: any = await this.middleAPI.getEquipment()
+    const temp: any = equipments.find((eq: any) => {
+      return eq.province.find((pro: any) => {
+        return pro.lists.find((list: any) => list.name.toLowerCase() == this.newLists[index].name.toLowerCase())
+      })
     })
+
+    if (temp) {
+      Swal.fire('List is using!!', '', 'warning')
+    }else{
+      Swal.fire({
+        title: 'Do you want to delete?',
+        icon: 'question',
+        showCancelButton: true
+      }).then(async res => {
+        if (res.isConfirmed) {
+          if (this.newLists[index].files.length) {
+            this.middleAPI.removeQuotation({
+              filename: this.newLists[index].files[0].name
+            }).then(res => {
+              this.newLists.splice(index, 1)
+              this.onUpdateCountry()
+            })
+          } else {
+            this.newLists.splice(index, 1)
+            this.onUpdateCountry()
+          }
+        }
+      })
+    }
+
+
+
+
   }
 
 
@@ -642,6 +692,7 @@ export class MasterManageComponent implements OnInit {
 
     try {
       await this.middleAPI.updateCountry(updateData._id, updateData)
+
       this.md.dismissAll()
       Swal.fire('Success', '', 'success')
       let group: any = document.getElementById('top-group') as HTMLInputElement
@@ -651,6 +702,8 @@ export class MasterManageComponent implements OnInit {
       this.MASTER = []
     } catch (error) {
       console.log(error);
+    } finally {
+      this.checkAndUpdateEquipment(updateData)
     }
 
   }
@@ -724,7 +777,7 @@ export class MasterManageComponent implements OnInit {
       const { value: formValues } = await Swal.fire({
         title: 'Multiple inputs',
         html:
-          `<input id="swal-input1" class="swal2-input" placeholder="analysisFee" > 
+          `<input type="number" id="swal-input1" class="swal2-input" placeholder="analysisFee" > 
           <select id="swal-input2" autocapitalize="off" class="swal2-select" >
                    ${option}
                 </select> `,
@@ -749,5 +802,99 @@ export class MasterManageComponent implements OnInit {
 
   }
   // ? --------------------------------------- update Country 
+
+  async checkCountryUsing() {
+    // const master = this.Select_Master.master
+    // console.log(this.Select_Master);
+
+    // const equipments: any = await this.middleAPI.getEquipment()
+    // const resultFind: any = equipments.find((equipment: any) => {
+    //   console.log(equipment);
+
+    //   return equipment.province.find((province: any) => province._id == this.Select_Master._id)
+    // })
+    // console.log(resultFind);
+    // if (resultFind) {
+    //   this.CountryUse = true
+    // } else {
+    //   this.CountryUse = false
+    // }
+    this.CountryUse = false
+
+  }
+
+  async checkAndUpdateEquipment(updateData: any) {
+
+    const equipments: any = await this.middleAPI.getEquipment()
+    const resultFind: any = equipments.filter((equipment: any) => {
+      return equipment.province.find((province: any) => province._id == updateData._id)
+    })
+
+    console.log('resultFind', resultFind);
+
+
+    let prepareUpdate: any = resultFind
+
+    let dataUpdate: any = prepareUpdate.map((equipment: any) => {
+      console.log('equipment', equipment);
+      console.log('updateDarta', updateData);
+
+      const newProvince: any = equipment.province.map((province: any) => {
+        const newLists: any = province.lists.map((list: any) => {
+          const temp: any = updateData.lists.find((ulList: any) => ulList._id == list._id)
+          const newTemp: any = { ...list, ...temp }
+          return newTemp
+        })
+        province.lists = newLists
+        province.master = updateData.master
+        return province
+      })
+      equipment.province = newProvince
+      return equipment
+    })
+    console.log(dataUpdate);
+    dataUpdate.map((data: any) => {
+      this.middleAPI.updateEquipment(data._id, data).then(res => {
+        console.log('@@@@@@@@@@@RES', res);
+
+      })
+    })
+
+
+
+  }
+  // async checkAndUpdateEquipment(updateData: any) {
+
+  //   const equipments: any = await this.middleAPI.getEquipment()
+  //   const resultFind: any = equipments.filter((equipment: any) => {
+  //     return equipment.province.find((province: any) => province.master == updateData.master)
+  //   })
+
+  //   let prepareUpdate: any = resultFind
+
+  //   let dataUpdate: any = prepareUpdate.map((equipment: any) => {
+  //     const newProvince: any = equipment.province.map((province: any) => {
+  //       const newLists: any = province.lists.map((list: any) => {
+  //         const temp: any = updateData.lists.find((ulList: any) => ulList._id == list._id)
+  //         const newTemp: any = { ...list, ...temp }
+  //         return newTemp
+  //       })
+  //       province.lists = newLists
+  //       return province
+  //     })
+  //     equipment.province = newProvince
+  //     return equipment
+  //   })
+  //   console.log(dataUpdate);
+  //   dataUpdate.map((data: any) => {
+  //     this.middleAPI.updateEquipment(data._id, data).then(res => {
+  //       console.log('@@@@@@@@@@@RES',res);
+
+  //     })
+  //   })
+
+
+
+  // }
 
 }

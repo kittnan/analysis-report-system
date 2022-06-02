@@ -134,38 +134,38 @@ export class AddEquipmentComponent implements OnInit {
 
     this.modal.open(content, { size: 'lg' })
   }
-  onClickBox(i, i2) {
-    this.Country[i].lists[i2].clicked == true ? this.Country[i].lists[i2].clicked = false : this.Country[i].lists[i2].clicked = true
-    console.log(this.Country[i].lists[i2]);
+  // onClickBox(i, i2) {
+  //   this.Country[i].lists[i2].clicked == true ? this.Country[i].lists[i2].clicked = false : this.Country[i].lists[i2].clicked = true
+  //   console.log(this.Country[i].lists[i2]);
 
-    let tempExternal: any = this.newEquipment.controls['province'].value
+  //   let tempExternal: any = this.newEquipment.controls['province'].value
 
-    const resultFind: any = tempExternal.find((t: any) => t.country == this.Country[i].master)
-    console.log(resultFind);
-    if (!resultFind) {
-      tempExternal.push({
-        country: this.Country[i].master,
-        lists: [this.Country[i].lists[i2].name]
-      })
-    } else {
-      const indexExternal: number = tempExternal.indexOf(resultFind)
-      console.log(indexExternal);
-      const resultFindLists: any = tempExternal[indexExternal].lists.find(r => r == this.Country[i].lists[i2].name)
-      if (resultFindLists) {
-        const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
-        tempExternal[indexExternal].lists.splice(indexList, 1)
-        if (tempExternal[indexExternal].lists.length == 0) {
-          const indexCountry: number = tempExternal.indexOf(tempExternal[indexExternal])
-          tempExternal.splice(indexCountry, 1)
-        }
-      } else {
-        tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
-      }
-    }
-    this.newEquipment.controls['province'].setValue(tempExternal)
-    console.log(this.newEquipment.controls['province'].value);
+  //   const resultFind: any = tempExternal.find((t: any) => t.country == this.Country[i].master)
+  //   console.log(resultFind);
+  //   if (!resultFind) {
+  //     tempExternal.push({
+  //       country: this.Country[i].master,
+  //       lists: [this.Country[i].lists[i2].name]
+  //     })
+  //   } else {
+  //     const indexExternal: number = tempExternal.indexOf(resultFind)
+  //     console.log(indexExternal);
+  //     const resultFindLists: any = tempExternal[indexExternal].lists.find(r => r == this.Country[i].lists[i2].name)
+  //     if (resultFindLists) {
+  //       const indexList = tempExternal[indexExternal].lists.indexOf(resultFindLists)
+  //       tempExternal[indexExternal].lists.splice(indexList, 1)
+  //       if (tempExternal[indexExternal].lists.length == 0) {
+  //         const indexCountry: number = tempExternal.indexOf(tempExternal[indexExternal])
+  //         tempExternal.splice(indexCountry, 1)
+  //       }
+  //     } else {
+  //       tempExternal[indexExternal].lists.push(this.Country[i].lists[i2].name)
+  //     }
+  //   }
+  //   this.newEquipment.controls['province'].setValue(tempExternal)
+  //   console.log(this.newEquipment.controls['province'].value);
 
-  }
+  // }
   onCheckBox(item2: any) {
     item2.clicked = !item2.clicked
     // console.log('event', e.target.checked);
@@ -180,7 +180,7 @@ export class AddEquipmentComponent implements OnInit {
         return prev.concat(current)
       }, [])
       const temp = {
-        master: country.master,
+        ...country,
         lists: resultReduce
       }
       return temp
