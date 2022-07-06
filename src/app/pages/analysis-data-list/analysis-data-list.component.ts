@@ -240,7 +240,7 @@ export class AnalysisDataListComponent implements OnInit {
 
 
   ngOnInit(): void {
-   
+
     this.CheckStatusUser();
     this.GetModelAll();
     this.loadiDataFromSessionCondition()
@@ -373,8 +373,11 @@ export class AnalysisDataListComponent implements OnInit {
       if (result_setstatus == 'ok') {
         // console.log(result_merge);
         this.MergeRequest = result_merge
-        const tempMap: any = await this.mapToDataTable(result_merge)
+        let tempMap: any = await this.mapToDataTable(result_merge)
         const guest = sessionStorage.getItem('UserEmployeeCode')
+
+        tempMap = await this.filterStatus(tempMap);
+
         if (guest == 'guest') {
           console.log(tempMap);
 
@@ -395,6 +398,17 @@ export class AnalysisDataListComponent implements OnInit {
       this.rowData = []
     }
 
+  }
+
+  // ! filter status ongoing, done, done with delay
+  filterStatus(data: any) {
+    return new Promise(resolve => {
+      const result = data.filter((d: any) =>
+        d.statusShow.toLowerCase() == 'ongoing' ||
+        d.statusShow.toLowerCase().includes('done')
+      )
+      resolve(result)
+    })
   }
 
   search(condition) {

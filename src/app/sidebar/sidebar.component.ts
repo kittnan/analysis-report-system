@@ -204,7 +204,7 @@ export class SidebarComponent implements OnInit {
         const equipment = {
             path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: ''
         }
-        this.menuItems.push(equipment)
+        // this.menuItems.push(equipment)
 
     }
 
