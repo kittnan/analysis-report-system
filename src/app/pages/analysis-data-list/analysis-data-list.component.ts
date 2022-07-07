@@ -511,7 +511,7 @@ export class AnalysisDataListComponent implements OnInit {
         merge['projectName'] = `${merge.size} / ${merge.customer}`
         merge.inputQuantity = Number(merge.inputQuantity)
         merge.ngQuantity = Number(merge.ngQuantity)
-        merge.ratio = Number(merge.ratio)
+        merge.ratio = parseFloat(ratio)
         merge.sendNgAnalysis = Number(merge.sendNgAnalysis)
         merge.occurPlace = `${merge.occurBName}, ${merge.occurB}`
         merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
@@ -522,6 +522,7 @@ export class AnalysisDataListComponent implements OnInit {
 
         return merge
       })
+      
       resolve(result_map)
     })
   }
@@ -802,7 +803,7 @@ export class AnalysisDataListComponent implements OnInit {
   }
 
   onCellClicked(item: any) {
-    console.log(item);
+    // console.log(item);
     const form = item.data
 
 
