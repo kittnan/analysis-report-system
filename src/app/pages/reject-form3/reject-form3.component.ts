@@ -50,7 +50,7 @@ export class RejectForm3Component implements OnInit {
     CategoryCause: new FormControl(null, Validators.required),
     AnalysisLevel: new FormControl(null, Validators.required),
     CanAnalysis: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null, Validators.required),
+    ReportNo: new FormControl(null),
     Approve: new FormControl(null, Validators.required),
     TempCause: new FormControl(null),
   })
