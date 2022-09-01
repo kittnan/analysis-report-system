@@ -109,10 +109,9 @@ export class RejectForm3Component implements OnInit {
   ReportList: any = [];
 
   // ? upload report
-  FileList:any
+  FileList: any
   FileReportName: any = "No file..";
   FileReportPath: any;
-  FileReport: any;
   SelectMDL = new FormControl(null, Validators.required)
 
 
@@ -145,7 +144,7 @@ export class RejectForm3Component implements OnInit {
     LevelList.push(sessionStorage.getItem('UserLevel5'))
     LevelList.push(sessionStorage.getItem('UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '4') || (lvl == '0'))
-    console.log(Level.length);
+    // console.log(Level.length);
 
     if (Level.length == 0) {
       // alert("No access!!");
@@ -185,8 +184,8 @@ export class RejectForm3Component implements OnInit {
     let d = sessionStorage.getItem('FormId');
 
     this.api.FindFormById(d).subscribe((data: any) => {
-      console.log('data',data);
-      
+      // console.log('data',data);
+
       if (data) {
         this.form = data;
         this.FileListname = data.fileList;
@@ -220,9 +219,9 @@ export class RejectForm3Component implements OnInit {
         this.CanAnalysis.setValue(data2[0].canAnalysis);
         this.ReportNo.setValue(data2[0].analysisReportNo);
         this.TreatmentOfNg.setValue(data2[0].treatMent)
-        let st = data2[0].startAnalyzeDate.split("T");
-        let st2 = data2[0].finishAnalyzeDate.split("T");
-        let st3 = data2[0].finishReportDate.split("T");
+        let st = data2[0].startAnalyzeDate ? data2[0].startAnalyzeDate.split("T") : null;
+        let st2 = data2[0].finishAnalyzeDate ? data2[0].finishAnalyzeDate.split("T") : null;
+        let st3 = data2[0].finishReportDate ? data2[0].finishReportDate.split("T") : null;
         let temp1 = st[0];
         let temp2 = st2[0];
         let temp3 = st3[0];
@@ -353,18 +352,20 @@ export class RejectForm3Component implements OnInit {
         // alert('save')
         const formId = sessionStorage.getItem('FormId')
         const resultCheck: any = await this.checkResult(formId)
-        if (resultCheck.length == 0) {
-          // const res: any = await this.insertResultWhenFinish(formId)
-          // console.log(res);
-          // if (res.length != 0) {
-          //   this.alertSuccess()
-          // } else {
-          //   Swal.fire({
-          //     title: 'error',
-          //     icon: 'error',
-          //     showConfirmButton: true
-          //   })
-          // }
+        // console.log(resultCheck);
+
+        if (resultCheck.length === 0) {
+          const res: any = await this.insertResultWhenFinish(formId)
+          console.log(res);
+          if (res.length != 0) {
+            this.alertSuccess()
+          } else {
+            Swal.fire({
+              title: 'error',
+              icon: 'error',
+              showConfirmButton: true
+            })
+          }
 
         } else {
           const res = await this.updateResultWhenDraft(resultCheck[0]._id)
@@ -388,7 +389,32 @@ export class RejectForm3Component implements OnInit {
     })
   }
 
+  insertResultWhenFinish(formId) {
 
+    return new Promise(async resolve => {
+      const ResultData = {
+        analysisReportNo: this.ReportNo.value,
+        formId: formId,
+        engineerId: sessionStorage.getItem('UserId'),
+        engineerName: (sessionStorage.getItem('UserFirstName') + "-" + sessionStorage.getItem('UserLastName')),
+        result: this.Result.value || null,
+        causeOfDefect: this.CategoryCause.value || null,
+        sourceOfDefect: this.SourceOfDefect.value || null,
+        analysisLevel: this.AnalysisLevel.value || null,
+        canAnalysis: this.CanAnalysis.value || null,
+        startAnalyzeDate: this.AnalyzeDate.value || null,
+        finishAnalyzeDate: this.ResultDate.value || null,
+        finishReportDate: this.ReportDate.value || null,
+        requestItemId: this.form.requestItemId || null,
+        requestItemName: this.form.requestItem || null,
+        treatMent: this.TreatmentOfNg.value || null,
+      }
+      console.log(ResultData);
+      this.api.PostResult(ResultData).subscribe((data: any) => {
+        resolve(data)
+      })
+    })
+  }
 
   updateResultWhenDraft(resultId) {
     return new Promise(resolve => {
@@ -404,6 +430,8 @@ export class RejectForm3Component implements OnInit {
         requestItemId: this.form.requestItemId || null,
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
+        file: this.FileReportPath,
+        files: this.tempFile
       }
       this.api.UpdateResult(resultId, ResultData).subscribe((data: any) => {
         resolve(data)
@@ -421,21 +449,23 @@ export class RejectForm3Component implements OnInit {
 
 
       let d = {
-        sourceOfDefect: this.SourceOfDefect.value,
-        analysisLevel: this.AnalysisLevel.value,
-        canAnalysis: this.CanAnalysis.value,
-        startAnalyzeDate: this.AnalyzeDate.value,
-        finishAnalyzeDate: this.ResultDate.value,
-        finishReportDate: this.ReportDate.value,
-
         analysisReportNo: this.ReportNo.value,
         formId: sessionStorage.getItem('FormId'),
         engineerId: sessionStorage.getItem('UserId'),
         engineerName: (sessionStorage.getItem('UserFirstName') + "-" + sessionStorage.getItem('UserLastName')),
         result: this.Result.value,
         causeOfDefect: this.CategoryCause.value,
+        sourceOfDefect: this.SourceOfDefect.value,
+        analysisLevel: this.AnalysisLevel.value,
+        canAnalysis: this.CanAnalysis.value,
+        startAnalyzeDate: this.AnalyzeDate.value,
+        finishAnalyzeDate: this.ResultDate.value,
+        finishReportDate: this.ReportDate.value,
         requestItemId: this.form.requestItemId,
         requestItemName: this.form.requestItem,
+        treatMent: this.TreatmentOfNg.value,
+        file: this.FileReportPath,
+        files: this.tempFile
       }
 
       // console.log("before", d);
@@ -804,9 +834,11 @@ export class RejectForm3Component implements OnInit {
 
           this.api.UploadFileEReport(file, file.name).then((data: any) => {
             if (data) {
-              this.FileReport = file;
+              this.FileReportPath = data;
+              this.FileReportName = (data.split('/'))[5];
               this.htmlFile.reset();
               this.alertSuccess();
+
             }
           })
 

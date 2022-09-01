@@ -240,7 +240,8 @@
 <div class="col-12 mt-5" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
     <div class="row">
         <div class="col-lg-12 text-right mt-0 mb-0">
-            <button class="btn btn-sm text-primary" (click)="onSaveResult();">Draft <i class="bi bi-clipboard-check"></i></button>
+            <button class="btn btn-sm text-primary" (click)="onSaveResult();">Draft <i
+                    class="bi bi-clipboard-check"></i></button>
         </div>
     </div>
     <div class="row" [formGroup]="ResultForm">
@@ -597,7 +598,8 @@
         <div class="row" *ngFor="let item of CommentLists">
             <div class="col-12">
                 <div class="form-group">
-                    <label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short" style="font-size: 1.3rem;"></i> {{item.to}}</label>
+                    <label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short"
+                            style="font-size: 1.3rem;"></i> {{item.to}}</label>
                     <p class="box-comment" [ngClass]="item.class">{{item.note}}</p>
                 </div>
             </div>
