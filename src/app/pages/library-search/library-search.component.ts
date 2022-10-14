@@ -372,12 +372,9 @@ export class LibrarySearchComponent implements OnInit {
         merge.ngQuantity = Number(merge.ngQuantity)
         merge.ratio = parseFloat(ratio)
         merge.sendNgAnalysis = Number(merge.sendNgAnalysis)
-        merge.occurPlace = `${merge.occurBName}, ${merge.occurB}`
+        merge.occurPlace = merge.occurBName
         merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
         merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
-
-        // console.log(map);
-
 
         return merge
       })
