@@ -164,31 +164,39 @@ export class ManageFormComponent implements OnInit {
 
   // ?API
   async GetRequestFormByApprove() {
+    console.log(this.UserLevel);
+    const foo = JSON.stringify(this.UserLevel);
+    console.log(foo);
+    
     let id = sessionStorage.getItem('UserId');
-    this.api.GetRequestFormByApprove(id).subscribe(async (data: any) => {
-      if (data.length > 0) {
-        this.FormListAll = await data;
-        // this.DataFilter = data;
-        // console.log(this.FormListAll);
+    const data: any = await this.api.GetRequestFormByApprove(id).toPromise();
+    if (data.length > 0) {
+      this.FormListAll = data.map((d: any) => {
+        d.issuedDate = new Date(d.issuedDate).toLocaleDateString('en-US');
+        d.replyDate = new Date(d.replyDate).toLocaleDateString('en-US');
+        return d
+      })
+      if (this.FormListAll) this.OnSelectStatus();
+    }
+    // this.api.GetRequestFormByApprove(id).subscribe(async (data: any) => {
+    //   if (data.length > 0) {
+    //     this.FormListAll = await data;
+    //     let count = 0;
+    //     await this.FormListAll.forEach((i, index) => {
+    //       count += 1;
+    //       const dateStr = new Date(i.issuedDate).toLocaleDateString('en-US')
+    //       const dateStr2 = new Date(i.replyDate).toLocaleDateString('en-US')
+    //       i.issuedDate = dateStr;
+    //       i.replyDate = dateStr2;
+    //       if (count == this.FormListAll.length) {
+    //         this.OnSelectStatus();
 
-        // this.FormList = data;
-        // this.pageLoadEnd();
-        let count = 0;
-        await this.FormListAll.forEach((i, index) => {
-          count += 1;
-          const dateStr = new Date(i.issuedDate).toLocaleDateString('en-US')
-          const dateStr2 = new Date(i.replyDate).toLocaleDateString('en-US')
-          i.issuedDate = dateStr;
-          i.replyDate = dateStr2;
-          if (count == this.FormListAll.length) {
-            this.OnSelectStatus();
-
-          }
-        });
+    //       }
+    //     });
 
 
-      }
-    })
+    //   }
+    // })
   }
 
   async GetRequest() {
