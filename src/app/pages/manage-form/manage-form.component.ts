@@ -28,7 +28,7 @@ export class ManageFormComponent implements OnInit {
 
 
   // ? form control
-  SelectStatus = new FormControl('inprocess');
+  SelectStatus = new FormControl('inProcess');
 
   // ? 
   UserLevel = [];
@@ -36,79 +36,116 @@ export class ManageFormComponent implements OnInit {
 
   // ? data table
   DataFilter = [];
-  CountNum = new FormControl(null, Validators.required)
+  CountNum = new FormControl(10, Validators.required)
   PageNow = 1;
   CountPage: any;
   CountList = [10, 20, 50, 100]
+  Count:Number = 1
+  Sort = new FormControl(-1)
 
   // ? search
   KeySearch: any
 
-  ngOnInit(): void {
-    this.CheckStatusUser()
+  async ngOnInit(): Promise<void> {
     this.pageLoadStart();
-    this.SetUserStatus();
-    this.GetRequest();
+    await this.CheckStatusUser()
+    await this.SetUserStatus();
+    // this.GetRequest();
     // this.OnSelectStatus();
+
+    this.get()
+  }
+
+  async get() {
+    this.PageNow = 1;
+    const userLevelStr = JSON.stringify(this.UserLevel)
+    const result = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0)
+    const count = await this.getCount(this.SelectStatus.value, this.UserId, userLevelStr, 1);
+    this.Count = count[0].count;
+    this.CountPage = this.numPage(count[0].count, this.CountNum.value)
+    this.DataFilter = result
   }
 
   SetUserStatus() {
-    // ?  filter เลเวล ถ้าเป็นnull ให้ตัดออก
-    for (let index = 0; index < 5; index++) {
-      let str1 = "UserLevel" + (index + 1);
-      let temp1 = sessionStorage.getItem(str1);
-      if (temp1 != "null") {
-        this.UserLevel[index] = sessionStorage.getItem(str1);
+    return new Promise(resolve => {
+      // ?  filter เลเวล ถ้าเป็นnull ให้ตัดออก
+      for (let index = 0; index < 5; index++) {
+        let str1 = "UserLevel" + (index + 1);
+        let temp1 = sessionStorage.getItem(str1);
+        if (temp1 != "null") {
+          this.UserLevel[index] = sessionStorage.getItem(str1);
+        }
+        if (index + 1 === 5) {
+          resolve(true)
+        }
       }
-    }
+
+    })
     // this.OnSelectStatus();
   }
 
   CheckStatusUser() {
-    let LevelList = [];
-    sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
-    sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
-    sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
-    sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
-    sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
-    sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
-    const guest = sessionStorage.getItem('UserEmployeeCode')
+    return new Promise(resolve => {
 
-    if (guest == 'guest') {
-      // alert("No access!!");
-      this.route.navigate(['/dashboard'])
-      // location.href = "#/dashboard"
-    }
+      let LevelList = [];
+      sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
+      sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
+      sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
+      sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
+      sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
+      sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
+      const guest = sessionStorage.getItem('UserEmployeeCode')
 
-    if (LevelList.find(i => i == '1') ||
-      LevelList.find(i => i == '2') ||
-      LevelList.find(i => i == '3') ||
-      LevelList.find(i => i == '4') ||
-      LevelList.find(i => i == '5') ||
-      LevelList.find(i => i == '6') ||
-      LevelList.find(i => i == '0')
-    ) {
-    } else {
-      // alert("No access!!");
-      location.href = "#/login"
+      if (guest == 'guest') {
+        this.route.navigate(['/dashboard'])
+      }
+
+      if (LevelList.find(i => i == '1') ||
+        LevelList.find(i => i == '2') ||
+        LevelList.find(i => i == '3') ||
+        LevelList.find(i => i == '4') ||
+        LevelList.find(i => i == '5') ||
+        LevelList.find(i => i == '6') ||
+        LevelList.find(i => i == '0')
+      ) {
+      } else {
+        // alert("No access!!");
+        location.href = "#/login"
+      }
+      resolve(true)
+    })
+  }
+
+  async getCount(action: string, id: string, level: any, count: number) {
+    const params = {
+      action: action,
+      id: id,
+      limit: 1,
+      page: 1,
+      sort: 1,
+      level: level,
+      count: count
     }
+    return await this.api.RequestManage(params).toPromise()
+  }
+
+  async getRequest(action: string, id: string, limit: number, page: number, sort: number, level: any, count: number) {
+    const params = {
+      action: action,
+      id: id,
+      limit: limit,
+      page: page,
+      sort: sort,
+      level: level,
+      count: count
+    }
+    return await this.api.RequestManage(params).toPromise()
   }
 
 
 
   async OnSelectStatus() {
-
-    if (this.SelectStatus.value == "inprocess") {
-      this.FormList = await this.FormListAll.filter(item => (item.status != 6) && (item.status != 0))
-      await this.startPage();
-    } else if (this.SelectStatus.value == "finish") {
-      this.FormList = await this.FormListAll.filter(item => (item.status == 6) || (item.status == 0))
-      await this.startPage();
-
-    }
-
-
-
+    this.get()
   }
 
   OnClickForm(item: any) {
@@ -162,118 +199,34 @@ export class ManageFormComponent implements OnInit {
 
   }
 
-  // ?API
-  async GetRequestFormByApprove() {
-    console.log(this.UserLevel);
-    const foo = JSON.stringify(this.UserLevel);
-    console.log(foo);
-    
-    let id = sessionStorage.getItem('UserId');
-    const data: any = await this.api.GetRequestFormByApprove(id).toPromise();
-    if (data.length > 0) {
-      this.FormListAll = data.map((d: any) => {
-        d.issuedDate = new Date(d.issuedDate).toLocaleDateString('en-US');
-        d.replyDate = new Date(d.replyDate).toLocaleDateString('en-US');
-        return d
-      })
-      if (this.FormListAll) this.OnSelectStatus();
-    }
-    // this.api.GetRequestFormByApprove(id).subscribe(async (data: any) => {
-    //   if (data.length > 0) {
-    //     this.FormListAll = await data;
-    //     let count = 0;
-    //     await this.FormListAll.forEach((i, index) => {
-    //       count += 1;
-    //       const dateStr = new Date(i.issuedDate).toLocaleDateString('en-US')
-    //       const dateStr2 = new Date(i.replyDate).toLocaleDateString('en-US')
-    //       i.issuedDate = dateStr;
-    //       i.replyDate = dateStr2;
-    //       if (count == this.FormListAll.length) {
-    //         this.OnSelectStatus();
-
-    //       }
-    //     });
-
-
-    //   }
-    // })
-  }
-
-  async GetRequest() {
-    await this.GetRequestFormByApprove();
-  }
-
 
   // ? Data table Fn'
-  numPage(data: any, value: number) {
-    // let num = Math.ceil(this.FormList.length / this.CountNum.value)
-    let num = Math.ceil(data.length / value)
-    return num
-  }
-  async startPage() {
-    // console.log(this.FormList);
-
-    let temp: any = [];
-    this.FormList.forEach(i => {
-      temp.push(i)
-    });
-    this.CountNum.setValue(this.CountList[0])
-    this.CountPage = this.numPage(this.FormList, this.CountNum.value);
-    const start = (this.PageNow - 1) * this.CountNum.value
-    const end = Number(this.CountNum.value)
-    this.DataFilter = temp.splice(start, end)
+  numPage(count: any, value: number) {
+    if(value==0)return 1
+    return Math.ceil(Number(count) / value)
   }
 
-  next() {
-    let temp = [];
-    this.FormList.forEach(i => {
-      temp.push(i)
-    });
-    if (this.PageNow < this.CountPage) {
-      this.PageNow += 1
-      const start = (this.PageNow - 1) * this.CountNum.value
-      const end = this.CountNum.value
-      this.DataFilter = temp.splice(start, end)
-    }
-  }
-  back() {
-    let temp = [];
-    this.FormList.forEach(i => {
-      temp.push(i)
-    });
-    if (this.PageNow > 1) {
-      this.PageNow -= 1
-      const start = (this.PageNow - 1) * this.CountNum.value
-      const end = this.CountNum.value
-      this.DataFilter = temp.splice(start, end)
-    }
-  }
-  nextData() {
-    const a = this.PageNow * this.CountNum.value
-    if (a < this.FormListAll.length) {
 
-    }
+  async next() {
+    const userLevelStr = JSON.stringify(this.UserLevel)
+    this.PageNow += 1
+    this.PageNow > this.CountPage ? this.PageNow = this.CountPage : this.PageNow
+    this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0)
+  }
+
+
+  async back() {
+    const userLevelStr = JSON.stringify(this.UserLevel)
+    this.PageNow -= 1
+    this.PageNow <= 1 ? this.PageNow = 1 : this.PageNow
+    this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0)
+
   }
   onSelectCountNum() {
-    this.PageNow = 1
-    let temp: any = [];
-    this.FormList.forEach(i => {
-      temp.push(i)
-    });
-    // this.CountPage = this.numPage();
-    // alert(this.CountNum.value)
-    // alert(this.FormListAll.length)
-    if (this.CountNum.value == 'all') {
-      this.CountPage = this.numPage(this.FormList, this.FormListAll.length);
-      const start = (this.PageNow - 1) * this.FormListAll.length
-      const end = Number(this.FormListAll.length)
-      this.DataFilter = temp.splice(start, end)
-    } else {
-      this.CountPage = this.numPage(this.FormList, this.CountNum.value);
-      const start = (this.PageNow - 1) * this.CountNum.value
-      const end = Number(this.CountNum.value)
-      this.DataFilter = temp.splice(start, end)
-    }
+    this.get()
+  }
+  onSelectSort(){
+    this.get()
   }
 
 

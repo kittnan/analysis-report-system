@@ -79,6 +79,11 @@ export class HttpService {
   }
 
   // ? manage form
+
+  RequestManage(params: any): Observable<any> {
+    return this.http.get(`${this.Url}/RequestManage/${params.action}/${params.id}/${params.limit}/${params.page}/${params.sort}/${params.level}/${params.count}`)
+  }
+
   // GetRequestForm(level: any): Observable<any> {
   //   return this.http.get(this.Url + "/RequestFormByLevel/" + level);
   // }
