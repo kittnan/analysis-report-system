@@ -1,0 +1,209 @@
+<div class="loading" *ngIf="LoadingPage">
+  <div class="spinner">
+
+  </div>
+</div>
+
+
+<div class="d-flex">
+  <div class="w-30 mr-3">
+    <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[0].path" class="btn btn-block">Search Database
+      <i class="bi bi-search" style="font-size: 1.5em ml-2"></i></button>
+  </div>
+  <div class="w-30 mr-3">
+    <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[1].path" class="btn btn-block">Input
+      Database<i class="bi bi-file-earmark-plus" style="font-size: 1.5em ml-2"></i></button>
+  </div>
+  <div class="w-30" *ngIf="this.RouterMenu[2]">
+    <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[2].path" class="btn btn-block">Master Outsource
+      <i class="bi bi-list-ul" style="font-size: 1.5em ml-2"></i></button>
+  </div>
+</div>
+
+
+
+<div class="col-12"
+  style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+
+  <div class="row">
+    <div class="col-lg-6">
+      <h3>SEARCH DATABASE</h3>
+    </div>
+  </div>
+
+  <!-- ! ----------------------------------------EXPORT RESET ---------------------------------------------->
+  <div class="row">
+    <div class="col-lg-12 d-flex justify-content-end">
+      <button class="btn btn-sm  text-primary" style="text-align: right; cursor: pointer;"
+        (click)=" ExportExcel()">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
+      <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;"
+        (click)="ResetConditionFilter()">Reset filters <i class="bi bi-bootstrap-reboot i-re ">
+
+        </i></button>
+    </div>
+  </div>
+  <!-- ! ----------------------------------------EXPORT RESET --------------------------------------------->
+
+  <!-- ! ----------------------------------------ROW 1 -->
+  <div class="row pt-3">
+    <div class="col-lg-3">
+      <label for="">From Date</label>
+      <input [(ngModel)]="fromDate" class="form-control" list="yearOld" type="" (keyup)="invalidDate()">
+      <datalist id="yearOld">
+        <option *ngFor="let item of yearStart" [value]="item">{{item}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-3">
+      <label for="">To Date</label>
+      <input [(ngModel)]="toDate" class="form-control" list="yearNow" type="" (keyup)="invalidDate()">
+      <datalist id="yearNow">
+        <option *ngFor="let item of yearStart" [value]="item">{{item}}
+        </option>
+      </datalist>
+    </div>
+    <!-- <div class="col-lg-3">
+      <label for="">Year</label>
+      <input [(ngModel)]="toYear" type="text" class="form-control">
+    </div> -->
+    <div class="col-lg-3">
+      <label for="">Year</label>
+      <select class="form-control" name="" [(ngModel)]="toYear" (change)="setYear()">
+        <option *ngFor="let item of yearStart" [value]="item">{{item}}
+        </option>
+      </select>
+    </div>
+
+
+    <!-- <div class="col-lg-3">
+      <label for="">All Database</label>
+      <input type="text" class="form-control">
+    </div> -->
+  </div>
+  <!-- ! ----------------------------------------ROW 1 -->
+
+  <!-- ! ----------------------------------------ROW 2 -->
+  <div class="row pt-3">
+    <div class="col-lg-2">
+      <label for="">Model Number</label>
+      <input [(ngModel)]="CkModel" list="listModelNum" id="" name="" class="form-control" (ngModelChange)="checkMs()">
+      <datalist id="listModelNum">
+        <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Size (inch)</label>
+      <input type="text" [(ngModel)]="Size" class="form-control" [value]='datalist.size' readonly>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Customer</label>
+      <input type="text" [(ngModel)]="Customer" class="form-control" [value]='datalist.customer' readonly>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Defective Name</label>
+      <input type="text" [(ngModel)]="DefectiveName" class="form-control">
+    </div>
+    <div class="col-lg-4">
+      <label for="">Refer KTC Analysis Request No.</label>
+      <input type="text" [(ngModel)]="ReferKTC" class="form-control">
+    </div>
+  </div>
+  <!-- ! ----------------------------------------ROW 2 -->
+
+  <!-- ! ----------------------------------------ROW 3 -->
+  <div class="row pt-3">
+    <div class="col-lg-4">
+      <label for="">Cause of Defective</label>
+      <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
+      <datalist id="listCauseO">
+        <option *ngFor="let item of listCauseO" [value]="item">{{item}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-4">
+      <label for="">Maker/Supplier Name</label>
+      <input type="text" [(ngModel)]="MakerSup" list="listMaker" class="form-control">
+      <datalist id="listMaker">
+        <option *ngFor="let item of listMaker" [value]="item">{{item}}
+        </option>
+      </datalist>
+    </div>
+  </div>
+  <!-- ! ----------------------------------------ROW 3 -->
+
+  <!-- ! ----------------------------------------ROW 4 -->
+  <div class="row pt-3">
+    <div class="col-lg-4">
+      <label for="">Production Phase</label>
+      <input list="listProduction" id="" name="" [(ngModel)]="ProductionPh" class="form-control">
+      <datalist id="listProduction">
+        <option *ngFor="let item of ProductPhaseList" [value]="item.name">{{item.name}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-4">
+      <label for="">Defect Category</label>
+      <input list="IdDefectCategory" id="" name="" [(ngModel)]="DefectCategory" class="form-control">
+      <datalist id="IdDefectCategory">
+        <option *ngFor="let item of IdDefectCategoryList" [value]="item.name">{{item.name}}
+        </option>
+      </datalist>
+    </div>
+  </div>
+  <!-- ! ----------------------------------------ROW 4 -->
+
+  <!-- * -------------------------------------------------Occur Place A -->
+  <div class="row pt-3">
+    <div class="col-lg-4">
+      <label for="">Occur Place A</label>
+      <input #test [(ngModel)]="DataOccurAList" list="OccurALists" id="" name="" class="form-control"
+        (input)="GetOccurBList()">
+      <datalist id="OccurALists">
+        <option *ngFor="let item of OccurAList" [value]="item.name">
+        </option>
+      </datalist>
+    </div>
+    <!-- * -------------------------------------------------Occur Place A -->
+
+    <!-- * -------------------------------------------------Occur Place B -->
+    <div class="col-lg-4">
+      <label for="">Occur Place B</label>
+      <input [(ngModel)]="OccurBListCk" list="OccurBLists" name="" class="form-control" [disabled]="!DataOccurAList">
+      <datalist id="OccurBLists">
+        <option *ngFor="let item1 of OccurBList" [value]="item1.name">
+        </option>
+      </datalist>
+    </div>
+  </div>
+  <!-- * -------------------------------------------------Occur Place B -->
+
+
+  <div class="row pt-3">
+    <div class="col-lg-12">
+      <label for="">Analysis result</label>
+      <textarea [(ngModel)]="AnalysisResult" class="form-control" id="defectMode" (keyup.enter)="addList()"></textarea>
+      <!-- <textarea [(ngModel)]="AnalysisResult" class="form-control" id="defectMode" onclick="addList()"></textarea> -->
+      <!-- <input type="button" id="btnSearch" value="Search" onclick="doSomething();" /> -->
+    </div>
+    <div class="col-12 pt-1">
+      <span class="myButton mr-1" *ngFor="let item of oldValue let i=index">
+        <span class="myDIV" (click)="onClickDeleteModelModeList(i)" >{{item}} </span><i class="bi bi-x-circle hide"></i>
+      </span>
+    </div>
+  </div>
+
+
+  <button class="btn btn-block" (click)="OnClickSearch();">Search <i class="bi bi-search"
+      style="font-size: 1.5em;"></i></button>
+  <div class="row mt-2" *ngIf="rowData.length != 0">
+    <div class="col-lg-12">
+      <ag-grid-angular style="width: 100%; height: 14cm;" (cellDoubleClicked)="onCellClicked($event)"
+        class="ag-theme-alpine" [rowData]="rowData" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef"
+        [pagination]="false" [paginationAutoPageSize]="true" [animateRows]="true" (gridReady)="onGridReady($event)">
+      </ag-grid-angular>
+    </div>
+  </div>
+
+
+</div>

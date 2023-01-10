@@ -1,3 +1,4 @@
+import { OutsourceViewComponent } from './../../pages/outsource-analysis/outsource-view/outsource-view.component';
 import { Routes } from '@angular/router';
 import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
 import { RequestFormComponent } from '../../pages/request-form/request-form.component';
@@ -31,45 +32,56 @@ import { AddEquipmentComponent } from 'app/pages/equipment/add-equipment/add-equ
 import { EquipmentHomeComponent } from 'app/pages/equipment/equipment-home/equipment-home.component';
 import { EquipmentManageComponent } from 'app/pages/equipment/equipment-manage/equipment-manage.component';
 import { SearchEquipmentComponent } from 'app/pages/equipment/search-equipment/search-equipment.component';
+import { EditViewComponent } from 'app/pages/outsource-analysis/edit-view/edit-view/edit-view.component';
+import { MasterOutsourceComponent } from 'app/pages/outsource-analysis/master-outsource/master-outsource/master-outsource.component';
+import { OutsourceAnalysisComponent } from 'app/pages/outsource-analysis/outsource-analysis.component';
+import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-database/search-database.component';
 // import { LoginComponent } from 'app/pages/login/login.component';
 
 // const path = "http://10.200.90.152:4014/Analysis-Report";
 
 export const AdminLayoutRoutes: Routes = [
-    // { path: 'dashboard', component: DashboardComponent },
-    { path: 'dashboard', component: DashboardV2Component },
-    { path: 'requestform', component: RequestFormComponent },
-    { path: 'manageForm', component: ManageFormComponent },
-    { path: 'masterlists', component: MasterlistsComponent },
-    // { path: 'login',          component: LoginComponent },
-    { path: 'profile', component: ProfileComponent },
-    { path: 'progressForm1', component: ProgressForm1Component },
-    { path: 'progressForm2', component: ProgressForm2Component },
-    { path: 'progressForm3', component: ProgressForm3Component },
-    { path: 'progressForm4', component: ProgressForm4Component },
-    { path: 'progressForm5', component: ProgressForm5Component },
-    // { path: 'progressForm6', component: ProgressForm6Component },
+  // { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardV2Component },
+  { path: 'requestform', component: RequestFormComponent },
+  { path: 'manageForm', component: ManageFormComponent },
+  { path: 'masterlists', component: MasterlistsComponent },
+  // { path: 'login',          component: LoginComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'progressForm1', component: ProgressForm1Component },
+  { path: 'progressForm2', component: ProgressForm2Component },
+  { path: 'progressForm3', component: ProgressForm3Component },
+  { path: 'progressForm4', component: ProgressForm4Component },
+  { path: 'progressForm5', component: ProgressForm5Component },
+  // { path: 'progressForm6', component: ProgressForm6Component },
 
-    { path: 'rejectForm1', component: RejectForm1Component },
-    { path: 'rejectForm2', component: RejectForm2Component },
-    { path: 'rejectForm3', component: RejectForm3Component },
-    { path: 'rejectForm4', component: RejectForm4Component },
+  { path: 'rejectForm1', component: RejectForm1Component },
+  { path: 'rejectForm2', component: RejectForm2Component },
+  { path: 'rejectForm3', component: RejectForm3Component },
+  { path: 'rejectForm4', component: RejectForm4Component },
 
-    { path: 'user', component: UserComponent },
-    { path: 'sectionManage', component: SectionManageComponent },
-    { path: 'analysisDataList', component: AnalysisDataListComponent },
-    { path: 'viewForm', component: ViewFormComponent },
-    { path: 'library', component: LibrarySearchComponent },
-    // { path: 'pdf', component: PdfComponent },
-    { path: 'mailler', component: MaillerComponent },
-    { path: 'reportManage', component: ReportManageComponent },
-    // { path: 'test',            component: TestComponent }
+  { path: 'user', component: UserComponent },
+  { path: 'sectionManage', component: SectionManageComponent },
+  { path: 'analysisDataList', component: AnalysisDataListComponent },
+  { path: 'viewForm', component: ViewFormComponent },
+  { path: 'library', component: LibrarySearchComponent },
+  // { path: 'pdf', component: PdfComponent },
+  { path: 'mailler', component: MaillerComponent },
+  { path: 'reportManage', component: ReportManageComponent },
+  // { path: 'test',            component: TestComponent }
 
-    { path: 'dashboard-guest', component: DashboardGuestComponent },
-    
-    { path: 'equipment', component: EquipmentHomeComponent },
-    { path: 'equipment-master-manage', component: MasterManageComponent },
-    { path: 'add-equipment', component: AddEquipmentComponent },
-    { path: 'manage-equipment', component: EquipmentManageComponent },
-    { path: 'search-equipment', component: SearchEquipmentComponent },
+  { path: 'dashboard-guest', component: DashboardGuestComponent },
+
+  { path: 'equipment', component: EquipmentHomeComponent },
+  { path: 'equipment-master-manage', component: MasterManageComponent },
+  { path: 'add-equipment', component: AddEquipmentComponent },
+  { path: 'manage-equipment', component: EquipmentManageComponent },
+  { path: 'search-equipment', component: SearchEquipmentComponent },
+
+  //outsource-analysis
+  { path: "outsource", component: OutsourceAnalysisComponent },
+  { path: "searchDatabase", component: SearchDatabaseComponent },
+  { path: "viewFormSearch", component: OutsourceViewComponent },
+  { path: "MasterOutsource", component: MasterOutsourceComponent },
+  { path: "editView", component: EditViewComponent },
 ];

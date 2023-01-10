@@ -1,3 +1,4 @@
+import { OutsourceViewComponent } from './../../pages/outsource-analysis/outsource-view/outsource-view.component';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -50,6 +51,10 @@ import { EquipmentManageComponent } from 'app/pages/equipment/equipment-manage/e
 import { SearchEquipmentComponent } from 'app/pages/equipment/search-equipment/search-equipment.component';
 import { PreviewEquipmentComponent } from 'app/pages/equipment/preview-equipment/preview-equipment.component';
 import { HeadMenuComponent } from 'app/pages/equipment/head-menu/head-menu.component';
+import { EditViewComponent } from 'app/pages/outsource-analysis/edit-view/edit-view/edit-view.component';
+import { MasterOutsourceComponent } from 'app/pages/outsource-analysis/master-outsource/master-outsource/master-outsource.component';
+import { OutsourceAnalysisComponent } from 'app/pages/outsource-analysis/outsource-analysis.component';
+import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-database/search-database.component';
 
 
 @NgModule({
@@ -60,7 +65,7 @@ import { HeadMenuComponent } from 'app/pages/equipment/head-menu/head-menu.compo
     FormsModule,
     ReactiveFormsModule,
     AgGridModule.withComponents([])
-    
+
   ],
   declarations: [
     DashboardComponent,
@@ -86,7 +91,6 @@ import { HeadMenuComponent } from 'app/pages/equipment/head-menu/head-menu.compo
     ManageFormComponent,
     // LoginComponent,
     AnalysisDataListComponent,
-    ViewFormComponent,
     ProfileComponent,
     LibrarySearchComponent,
     // PdfComponent,
@@ -100,8 +104,16 @@ import { HeadMenuComponent } from 'app/pages/equipment/head-menu/head-menu.compo
     SearchEquipmentComponent,
     PreviewEquipmentComponent,
     HeadMenuComponent,
-    
-    DashboardGuestComponent
+
+    DashboardGuestComponent,
+
+
+    ViewFormComponent,
+    OutsourceViewComponent,
+    EditViewComponent,
+    SearchDatabaseComponent,
+    OutsourceAnalysisComponent,
+    MasterOutsourceComponent,
   ]
 })
 

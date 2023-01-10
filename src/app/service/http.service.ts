@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment'
 @Injectable({
@@ -277,7 +277,7 @@ export class HttpService {
     return this.http.put(this.Url + "/RequestForm/" + id, data);
   }
 
-  // ? progress 4 // analysis reviewer 
+  // ? progress 4 // analysis reviewer
   // GetUser(item: any, level: any): Observable<any> {
   //   return this.http.get(this.Url + "/User/" + item + '/' + level);
   // }
@@ -310,7 +310,7 @@ export class HttpService {
   //   return this.http.put(this.Url + "/RequestForm/" + id, data);
   // }
 
-  // ? request 
+  // ? request
   // GetModel(): Observable<any> {
   //   return this.http.get(this.Url + "/Model");
   // }
@@ -539,4 +539,58 @@ export class HttpService {
   // UpdateResult(id: any, data: any): Observable<any> {
   //   return this.http.put(this.Url + "/Result/" + id, data);
   // }
+
+  outsourceUpload(data: any): Observable<any> {
+    return this.http.post(this.Url + "/outsource/upload/", data)
+  }
+
+  outsourceForm(data: any): Observable<any> {
+    return this.http.post(this.Url + "/outsourceForm/", data)
+  }
+
+  // GetLastRegisNumber(): Observable<any> {
+  //   return this.http.get(this.Url + "/outsourceForm/lastDataRegisNumber");
+  // }
+
+  GetLastRegisNumber(data: any): Observable<any> {
+    // let params = new URLSearchParams();
+    // params.append("someParamKey", data)
+    let params = new HttpParams().set("year", data)
+    return this.http.get(this.Url + "/outsourceForm/lastDataRegisNumber", { params: params });
+  }
+
+  GetAll(): Observable<any> {
+    return this.http.get(this.Url + "/outsourceForm/");
+  }
+
+  FilterSearch(data: any): Observable<any> {
+    // console.log(data);
+    return this.http.post(this.Url + "/outsourceForm/RequestFilterSearch", data)
+  }
+
+  // updateMasterOutsource(data: any): Observable<any> {
+  //   return this.http.post(this.Url + "/masterOutsource/", data)
+  // }
+
+  updateMasterOutsource(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/masterOutsource/masterOutsourceID/" + id, data);
+  }
+
+  getDataMasterOutsource(data: any): Observable<any> {
+    return this.http.get(this.Url + "/masterOutsource/" + data);
+  }
+
+  getDataAllMaster(): Observable<any> {
+    return this.http.get(this.Url + "/masterOutsource/");
+  }
+
+  getDataView(data: any): Observable<any> {
+    return this.http.post(this.Url + "/outsourceForm/getDataView", data)
+  }
+
+  updateEditView(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/outsourceForm/editView/" + id, data);
+  }
+
 }
+// getDataView

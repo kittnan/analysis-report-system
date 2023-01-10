@@ -12,8 +12,11 @@ export const environment = {
   IdSource:"6188a41152435d450fa8356b",
   IdAnalysisLevel:"6188a41852435d450fa8356d",
   IdCause:"6188a42352435d450fa8356f",
+  MasterCauseOfDefective : "63a514d136895b117bc81296",
+  MasterMakerSupplierName : "63a514d236895b117bc81298",
 
-  
+
+
   ModelNumber:"KTC Model Number",
   Defective:"DefectCode & DefectName",
   Occur:"Occur Place",
@@ -26,6 +29,6 @@ export const environment = {
   AnalysisLevel:"Analysis Level",
 
   appVersion: require('../../package.json').version,
-  
+
 
 };

@@ -1,0 +1,39 @@
+.head-label {
+    font-weight: 300;
+}
+
+.label-color{
+    color: red;
+}
+
+.border{
+    border: 1px black solid;
+}
+
+
+a {
+    color: rgb(255, 255, 255);
+    background-color: #333;
+    padding: 5px;
+    transition: ease all 0.3s;
+    cursor: pointer;
+}
+
+a:hover {
+    transform: translateY(-20%);
+    text-decoration: none;
+    transition: ease all 0.3s;
+    border-radius: 10px;
+    background-color: rgba(51, 51, 51, 0.719);
+}
+
+.text-active {
+    font-weight: 700;
+    background-color: rgba(51, 51, 51, 0.918);
+    color: rgb(221, 61, 3);
+}
+
+.text-active>i>.aaa {
+    animation: rotating 2s linear infinite;
+    color: green;
+}

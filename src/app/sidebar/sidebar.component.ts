@@ -45,6 +45,15 @@ export const routesAdmin: RouteInfo[] = [
     { path: '/user', title: 'Users Manage', icon: 'bi bi-people', class: '' },
     { path: '/mailler', title: 'Mailler Manage', icon: 'bi bi-envelope', class: '' },
     { path: '/reportManage', title: 'Report Manage', icon: 'bi bi-file-earmark-spreadsheet', class: '' },
+    { path: '/searchDatabase', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
+    { path: '/outsource', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
+    { path: '/MasterOutsource', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
+    { path: '/viewFormSearch', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
+    { path: '/editView', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
+
+    // { path: '/searchElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
+    // { path: '/inputElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
+
 
 ];
 
@@ -109,6 +118,7 @@ export class SidebarComponent implements OnInit {
                     { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '' },
                     { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' },
                     { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' },
+                    { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
 
                 ]
                 Permission = temp
@@ -124,6 +134,8 @@ export class SidebarComponent implements OnInit {
                         { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' },
                         { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' },
                         { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' },
+                        { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
+
                     ]
                     Permission = temp
                 } else
@@ -138,6 +150,8 @@ export class SidebarComponent implements OnInit {
                             { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' },
                             { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' },
                             { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' },
+                            { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
+
                         ]
                         Permission = temp
                     } else
@@ -185,6 +199,8 @@ export class SidebarComponent implements OnInit {
                                             { path: '/user', title: 'Users Manage', icon: 'bi bi-people', class: '' },
                                             { path: '/mailler', title: 'Mailler Manage', icon: 'bi bi-envelope', class: '' },
                                             { path: '/reportManage', title: 'Report Manage', icon: 'bi bi-file-earmark-spreadsheet', class: '' },
+                                            { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
+                                            // { path: '/inputElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
                                             // { path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '' },
                                         ]
                                         Permission = temp

@@ -1,0 +1,195 @@
+<div class="loading" *ngIf="LoadingPage">
+  <div class="spinner">
+
+  </div>
+</div>
+
+<div class="col-12"
+  style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+
+
+  <div class="row">
+    <div class="col-lg-6">
+      <h3>EDIT DATA</h3>
+    </div>
+  </div>
+
+
+    <!-- ! ---------------------------------------- RESET -->
+    <!-- <div class="row">
+      <div class="col-lg-12 d-flex justify-content-end">
+        <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;"
+          (click)="ResetConditionFilter()">Reset Data <i class="bi bi-bootstrap-reboot i-re">
+          </i></button>
+      </div>
+    </div> -->
+    <!-- ! ---------------------------------------- RESET -->
+
+
+  <!-- ! ----------------------------------------ROW 1 -->
+  <div class="row">
+    <div class="col-lg-4">
+      <label for="">Register No.</label>
+      <input list="" [(ngModel)]="RegisNo" name="" class="form-control" readonly>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Custom Year</label>
+      <select disabled class="form-control" name="selectAction" [(ngModel)]="customYear" >
+        <option *ngFor="let item of yearList" [value]="item">
+          {{item}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <!-- this.yearList -->
+  <!-- ! ----------------------------------------ROW 1 -->
+
+
+
+  <!-- ! ----------------------------------------ROW 2 -->
+  <div class="row pt-3">
+    <div class="col-lg-2">
+      <label for="">Model Number</label>
+      <!-- <input [(ngModel)]="CkModel" list="listModelNum" id="" name="" class="form-control" (keyup)="checkMs()"> -->
+      <input [(ngModel)]="CkModel" list="listModelNum" id="" name="" class="form-control" (ngModelChange)="checkMs()" >
+      <datalist id="listModelNum">
+        <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Size (inch)</label>
+      <input type="text" [(ngModel)]="Size" class="form-control" [value]='datalist.size' readonly>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Customer</label>
+      <input type="text" [(ngModel)]="Customer" class="form-control" [value]='datalist.customer' readonly>
+    </div>
+    <div class="col-lg-2">
+      <label for="">Defective Name</label>
+      <input type="text" [(ngModel)]="DefectiveName" class="form-control">
+    </div>
+    <div class="col-lg-4">
+      <label for="">Refer KTC Analysis Request No.</label>
+      <input type="text" [(ngModel)]="ReferKTC" class="form-control">
+    </div>
+  </div>
+  <!-- ! ----------------------------------------ROW 2 -->
+
+  <!-- ! ----------------------------------------ROW 3 -->
+  <div class="row pt-3">
+    <div class="col-lg-4">
+      <label for="">Cause of Defective</label>
+      <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
+      <datalist id="listCauseO">
+        <option *ngFor="let item of listCauseO" [value]="item">{{item}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-4">
+      <label for="">Maker/Supplier Name</label>
+      <input type="text" [(ngModel)]="MakerSup" list="listMaker" class="form-control">
+      <datalist id="listMaker">
+        <option *ngFor="let item of listMaker" [value]="item">{{item}}
+        </option>
+      </datalist>
+    </div>
+  </div>
+  <!-- ! ----------------------------------------ROW 3 -->
+
+  <!-- ! ----------------------------------------ROW 4 -->
+  <div class="row pt-3">
+    <div class="col-lg-4">
+      <label for="">Production Phase</label>
+      <input list="listProduction" id="" name="" [(ngModel)]="ProductionPh" class="form-control">
+      <datalist id="listProduction">
+        <option *ngFor="let item of ProductPhaseList" [value]="item.name">{{item.name}}
+        </option>
+      </datalist>
+    </div>
+    <div class="col-lg-4">
+      <label for="">Defect Category</label>
+      <input list="IdDefectCategory" id="" name="" [(ngModel)]="DefectCategory" class="form-control">
+      <datalist id="IdDefectCategory">
+        <option *ngFor="let item of IdDefectCategoryList" [value]="item.name">{{item.name}}
+        </option>
+      </datalist>
+    </div>
+  </div>
+  <!-- ! ----------------------------------------ROW 4 -->
+
+  <!-- * -------------------------------------------------Occur Place A -->
+  <div class="row pt-3">
+    <div class="col-lg-4">
+      <label for="">Occur Place A</label>
+      <input #test [(ngModel)]="DataOccurAList" list="OccurALists" id="" name="" class="form-control"
+        (input)="GetOccurBList()">
+      <datalist id="OccurALists">
+        <option *ngFor="let item of OccurAList" [value]="item.name">
+        </option>
+      </datalist>
+    </div>
+    <!-- * -------------------------------------------------Occur Place A -->
+
+    <!-- * -------------------------------------------------Occur Place B -->
+    <div class="col-lg-4">
+      <label for="">Occur Place B</label>
+      <input [(ngModel)]="OccurBListCk" list="OccurBLists" name="" class="form-control" [disabled]="!DataOccurAList">
+      <datalist id="OccurBLists">
+        <option *ngFor="let item1 of OccurBList" [value]="item1.name">
+        </option>
+      </datalist>
+    </div>
+  </div>
+  <!-- * -------------------------------------------------Occur Place B -->
+
+
+  <div class="row pt-3">
+    <div class="col-lg-12">
+      <label for="">Analysis result</label>
+      <textarea [(ngModel)]="AnalysisResult" class="form-control"></textarea>
+    </div>
+  </div>
+
+
+  <!-- * -------------------------------------------------UploadFile 1------------------------------------------------->
+  <div class="row pt-3">
+    <div class="col-lg-12">
+      <label for="">File</label>
+      <input class="ml-1" type="file" #fileUpload [multiple]="true" (change)="upload($event)">
+    </div>
+    <div class="col-lg-12">
+      <ul>
+        <li *ngFor="let file of listFile ;let i =index" class="d-flex align-items-center justify-content-between">
+          {{i+1}}. {{file.name}}
+          <button class="btn btn-sm text-primary" (click)="onClickDel(file)">Delete</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- * -------------------------------------------------UploadFile 1------------------------------------------------->
+
+  <!-- * -------------------------------------------------UploadFile 2------------------------------------------------->
+  <div class="d-flex justify-content-center">
+    <div>
+      <button class="btn btn-primary" (click)="submit()">Update Analysis Database</button>
+      <button class="btn btn-back" [routerLink]="RouterMenu[0].path">back</button>
+    </div>
+  </div>
+
+  <!-- * -------------------------------------------------UploadFile 2------------------------------------------------->
+  <!-- <script src="xlsx.bundle.js"></script>
+  <select *ngIf="test.length>0" >
+        <option *ngFor="let item of test; let i=index"  >
+            {{item._id}}
+        </option>
+    </select>
+  <select class="col-lg-12" *ngIf="goo.length>0" (change)="foo($event)" >
+        <option *ngFor="let item of goo; let i=index" [value]="item._id">
+            {{item._id}}
+        </option>
+    </select> -->
+
+    <!-- <input type="text" class="form-control" (input)="onSearchChange($event.target.value)"> -->
+
+</div>

@@ -1,0 +1,167 @@
+<div id="print" class="col-lg-12 main">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="head-label">
+                <h6>Analysis Form</h6>
+            </div>
+        </div>
+
+        <div class="col-md-12 border-bottom">
+
+            <!-- ! ------------------------------------------------------------------------------------->
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-end">
+                    <button class="btn btn-sm" style="text-align: right; cursor: pointer;" [routerLink]="RouterMenu[0].path"> Edit <i
+            class="bi bi-bootstrap-reboot i-re ">
+          </i></button>
+                </div>
+            </div>
+
+            <!-- <div class="w-30" *ngIf="this.RouterMenu[1]">
+      <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[2].path" class="btn btn-block">Master Outsource
+        <i class="bi bi-list-ul" style="font-size: 1.5em ml-2"></i></button>
+    </div> -->
+            <!-- ! ------------------------------------------------------------------------------------>
+
+
+
+            <div class="row pt-3">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Item</label>
+                        <p class="subtext-color" *ngIf="Data">{{RegisterNo}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Number</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.registerNo}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="head-label" for="">Model Number</label>
+                    <p class="subtext-color" *ngIf="Data">{{Data.modelNumber}}</p>
+                </div>
+                <div class="col-lg-2">
+                    <label class="head-label" for="">Size (inch)</label>
+                    <p class="subtext-color" *ngIf="Data">{{Data.size}}</p>
+                </div>
+                <div class="col-lg-2">
+                    <label class="head-label" for="">Customer</label>
+                    <p class="subtext-color" *ngIf="Data">{{Data.customer}}</p>
+                </div>
+                <div class="col-lg-2 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defective Name</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.defectiveName}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Refer KTC Analysis Request No.</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.referKTC}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Cause of Defective</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.causeOfDefective}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Maker/Supplier Name</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.makerSupplier}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Production Phase</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.productionPhase}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Defect Category</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.defectCategory}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Occur Place A</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.OccurA}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Occur Place B</label>
+                        <p class="subtext-color" *ngIf="Data">{{Data.OccurB}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="head-label">Analysis Result</label>
+                        <textarea *ngIf="Data" disabled cols="30" rows="10" class="form-control subtext-color">{{Data.analysisResult}}</textarea>
+                        <!-- <p *ngIf="result">{{result.causeOfDefect}}</p> -->
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row" *ngIf="Data">
+                <div class="col-lg-12 mt-2">
+
+                    <table class="table">
+                        <thead>
+                            <th width="80%">Files</th>
+                            <th class="text-center" width="20%">Download</th>
+                        </thead>
+                        <tbody *ngIf="Data.urlFile.length == 0" class="subtext-color">
+                            <tr>
+                                <td>
+                                    No files.
+                                </td>
+                                <td>
+
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+
+                        <tbody *ngIf="this.nameFile.length != 0 || this.nameFile != null">
+                            <tr *ngFor="let item of this.nameFile; let i=index">
+                                <td>
+                                    {{i+1+". "}}{{item}}
+                                </td>
+                                <td class="text-center">
+                                    <a target="_blank" [download]="this.urlMain+item" [href]="this.urlMain+item" class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i class="bi bi-download"
+                    style="font-size: 1rem;"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- <div class="row">
+      <button *ngIf="dataView"  class="btn btn-block" (click)="editDataConf()">confirm<i class="bi bi-check-square customIcon ml-1"
+          style="font-size: 1.5em;"></i></button>
+    </div> -->
+
+            <div class="d-flex justify-content-center">
+                <div>
+                    <button class="btn btn-back" [routerLink]="RouterMenu[1].path">back</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
