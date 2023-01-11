@@ -411,7 +411,11 @@ export class LibrarySearchComponent implements OnInit {
     if (find_data !== undefined) {
       sessionStorage.setItem('FormId', find_data._id);
       sessionStorage.setItem('FormView', '2');
-      this.route.navigate(['/viewForm'])
+
+      const url = '#/viewForm'
+      window.open(url, '_blank');
+      // this.route.navigate(['/viewForm'])
+
       // location.href = "#/viewForm";
     }
   }

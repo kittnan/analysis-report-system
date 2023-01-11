@@ -303,7 +303,7 @@ export class AnalysisDataListComponent implements OnInit {
     }
   }
 
-  handleEventDate(key:any) {
+  handleEventDate(key: any) {
 
     switch (key) {
       case 'day':
@@ -527,9 +527,9 @@ export class AnalysisDataListComponent implements OnInit {
     })
   }
 
-  setStatusRequest(merges:any) {
+  setStatusRequest(merges: any) {
     return new Promise(resolve => {
-      merges.map((merge:any) => {
+      merges.map((merge: any) => {
         merge.issuedDate = ((merge.issuedDate).split('T'))[0]
         merge.replyDate = ((merge.replyDate).split('T'))[0]
         merge.startAnalyzeDate ? merge.startAnalyzeDate = ((merge.startAnalyzeDate).split('T'))[0] : false
@@ -572,7 +572,7 @@ export class AnalysisDataListComponent implements OnInit {
     })
   }
 
-  setStatusShow(merge:any, key:any) {
+  setStatusShow(merge: any, key: any) {
     return new Promise(resolve => {
       // console.log(key, merge);
 
@@ -809,8 +809,10 @@ export class AnalysisDataListComponent implements OnInit {
 
     sessionStorage.setItem('FormId', form.FormId);
     sessionStorage.setItem('FormView', '2');
-    this.route.navigate(['/viewForm'])
-    location.href = "#/viewForm";
+    const url = '#/viewForm'
+    window.open(url, '_blank');
+    // this.route.navigate(['/viewForm'])
+    // location.href = "#/viewForm";
   }
   showCountRows() {
     return this.gridApi.getDisplayedRowCount()

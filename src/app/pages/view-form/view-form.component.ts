@@ -18,10 +18,10 @@ export class ViewFormComponent implements OnInit {
   form: any = []
   result: any = []
 
-  FileListname: any;
+  FileListName: any;
   PathListName: any = [];
 
-  // ? Session 
+  // ? Session
   FormView = sessionStorage.getItem('FormView');
   FormId = sessionStorage.getItem('FormId');
 
@@ -44,31 +44,20 @@ export class ViewFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const form = await this.getForm(this.FormId);
-    
+
     form ? this.form = form : this.form = []
     // console.log(form);
 
     const result = await this.getResult(this.FormId);
     result ? this.result = result : this.result = []
-    this.CheckStatusUser();
+    // this.CheckStatusUser();
+
     // this.captureScreen();
 
   }
 
-  // SetPathFile() {
-  //   if (this.FileListname.length > 0) {
-  //     this.FileListname.forEach(i => {
-  //       this.progressForm1.FindPath(i).subscribe((data: any) => {
-  //         if (data.length > 0) {
-  //           this.PathListName.push(data[0].path);
-  //         }
-  //       })
-  //     });
-  //   }
-  // }
 
-
-  pdfLable() {
+  pdfLabel() {
 
     const head = this.form.requestNumber
     const model = this.form.ktcModelNumber
@@ -217,7 +206,7 @@ export class ViewFormComponent implements OnInit {
     return new Promise((resolve) => {
       this.api.FindFormById(FormId).subscribe((res: any) => {
         let form = res
-        
+
         if (form) {
           form.issuedDate ? form.issuedDate = (form.issuedDate.split('T'))[0] : form.issuedDate
           form.replyDate ? form.replyDate = (form.replyDate).split('T')[0] : form.replyDate
@@ -252,48 +241,6 @@ export class ViewFormComponent implements OnInit {
     })
   }
 
-  // getForm1() {
-
-  //   let d = sessionStorage.getItem('FormId');
-  //   this.view.FindFormById(d).subscribe((data: any) => {
-  //     // console.log("data", data);
-
-  //     if (data) {
-  //       this.form = data;
-  //       let str = this.form.issuedDate.split("T");
-  //       let str2 = this.form.replyDate.split("T");
-  //       this.form.issuedDate = str[0];
-  //       this.form.replyDate = str2[0];
-  //       this.setDataComment()
-
-  //       if (this.form.status == 6) {
-  //         this.toggleReportFile = true;
-  //       }
-
-  //     } else this.form = [];
-  //   })
-  // }
-
-
-
-  // getResult2() {
-  //   let id = sessionStorage.getItem('FormId');
-  //   this.view.FindResultByFormIdMain(id).subscribe((data: any) => {
-  //     if (data.length > 0) {
-  //       this.result = data[0];
-  //       let str = this.result.startAnalyzeDate.split("T");
-  //       let str2 = this.result.finishAnalyzeDate.split("T");
-  //       let str3 = this.result.finishReportDate.split("T");
-  //       this.result.startAnalyzeDate = str[0];
-  //       this.result.finishAnalyzeDate = str2[0];
-  //       this.result.finishReportDate = str3[0];
-  //       const str4 = this.result.file.split('/')[5]
-  //     } else {
-  //       this.result = [];
-  //     }
-
-  //   })
-  // }
 
   showComment(content) {
     this.CommentLists = []
@@ -301,7 +248,7 @@ export class ViewFormComponent implements OnInit {
     this.modal.open(content, { size: 'lg' });
   }
   setDataComment() {
-    
+
     if (this.form.noteNow) {
       const temp = {
         note: this.form.noteNow,
