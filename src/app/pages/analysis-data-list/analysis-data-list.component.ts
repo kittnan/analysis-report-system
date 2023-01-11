@@ -243,7 +243,7 @@ export class AnalysisDataListComponent implements OnInit {
 
     this.CheckStatusUser();
     this.GetModelAll();
-    this.loadiDataFromSessionCondition()
+    this.loadDataFromSessionCondition()
 
     // this.test ={
     //   onFilterChanged
@@ -287,7 +287,7 @@ export class AnalysisDataListComponent implements OnInit {
     })
   }
 
-  loadiDataFromSessionCondition() {
+  loadDataFromSessionCondition() {
     sessionStorage.getItem('Analysis-Model') ? this.ModelSelect.setValue(sessionStorage.getItem('Analysis-Model')) : false
     sessionStorage.getItem('Analysis-Month') ? this.Month.setValue(sessionStorage.getItem('Analysis-Month')) : false
     sessionStorage.getItem('Analysis-DateStart') ? this.DateStart.setValue(sessionStorage.getItem('Analysis-DateStart')) : false
@@ -303,7 +303,7 @@ export class AnalysisDataListComponent implements OnInit {
     }
   }
 
-  handleEventDate(key) {
+  handleEventDate(key:any) {
 
     switch (key) {
       case 'day':
@@ -522,14 +522,14 @@ export class AnalysisDataListComponent implements OnInit {
 
         return merge
       })
-      
+
       resolve(result_map)
     })
   }
 
-  setStatusRequest(merges) {
+  setStatusRequest(merges:any) {
     return new Promise(resolve => {
-      merges.map(merge => {
+      merges.map((merge:any) => {
         merge.issuedDate = ((merge.issuedDate).split('T'))[0]
         merge.replyDate = ((merge.replyDate).split('T'))[0]
         merge.startAnalyzeDate ? merge.startAnalyzeDate = ((merge.startAnalyzeDate).split('T'))[0] : false
@@ -572,7 +572,7 @@ export class AnalysisDataListComponent implements OnInit {
     })
   }
 
-  setStatusShow(merge, key) {
+  setStatusShow(merge:any, key:any) {
     return new Promise(resolve => {
       // console.log(key, merge);
 
