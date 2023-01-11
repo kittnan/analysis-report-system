@@ -16,13 +16,12 @@ export class ExportFilteredService {
 
   async onGenReport(data: any) {
 
-
-
     Swal.fire({
       title: 'Generating report!',
       timerProgressBar: true,
       didOpen: () => {
-        Swal.showLoading()
+        // Swal.isLoading()
+        Swal.showLoading(null)
       }
     })
 
