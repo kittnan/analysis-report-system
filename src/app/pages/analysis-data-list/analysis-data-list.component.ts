@@ -586,13 +586,15 @@ export class AnalysisDataListComponent implements OnInit {
 
       switch (key) {
         case 1:
-          if (dateNow <= replyDate) {
-            merge['statusShow'] = 'Ongoing'
-            merge['color'] = 'Ongoing'
-          } else {
-            merge['statusShow'] = 'Ongoing with delay'
-            merge['color'] = 'OngoingWithDelay'
-          }
+          merge['statusShow'] = 'Ongoing'
+          merge['color'] = 'Ongoing'
+          // if (dateNow <= replyDate) {
+          //   merge['statusShow'] = 'Ongoing'
+          //   merge['color'] = 'Ongoing'
+          // } else {
+          //   merge['statusShow'] = 'Ongoing with delay'
+          //   merge['color'] = 'OngoingWithDelay'
+          // }
           break;
         case 2:
           if (merge.result != undefined) {

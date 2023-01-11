@@ -20,6 +20,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { LoginComponent } from "./pages/login/login.component";
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { LoginComponent } from "./pages/login/login.component";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],
   providers: [],
