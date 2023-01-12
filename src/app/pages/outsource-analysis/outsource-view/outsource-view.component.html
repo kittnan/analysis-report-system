@@ -11,7 +11,7 @@
             <!-- ! ------------------------------------------------------------------------------------->
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end">
-                    <button class="btn btn-sm" style="text-align: right; cursor: pointer;" [routerLink]="RouterMenu[0].path"> Edit <i
+                    <button *ngIf="ArrUserLevel" class="btn btn-sm" style="text-align: right; cursor: pointer;" [routerLink]="RouterMenu[0].path"> Edit <i
             class="bi bi-bootstrap-reboot i-re ">
           </i></button>
                 </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <div class="form-group">
-                        <label class="head-label" for="">Defective Name</label>
+                        <label class="head-label" for="">Defective Part</label>
                         <p class="subtext-color" *ngIf="Data">{{Data.defectiveName}}</p>
                     </div>
                 </div>
@@ -157,7 +157,8 @@
 
             <div class="d-flex justify-content-center">
                 <div>
-                    <button class="btn btn-back" [routerLink]="RouterMenu[1].path">back</button>
+                    <!-- <button class="btn btn-back" [routerLink]="RouterMenu[1].path">back</button> -->
+                    <button class="btn btn-back" onclick="self.close()">close</button>
                 </div>
             </div>
 

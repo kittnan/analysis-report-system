@@ -173,6 +173,7 @@ export class SidebarComponent implements OnInit {
                                     { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' },
                                     { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '' },
                                     { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' },
+                                    { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
                                 ]
                                 Permission = temp
                             } else
@@ -182,6 +183,7 @@ export class SidebarComponent implements OnInit {
                                     let temp = [
                                         { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' },
                                         { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' },
+                                        { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
                                     ]
                                     Permission = temp
                                 } else
@@ -203,6 +205,7 @@ export class SidebarComponent implements OnInit {
                                             // { path: '/inputElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
                                             // { path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '' },
                                         ]
+
                                         Permission = temp
                                         const eTemp: RouteInfo[] = [
                                             {

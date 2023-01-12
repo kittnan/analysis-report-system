@@ -5,12 +5,12 @@ import { GridApi, GridReadyEvent, LoggerFactory, RowNode } from 'ag-grid-communi
 import { HttpService } from 'app/service/http.service';
 import { environment } from 'environments/environment';
 import Swal from 'sweetalert2';
-import { read, utils, writeFile } from 'xlsx';
+
 
 // import { saveAs } from 'file-saver';
 import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'
-import { log } from 'console';
+
 
 @Component({
   selector: 'app-outsource-analysis',
@@ -68,6 +68,8 @@ export class OutsourceAnalysisComponent implements OnInit {
   FileList: any = [];
   fileInput = new FormControl(null)
   gridApi: GridApi
+  dateSize: any;
+  file: any;
 
 
   // ? toggle filter model number
@@ -91,6 +93,11 @@ export class OutsourceAnalysisComponent implements OnInit {
 
   goo: any[] = []
   constructor(private api: HttpService,) { }
+  defectPart: any
+  sizeFile: any[] = []
+  EmSize: any
+  checkDup: boolean
+
 
   ngOnInit(): void {
     this.reList()
@@ -104,6 +111,11 @@ export class OutsourceAnalysisComponent implements OnInit {
     //  this.updateMasterOutsource()
     // this.GetOccurBList()
     // updateMasterOutsource
+    this.getGetDefect()
+
+    // this.defectPart = defectData.defectName
+
+    // console.log(defectData);
 
 
 
@@ -136,6 +148,9 @@ export class OutsourceAnalysisComponent implements OnInit {
     }
   }
 
+  async getGetDefect() {
+    this.defectPart = await this.api.GetDefectAll().toPromise()
+  }
 
   // updateMasterOutsource
   async updateMasterOutsource() {
@@ -184,7 +199,7 @@ export class OutsourceAnalysisComponent implements OnInit {
     const item_2 = await this.api.getDataMasterOutsource(environment.MasterMakerSupplierName).toPromise()
     this.listCauseO = item_1.list
     this.listMaker = item_2.list
-    // console.log(test.list);
+    // console.log(item_1);
   }
 
   GetProductPhaseList() {
@@ -215,32 +230,31 @@ export class OutsourceAnalysisComponent implements OnInit {
     this.OccurBList = null;
     this.OccurAName = null;
     this.api.GetOccurAAll().subscribe((data: any) => {
+      // console.log(data);
+
       if (data.length > 0) {
         this.OccurAList = data;
       } else {
         this.OccurAList = null;
       }
     })
+    // console.log(this.OccurAList);
+
   }
 
 
 
-  GetOccurBList() {
+  async GetOccurBList() {
     const OccurALists = this.OccurAList.find(element => element.name == this.DataOccurAList)
     if (OccurALists) {
-      this.api.GetOccurB(OccurALists._id).subscribe((data: any) => {
-        if (data.length > 0) {
-          this.OccurBList = data;
-        } else {
-          this.OccurBList = null;
-        }
-      })
+      let data = await this.api.GetOccurB(OccurALists._id).toPromise()
+      this.OccurBList = data
     } else {
-      this.OccurBListCk = ""
-
+      this.OccurBList = null
     }
 
-    //  console.log(OccurALists._id);
+    // console.log(this.OccurBList);
+
 
   }
 
@@ -277,17 +291,36 @@ export class OutsourceAnalysisComponent implements OnInit {
         this.tempUpload = [];
         //console.log(this.tempUpload);
         this.reList()
+        // this.gridApi.setFilterModel(null);
       }
     })
     this.runRegis()
   }
   //---------------------------------ResetForm-----------------------------------------//
 
+
+
+
   //---------------------------------UploadFile-----------------------------------------//
   upload(e: any) {
     const files = e.target.files
     this.tempUpload.push(...files)
+    this.sizeFile.push(...files)
     this.fileUpload.nativeElement.value = ""
+    this.checkSizeFile()
+    // console.log(this.tempUpload);
+    const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
+    if (name[0].size != this.tempUpload.length) {
+      Swal.fire({
+        icon: 'error',
+        title: 'File duplicate',
+        text: 'Try Again'
+      })
+      this.checkDup = true
+    } else {
+      this.checkDup = false
+    }
+
   }
 
   onClickDel(file: File) {
@@ -299,11 +332,43 @@ export class OutsourceAnalysisComponent implements OnInit {
     }).then(ans => {
       if (ans.isConfirmed) {
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
+        this.sizeFile = this.sizeFile.filter((f: any) => f != file);
+        const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
+        if (name[0].size != this.tempUpload.length) {
+          this.checkDup = true
+        } else {
+          this.checkDup = false
+        }
+        this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
         }, 200);
       }
     })
+  }
+
+  checkSizeFile() {
+    let dateSize = 0
+    for (const item of this.sizeFile) {
+      dateSize = dateSize + item.size
+      this.EmSize = dateSize
+      if (this.EmSize / 1048576 > 30) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Limit File Size 30Mb',
+          text: 'Try Again',
+        })
+      }
+    }
+    this.EmSize = dateSize
+  }
+
+
+  checkFile() {
+    if (this.EmSize / 1048576 > 30 || this.checkDup) {
+      return true
+    }
+    return false
   }
   //---------------------------------UploadFile-----------------------------------------//
 

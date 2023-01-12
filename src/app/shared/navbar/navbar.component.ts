@@ -22,8 +22,8 @@ export class NavbarComponent implements OnInit{
     userLogin:any;
 
     constructor(
-      location:Location, 
-      private renderer : Renderer2, 
+      location:Location,
+      private renderer : Renderer2,
       private element : ElementRef,
        private router: Router) {
         this.location = location;
@@ -93,7 +93,7 @@ export class NavbarComponent implements OnInit{
       collapse(){
         this.isCollapsed = !this.isCollapsed;
         const navbar = document.getElementsByTagName('nav')[0];
-        console.log(navbar);
+        // console.log(navbar);
         if (!this.isCollapsed) {
           navbar.classList.remove('navbar-transparent');
           navbar.classList.add('bg-white');
@@ -111,8 +111,8 @@ export class NavbarComponent implements OnInit{
         this.userLogin = false;
         // location.reload();
         // SidebarComponent.call;
-    
-    
+
+
         // alert("Logout");
       }
 

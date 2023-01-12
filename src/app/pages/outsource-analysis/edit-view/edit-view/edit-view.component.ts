@@ -69,6 +69,8 @@ export class EditViewComponent implements OnInit {
   FileList: any = [];
   fileInput = new FormControl(null)
   gridApi: GridApi
+  sizeFile: any[] = []
+  EmSize: number;
 
 
   // ? toggle filter model number
@@ -93,6 +95,8 @@ export class EditViewComponent implements OnInit {
   goo: any[] = []
   nameFile: any[] = []
   listDelete: any[] = []
+  defectPart:any
+  checkDup : boolean
   constructor(private api: HttpService,) { }
 
   ngOnInit(): void {
@@ -101,6 +105,7 @@ export class EditViewComponent implements OnInit {
     this.GetIdDefectCategoryList()
     this.GetOccurAList()
     this.GetMasterOutsource()
+    this.getGetDefect()
 
 
 
@@ -157,6 +162,9 @@ export class EditViewComponent implements OnInit {
     }
   }
 
+  async getGetDefect(){
+    this.defectPart = await this.api.GetDefectAll().toPromise()
+  }
 
   // updateMasterOutsource
   async updateMasterOutsource() {
@@ -240,10 +248,12 @@ export class EditViewComponent implements OnInit {
     this.api.GetOccurAAll().subscribe((data: any) => {
       if (data.length > 0) {
         this.OccurAList = data;
+        this.GetOccurBList()
       } else {
         this.OccurAList = null;
       }
     })
+    // this.GetOccurBList()
   }
 
 
@@ -285,8 +295,21 @@ export class EditViewComponent implements OnInit {
   upload(e: any) {
     const files = e.target.files
     this.tempUpload.push(...files)
+    this.sizeFile.push(...files)
     this.fileUpload.nativeElement.value = ""
     this.listFile = this.nameFile.concat(this.tempUpload);
+    this.checkSizeFile()
+    const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
+    if (name[0].size != this.tempUpload.length) {
+      Swal.fire({
+        icon: 'error',
+        title: 'File duplicate',
+        text: 'Try Again'
+      })
+      this.checkDup = true
+    } else {
+      this.checkDup = false
+    }
   }
 
   onClickDel(file: File) {
@@ -301,11 +324,44 @@ export class EditViewComponent implements OnInit {
         this.nameFile = this.nameFile.filter((f: any) => f != file);
         this.listFile = this.nameFile.concat(this.tempUpload);
         this.listDelete.push(file.name)
+        this.sizeFile = this.sizeFile.filter((f: any) => f != file);
+        const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
+        if (name[0].size != this.tempUpload.length) {
+          this.checkDup = true
+        } else {
+          this.checkDup = false
+        }
+        this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
         }, 200);
       }
     })
+  }
+
+  checkSizeFile(){
+    let dateSize = 0
+    for (const item of this.sizeFile) {
+      dateSize = dateSize + item.size
+      this.EmSize = dateSize
+      if (this.EmSize/1048576 > 30) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Limit File Size 30Mb',
+          text: 'Try Again',
+        })
+      }
+    }
+    this.EmSize = dateSize
+  }
+
+
+  checkFile(){
+    // console.log(this.listFile.length);
+    if (this.EmSize/1048576 > 30 || this.checkDup) {
+      return true
+    }
+    return false
   }
   //---------------------------------UploadFile-----------------------------------------//
 
@@ -347,38 +403,6 @@ export class EditViewComponent implements OnInit {
   //---------------------------------get_id_data-----------------------------------------//
 
 
-  //---------------------------------Submit-----------------------------------------//
-  // dataFirst : boolean
-  // firstRun() {
-  //   let data
-  //   if (!this.dataFirst) {
-
-  //     data = {
-  //        registerNo: this.RegisNo,
-  //        modelNumber: this.CkModel,
-  //        size: this.datalist.size,
-  //        customer: this.datalist.customer,
-  //        defectiveName: this.DefectiveName,
-  //        referKTC: this.ReferKTC,
-  //        causeOfDefective: this.CauseOfDefective,
-  //        makerSupplier: this.MakerSup,
-  //        productionPhase: this.ProductionPh,
-  //        defectCategory: this.DefectCategory,
-  //        OccurA: this.DataOccurAList,
-  //        OccurB: this.OccurBListCk,
-  //        analysisResult: this.AnalysisResult,
-  //        urlFile: this.pathUrl,
-  //        year: this.RegisNo.split("-")[2],
-  //      }
-  //      this.dataFirst = true
-  //      console.log(JSON.stringify(data).length);
-  //      console.log(data.registerNo);
-
-
-  //   }
-
-
-  // }
 
 
 
@@ -418,7 +442,7 @@ export class EditViewComponent implements OnInit {
       year: this.RegisNo.split("-")[2],
     }
 
-    console.log(JSON.stringify(sendData).length);
+    // console.log(JSON.stringify(sendData).length);
 
 
     if (this.CkModel) {
@@ -439,7 +463,10 @@ export class EditViewComponent implements OnInit {
     }
   }
   //---------------------------------Submit-----------------------------------------//
-
+ updates(){
+  let test = localStorage.setItem("update", "true");
+  console.log(test);
+ }
 
 
 }
