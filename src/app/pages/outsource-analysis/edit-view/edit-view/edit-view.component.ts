@@ -291,25 +291,32 @@ export class EditViewComponent implements OnInit {
 
   //---------------------------------ResetForm-----------------------------------------//
 
+  temp: any[] = []
+  duplicate(x: any) {
+    for (const item of x) {
+      const data = this.temp.find(e => e.name == item.name)
+      if (!data) {
+        this.temp.push(item)
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'File duplicate',
+          text: 'Try Again'
+        })
+      }
+    }
+    return this.temp
+  }
+
   //---------------------------------UploadFile-----------------------------------------//
   upload(e: any) {
+    const data: any[] = []
     const files = e.target.files
-    this.tempUpload.push(...files)
-    this.sizeFile.push(...files)
+    data.push(...files)
     this.fileUpload.nativeElement.value = ""
+    this.tempUpload = this.duplicate(data)
     this.listFile = this.nameFile.concat(this.tempUpload);
     this.checkSizeFile()
-    const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
-    if (name[0].size != this.tempUpload.length) {
-      Swal.fire({
-        icon: 'error',
-        title: 'File duplicate',
-        text: 'Try Again'
-      })
-      this.checkDup = true
-    } else {
-      this.checkDup = false
-    }
   }
 
   onClickDel(file: File) {
@@ -324,13 +331,6 @@ export class EditViewComponent implements OnInit {
         this.nameFile = this.nameFile.filter((f: any) => f != file);
         this.listFile = this.nameFile.concat(this.tempUpload);
         this.listDelete.push(file.name)
-        this.sizeFile = this.sizeFile.filter((f: any) => f != file);
-        const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
-        if (name[0].size != this.tempUpload.length) {
-          this.checkDup = true
-        } else {
-          this.checkDup = false
-        }
         this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
@@ -341,7 +341,7 @@ export class EditViewComponent implements OnInit {
 
   checkSizeFile(){
     let dateSize = 0
-    for (const item of this.sizeFile) {
+    for (const item of this.tempUpload) {
       dateSize = dateSize + item.size
       this.EmSize = dateSize
       if (this.EmSize/1048576 > 30) {

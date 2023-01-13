@@ -300,31 +300,38 @@ export class OutsourceAnalysisComponent implements OnInit {
 
 
 
+  //---------------------------------Duplicate-----------------------------------------//
+  temp: any[] = []
+  duplicate(x: any) {
+    for (const item of x) {
+      const data = this.temp.find(e => e.name == item.name)
+      if (!data) {
+        this.temp.push(item)
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'File duplicate',
+          text: 'Try Again'
+        })
+      }
+    }
+    return this.temp
+  }
+
 
   //---------------------------------UploadFile-----------------------------------------//
   upload(e: any) {
+    const data: any[] = []
     const files = e.target.files
-    this.tempUpload.push(...files)
-    this.sizeFile.push(...files)
+    data.push(...files)
     this.fileUpload.nativeElement.value = ""
+    this.tempUpload = this.duplicate(data)
+    console.log(this.tempUpload);
     this.checkSizeFile()
-    // console.log(this.tempUpload);
-    const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
-    if (name[0].size != this.tempUpload.length) {
-      Swal.fire({
-        icon: 'error',
-        title: 'File duplicate',
-        text: 'Try Again'
-      })
-      this.checkDup = true
-    } else {
-      this.checkDup = false
-    }
-
   }
 
+  //---------------------------------DeleteFile----------------------------------------//
   onClickDel(file: File) {
-
     Swal.fire({
       title: `Do you want to delete ${file.name}?`,
       icon: 'warning',
@@ -332,13 +339,6 @@ export class OutsourceAnalysisComponent implements OnInit {
     }).then(ans => {
       if (ans.isConfirmed) {
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
-        this.sizeFile = this.sizeFile.filter((f: any) => f != file);
-        const name = [(new Set(this.tempUpload.map(({ name }) => name)))];
-        if (name[0].size != this.tempUpload.length) {
-          this.checkDup = true
-        } else {
-          this.checkDup = false
-        }
         this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
@@ -346,10 +346,10 @@ export class OutsourceAnalysisComponent implements OnInit {
       }
     })
   }
-
+  //---------------------------------CheckSizeFile-----------------------------------------//
   checkSizeFile() {
     let dateSize = 0
-    for (const item of this.sizeFile) {
+    for (const item of this.tempUpload) {
       dateSize = dateSize + item.size
       this.EmSize = dateSize
       if (this.EmSize / 1048576 > 30) {
@@ -365,7 +365,7 @@ export class OutsourceAnalysisComponent implements OnInit {
 
 
   checkFile() {
-    if (this.EmSize / 1048576 > 30 || this.checkDup) {
+    if (this.EmSize / 1048576 > 30) {
       return true
     }
     return false

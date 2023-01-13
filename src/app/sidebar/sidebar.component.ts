@@ -50,6 +50,7 @@ export const routesAdmin: RouteInfo[] = [
     { path: '/MasterOutsource', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
     { path: '/viewFormSearch', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
     { path: '/editView', title: 'Outsource Analysis Database', icon: 'bi bi-clipboard2-data', class: '' },
+    { path: '/electricalSearch', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
 
     // { path: '/searchElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
     // { path: '/inputElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
@@ -202,6 +203,9 @@ export class SidebarComponent implements OnInit {
                                             { path: '/mailler', title: 'Mailler Manage', icon: 'bi bi-envelope', class: '' },
                                             { path: '/reportManage', title: 'Report Manage', icon: 'bi bi-file-earmark-spreadsheet', class: '' },
                                             { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' },
+                                            { path: '/electricalSearch', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
+
+
                                             // { path: '/inputElectrical', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' },
                                             // { path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '' },
                                         ]
