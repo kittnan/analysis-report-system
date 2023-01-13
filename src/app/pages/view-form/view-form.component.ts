@@ -50,7 +50,7 @@ export class ViewFormComponent implements OnInit {
 
     const result = await this.getResult(this.FormId);
     result ? this.result = result : this.result = []
-    // this.CheckStatusUser();
+    this.CheckStatusUser();
 
     // this.captureScreen();
 
@@ -227,7 +227,7 @@ export class ViewFormComponent implements OnInit {
           result.startAnalyzeDate ? result.startAnalyzeDate = ((result.startAnalyzeDate).split("T"))[0] : result.startAnalyzeDate
           result.finishAnalyzeDate ? result.finishAnalyzeDate = ((result.finishAnalyzeDate).split("T"))[0] : result.finishAnalyzeDate
           result.finishReportDate ? result.finishReportDate = ((result.finishReportDate).split("T"))[0] : result.finishReportDate
-          if(result.file){
+          if (result.file) {
             this.toggleReportFile = true;
           }
           resolve(result)
