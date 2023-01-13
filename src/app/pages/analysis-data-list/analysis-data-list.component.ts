@@ -820,5 +820,14 @@ export class AnalysisDataListComponent implements OnInit {
     return this.gridApi.getDisplayedRowCount()
   }
 
+  onSaveFilter() {
+    const foo = this.gridApi.getFilterModel()
+    console.log(foo);
+
+  }
+  onClearFilter() {
+
+  }
+
 
 }

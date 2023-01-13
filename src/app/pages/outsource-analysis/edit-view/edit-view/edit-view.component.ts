@@ -95,8 +95,8 @@ export class EditViewComponent implements OnInit {
   goo: any[] = []
   nameFile: any[] = []
   listDelete: any[] = []
-  defectPart:any
-  checkDup : boolean
+  defectPart: any
+  checkDup: boolean
   constructor(private api: HttpService,) { }
 
   ngOnInit(): void {
@@ -162,7 +162,7 @@ export class EditViewComponent implements OnInit {
     }
   }
 
-  async getGetDefect(){
+  async getGetDefect() {
     this.defectPart = await this.api.GetDefectAll().toPromise()
   }
 
@@ -339,12 +339,12 @@ export class EditViewComponent implements OnInit {
     })
   }
 
-  checkSizeFile(){
+  checkSizeFile() {
     let dateSize = 0
     for (const item of this.tempUpload) {
       dateSize = dateSize + item.size
       this.EmSize = dateSize
-      if (this.EmSize/1048576 > 30) {
+      if (this.EmSize / 1048576 > 30) {
         Swal.fire({
           icon: 'error',
           title: 'Limit File Size 30Mb',
@@ -356,9 +356,9 @@ export class EditViewComponent implements OnInit {
   }
 
 
-  checkFile(){
+  checkFile() {
     // console.log(this.listFile.length);
-    if (this.EmSize/1048576 > 30 || this.checkDup) {
+    if (this.EmSize / 1048576 > 30 || this.checkDup) {
       return true
     }
     return false
@@ -463,10 +463,9 @@ export class EditViewComponent implements OnInit {
     }
   }
   //---------------------------------Submit-----------------------------------------//
- updates(){
-  let test = localStorage.setItem("update", "true");
-  console.log(test);
- }
+  updates() {
+    let test = localStorage.setItem("update", "true");
+  }
 
 
 }

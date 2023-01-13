@@ -10,6 +10,7 @@ import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'
 import { merge } from 'jquery';
 import { Router } from '@angular/router';
+import { interval, Subscription } from 'rxjs';
 
 
 
@@ -19,10 +20,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./search-database.component.css']
 })
 export class SearchDatabaseComponent implements OnInit {
-  constructor(
-    private api: HttpService,
-    private route: Router
-  ) { }
+
+
   RouterMenu: any[]
   worksheet: any;
   countX: any;
@@ -49,32 +48,6 @@ export class SearchDatabaseComponent implements OnInit {
   IdModelNumber = environment.IdModelNumber
   IdProductPhase = environment.IdProductPhase;
   IdDefectCategory = environment.IdDefectCategory;
-
-  //? Var
-  // condition = {
-  //   RegisNo: null,
-  //   Size: null,
-  //   Customer: null,
-  //   DefectiveName: null,
-  //   ReferKTC: null,
-  //   CauseOfDefective: null,
-  //   MakerSup: null,
-  //   ProductionPh: null,
-  //   DefectCategory: null,
-  //   DataOccurAList: null,
-  //   OccurBListCk: null,
-  //   AnalysisResult: null,
-  //   fileProgress: false,
-  //   tempUpload: [],
-  //   month: null,
-  //   year: null,
-  //   Sum: [],
-  //   fromDate: null,
-  //   toDate: null,
-  //   toYear: null,
-  //   CkModel:null
-  // }
-
 
   RegisNo: any;
   Size: any;
@@ -196,9 +169,20 @@ export class SearchDatabaseComponent implements OnInit {
   public UserLevel5 = sessionStorage.getItem('UserLevel5');
   public UserLevel6 = sessionStorage.getItem('UserLevel6');
   ArrUserLevel: any
+
+  interval$!: Subscription;
+  LoadingPage: boolean;
+  agGridFilter: any
+  constructor(
+    private api: HttpService,
+    private route: Router
+  ) {
+  }
   //--------------------------------------------------------------------------------------//
 
   ngOnInit(): void {
+    this.interval$ = interval(1000).subscribe(res => this.updateGrid())
+
 
     // const strCondition = sessionStorage.getItem('conditionOutsource')
     // const objCondition = JSON.parse(strCondition)
@@ -253,30 +237,25 @@ export class SearchDatabaseComponent implements OnInit {
     this.ArrUserLevel.push(this.UserLevel4)
     this.ArrUserLevel.push(this.UserLevel5)
     this.ArrUserLevel.push(this.UserLevel6)
-
-    // console.log(this.ArrUserLevel);
     this.userLv()
   }
+  ngOnDestroy(): void {
+    this.interval$.unsubscribe()
+  }
 
-  LoadingPage: boolean;
 
   userLv() {
     this.ArrUserLevel = this.ArrUserLevel.find(e => (e >= 3 || e == 0))
-    // console.log(this.ArrUserLevel);
   }
   //---------------------------------get and set filter grid-----------------------------------------//
-  model: any
   getFilter() {
-    this.model = this.gridApi.getFilterModel();
-    // console.log(this.model);
+    this.agGridFilter = this.gridApi.getFilterModel();
   }
   setFilter() {
-    this.gridApi.setFilterModel(this.model);
-    // console.log("333",this.model);
+    this.gridApi.setFilterModel(this.agGridFilter);
   }
   resetFilter() {
-    this.gridApi.setFilterModel(null);
-    // console.log("333",this.model);
+    this.gridApi.resetQuickFilter();
   }
   //---------------------------------get and set filter grid-----------------------------------------//
   test222() {
@@ -506,7 +485,7 @@ export class SearchDatabaseComponent implements OnInit {
     if (data == "true") {
       // console.log("asd", data);
       this.OnClickSearch()
-      localStorage.setItem("update","false")
+      localStorage.setItem("update", "false")
     }
   }
 
@@ -530,21 +509,8 @@ export class SearchDatabaseComponent implements OnInit {
       end: this.toDate || null,
       year: this.toYear || null,
     }
-    // console.log(condition);
-
     const str = JSON.stringify(condition)
-    //  console.log(str);
-
     sessionStorage.setItem('conditionOutsource', str)
-    //  const doo = JSON.parse(str)
-    //  console.log(condition);
-    // console.log(this.CkModel);
-
-
-    // console.log(condition.year);
-    // const str = JSON.stringify(e)
-    // sessionStorage.setItem('test', e.data);
-
     this.rowData = await this.api.FilterSearch(condition).toPromise()
     if (this.rowData.length != 0) {
       this.rowData.map(merge => {
@@ -559,24 +525,16 @@ export class SearchDatabaseComponent implements OnInit {
         icon: 'error'
       })
     }
-    // console.log(this.rowData);
-    // this.test333();
     setTimeout(() => {
       this.setFilter();
     }, 100);
   }
 
   onCellClicked(e: any) {
-    // console.log(e.data);
-    // console.log(e.data._id);
     // ? Session
-    // this.ngOnInit()
     const str = JSON.stringify(e.data)
     sessionStorage.setItem('dataAll', str);
-    // console.log(str);
-
-    // this.route.navigate(['/viewFormSearch'])
-    window.open('/#/viewFormSearch');
+    window.open('#/viewFormSearch', '_blank');
   }
 
 
@@ -592,9 +550,9 @@ export class SearchDatabaseComponent implements OnInit {
         this.fromDate = ""
         this.toDate = ""
         this.toYear = ""
-        this.datalist.size = "",
-          this.datalist.customer = "",
-          this.DefectiveName = "";
+        this.datalist.size = ""
+        this.datalist.customer = ""
+        this.DefectiveName = "";
         this.ReferKTC = "";
         this.CauseOfDefective = "";
         this.MakerSup = "";
@@ -620,7 +578,6 @@ export class SearchDatabaseComponent implements OnInit {
     const item_2 = await this.api.getDataMasterOutsource(environment.MasterMakerSupplierName).toPromise()
     this.listCauseO = item_1.list
     this.listMaker = item_2.list
-    // console.log(test.list);
   }
   //---------------------------------ResetForm-----------------------------------------//
 
