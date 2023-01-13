@@ -329,6 +329,7 @@ export class EditViewComponent implements OnInit {
       if (ans.isConfirmed) {
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
         this.nameFile = this.nameFile.filter((f: any) => f != file);
+        this.temp = this.temp.filter((f: any) => f != file);
         this.listFile = this.nameFile.concat(this.tempUpload);
         this.listDelete.push(file.name)
         this.checkSizeFile()
@@ -358,7 +359,7 @@ export class EditViewComponent implements OnInit {
 
   checkFile() {
     // console.log(this.listFile.length);
-    if (this.EmSize / 1048576 > 30 || this.checkDup) {
+    if (this.EmSize / 1048576 > 30) {
       return true
     }
     return false

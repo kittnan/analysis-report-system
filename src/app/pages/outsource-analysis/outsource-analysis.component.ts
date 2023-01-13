@@ -289,6 +289,8 @@ export class OutsourceAnalysisComponent implements OnInit {
         this.OccurBListCk = "";
         this.AnalysisResult = "";
         this.tempUpload = [];
+        this.temp = [];
+        this.EmSize = "";
         //console.log(this.tempUpload);
         this.reList()
         // this.gridApi.setFilterModel(null);
@@ -339,6 +341,7 @@ export class OutsourceAnalysisComponent implements OnInit {
     }).then(ans => {
       if (ans.isConfirmed) {
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
+        this.temp = this.temp.filter((f: any) => f != file);
         this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
