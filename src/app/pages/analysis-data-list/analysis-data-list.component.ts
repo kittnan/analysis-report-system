@@ -1,6 +1,7 @@
+import { interval, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import Swal from 'sweetalert2'
+import Swal, { SweetAlertResult } from 'sweetalert2'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import { ColDef, GridApi, GridReadyEvent, RowNode } from 'ag-grid-community';
@@ -238,8 +239,12 @@ export class AnalysisDataListComponent implements OnInit {
 
   ];
 
+  // ? interval
+  interval$: Subscription
 
   ngOnInit(): void {
+
+    this.interval$ = interval(1000).subscribe(res => this.setFilter())
 
     this.CheckStatusUser();
     this.GetModelAll();
@@ -248,6 +253,9 @@ export class AnalysisDataListComponent implements OnInit {
     // this.test ={
     //   onFilterChanged
     // }
+  }
+  ngOnDestroy(): void {
+    this.interval$.unsubscribe()
   }
 
 
@@ -352,6 +360,7 @@ export class AnalysisDataListComponent implements OnInit {
   }
 
   async OnClickSearch() {
+    this.onClearFilter()
     this.MergeRequest = []
     const condition_search = {
       start: this.DateStart.value || null,
@@ -820,13 +829,32 @@ export class AnalysisDataListComponent implements OnInit {
     return this.gridApi.getDisplayedRowCount()
   }
 
+  setFilter() {
+    if (!!this.gridApi) {
+      const ses = sessionStorage.getItem('datalist_filter')
+      if (ses) {
+        const json = JSON.parse(ses)
+        this.gridApi.setFilterModel(json)
+      }
+    }
+  }
   onSaveFilter() {
-    const foo = this.gridApi.getFilterModel()
-    console.log(foo);
-
+    const foo: any = this.gridApi.getFilterModel()
+    const str = JSON.stringify(foo)
+    sessionStorage.setItem('datalist_filter', str)
   }
   onClearFilter() {
+    Swal.fire({
+      title: 'Do you want to clear table filter?',
+      icon: 'question',
+      showCancelButton: true
+    }).then((value: SweetAlertResult) => {
 
+    })
+    if (this.gridApi) {
+      sessionStorage.removeItem('datalist_filter')
+      this.gridApi.setFilterModel(null)
+    }
   }
 
 
