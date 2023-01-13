@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  UrlApi: "http://localhost:4026s",
-  // UrlApi:"http://10.200.90.152:4026",
+  // UrlApi: "http://localhost:4026s",
+  UrlApi: "http://10.200.90.152:4026",
   master: 'equipment/master',
   country: 'equipment/country',
   equipment: 'equipment',
