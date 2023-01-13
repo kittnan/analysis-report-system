@@ -248,6 +248,7 @@ export class SearchDatabaseComponent implements OnInit {
     this.ArrUserLevel = this.ArrUserLevel.find(e => (e >= 3 || e == 0))
   }
   //---------------------------------get and set filter grid-----------------------------------------//
+  //TODO Filter Grid
   getFilter() {
     this.agGridFilter = this.gridApi.getFilterModel();
   }
@@ -258,11 +259,9 @@ export class SearchDatabaseComponent implements OnInit {
     this.gridApi.resetQuickFilter();
   }
   //---------------------------------get and set filter grid-----------------------------------------//
-  test222() {
-    console.log("asdasd");
-  }
 
   //---------------------------------ExportExcel-----------------------------------------//
+  //TODO ExportExcel
   async ExportExcel() {
 
     const workbook = new Workbook();
@@ -492,7 +491,7 @@ export class SearchDatabaseComponent implements OnInit {
 
 
   //---------------------------------AllRow-----------------------------------------//
-
+  //TODO Search Button
   async OnClickSearch() {
     let condition = {
       modelNumber: this.CkModel || null,
@@ -539,6 +538,7 @@ export class SearchDatabaseComponent implements OnInit {
 
 
   //---------------------------------ResetForm-----------------------------------------//
+  //TODO ResetFilter
   ResetConditionFilter() {
     Swal.fire({
       title: 'Do you want to reset condition filters ?',
