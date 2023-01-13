@@ -20,7 +20,6 @@ export class ExportFilteredService {
       title: 'Generating report!',
       timerProgressBar: true,
       didOpen: () => {
-        // Swal.isLoading()
         Swal.showLoading(null)
       }
     })

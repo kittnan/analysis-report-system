@@ -55,6 +55,8 @@ import { EditViewComponent } from 'app/pages/outsource-analysis/edit-view/edit-v
 import { MasterOutsourceComponent } from 'app/pages/outsource-analysis/master-outsource/master-outsource/master-outsource.component';
 import { OutsourceAnalysisComponent } from 'app/pages/outsource-analysis/outsource-analysis.component';
 import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-database/search-database.component';
+import { ElectricalInputComponent } from 'app/pages/electrical-database/input-database/input-database/input-database.component';
+import { ElectricalSearchComponent } from 'app/pages/electrical-database/search-database/search-database/search-database.component';
 
 
 @NgModule({
@@ -114,6 +116,8 @@ import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-dat
     SearchDatabaseComponent,
     OutsourceAnalysisComponent,
     MasterOutsourceComponent,
+    ElectricalInputComponent,
+    ElectricalSearchComponent,
   ]
 })
 

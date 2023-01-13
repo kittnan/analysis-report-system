@@ -20,8 +20,7 @@
   </div>
   <div class="w-30 mr-3">
     <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[1].path" class="btn btn-block">Input
-      Database<i class="bi bi-file-earmark-plus"
-        style="font-size: 1.5em ml-2"></i></button>
+      Database<i class="bi bi-file-earmark-plus" style="font-size: 1.5em ml-2"></i></button>
   </div>
   <div class="w-30" *ngIf="this.RouterMenu[2]">
     <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[2].path" class="btn btn-block">Master Outsource
@@ -40,15 +39,15 @@
     </div>
   </div>
 
-    <!-- ! ---------------------------------------- RESET -->
-    <div class="row">
-      <div class="col-lg-12 d-flex justify-content-end">
-        <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;"
-          (click)="ResetConditionFilter()">Reset Data <i class="bi bi-bootstrap-reboot i-re">
-          </i></button>
-      </div>
+  <!-- ! ---------------------------------------- RESET -->
+  <div class="row">
+    <div class="col-lg-12 d-flex justify-content-end">
+      <button class="btn btn-sm  text-danger" style="text-align: right; cursor: pointer;"
+        (click)="ResetConditionFilter()">Reset Data <i class="bi bi-bootstrap-reboot i-re">
+        </i></button>
     </div>
-    <!-- ! ---------------------------------------- RESET -->
+  </div>
+  <!-- ! ---------------------------------------- RESET -->
 
 
   <!-- ! ----------------------------------------ROW 1 -->
@@ -75,11 +74,16 @@
   <div class="row pt-3">
     <div class="col-lg-2">
       <label for="">Model Number</label>
-      <input [(ngModel)]="CkModel" list="listModelNum" id="" name="" class="form-control" (ngModelChange)="checkMs()">
+      <!-- <input [(ngModel)]="CkModel" list="listModelNum" id="" name="" class="form-control" (ngModelChange)="checkMs()">
       <datalist id="listModelNum">
         <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
         </option>
-      </datalist>
+      </datalist> -->
+      <select class="form-control" name="" id="" [(ngModel)]="CkModel" (ngModelChange)="checkMs()">
+        <option value=""></option>
+        <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
+        </option>
+      </select>
     </div>
     <div class="col-lg-2">
       <label for="">Size (inch)</label>
@@ -90,8 +94,12 @@
       <input type="text" [(ngModel)]="Customer" class="form-control" [value]='datalist.customer' readonly>
     </div>
     <div class="col-lg-2">
-      <label for="">Defective Name</label>
-      <input type="text" [(ngModel)]="DefectiveName" class="form-control">
+      <label for="">Defective Part</label>
+      <input type="text" [(ngModel)]="DefectiveName" list="defectPart" class="form-control">
+      <datalist id="defectPart">
+        <option *ngFor="let item of defectPart" [value]="item.defectName">{{item.defectName}}
+        </option>
+      </datalist>
     </div>
     <div class="col-lg-4">
       <label for="">Refer KTC Analysis Request No.</label>
@@ -104,19 +112,29 @@
   <div class="row pt-3">
     <div class="col-lg-4">
       <label for="">Cause of Defective</label>
-      <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
-      <datalist id="listCauseO">
+      <!-- <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
+          <datalist id="listCauseO">
+            <option *ngFor="let item of listCauseO" [value]="item">{{item}}
+            </option>
+          </datalist> -->
+      <select class="form-control" name="" id="" [(ngModel)]="CauseOfDefective">
+        <option value=""></option>
         <option *ngFor="let item of listCauseO" [value]="item">{{item}}
         </option>
-      </datalist>
+      </select>
     </div>
     <div class="col-lg-4">
       <label for="">Maker/Supplier Name</label>
-      <input type="text" [(ngModel)]="MakerSup" list="listMaker" class="form-control">
-      <datalist id="listMaker">
+      <!-- <input type="text" [(ngModel)]="MakerSup" list="listMaker" class="form-control">
+          <datalist id="listMaker">
+            <option *ngFor="let item of listMaker" [value]="item">{{item}}
+            </option>
+          </datalist> -->
+      <select class="form-control" name="" id="" [(ngModel)]="MakerSup">
+        <option value=""></option>
         <option *ngFor="let item of listMaker" [value]="item">{{item}}
         </option>
-      </datalist>
+      </select>
     </div>
   </div>
   <!-- ! ----------------------------------------ROW 3 -->
@@ -125,19 +143,29 @@
   <div class="row pt-3">
     <div class="col-lg-4">
       <label for="">Production Phase</label>
-      <input list="listProduction" id="" name="" [(ngModel)]="ProductionPh" class="form-control">
-      <datalist id="listProduction">
+      <!-- <input list="listProduction" id="" name="" [(ngModel)]="ProductionPh" class="form-control"> -->
+      <!-- <datalist id="listProduction">
+            <option *ngFor="let item of ProductPhaseList" [value]="item.name">{{item.name}}
+            </option>
+          </datalist> -->
+      <select class="form-control" name="" id="" value="" [(ngModel)]="ProductionPh">
+        <option value=""></option>
         <option *ngFor="let item of ProductPhaseList" [value]="item.name">{{item.name}}
         </option>
-      </datalist>
+      </select>
     </div>
     <div class="col-lg-4">
       <label for="">Defect Category</label>
-      <input list="IdDefectCategory" id="" name="" [(ngModel)]="DefectCategory" class="form-control">
-      <datalist id="IdDefectCategory">
+      <!-- <input list="IdDefectCategory" id="" name="" [(ngModel)]="DefectCategory" class="form-control">
+          <datalist id="IdDefectCategory">
+            <option *ngFor="let item of IdDefectCategoryList" [value]="item.name">{{item.name}}
+            </option>
+          </datalist> -->
+      <select class="form-control" name="" id="" [(ngModel)]="DefectCategory">
+        <option value=""></option>
         <option *ngFor="let item of IdDefectCategoryList" [value]="item.name">{{item.name}}
         </option>
-      </datalist>
+      </select>
     </div>
   </div>
   <!-- ! ----------------------------------------ROW 4 -->
@@ -146,23 +174,35 @@
   <div class="row pt-3">
     <div class="col-lg-4">
       <label for="">Occur Place A</label>
-      <input #test [(ngModel)]="DataOccurAList" list="OccurALists" id="" name="" class="form-control"
-        (input)="GetOccurBList()">
-      <datalist id="OccurALists">
-        <option *ngFor="let item of OccurAList" [value]="item.name">
+      <!-- <input #test [(ngModel)]="DataOccurAList" list="OccurALists" id="" name="" class="form-control"
+            (input)="GetOccurBList()">
+          <datalist id="OccurALists">
+            <option *ngFor="let item of OccurAList" [value]="item.name">
+            </option>
+          </datalist> -->
+      <select class="form-control" name="" id="" (change)="GetOccurBList()" #test [(ngModel)]="DataOccurAList">
+        <option value=""></option>
+        <option *ngFor="let item of OccurAList" [value]="item.name">{{item.name}}
         </option>
-      </datalist>
+      </select>
     </div>
     <!-- * -------------------------------------------------Occur Place A -->
 
     <!-- * -------------------------------------------------Occur Place B -->
     <div class="col-lg-4">
       <label for="">Occur Place B</label>
-      <input [(ngModel)]="OccurBListCk" list="OccurBLists" name="" class="form-control" [disabled]="!DataOccurAList">
-      <datalist id="OccurBLists">
-        <option *ngFor="let item1 of OccurBList" [value]="item1.name">
+      <!-- <input [(ngModel)]="OccurBListCk" list="OccurBLists" name="" class="form-control"
+            [disabled]="!DataOccurAList">
+          <datalist id="OccurBLists">
+            <option value=""></option>
+            <option *ngFor="let item1 of OccurBList" [value]="item1.name">{{item1.name}}
+            </option>
+          </datalist> -->
+      <select class="form-control" name="" id="" [disabled]="!DataOccurAList" [(ngModel)]="OccurBListCk">
+        <option value=""></option>
+        <option *ngFor="let item1 of OccurBList" [value]="item1.name">{{item1.name}}
         </option>
-      </datalist>
+      </select>
     </div>
   </div>
   <!-- * -------------------------------------------------Occur Place B -->
@@ -181,12 +221,22 @@
     <div class="col-lg-12">
       <label for="">File</label>
       <input class="ml-1" type="file" #fileUpload [multiple]="true" (change)="upload($event)">
+      <span>( Max upload file size 30 MB )</span>
     </div>
     <div class="col-lg-12">
       <ul>
+
         <li *ngFor="let file of tempUpload ;let i =index" class="d-flex align-items-center justify-content-between">
-          {{i+1}}. {{file.name}}
-          <button class="btn btn-sm text-primary" (click)="onClickDel(file)">Delete</button>
+          <!-- {{i+1}}. {{file.name}}  {{this.niceBytes(file.size)}} -->
+          <span>
+            <span>{{i+1}}. </span>
+            <span class="mr-3">{{file.name}} </span>
+          </span>
+          <!-- <span class="btn btn-sm text-primary">{{file.size}}</span> -->
+          <span>
+            <span class="mr-3">{{file.size|fileSize}}</span>
+            <button class="btn btn-sm text-primary" (click)="onClickDel(file)">Delete</button>
+          </span>
         </li>
       </ul>
     </div>
@@ -196,7 +246,8 @@
   <!-- * -------------------------------------------------UploadFile 2------------------------------------------------->
   <div class="d-flex justify-content-center">
     <div>
-      <button class="btn btn-primary" (click)="submit()" (mouseover)="reData()">Upload Analysis Database</button>
+      <button class="btn btn-primary" [disabled]="checkFile()" (click)="submit()" (mouseover)="reData()">Upload Analysis Database</button>
+      <span class="ml-3" [hidden]="!EmSize">{{this.EmSize|fileSize}}</span>
     </div>
   </div>
   <!-- * -------------------------------------------------UploadFile 2------------------------------------------------->

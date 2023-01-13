@@ -99,7 +99,7 @@ export class SearchDatabaseComponent implements OnInit {
   listCauseO: any;
   listMaker: any;
   yearStart: any[] = [];
-
+  defectPart: any
 
 
   // ?  data table
@@ -122,8 +122,8 @@ export class SearchDatabaseComponent implements OnInit {
     },
     {
       field: 'defectiveName',
-      headerName: "Defect Name.",
-      headerTooltip: "Defect Name"
+      headerName: "Defective Part.",
+      headerTooltip: "Defective Part"
     },
     {
       field: 'referKTC',
@@ -185,8 +185,17 @@ export class SearchDatabaseComponent implements OnInit {
     resizable: true,
     floatingFilter: true,
     filter: true,
+
   }
 
+
+  public UserLevel1 = sessionStorage.getItem('UserLevel1');
+  public UserLevel2 = sessionStorage.getItem('UserLevel2');
+  public UserLevel3 = sessionStorage.getItem('UserLevel3');
+  public UserLevel4 = sessionStorage.getItem('UserLevel4');
+  public UserLevel5 = sessionStorage.getItem('UserLevel5');
+  public UserLevel6 = sessionStorage.getItem('UserLevel6');
+  ArrUserLevel: any
   //--------------------------------------------------------------------------------------//
 
   ngOnInit(): void {
@@ -204,6 +213,7 @@ export class SearchDatabaseComponent implements OnInit {
     this.GetIdDefectCategoryList()
     this.GetOccurAList()
     this.getTime()
+    this.getGetDefect()
 
     // this.OnClickSearch()
     const access: any = sessionStorage.getItem('UserEmployeeCode')
@@ -234,20 +244,47 @@ export class SearchDatabaseComponent implements OnInit {
       ]
       // console.log(this.RouterMenu[2]);
     }
+
+
+    this.ArrUserLevel = [];
+    this.ArrUserLevel.push(this.UserLevel1)
+    this.ArrUserLevel.push(this.UserLevel2)
+    this.ArrUserLevel.push(this.UserLevel3)
+    this.ArrUserLevel.push(this.UserLevel4)
+    this.ArrUserLevel.push(this.UserLevel5)
+    this.ArrUserLevel.push(this.UserLevel6)
+
+    // console.log(this.ArrUserLevel);
+    this.userLv()
   }
 
   LoadingPage: boolean;
 
+  userLv() {
+    this.ArrUserLevel = this.ArrUserLevel.find(e => (e >= 3 || e == 0))
+    // console.log(this.ArrUserLevel);
+  }
+  //---------------------------------get and set filter grid-----------------------------------------//
+  model: any
+  getFilter() {
+    this.model = this.gridApi.getFilterModel();
+    // console.log(this.model);
+  }
+  setFilter() {
+    this.gridApi.setFilterModel(this.model);
+    // console.log("333",this.model);
+  }
+  resetFilter() {
+    this.gridApi.setFilterModel(null);
+    // console.log("333",this.model);
+  }
+  //---------------------------------get and set filter grid-----------------------------------------//
+  test222() {
+    console.log("asdasd");
+  }
+
   //---------------------------------ExportExcel-----------------------------------------//
   async ExportExcel() {
-
-    // let DataOutSourceAll = await this.api.GetAll().toPromise()
-    // DataOutSourceAll = DataOutSourceAll.map((element: any) => {
-    //   delete element._id
-    //   element.urlFile = element.urlFile.toString().replaceAll(",", " ,")
-    //   return element
-    // });
-    // console.log(DataOutSourceAll);
 
     const workbook = new Workbook();
     this.worksheet = workbook.addWorksheet('New Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
@@ -258,7 +295,7 @@ export class SearchDatabaseComponent implements OnInit {
       { width: 20, header: 'Model No.', key: 'modelNumber' },
       { width: 20, header: 'Size (inch)', key: 'size' },
       { width: 20, header: 'Customer', key: 'customer' },
-      { width: 20, header: 'Defective Name', key: 'defectiveName' },
+      { width: 20, header: 'Defective Part', key: 'defectiveName' },
       { width: 27, header: 'Refer KTC Analysis Request No.', key: 'referKTC' },
       { width: 20, header: 'Cause of Defective', key: 'causeOfDefective' },
       { width: 20, header: 'Maker/Supplier Name', key: 'makerSupplier' },
@@ -286,6 +323,10 @@ export class SearchDatabaseComponent implements OnInit {
 
 
   }
+
+
+
+
 
   readBorderEx(x: any, y: any) {
     let ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -421,6 +462,9 @@ export class SearchDatabaseComponent implements OnInit {
     })
   }
 
+  async getGetDefect() {
+    this.defectPart = await this.api.GetDefectAll().toPromise()
+  }
 
   GetOccurAList() {
     this.OccurAList = null;
@@ -433,25 +477,22 @@ export class SearchDatabaseComponent implements OnInit {
         this.OccurAList = null;
       }
     })
+    // console.log(this.OccurAList);
+
   }
 
 
-  GetOccurBList() {
+  async GetOccurBList() {
     const OccurALists = this.OccurAList.find(element => element.name == this.DataOccurAList)
     if (OccurALists) {
-      this.api.GetOccurB(OccurALists._id).subscribe((data: any) => {
-        if (data.length > 0) {
-          this.OccurBList = data;
-        } else {
-          this.OccurBList = null;
-        }
-      })
+      let data = await this.api.GetOccurB(OccurALists._id).toPromise()
+      this.OccurBList = data
     } else {
-      this.OccurBListCk = ""
-
+      this.OccurBList = null
     }
 
-    // console.log(OccurALists._id);
+    // console.log(this.OccurBList);
+
 
   }
 
@@ -460,10 +501,20 @@ export class SearchDatabaseComponent implements OnInit {
   }
 
 
+  updateGrid() {
+    let data = localStorage.getItem("update")
+    if (data == "true") {
+      // console.log("asd", data);
+      this.OnClickSearch()
+      localStorage.setItem("update","false")
+    }
+  }
+
+
+
   //---------------------------------AllRow-----------------------------------------//
 
   async OnClickSearch() {
-
     let condition = {
       modelNumber: this.CkModel || null,
       defectiveName: this.DefectiveName || null,
@@ -509,18 +560,23 @@ export class SearchDatabaseComponent implements OnInit {
       })
     }
     // console.log(this.rowData);
-
+    // this.test333();
+    setTimeout(() => {
+      this.setFilter();
+    }, 100);
   }
 
   onCellClicked(e: any) {
     // console.log(e.data);
     // console.log(e.data._id);
     // ? Session
+    // this.ngOnInit()
     const str = JSON.stringify(e.data)
     sessionStorage.setItem('dataAll', str);
     // console.log(str);
 
-    this.route.navigate(['/viewFormSearch'])
+    // this.route.navigate(['/viewFormSearch'])
+    window.open('/#/viewFormSearch');
   }
 
 
@@ -550,6 +606,11 @@ export class SearchDatabaseComponent implements OnInit {
         this.tempUpload = [];
         this.oldValue = [];
         //console.log(this.tempUpload);
+        this.OnClickSearch()
+        setTimeout(() => {
+          this.resetFilter()
+        }, 500);
+
       }
     })
   }
@@ -613,7 +674,7 @@ export class SearchDatabaseComponent implements OnInit {
     } else {
       defectMode.value = ""
     }
-  // console.log(`'${splitData}'`);
+    // console.log(`'${splitData}'`);
 
 
 

@@ -577,6 +577,7 @@ export class HttpService {
   }
 
   getDataMasterOutsource(data: any): Observable<any> {
+// console.log("dsd");
     return this.http.get(this.Url + "/masterOutsource/" + data);
   }
 
