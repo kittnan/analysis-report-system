@@ -360,7 +360,6 @@ export class AnalysisDataListComponent implements OnInit {
   }
 
   async OnClickSearch() {
-    this.onClearFilter()
     this.MergeRequest = []
     const condition_search = {
       start: this.DateStart.value || null,
@@ -839,9 +838,19 @@ export class AnalysisDataListComponent implements OnInit {
     }
   }
   onSaveFilter() {
-    const foo: any = this.gridApi.getFilterModel()
-    const str = JSON.stringify(foo)
-    sessionStorage.setItem('datalist_filter', str)
+    Swal.fire({
+      title: 'Do you want to save table filter?',
+      icon: 'question',
+      showCancelButton: true
+    }).then((value: SweetAlertResult) => {
+      if (value.isConfirmed) {
+        const foo: any = this.gridApi.getFilterModel()
+        const str = JSON.stringify(foo)
+        sessionStorage.setItem('datalist_filter', str)
+        Swal.fire('SUCCESS', '', 'success')
+
+      }
+    })
   }
   onClearFilter() {
     Swal.fire({
@@ -849,8 +858,16 @@ export class AnalysisDataListComponent implements OnInit {
       icon: 'question',
       showCancelButton: true
     }).then((value: SweetAlertResult) => {
+      if (value.isConfirmed) {
+        this.clearFilter()
+        Swal.fire('SUCCESS', '', 'success')
 
+      }
     })
+
+  }
+
+  clearFilter() {
     if (this.gridApi) {
       sessionStorage.removeItem('datalist_filter')
       this.gridApi.setFilterModel(null)
