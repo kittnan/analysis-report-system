@@ -63,11 +63,11 @@
     </div>
     <div class="col-lg-2">
       <label for="">Size (inch)</label>
-      <input type="text" [(ngModel)]="Size" class="form-control" [value]='datalist.size' readonly>
+      <input type="text" [(ngModel)]="Size" class="form-control" [value]="datalist?.size?datalist?.size:''" readonly>
     </div>
     <div class="col-lg-2">
       <label for="">Customer</label>
-      <input type="text" [(ngModel)]="Customer" class="form-control" [value]='datalist.customer' readonly>
+      <input type="text" [(ngModel)]="Customer" class="form-control" [value]="datalist?.customer?datalist?.customer:''" readonly>
     </div>
     <div class="col-lg-2">
       <label for="">Defective Part</label>
