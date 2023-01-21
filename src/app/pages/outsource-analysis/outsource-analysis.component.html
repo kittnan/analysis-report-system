@@ -87,14 +87,14 @@
     </div>
     <div class="col-lg-2">
       <label for="">Size (inch)</label>
-      <input type="text" [(ngModel)]="Size" class="form-control" [value]='datalist.size' readonly>
+      <input type="text" [(ngModel)]="Size" class="form-control" [value]="datalist?.size?datalist?.size:''" readonly>
     </div>
     <div class="col-lg-2">
       <label for="">Customer</label>
-      <input type="text" [(ngModel)]="Customer" class="form-control" [value]='datalist.customer' readonly>
+      <input type="text" [(ngModel)]="Customer" class="form-control" [value]="datalist?.customer?datalist?.customer:''" readonly>
     </div>
     <div class="col-lg-2">
-      <label for="">Defective Part</label>
+      <label for="">Defective Name</label>
       <input type="text" [(ngModel)]="DefectiveName" list="defectPart" class="form-control">
       <datalist id="defectPart">
         <option *ngFor="let item of defectPart" [value]="item.defectName">{{item.defectName}}
@@ -111,7 +111,7 @@
   <!-- ! ----------------------------------------ROW 3 -->
   <div class="row pt-3">
     <div class="col-lg-4">
-      <label for="">Cause of Defective</label>
+      <label for="">Defective Part</label>
       <!-- <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
           <datalist id="listCauseO">
             <option *ngFor="let item of listCauseO" [value]="item">{{item}}

@@ -87,7 +87,7 @@ export class MasterOutsourceComponent implements OnInit {
     } else {
       this.ToggleNormalTable = false
     }
-    // console.log(this.listMasters.length);
+    // console.log(this.listMaster);
 
   }
   ModalEditList(content, item, i) {
@@ -139,7 +139,7 @@ export class MasterOutsourceComponent implements OnInit {
       this.CauseOfDefective = this.listMasters
       // console.log(this.CauseOfDefective);
       this.data_CauseOfDefective = {
-        name: "Cause of Defective",
+        name: "Defective Part",
         list: this.CauseOfDefective
         // list: ["LCD/TFT Panel", "LSI", "PWB", "Backlight", "Polarizer", "FPC", "Touch panel", "ACF Tape", "Conductive tape", "Conductive /Carbon paste", "Adhesive gule", "Resin", "OCA glue"],
       }
@@ -182,7 +182,7 @@ export class MasterOutsourceComponent implements OnInit {
         if (this.addMaster == this.listMaster[0].name) {
           this.listMaster[0].list.push(this.listName)
           this.data_CauseOfDefective = {
-            name: "Cause of Defective",
+            name: "Defective Part",
             list: this.listMaster[0].list
           }
           await this.api.updateMasterOutsource(environment.MasterCauseOfDefective, this.data_CauseOfDefective).toPromise()

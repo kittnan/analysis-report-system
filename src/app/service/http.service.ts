@@ -577,7 +577,7 @@ export class HttpService {
   }
 
   getDataMasterOutsource(data: any): Observable<any> {
-// console.log("dsd");
+    // console.log("dsd");
     return this.http.get(this.Url + "/masterOutsource/" + data);
   }
 
@@ -593,5 +593,18 @@ export class HttpService {
     return this.http.put(this.Url + "/outsourceForm/editView/" + id, data);
   }
 
+  //-----Electrical
+  addMasterProductSpec(data: any): Observable<any> {
+    return this.http.post(this.Url + "/MasterProductSpec/", data)
+  }
+  deleteMasterProductSpec(): Observable<any> {
+    return this.http.delete(this.Url + "/MasterProductSpec/")
+  }
+  getMasterProductSpec(): Observable<any> {
+    return this.http.get(this.Url + "/MasterProductSpec/")
+  }
+  uploadMasterProductSpec(data: any): Observable<any> {
+    return this.http.post(this.Url + "/MasterProductSpec/upload/", data)
+  }
 }
 // getDataView

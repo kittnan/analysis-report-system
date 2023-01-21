@@ -95,8 +95,8 @@ export class SearchDatabaseComponent implements OnInit {
     },
     {
       field: 'defectiveName',
-      headerName: "Defective Part.",
-      headerTooltip: "Defective Part"
+      headerName: "Defective Name.",
+      headerTooltip: "Defective Name"
     },
     {
       field: 'referKTC',
@@ -105,8 +105,8 @@ export class SearchDatabaseComponent implements OnInit {
     },
     {
       field: 'causeOfDefective',
-      headerName: "Cause Of Defective",
-      headerTooltip: "Cause Of Defective"
+      headerName: "Defective Part",
+      headerTooltip: "Defective Part"
     },
     {
       field: 'makerSupplier',
@@ -160,8 +160,6 @@ export class SearchDatabaseComponent implements OnInit {
     filter: true,
 
   }
-
-
   public UserLevel1 = sessionStorage.getItem('UserLevel1');
   public UserLevel2 = sessionStorage.getItem('UserLevel2');
   public UserLevel3 = sessionStorage.getItem('UserLevel3');
@@ -179,7 +177,7 @@ export class SearchDatabaseComponent implements OnInit {
   ) {
   }
   //--------------------------------------------------------------------------------------//
-
+  // TODO  init
   ngOnInit(): void {
     this.interval$ = interval(1000).subscribe(res => this.updateGrid())
 
@@ -273,9 +271,9 @@ export class SearchDatabaseComponent implements OnInit {
       { width: 20, header: 'Model No.', key: 'modelNumber' },
       { width: 20, header: 'Size (inch)', key: 'size' },
       { width: 20, header: 'Customer', key: 'customer' },
-      { width: 20, header: 'Defective Part', key: 'defectiveName' },
+      { width: 20, header: 'Defective Name', key: 'defectiveName' },
       { width: 27, header: 'Refer KTC Analysis Request No.', key: 'referKTC' },
-      { width: 20, header: 'Cause of Defective', key: 'causeOfDefective' },
+      { width: 20, header: 'Defective Part', key: 'causeOfDefective' },
       { width: 20, header: 'Maker/Supplier Name', key: 'makerSupplier' },
       { width: 20, header: 'Production Phase', key: 'productionPhase' },
       { width: 20, header: 'Defect Category', key: 'defectCategory' },
@@ -513,20 +511,25 @@ export class SearchDatabaseComponent implements OnInit {
     this.rowData = await this.api.FilterSearch(condition).toPromise()
     if (this.rowData.length != 0) {
       this.rowData.map(merge => {
-        merge['projectName'] = `${merge.size} / ${merge.customer}`
+        merge['projectName'] = `${merge?.size?merge?.size:""} / ${merge?.customer?merge?.customer:""}`
         merge['createdAt'] = `${merge.createdAt.slice(8, 10)}-${merge.createdAt.slice(5, 7)}-${merge.createdAt.slice(0, 4)}`
         return merge
       })
-
     } else {
-      Swal.fire({
-        title: 'Data no such',
-        icon: 'error'
-      })
+      if (str.length != 231) {
+        Swal.fire({
+          title: 'Data no such',
+          icon: 'error'
+        })
+      }
+
     }
-    setTimeout(() => {
-      this.setFilter();
-    }, 100);
+
+    if (this.rowData.length != 0) {
+      setTimeout(() => {
+        this.setFilter();
+      }, 100);
+    }
   }
 
   onCellClicked(e: any) {
@@ -598,19 +601,19 @@ export class SearchDatabaseComponent implements OnInit {
     if (objCondition == null) {
 
     } else {
-      this.CkModel = objCondition.modelNumber || null,
-        this.DefectiveName = objCondition.defectiveName || null,
-        this.ReferKTC = objCondition.referKTC || null,
-        this.CauseOfDefective = objCondition.causeOfDefective || null,
-        this.MakerSup = objCondition.makerSupplier || null,
-        this.ProductionPh = objCondition.productionPhase || null,
-        this.DefectCategory = objCondition.defectCategory || null,
-        this.DataOccurAList = objCondition.OccurA || null,
-        this.OccurBListCk = objCondition.OccurB || null,
-        this.oldValue = objCondition.analysisResult || [],
-        this.fromDate = objCondition.start || null,
-        this.toDate = objCondition.end || null,
-        this.toYear = objCondition.year || null
+      this.CkModel = objCondition.modelNumber || null
+      this.DefectiveName = objCondition.defectiveName || null
+      this.ReferKTC = objCondition.referKTC || null
+      this.CauseOfDefective = objCondition.causeOfDefective || null
+      this.MakerSup = objCondition.makerSupplier || null
+      this.ProductionPh = objCondition.productionPhase || null
+      this.DefectCategory = objCondition.defectCategory || null
+      this.DataOccurAList = objCondition.OccurA || null
+      this.OccurBListCk = objCondition.OccurB || null
+      this.oldValue = objCondition.analysisResult || []
+      this.fromDate = objCondition.start || null
+      this.toDate = objCondition.end || null
+      this.toYear = objCondition.year || null
 
       this.OnClickSearch()
 

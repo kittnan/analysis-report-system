@@ -113,7 +113,7 @@
             <input type="text" [(ngModel)]="Customer" class="form-control" [value]='datalist.customer' readonly>
         </div>
         <div class="col-lg-2">
-            <label for="">Defective Part</label>
+            <label for="">Defective Name</label>
             <input type="text" [(ngModel)]="DefectiveName" list="list" class="form-control">
             <datalist id="list">
         <option *ngFor="let item of defectPart" [value]="item.defectName">
@@ -132,7 +132,7 @@
     <!-- ! ----------------------------------------ROW 3 -->
     <div class="row pt-3">
         <div class="col-lg-4">
-            <label for="">Cause of Defective</label>
+            <label for="">Defective Part</label>
             <!-- <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
       <datalist id="listCauseO">
         <option *ngFor="let item of listCauseO" [value]="item">{{item}}

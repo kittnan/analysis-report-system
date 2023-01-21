@@ -326,9 +326,11 @@ export class OutsourceAnalysisComponent implements OnInit {
     const data: any[] = []
     const files = e.target.files
     data.push(...files)
+    // console.log(data);
+
     this.fileUpload.nativeElement.value = ""
     this.tempUpload = this.duplicate(data)
-    console.log(this.tempUpload);
+    // console.log(this.tempUpload);
     this.checkSizeFile()
   }
 
@@ -350,6 +352,7 @@ export class OutsourceAnalysisComponent implements OnInit {
     })
   }
   //---------------------------------CheckSizeFile-----------------------------------------//
+  //TODO CheckSizeFile
   checkSizeFile() {
     let dateSize = 0
     for (const item of this.tempUpload) {
@@ -464,12 +467,14 @@ export class OutsourceAnalysisComponent implements OnInit {
 
   async submit() {
     let resUpload = []
-    console.log(this.tempUpload.length);
+    // console.log(this.tempUpload.length);
 
     if (this.tempUpload.length > 0) {
       // console.log("asdasd");
 
       const formData = await this.addFormData(this.tempUpload, this.RegisNo)
+      // console.log(formData);
+
       let resUpload = await this.api.outsourceUpload(formData).toPromise()
       // console.log(resUpload);
 
@@ -505,10 +510,10 @@ export class OutsourceAnalysisComponent implements OnInit {
       this.runRegis()
       Swal.fire('Success', '', 'success')
       this.CkModel = "";
-      this.customYear = "",
-        this.datalist.size = "",
-        this.datalist.customer = "",
-        this.DefectiveName = "";
+      this.customYear = ""
+      this.datalist.size = ""
+      this.datalist.customer = ""
+      this.DefectiveName = ""
       this.ReferKTC = "";
       this.CauseOfDefective = "";
       this.MakerSup = "";
@@ -551,7 +556,7 @@ export class OutsourceAnalysisComponent implements OnInit {
       { width: 20, header: 'Customer', key: 'customer' },
       { width: 20, header: 'Defective Name', key: 'defectiveName' },
       { width: 27, header: 'Refer KTC Analysis Request No.', key: 'referKTC' },
-      { width: 20, header: 'Cause of Defective', key: 'causeOfDefective' },
+      { width: 20, header: 'Defective Part', key: 'causeOfDefective' },
       { width: 20, header: 'Maker/Supplier Name', key: 'makerSupplier' },
       { width: 20, header: 'Production Phase', key: 'productionPhase' },
       { width: 20, header: 'Defect Category', key: 'defectCategory' },

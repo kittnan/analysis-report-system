@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ElectricalInputComponent } from './input-database.component';
+import { ElectricalSearchComponent } from './electrical-search.component';
 
-describe('InputDatabaseComponent', () => {
-  let component: ElectricalInputComponent;
-  let fixture: ComponentFixture<ElectricalInputComponent>;
+describe('ElectricalSearchComponent', () => {
+  let component: ElectricalSearchComponent;
+  let fixture: ComponentFixture<ElectricalSearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ElectricalInputComponent ]
+      declarations: [ ElectricalSearchComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ElectricalInputComponent);
+    fixture = TestBed.createComponent(ElectricalSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

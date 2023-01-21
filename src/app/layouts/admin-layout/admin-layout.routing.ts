@@ -36,8 +36,11 @@ import { EditViewComponent } from 'app/pages/outsource-analysis/edit-view/edit-v
 import { MasterOutsourceComponent } from 'app/pages/outsource-analysis/master-outsource/master-outsource/master-outsource.component';
 import { OutsourceAnalysisComponent } from 'app/pages/outsource-analysis/outsource-analysis.component';
 import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-database/search-database.component';
-import { ElectricalInputComponent } from 'app/pages/electrical-database/input-database/input-database/input-database.component';
-import { ElectricalSearchComponent } from 'app/pages/electrical-database/search-database/search-database/search-database.component';
+import { ElectricalSearchComponent } from 'app/pages/electrical-database/electrical-search-database/electrical-search/electrical-search.component';
+import { ElectricalInputComponent } from 'app/pages/electrical-database/eletrical-input-database/electrical-input/electrical-input.component';
+import { ElectricalMasterComponent } from 'app/pages/electrical-database/electrical-master/electrical-master/electrical-master.component';
+// import { ElectricalInputComponent } from 'app/pages/electrical-database/input-database/input-database/input-database.component';
+// import { ElectricalSearchComponent } from 'app/pages/electrical-database/search-database/search-database/search-database.component';
 // import { LoginComponent } from 'app/pages/login/login.component';
 
 // const path = "http://10.200.90.152:4014/Analysis-Report";
@@ -88,7 +91,9 @@ export const AdminLayoutRoutes: Routes = [
   { path: "editView", component: EditViewComponent },
 
   //Electrical-database
-  { path: "electricalInput", component: ElectricalInputComponent },
   { path: "electricalSearch", component: ElectricalSearchComponent },
+  { path: "electricalInput", component: ElectricalInputComponent },
+  { path: "electricalMaster", component: ElectricalMasterComponent },
+
 
 ];
