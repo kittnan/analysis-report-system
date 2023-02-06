@@ -102,7 +102,7 @@ export class EditViewComponent implements OnInit {
   doo: any[] = []
   bug: any[] = []
   //TODO Path
-  Path: any = "http://127.0.0.1:80/Outsource/"
+  Path: any
 
   constructor(private api: HttpService,) { }
   //TODO init
@@ -335,7 +335,7 @@ export class EditViewComponent implements OnInit {
 
   }
 
-  CLS(){
+  CLS() {
     this.OccurBListCk = ""
   }
 
@@ -488,7 +488,7 @@ export class EditViewComponent implements OnInit {
     let resUpload = []
     this.pathUrl = []
     this.EmSize = 0
-    // this.Path = await this.api.getPath().toPromise()
+    this.Path = await this.api.getPath().toPromise()
     if (this.urlOld) {
       for (const item of this.urlOld) {
         this.pathUrl.push(this.Path + item.name)
@@ -536,14 +536,20 @@ export class EditViewComponent implements OnInit {
         data: sendData,
         deleted: this.listDelete
       }
-      const updateEdit = this.api.updateEditView(await this.getId(), data).toPromise()
+      const ids = await this.getId()
+      const updateEdit: any = await this.api.updateEditView(ids, data).toPromise()
       // console.log(sendData);
-      Swal.fire('Success', '', 'success')
-      this.CheckEmpty()
-      this.ChecksEmpty = false
-      this.tempUpload = []
-      this.urlOld = []
-      this.getAllData()
+
+      if (!!updateEdit) {
+
+        Swal.fire('Success', '', 'success')
+        this.CheckEmpty()
+        this.ChecksEmpty = false
+        this.tempUpload = []
+        this.urlOld = []
+        this.getAllData()
+      }
+
     } else {
       Swal.fire({
         title: 'Warning !',
@@ -573,7 +579,7 @@ export class EditViewComponent implements OnInit {
     // console.log(data);
 
     if (data) {
-      const item = data.find(e => (e.modelNumber == this.CkModel)&&(e.registerNo == this.RegisNo))
+      const item = data.find(e => (e.modelNumber == this.CkModel) && (e.registerNo == this.RegisNo))
       // console.log(item);
 
       for (const iterator of item?.urlFile) {
