@@ -46,7 +46,6 @@ export class ElectricalMasterComponent implements OnInit {
   }
 
 
-
   //-----------------------------------------------------------------------------------------------------//
   //TODO routes
   routes() {
@@ -220,11 +219,20 @@ export class ElectricalMasterComponent implements OnInit {
       data.push(...files)
       const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
       let resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+      // console.log(resUpload);
+
       let url = { urlMaster: resUpload }
       this.fullData.push(url)
+      // console.log(this.fullData);
+
       const deletes = await this.api.deleteMasterProductSpec().toPromise()
       const sandData = this.api.addMasterProductSpec(this.fullData).toPromise()
       Swal.fire('success', '', 'success')
+      let doo = document.getElementById("files") as HTMLInputElement
+      setTimeout(() => {
+        doo.value =''
+        this.fullData = []
+      }, 1000);
 
     } else {
       setTimeout(() => {

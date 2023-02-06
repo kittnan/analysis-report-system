@@ -30,6 +30,7 @@ import { environment } from '../environments/environment';
     AppComponent,
     AdminLayoutComponent,
     LoginComponent,
+
   ],
   imports: [
     BrowserAnimationsModule,

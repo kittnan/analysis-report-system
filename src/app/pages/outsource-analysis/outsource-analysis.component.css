@@ -1,39 +1,76 @@
 .head-label {
-    font-weight: 300;
+  font-weight: 300;
 }
 
-.label-color{
-    color: red;
+.label-color {
+  color: red;
 }
 
-.border{
-    border: 1px black solid;
+.border {
+  border: 1px black solid;
 }
 
+.error {
+  border: 1px rgb(255, 0, 0) solid;
+}
 
 a {
-    color: rgb(255, 255, 255);
-    background-color: #333;
-    padding: 5px;
-    transition: ease all 0.3s;
-    cursor: pointer;
+  color: rgb(255, 255, 255);
+  background-color: #333;
+  padding: 5px;
+  transition: ease all 0.3s;
+  cursor: pointer;
 }
 
 a:hover {
-    transform: translateY(-20%);
-    text-decoration: none;
-    transition: ease all 0.3s;
-    border-radius: 10px;
-    background-color: rgba(51, 51, 51, 0.719);
+  transform: translateY(-20%);
+  text-decoration: none;
+  transition: ease all 0.3s;
+  border-radius: 10px;
+  background-color: rgba(51, 51, 51, 0.719);
 }
 
 .text-active {
-    font-weight: 700;
-    background-color: rgba(51, 51, 51, 0.918);
-    color: rgb(221, 61, 3);
+  font-weight: 700;
+  background-color: rgba(51, 51, 51, 0.918);
+  color: rgb(221, 61, 3);
 }
 
-.text-active>i>.aaa {
-    animation: rotating 2s linear infinite;
-    color: green;
+.text-active > i > .aaa {
+  animation: rotating 2s linear infinite;
+  color: green;
+}
+
+/* input {
+    color: rgb(255, 1, 1);
+} */
+/* } */
+input, select, textarea{
+  color: rgb(0, 0, 255) !important
+}
+
+.not{
+  color: rgb(0, 0, 0) !important
+}
+
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+
+
+input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
+
+/* .head-label {
+  font-weight: 600;
+} */
+label{
+  font-weight: 600;
 }

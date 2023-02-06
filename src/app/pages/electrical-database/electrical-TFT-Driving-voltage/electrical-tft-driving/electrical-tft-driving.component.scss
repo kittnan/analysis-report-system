@@ -13,6 +13,10 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
+  width: 100%;
+  margin: 0 0 0;
+  height: 100%;
+  margin: 1px 1px;
 }
 
 
@@ -59,6 +63,8 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
+  width: 100%;
+  margin: 1px 1px;
 }
 .myInputGreen {
 	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
@@ -76,6 +82,8 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
+  width: 100%;
+  margin: 1px 1px;
 }
 
 
@@ -85,6 +93,84 @@
   background: #51cbce!important;
 }
 
-.center{
-  padding: 0px;
+.p0{
+  padding: 0 15px 0 0;
+}
+
+
+.myCss {
+	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	// background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	// background-color:#79bbff;
+	border-radius:6px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family:Arial;
+	font-size:15px;
+	// font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 0px 0px #ffffff;
+  margin: 1px 0px;
+  width: 100%;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.header {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.P{
+  padding: 5px 8px;
+}
+
+
+
+
+p {
+  font-family: Lato;
+}
+
+
+* {box-sizing: border-box;}
+
+.img-magnifier-container {
+  position:relative;
+}
+
+::ng-deep .img-magnifier-glass {
+  position: absolute;
+  border: 1px solid #000;
+  border-radius: 50%;
+  cursor: none;
+  /*Set the size of the magnifier glass:*/
+  width: 100px;
+  height: 100px;
+}
+
+
+.ttt{
+  opacity: 0%;
+}
+
+.label{
+  font-weight: 600;
+}
+
+.blue{
+  color: rgb(55, 55, 248)
 }

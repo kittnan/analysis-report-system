@@ -55,7 +55,7 @@
 	font-family:Arial;
 	font-size:15px;
 	// font-weight:bold;
-  background-color:#f46666;
+  background-color:#ee8d8dc9;
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
@@ -72,7 +72,7 @@
 	font-family:Arial;
 	font-size:15px;
 	// font-weight:bold;
-  background-color:#78fc71;
+  background-color:#71fc93b5;
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
@@ -83,4 +83,47 @@
 
 .abc{
   background: #51cbce!important;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+input, select, textarea{
+  color: rgb(0, 0, 255) !important
+}
+
+
+label{
+  font-weight: 600;
+}
+
+.B{
+  font-weight: 600;
+}
+
+input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
+.blue{
+  color: rgb(55, 55, 248)
+}
+
+.container {
+  overflow: auto;
+  white-space:nowrap;
+  width: 500px;
+}
+.item {
+  /* padding: 10px; */
+  /* border: 1px solid red; */
+  display: inline-block;
+  /* vertical-align:top; */
+  /* margin-right:20px; */
+  /* white-space:normal; */
 }

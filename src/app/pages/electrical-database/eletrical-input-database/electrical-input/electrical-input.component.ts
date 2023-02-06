@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import { Workbook } from 'exceljs'
 import * as fs from 'file-saver';
 import { environment } from 'environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { threadId } from 'worker_threads';
 import { replaceAll } from 'chartist';
 
@@ -29,6 +30,7 @@ export class ElectricalInputComponent implements OnInit {
   model: any
   Datalist: any
   MasterModel: any
+  MasterTFT: any
   dataOld: any
   dataTable: any
   nameTable: any
@@ -39,18 +41,19 @@ export class ElectricalInputComponent implements OnInit {
   // ? Fix ID
   IdModelNumber = environment.IdModelNumber
 
-  constructor(private api: HttpService) { }
+  constructor(private api: HttpService, private http: HttpClient) { }
   //TODO init
 
   async ngOnInit(): Promise<void> {
     this.routes()
     this.getMasterProductSpec()
+    this.getMasterTFT()
     this.getModel()
     this.data = []
     this.UserLevel = sessionStorage.getItem("UserLevel1")
   }
 
-  //TODO function All
+  //TODO Routes
   routes() {
 
     const access: any = sessionStorage.getItem('UserEmployeeCode')
@@ -74,13 +77,12 @@ export class ElectricalInputComponent implements OnInit {
       ]
     }
   }
-
+  //TODO ----------------Data----------------
   //TODO selectModel
   modelList() {
     this.getDataMain()
     if (this.model) {
       let data = this.MasterProductSpec.find(e => e.model == this.model)
-
       if (data) {
         this.Datalist = {
           model: data.model,
@@ -90,15 +92,55 @@ export class ElectricalInputComponent implements OnInit {
         this.data = this.Datalist.value
         this.data = this.replace(this.data, "-", "0");
         this.data = this.data.filter((d: any) => d.name)
+        this.data = this.data.map((d: any) => {
+          return {
+            ...d,
+            ng: [{ value: null, status: false }],
+            // status: [{ value: 0 }]
+          }
+        })
+        // console.log(this.data);
+
       } else {
         this.data = []
       }
     }
-    // let test
-
     this.dataTable = 0
     this.filterMaster()
-    // egisterNo: new RegExp(req.body.data, "i")
+  }
+  //TODO addInput
+  addInput(item: any) {
+    this.data = this.data.map((d: any) => {
+      // console.log(d);
+      d.ng.push({ value: null, status: false })
+      return {
+        ...d,
+      }
+    })
+    // console.log(this.data);
+  }
+  //TODO delInput
+  delInput(item: any) {
+    this.data = this.data.map((d: any) => {
+      // console.log(d);
+      d.ng.pop()
+      return {
+        ...d,
+      }
+    })
+    // console.log(this.data);
+  }
+
+  //TODO calculator
+  //TODO -------------------------------------
+  calculator(e: any, i: any) {
+    if (e.ng[i].value != null && e.min <= e.ng[i].value && e.ng[i].value <= e.max) {
+      e.ng[i].status = true
+    }
+    else {
+      e.ng[i].status = false
+    }
+
   }
 
   //TODO replace
@@ -109,7 +151,6 @@ export class ElectricalInputComponent implements OnInit {
   //TODO setSizeAndCustom
   getDataMain() {
     this.dataOld = this.MasterModel.find(e => e.name == this.model)
-
   }
 
 
@@ -124,53 +165,13 @@ export class ElectricalInputComponent implements OnInit {
     this.MasterProductSpec = await this.api.getMasterProductSpec().toPromise()
     this.MasterProductSpec.pop()
     // console.log();
-
   }
 
-
-  //TODO calculator
-  calculator() {
-    for (const item of this.data) {
-      if (item.min <= item.Ng && item.Ng <= item.max) {
-        item.status = true
-      } else {
-        item.status = false
-      }
-    }
-  }
-
-
-  //TODO ExportExcel
-  async ExportExcel() {
-    // console.log(this.data);
-
-    const workbook = new Workbook();
-    this.worksheet = workbook.addWorksheet('New Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
-
-    // this.readBorderEx('A1', 'P1')
-    this.worksheet.columns = [
-      { width: 12, header: 'Name (Unit)', key: 'name' },
-      { width: 8, header: 'Min.', key: 'min' },
-      { width: 8, header: 'Typ.', key: 'typ' },
-      { width: 8, header: 'Max', key: 'max' },
-      { width: 8, header: 'Good', key: 'good' },
-      { width: 8, header: 'NG', key: 'Ng' },
-      { header: `${this.nameTable}` },
-    ];
-
-
-
-    const row = this.worksheet.addRows(
-      this.data
-    );
-
-
-    workbook.xlsx.writeBuffer().then((data) => {
-      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
-      fs.saveAs(blob, 'Report.xlsx');
-    });
-
-
+  //TODO getMasterTFT
+  async getMasterTFT() {
+    this.MasterTFT = await this.api.getMasterTFT().toPromise()
+    // this.MasterProductSpec.pop()
+    // console.log(this.MasterTFT);
   }
 
 
@@ -182,7 +183,7 @@ export class ElectricalInputComponent implements OnInit {
       case "Product":
         this.dataTable = 1
         break;
-      case "test":
+      case "TFTDriving":
         this.dataTable = 2
         break;
       default:
@@ -197,11 +198,177 @@ export class ElectricalInputComponent implements OnInit {
   filterMaster() {
     this.onHide = []
     let ProductSpec = this.MasterProductSpec.find(e => e.model == this.model)
-    let Model = this.MasterModel.find(e => e.name == this.model)
+    let TFTDriving = this.MasterTFT.find(e => e.model == this.model)
     ProductSpec ? this.onHide[0] = 1 : this.onHide[0] = 0
-    Model ? this.onHide[1] = 1 : this.onHide[1] = 0
+    TFTDriving ? this.onHide[1] = 1 : this.onHide[1] = 0
     // console.log(this.onHide);
     // console.log("dataTable" , this.dataTable);
   }
 
+  generateToken(n: number) {
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var token = '';
+    for (var i = 0; i < n; i++) {
+      token += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return token;
+  }
+
+  //TODO -----------ExportExcel-------------
+  //TODO ExportExcel
+  //TODO -------------------------------------
+  ExportExcel() {
+    ///claimStock-project
+
+    // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
+    this.http.get('http://localhost:4200/assets/report product electrical space.xlsx', { responseType: "arraybuffer" })
+      // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
+      .subscribe(
+        data => {
+          // console.log(data);
+
+
+          const workbook = new Workbook();
+          const arryBuffer = new Response(data).arrayBuffer();
+          arryBuffer.then((data) => {
+            workbook.xlsx.load(data)
+              .then(() => {
+                const worksheet = workbook.getWorksheet(2);
+
+                worksheet.getCell('C3').value = `${this.model}`;
+                worksheet.getCell('C4').value = `${this.Datalist.pattern}`;
+
+                // border(worksheet, 'G7', '000000', 'medium', 1, 1, 1, 1)
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `B${index + 8}`
+                  worksheet.getCell(cell).value = { 'richText': [{ 'text': `${item.name || ""}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
+                  border(worksheet, cell, '000000', 'medium', 0, 1, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `C${index + 8}`
+                  worksheet.getCell(cell).value = Number(item.min || 0);
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `D${index + 8}`
+                  worksheet.getCell(cell).value = Number(item.typ || 0);
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `E${index + 8}`
+                  worksheet.getCell(cell).value = Number(item.max || 0);
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `F${index + 8}`
+                  worksheet.getCell(cell).value = Number(item.good || 0);
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (let i = 0; i < this.data[0].ng.length; i++) {
+                  let key = ["G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"]
+                  let label = `${key[i]}${6}`
+                  let label2 = `${key[i]}${7}`
+                  // console.log(i);
+                  worksheet.getCell(label).value = { 'richText': [{ 'text': 'NG/Test', 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
+                  worksheet.getCell(label2).value = { 'richText': [{ 'text': `sample ${i + 1}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
+                  alignment(worksheet, label, 'middle', 'center')
+                  alignment(worksheet, label2, 'middle', 'center')
+                  border(worksheet, label, '000000', 'medium', 1, 0, 0, 1)
+                  border(worksheet, label2, '000000', 'medium', 0, 0, 1, 1)
+                  fill(worksheet, label, 'DDEBF7') //blue
+                  fill(worksheet, label2, 'DDEBF7') //blue
+                  for (const [index, item] of this.data.entries()) {
+                    let cell = `${key[i]}${index + 8}`
+                    if (item.ng[i].status == 1) {
+                      if (item.ng[i].value == null) {
+                        worksheet.getCell(cell).value = "-"
+                        fill(worksheet, cell, 'FFFFFF') //while
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                      } else {
+                        worksheet.getCell(cell).value = Number(item.ng[i].value);
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                        fill(worksheet, cell, 'a7ffbb') //green
+                      }
+                    } else {
+                      if (item.ng[i].value == null) {
+                        worksheet.getCell(cell).value = "-"
+                        fill(worksheet, cell, 'FFFFFF') //while
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                      } else {
+                        worksheet.getCell(cell).value = Number(item.ng[i].value);
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                        fill(worksheet, cell, 'ffa8b0') //rad
+                      }
+                    }
+                  }
+                }
+
+
+
+                // fill(worksheet,'G7','F08080')
+                // fill(worksheet,'G10','F08080')
+                // set 1
+                workbook.xlsx.writeBuffer().then((data: any) => {
+                  // let date = formatDate(new Date(), 'YYYYMMdd_Hmmss', 'en-US')
+                  const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                  fs.saveAs(blob, `${this.model} Electrical Spec. and Value.xlsx`);
+                });
+              });
+          });
+        },
+        error => {
+          console.log(error);
+        }
+      );
+
+    function fill(worksheet: any, cell: string, color: string) {
+      worksheet.getCell(cell).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: color },
+      };
+    }
+    function border(ws: any, cells: string, colors: string, styles: string, tops: any, lefts: any, bottoms: any, rights: any) {
+      ws.getCell(cells).border = {
+        top: tops ? { style: styles, color: { argb: colors } } : null,
+        left: lefts ? { style: styles, color: { argb: colors } } : null,
+        bottom: bottoms ? { style: styles, color: { argb: colors } } : null,
+        right: rights ? { style: styles, color: { argb: colors } } : null
+      };
+    }
+    function alignment(ws: any, cells: string, verticals: string, horizontals: string) {
+      ws.getCell(cells).alignment = { vertical: verticals, horizontal: horizontals };
+    }
+
+  }
+
+
+
+  //TODO Tasting
+  testing() {
+    // console.log(this.data);
+    // console.log(this.data3);
+  }
+
+
+
+  // foo2(row,i){
+  // console.log(row,i);
+  // console.log(row.ng);
+  // for (const iterator of object) {
+
+  // }
+  // if(row.ng[1].value==0) return 'myInputGreen'
+  // return 'myInputRed'
+  // }
+
 }
+

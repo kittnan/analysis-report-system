@@ -252,4 +252,22 @@ ul.dropdown-menu.inner{
   /* color: red; */
 }
 
+.not{
+  color: rgb(0, 0, 0) !important
+}
 
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+label{
+  font-weight: 600;
+}
+
+
+input, select, textarea{
+  color: rgb(0, 0, 255) !important
+}

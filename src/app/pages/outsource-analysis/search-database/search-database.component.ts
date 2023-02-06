@@ -181,7 +181,6 @@ export class SearchDatabaseComponent implements OnInit {
   ngOnInit(): void {
     this.interval$ = interval(1000).subscribe(res => this.updateGrid())
 
-
     // const strCondition = sessionStorage.getItem('conditionOutsource')
     // const objCondition = JSON.parse(strCondition)
     // this.condition = {...objCondition}

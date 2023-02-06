@@ -4,7 +4,7 @@
   </div>
 </div>
 
-<div class="col-12"
+<div class="col-12" (change)="CheckEmpty()"
   style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
 
 
@@ -49,13 +49,13 @@
   <!-- ! ----------------------------------------ROW 2 -->
   <div class="row pt-3">
     <div class="col-lg-2">
-      <label for="">Model Number</label>
+      <label [ngClass]="{'text-danger': !CkModel}" for="">Model Number <i *ngIf="!CkModel" class="bi bi-x-square-fill"></i></label>
       <!-- <input [(ngModel)]="CkModel" list="listModelNum" id="" name="" class="form-control" (ngModelChange)="checkMs()" >
       <datalist id="listModelNum">
         <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
         </option>
       </datalist> -->
-      <select class="form-control" name="" id="" #test [(ngModel)]="CkModel" (ngModelChange)="checkMs()">
+      <select [ngClass]="{'error': !CkModel}" class="form-control" name="" id="" #test [(ngModel)]="CkModel" (ngModelChange)="checkMs()">
         <option value=""></option>
         <option *ngFor="let item of ModelNumberFilter" [value]="item.name">{{item.name}}
         </option>
@@ -70,8 +70,8 @@
       <input type="text" [(ngModel)]="Customer" class="form-control" [value]="datalist?.customer?datalist?.customer:''" readonly>
     </div>
     <div class="col-lg-2">
-      <label for="">Defective Part</label>
-      <input type="text" [(ngModel)]="DefectiveName" list="defectPart" class="form-control">
+      <label [ngClass]="{'text-danger': !DefectiveName}" for="">Defective Part <i *ngIf="!DefectiveName" class="bi bi-x-square-fill"></i></label>
+      <input [ngClass]="{'error': !DefectiveName}" type="text" [(ngModel)]="DefectiveName" list="defectPart" class="form-control">
       <datalist id="defectPart">
         <option *ngFor="let item of defectPart " [value]="item.defectName">{{item.defectName}}
         </option>
@@ -87,26 +87,26 @@
   <!-- ! ----------------------------------------ROW 3 -->
   <div class="row pt-3">
     <div class="col-lg-4">
-      <label for="">Cause of Defective</label>
+      <label [ngClass]="{'text-danger': !CauseOfDefective}" for="">Cause of Defective <i *ngIf="!CauseOfDefective" class="bi bi-x-square-fill"></i></label>
       <!-- <input type="text" [(ngModel)]="CauseOfDefective" list="listCauseO" class="form-control">
       <datalist id="listCauseO">
         <option *ngFor="let item of listCauseO" [value]="item">{{item}}
         </option>
       </datalist> -->
-      <select class="form-control" name="" [(ngModel)]="CauseOfDefective">
+      <select [ngClass]="{'error': !CauseOfDefective}" class="form-control" name="" [(ngModel)]="CauseOfDefective">
         <option value=""></option>
         <option *ngFor="let item of listCauseO" [value]="item">{{item}}
         </option>
       </select>
     </div>
     <div class="col-lg-4">
-      <label for="">Maker/Supplier Name</label>
+      <label [ngClass]="{'text-danger': !MakerSup}" for="">Maker/Supplier Name <i *ngIf="!MakerSup" class="bi bi-x-square-fill"></i></label>
       <!-- <input type="text" [(ngModel)]="MakerSup" list="listMaker" class="form-control">
       <datalist id="listMaker">
         <option *ngFor="let item of listMaker" [value]="item">{{item}}
         </option>
       </datalist> -->
-      <select class="form-control" name="" [(ngModel)]="MakerSup">
+      <select [ngClass]="{'error': !MakerSup}" class="form-control" name="" [(ngModel)]="MakerSup">
         <option value=""></option>
         <option *ngFor="let item of listMaker" [value]="item">{{item}}
         </option>
@@ -118,26 +118,26 @@
   <!-- ! ----------------------------------------ROW 4 -->
   <div class="row pt-3">
     <div class="col-lg-4">
-      <label for="">Production Phase</label>
+      <label [ngClass]="{'text-danger': !ProductionPh}" for="">Production Phase <i *ngIf="!ProductionPh" class="bi bi-x-square-fill"></i></label>
       <!-- <input list="listProduction" id="" name="" [(ngModel)]="ProductionPh" class="form-control">
       <datalist id="listProduction">
         <option *ngFor="let item of ProductPhaseList" [value]="item.name">{{item.name}}
         </option>
       </datalist> -->
-      <select class="form-control" name="" [(ngModel)]="ProductionPh">
+      <select [ngClass]="{'error': !ProductionPh}" class="form-control" name="" [(ngModel)]="ProductionPh">
         <option value=""></option>
         <option *ngFor="let item of ProductPhaseList" [value]="item.name">{{item.name}}
         </option>
       </select>
     </div>
     <div class="col-lg-4">
-      <label for="">Defect Category</label>
+      <label [ngClass]="{'text-danger': !DefectCategory}" for="">Defect Category <i *ngIf="!DefectCategory" class="bi bi-x-square-fill"></i></label>
       <!-- <input list="IdDefectCategory" id="" name="" [(ngModel)]="DefectCategory" class="form-control">
       <datalist id="IdDefectCategory">
         <option *ngFor="let item of IdDefectCategoryList" [value]="item.name">{{item.name}}
         </option>
       </datalist> -->
-      <select class="form-control" name="" [(ngModel)]="DefectCategory">
+      <select [ngClass]="{'error': !DefectCategory}" class="form-control" name="" [(ngModel)]="DefectCategory">
         <option value=""></option>
         <option *ngFor="let item of IdDefectCategoryList" [value]="item.name">{{item.name}}
         </option>
@@ -149,14 +149,14 @@
   <!-- * -------------------------------------------------Occur Place A -->
   <div class="row pt-3">
     <div class="col-lg-4">
-      <label for="">Occur Place A</label>
+      <label [ngClass]="{'text-danger': !DataOccurAList}" for="">Occur Place A <i *ngIf="!DataOccurAList" class="bi bi-x-square-fill"></i></label>
       <!-- <input #test [(ngModel)]="DataOccurAList" list="OccurALists" id="" name="" class="form-control"
         (input)="GetOccurBList()">
       <datalist id="OccurALists">
         <option *ngFor="let item of OccurAList" [value]="item.name">
         </option>
       </datalist> -->
-      <select class="form-control" name="" #test [(ngModel)]="DataOccurAList" (change)="GetOccurBList()">
+      <select [ngClass]="{'error': !DataOccurAList}" class="form-control" name="" #test [(ngModel)]="DataOccurAList" (change)="GetOccurBList();CLS()">
         <option value=""></option>
         <option *ngFor="let item of OccurAList" [value]="item.name">{{item.name}}
         </option>
@@ -166,13 +166,13 @@
 
     <!-- * -------------------------------------------------Occur Place B -->
     <div class="col-lg-4">
-      <label for="">Occur Place B</label>
-      <!-- <input [(ngModel)]="OccurBListCk" list="OccurBLists" name="" class="form-control" [disabled]="!DataOccurAList">
+      <label [ngClass]="{'text-danger': !OccurBListCk}" for="">Occur Place B <i *ngIf="!OccurBListCk" class="bi bi-x-square-fill"></i></label>
+      <!-- <input [(ngModel)]="OccurBListCk" list="OccurBLists" name="" class="form-control" [disabled]="!OccurBListCk">
       <datalist id="OccurBLists">
         <option *ngFor="let item1 of OccurBList" [value]="item1.name">
         </option>
       </datalist> -->
-      <select class="form-control" name="" [(ngModel)]="OccurBListCk" [disabled]="!DataOccurAList">
+      <select [ngClass]="{'error': !OccurBListCk}" class="form-control" name="" [(ngModel)]="OccurBListCk" [disabled]="!DataOccurAList">
         <option value=""></option>
         <option *ngFor="let item1 of OccurBList" [value]="item1.name">{{item1.name}}
         </option>
@@ -184,8 +184,8 @@
 
   <div class="row pt-3">
     <div class="col-lg-12">
-      <label for="">Analysis result</label>
-      <textarea [(ngModel)]="AnalysisResult" class="form-control"></textarea>
+      <label [ngClass]="{'text-danger': !AnalysisResult}" for="">Analysis result <i *ngIf="!AnalysisResult" class="bi bi-x-square-fill"></i></label>
+      <textarea [ngClass]="{'error': !AnalysisResult}" [(ngModel)]="AnalysisResult" class="form-control"></textarea>
     </div>
   </div>
 
@@ -206,26 +206,35 @@
     </div>
   </div> -->
 
-
+<!-- {{this.tempUpload|json}} -->
   <div class="row pt-3">
     <div class="col-lg-12">
-      <label for="">File</label>
-      <input class="ml-1" type="file" #fileUpload [multiple]="true" (change)="upload($event)">
-      <span>( Max upload file size 30 MB )</span>
+      <label [ngClass]="{'text-danger': (tempUpload.length == 0 && this.urlOld.length == 0 ) }" for="">File</label>
+      <input class="ml-1 not" type="file" #fileUpload [multiple]="true" (change)="upload($event)">
+      <span [ngClass]="{'text-danger': (tempUpload.length == 0 && this.urlOld.length == 0) }">( Max upload file size 30 MB )</span>
     </div>
     <div class="col-lg-12">
       <ul>
 
-        <li *ngFor="let file of listFile ;let i =index" class="d-flex align-items-center justify-content-between">
-          <!-- {{i+1}}. {{file.name}}  {{this.niceBytes(file.size)}} -->
+        <li *ngFor="let file of urlOld ;let i =index" class="d-flex align-items-center justify-content-between">
           <span>
             <span>{{i+1}}. </span>
             <span class="mr-3">{{file.name}} </span>
           </span>
-          <!-- <span class="btn btn-sm text-primary">{{file.size}}</span> -->
           <span>
             <span class="mr-3" *ngIf="file.size" >{{file.size|fileSize}}</span>
-            <button class="btn btn-sm text-primary" (click)="onClickDel(file)">Delete</button>
+            <button class="btn btn-sm text-primary" [disabled]="!ChecksEmpty && file.size" (click)="onClickDel(file)">Delete</button>
+          </span>
+        </li>
+        <li *ngFor="let file of tempUpload ;let i =index" class="d-flex align-items-center justify-content-between">
+          <span>
+            <span>{{urlOld.length+i+1}}. </span>
+            <!-- <span>{{1}}. </span> -->
+            <span class="mr-3">{{file.name}} </span>
+          </span>
+          <span>
+            <span class="mr-3" *ngIf="file.size" >{{file.size|fileSize}}</span>
+            <button class="btn btn-sm text-primary" [disabled]="!ChecksEmpty && file.size" (click)="onClickDel(file)">Delete</button>
           </span>
         </li>
       </ul>
@@ -239,9 +248,8 @@
   <!-- * -------------------------------------------------UploadFile 2------------------------------------------------->
   <div class="d-flex justify-content-center">
     <div>
-      <button class="btn btn-primary"  [disabled]="checkFile()" (click)="submit();updates();">Update Analysis Database</button>
-      <!-- <button class="btn btn-back" [routerLink]="RouterMenu[0].path">back</button> -->
-      <button class="btn btn-back" (click)="updates()" onclick="self.close()" >close</button>
+      <button class="btn btn-primary"  [disabled]="checkFile()" [disabled]="!ChecksEmpty && tempUpload"  (click)="submit();updates();CheckEmpty()">Update Analysis Database</button>
+      <button class="btn btn-back" (click)="updates()" [disabled]="urlOld.length == 0" onclick="self.close()" >close</button>
       <span class="ml-3" [hidden]="!EmSize">{{this.EmSize|fileSize}}</span>
     </div>
   </div>
@@ -260,5 +268,5 @@
     </select> -->
 
   <!-- <input type="text" class="form-control" (input)="onSearchChange($event.target.value)"> -->
-
+ <!-- <button (click)="test222()" >asdkaskekaweqwe</button> -->
 </div>

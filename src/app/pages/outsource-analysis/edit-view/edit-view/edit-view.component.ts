@@ -70,9 +70,11 @@ export class EditViewComponent implements OnInit {
   fileInput = new FormControl(null)
   gridApi: GridApi
   sizeFile: any[] = []
-  EmSize: number;
-
-
+  EmSize: number = 0;
+  ChecksEmpty: boolean = false;
+  fixBug: boolean = false
+  urlOld: any[] = []
+  urlFile: any
   // ? toggle filter model number
   ToggleFilterModelNumber() {
     this.ModelNumberToggle = !this.ModelNumberToggle;
@@ -97,8 +99,13 @@ export class EditViewComponent implements OnInit {
   listDelete: any[] = []
   defectPart: any
   checkDup: boolean
-  constructor(private api: HttpService,) { }
+  doo: any[] = []
+  bug: any[] = []
+  //TODO Path
+  Path: any = "http://127.0.0.1:80/Outsource/"
 
+  constructor(private api: HttpService,) { }
+  //TODO init
   ngOnInit(): void {
     this.GetModelNumber();
     this.GetProductPhaseList();
@@ -106,9 +113,7 @@ export class EditViewComponent implements OnInit {
     this.GetOccurAList()
     this.GetMasterOutsource()
     this.getGetDefect()
-
-
-
+    this.getAllData()
 
     const access: any = sessionStorage.getItem('UserEmployeeCode')
     if (access == 'admin') {
@@ -126,10 +131,15 @@ export class EditViewComponent implements OnInit {
     }
     this.nameSplitFile()
     this.editUpdate()
+
+    this.datalist.size = this.Size
+    this.datalist.customer = this.Customer
   }
 
   // ? Session\
   Data = JSON.parse(sessionStorage.getItem('dataAll'));
+
+
 
   editUpdate() {
     this.RegisNo = this.Data.registerNo
@@ -150,6 +160,54 @@ export class EditViewComponent implements OnInit {
     // console.log(this.listFile);
   }
 
+
+
+  CheckEmpty() {
+    let CheckEmpty = []
+    const sendData: any = {
+      registerNo: this.RegisNo,
+      modelNumber: this.CkModel,
+      size: this.datalist.size,
+      customer: this.datalist.customer,
+      defectiveName: this.DefectiveName,
+      referKTC: this.ReferKTC,
+      causeOfDefective: this.CauseOfDefective,
+      makerSupplier: this.MakerSup,
+      productionPhase: this.ProductionPh,
+      defectCategory: this.DefectCategory,
+      OccurA: this.DataOccurAList,
+      OccurB: this.OccurBListCk,
+      analysisResult: this.AnalysisResult,
+      urlFile: this.pathUrl,
+      year: this.RegisNo.split("-")[2],
+    }
+
+    // this.customYear ? CheckEmpty[0] = 1 : CheckEmpty[0] = 0
+    sendData.modelNumber ? CheckEmpty[1] = 1 : CheckEmpty[1] = 0
+    sendData.defectiveName ? CheckEmpty[2] = 1 : CheckEmpty[2] = 0
+    sendData.causeOfDefective ? CheckEmpty[3] = 1 : CheckEmpty[3] = 0
+    sendData.makerSupplier ? CheckEmpty[4] = 1 : CheckEmpty[4] = 0
+    sendData.productionPhase ? CheckEmpty[5] = 1 : CheckEmpty[5] = 0
+    sendData.defectCategory ? CheckEmpty[6] = 1 : CheckEmpty[6] = 0
+    sendData.OccurA ? CheckEmpty[7] = 1 : CheckEmpty[7] = 0
+    sendData.OccurB ? CheckEmpty[8] = 1 : CheckEmpty[8] = 0
+    sendData.analysisResult ? CheckEmpty[9] = 1 : CheckEmpty[9] = 0
+    this.tempUpload.length > 0 || this.listFile.length > 0 ? CheckEmpty[10] = 1 : CheckEmpty[10] = 0
+
+    let Empty = CheckEmpty.find(e => e == 0)
+    if (Empty == undefined) {
+      this.ChecksEmpty = true
+    } else {
+      this.ChecksEmpty = false
+    }
+
+    // console.log(JSON.stringify(sendData).length);
+    // console.log( sendData.JSON.stringify());
+
+    // console.log(this.ChecksEmpty);
+    // console.log(this.tempUpload.length );s
+
+  }
 
   // [{name :"sadasdsd"}]
   nameSplitFile() {
@@ -270,11 +328,15 @@ export class EditViewComponent implements OnInit {
       })
     } else {
       this.OccurBListCk = ""
-
     }
+    // this.OccurBListCk = ""
 
     //  console.log(OccurALists._id);
 
+  }
+
+  CLS(){
+    this.OccurBListCk = ""
   }
 
   //---------------------------------AllRow-----------------------------------------//
@@ -290,9 +352,9 @@ export class EditViewComponent implements OnInit {
   // this.runRegis()
 
   //---------------------------------ResetForm-----------------------------------------//
-
   temp: any[] = []
   duplicate(x: any) {
+
     for (const item of x) {
       const data = this.temp.find(e => e.name == item.name)
       if (!data) {
@@ -314,9 +376,14 @@ export class EditViewComponent implements OnInit {
     const files = e.target.files
     data.push(...files)
     this.fileUpload.nativeElement.value = ""
+    this.temp = [...this.tempUpload]
     this.tempUpload = this.duplicate(data)
-    this.listFile = this.nameFile.concat(this.tempUpload);
+    // console.log(this.tempUpload);
+    // this.listFile = this.nameFile.concat(this.tempUpload);
     this.checkSizeFile()
+    this.fixBug = true
+    // console.log(this.tempUpload);
+
   }
 
   onClickDel(file: File) {
@@ -327,6 +394,7 @@ export class EditViewComponent implements OnInit {
       showCancelButton: true
     }).then(ans => {
       if (ans.isConfirmed) {
+        this.urlOld = this.urlOld.filter((f: any) => f != file);
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
         this.nameFile = this.nameFile.filter((f: any) => f != file);
         this.temp = this.temp.filter((f: any) => f != file);
@@ -335,6 +403,8 @@ export class EditViewComponent implements OnInit {
         this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
+          this.CheckEmpty()
+          this.ChecksEmpty = true
         }, 200);
       }
     })
@@ -357,12 +427,18 @@ export class EditViewComponent implements OnInit {
   }
 
 
+
   checkFile() {
     // console.log(this.listFile.length);
-    if (this.EmSize / 1048576 > 30) {
+    if (this.EmSize == 0) {
       return true
     }
-    return false
+    if (this.EmSize / 1048576 > 30) {
+      return true
+    } else {
+      return false
+    }
+
   }
   //---------------------------------UploadFile-----------------------------------------//
 
@@ -404,19 +480,25 @@ export class EditViewComponent implements OnInit {
   //---------------------------------get_id_data-----------------------------------------//
 
 
-
-
-
   async submit() {
+
+
+    // console.log(Path);
 
     let resUpload = []
     this.pathUrl = []
-    if (this.nameFile.length > 0) {
-      for (const iterator of this.nameFile) {
-        this.pathUrl.push(this.Data.urlFile[0].split("KTC")[0] + iterator.name)
+    this.EmSize = 0
+    // this.Path = await this.api.getPath().toPromise()
+    if (this.urlOld) {
+      for (const item of this.urlOld) {
+        this.pathUrl.push(this.Path + item.name)
       }
     }
+    // console.log(this.listDelete);
 
+
+    // }http://127.0.0.1:80/Outsource/
+    // this.pathUrl.concat(this.urlOld)
     if (this.tempUpload.length > 0) {
       const formData = await this.addFormData(this.tempUpload, this.RegisNo)
       resUpload = await this.api.outsourceUpload(formData).toPromise()
@@ -424,12 +506,16 @@ export class EditViewComponent implements OnInit {
         this.pathUrl.push(iterator.split("?")[0])
       }
     }
+    // console.log(this.pathUrl);
+    // console.log(this.pathUrl);
 
     const sendData = {
       registerNo: this.RegisNo,
       modelNumber: this.CkModel,
       size: this.datalist.size,
       customer: this.datalist.customer,
+      // size: this.Size,
+      // customer: this.Customer,
       defectiveName: this.DefectiveName,
       referKTC: this.ReferKTC,
       causeOfDefective: this.CauseOfDefective,
@@ -443,7 +529,6 @@ export class EditViewComponent implements OnInit {
       year: this.RegisNo.split("-")[2],
     }
 
-    // console.log(JSON.stringify(sendData).length);
 
 
     if (this.CkModel) {
@@ -454,6 +539,11 @@ export class EditViewComponent implements OnInit {
       const updateEdit = this.api.updateEditView(await this.getId(), data).toPromise()
       // console.log(sendData);
       Swal.fire('Success', '', 'success')
+      this.CheckEmpty()
+      this.ChecksEmpty = false
+      this.tempUpload = []
+      this.urlOld = []
+      this.getAllData()
     } else {
       Swal.fire({
         title: 'Warning !',
@@ -462,10 +552,43 @@ export class EditViewComponent implements OnInit {
 
       })
     }
+
+
+    // this.getAllData()
+    // this.listFile = []
+
+
   }
   //---------------------------------Submit-----------------------------------------//
+
+
   updates() {
     let test = localStorage.setItem("update", "true");
+  }
+
+
+  //TODO
+  async getAllData() {
+    const data = await this.api.GetAll().toPromise()
+    // console.log(data);
+
+    if (data) {
+      const item = data.find(e => (e.modelNumber == this.CkModel)&&(e.registerNo == this.RegisNo))
+      // console.log(item);
+
+      for (const iterator of item?.urlFile) {
+        this.urlOld.push(`K${iterator.split("/K")[1]}`)
+      }
+      this.urlOld = this.urlOld.map((d: any) => {
+        return {
+          name: d
+        }
+      })
+    }
+
+
+
+
   }
 
 

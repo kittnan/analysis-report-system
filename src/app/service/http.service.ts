@@ -593,6 +593,14 @@ export class HttpService {
     return this.http.put(this.Url + "/outsourceForm/editView/" + id, data);
   }
 
+  getPath(): Observable<any> {
+    return this.http.get(this.Url + "/outsourceForm/path/");
+  }
+
+
+
+
+
   //-----Electrical
   addMasterProductSpec(data: any): Observable<any> {
     return this.http.post(this.Url + "/MasterProductSpec/", data)
@@ -606,5 +614,34 @@ export class HttpService {
   uploadMasterProductSpec(data: any): Observable<any> {
     return this.http.post(this.Url + "/MasterProductSpec/upload/", data)
   }
+
+
+
+
+  //------TFTDriving Voltage
+  uploadImage(data: any): Observable<any> {
+    return this.http.post(this.Url + "/TFTDrivingVoltage/upload/", data)
+  }
+  addMasterTFT(data: any): Observable<any> {
+    return this.http.post(this.Url + "/TFTDrivingVoltage/", data)
+  }
+  getMasterTFT(): Observable<any> {
+    return this.http.get(this.Url + "/TFTDrivingVoltage/")
+  }
+  getUrlTFT(): Observable<any> {
+    return this.http.get(this.Url + "/ImageUrlTFT/")
+  }
+
+  putUrlTFT(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/ImageUrlTFT/" + id, data)
+  }
+
+  addUrlTFT(data: any): Observable<any> {
+    return this.http.post(this.Url + "/ImageUrlTFT/", data)
+  }
+  deleteTFT(id: any): Observable<any> {
+    return this.http.delete(this.Url + "/ImageUrlTFT/" + id);
+  }
+
 }
 // getDataView

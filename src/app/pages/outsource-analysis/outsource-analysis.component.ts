@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, TestabilityRegistry, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFrameworkComponentWrapper } from 'ag-grid-angular';
 import { GridApi, GridReadyEvent, LoggerFactory, RowNode } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
@@ -10,6 +10,8 @@ import Swal from 'sweetalert2';
 // import { saveAs } from 'file-saver';
 import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'
+import { interval, Subscription } from 'rxjs';
+
 
 
 @Component({
@@ -70,7 +72,8 @@ export class OutsourceAnalysisComponent implements OnInit {
   gridApi: GridApi
   dateSize: any;
   file: any;
-
+  ChecksEmpty: boolean
+  interval$!: Subscription;
 
   // ? toggle filter model number
   ToggleFilterModelNumber() {
@@ -97,9 +100,17 @@ export class OutsourceAnalysisComponent implements OnInit {
   sizeFile: any[] = []
   EmSize: any
   checkDup: boolean
+  temp: any[] = []
+
+  // RequestForm = new FormGroup({
+  //   CkModel : new FormControl(null, Validators.required),
+  // })
 
 
   ngOnInit(): void {
+    // this.interval$ = interval(1000).subscribe(res => this.CheckEmpty())
+    // console.log(this.RequestForm.value);
+
     this.reList()
     this.GetModelNumber();
     this.GetProductPhaseList();
@@ -147,6 +158,10 @@ export class OutsourceAnalysisComponent implements OnInit {
       ]
     }
   }
+
+
+
+
 
   async getGetDefect() {
     this.defectPart = await this.api.GetDefectAll().toPromise()
@@ -290,7 +305,7 @@ export class OutsourceAnalysisComponent implements OnInit {
         this.AnalysisResult = "";
         this.tempUpload = [];
         this.temp = [];
-        this.EmSize = "";
+        this.EmSize = 0;
         //console.log(this.tempUpload);
         this.reList()
         // this.gridApi.setFilterModel(null);
@@ -300,10 +315,14 @@ export class OutsourceAnalysisComponent implements OnInit {
   }
   //---------------------------------ResetForm-----------------------------------------//
 
+  // test333() {
+  //   console.log(this.temp);
+  //   console.log(this.tempUpload);
 
+  // }
 
   //---------------------------------Duplicate-----------------------------------------//
-  temp: any[] = []
+
   duplicate(x: any) {
     for (const item of x) {
       const data = this.temp.find(e => e.name == item.name)
@@ -327,7 +346,6 @@ export class OutsourceAnalysisComponent implements OnInit {
     const files = e.target.files
     data.push(...files)
     // console.log(data);
-
     this.fileUpload.nativeElement.value = ""
     this.tempUpload = this.duplicate(data)
     // console.log(this.tempUpload);
@@ -347,6 +365,7 @@ export class OutsourceAnalysisComponent implements OnInit {
         this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
+          this.CheckEmpty()
         }, 200);
       }
     })
@@ -463,29 +482,9 @@ export class OutsourceAnalysisComponent implements OnInit {
 
   }
 
-
-
-  async submit() {
-    let resUpload = []
-    // console.log(this.tempUpload.length);
-
-    if (this.tempUpload.length > 0) {
-      // console.log("asdasd");
-
-      const formData = await this.addFormData(this.tempUpload, this.RegisNo)
-      // console.log(formData);
-
-      let resUpload = await this.api.outsourceUpload(formData).toPromise()
-      // console.log(resUpload);
-
-      for (const iterator of resUpload) {
-        this.pathUrl.push(iterator.split("?")[0])
-      }
-      // console.log(this.pathUrl);
-
-    }
-
-    const sendData = {
+  CheckEmpty() {
+    let CheckEmpty = []
+    const sendData: any = {
       registerNo: this.RegisNo,
       modelNumber: this.CkModel,
       size: this.datalist.size,
@@ -502,9 +501,73 @@ export class OutsourceAnalysisComponent implements OnInit {
       urlFile: this.pathUrl,
       year: this.RegisNo.split("-")[2],
     }
-    // console.log(sendData);
 
+    this.customYear ? CheckEmpty[0] = 1 : CheckEmpty[0] = 0
+    sendData.modelNumber ? CheckEmpty[1] = 1 : CheckEmpty[1] = 0
+    sendData.defectiveName ? CheckEmpty[2] = 1 : CheckEmpty[2] = 0
+    sendData.causeOfDefective ? CheckEmpty[3] = 1 : CheckEmpty[3] = 0
+    sendData.makerSupplier ? CheckEmpty[4] = 1 : CheckEmpty[4] = 0
+    sendData.productionPhase ? CheckEmpty[5] = 1 : CheckEmpty[5] = 0
+    sendData.defectCategory ? CheckEmpty[6] = 1 : CheckEmpty[6] = 0
+    sendData.OccurA ? CheckEmpty[7] = 1 : CheckEmpty[7] = 0
+    sendData.OccurB ? CheckEmpty[8] = 1 : CheckEmpty[8] = 0
+    sendData.analysisResult ? CheckEmpty[9] = 1 : CheckEmpty[9] = 0
+    this.tempUpload.length > 0 ? CheckEmpty[10] = 1 : CheckEmpty[10] = 0
+
+    let Empty = CheckEmpty.find(e => e == 0)
+    if (Empty == undefined) {
+      this.ChecksEmpty = true
+    } else {
+      this.ChecksEmpty = false
+    }
+
+
+  }
+
+  CLS(){
+    this.OccurBListCk = ""
+  }
+
+  async submit() {
+    let resUpload = []
+    // console.log(this.tempUpload.length);
     if (this.CkModel) {
+      if (this.tempUpload.length > 0) {
+        // console.log("asdasd");
+
+        const formData = await this.addFormData(this.tempUpload, this.RegisNo)
+        // console.log(formData);
+
+        let resUpload = await this.api.outsourceUpload(formData).toPromise()
+        // console.log(resUpload);
+
+        for (const iterator of resUpload) {
+          this.pathUrl.push(iterator.split("?")[0])
+        }
+        // console.log(this.pathUrl);
+
+      }
+
+      const sendData = {
+        registerNo: this.RegisNo,
+        modelNumber: this.CkModel,
+        size: this.datalist.size,
+        customer: this.datalist.customer,
+        defectiveName: this.DefectiveName,
+        referKTC: this.ReferKTC,
+        causeOfDefective: this.CauseOfDefective,
+        makerSupplier: this.MakerSup,
+        productionPhase: this.ProductionPh,
+        defectCategory: this.DefectCategory,
+        OccurA: this.DataOccurAList,
+        OccurB: this.OccurBListCk,
+        analysisResult: this.AnalysisResult,
+        urlFile: this.pathUrl,
+        year: this.RegisNo.split("-")[2],
+      }
+      // console.log(sendData);
+
+
       //console.log(this.datalist.size);
       const sandDataForm = await this.api.outsourceForm(sendData).toPromise()
       this.runRegis()
@@ -523,6 +586,11 @@ export class OutsourceAnalysisComponent implements OnInit {
       this.OccurBListCk = "";
       this.AnalysisResult = "";
       this.tempUpload = [];
+      this.temp = [];
+      this.EmSize = "";
+      console.log(this.tempUpload);
+      this.CheckEmpty()
+
     } else {
       Swal.fire({
         title: 'Warning !',
@@ -535,120 +603,6 @@ export class OutsourceAnalysisComponent implements OnInit {
   }
   //---------------------------------Submit-----------------------------------------//
 
-  //---------------------------------ExportExcel-----------------------------------------//
-  async ExportExcel() {
-
-    let DataOutSourceAll = await this.api.GetAll().toPromise()
-    DataOutSourceAll = DataOutSourceAll.map((element: any) => {
-      delete element._id
-      element.urlFile = element.urlFile.toString().replaceAll(",", " ,")
-      return element
-    });
-
-    const workbook = new Workbook();
-    this.worksheet = workbook.addWorksheet('New Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
-
-    this.readBorderEx('A1', 'P1')
-    this.worksheet.columns = [
-      { width: 25, header: 'Register No.', key: 'registerNo' },
-      { width: 20, header: 'Model No.', key: 'modelNumber' },
-      { width: 20, header: 'Size (inch)', key: 'size' },
-      { width: 20, header: 'Customer', key: 'customer' },
-      { width: 20, header: 'Defective Name', key: 'defectiveName' },
-      { width: 27, header: 'Refer KTC Analysis Request No.', key: 'referKTC' },
-      { width: 20, header: 'Defective Part', key: 'causeOfDefective' },
-      { width: 20, header: 'Maker/Supplier Name', key: 'makerSupplier' },
-      { width: 20, header: 'Production Phase', key: 'productionPhase' },
-      { width: 20, header: 'Defect Category', key: 'defectCategory' },
-      { width: 20, header: 'Occur Place A', key: 'OccurA' },
-      { width: 35, header: 'Occur Place B', key: 'OccurB' },
-      { width: 30, header: 'Analysis result', key: 'analysisResult' },
-      { width: 30, header: 'Url File', key: 'urlFile' },
-      { width: 30, header: 'createdAt', key: 'createdAt' },
-      { width: 30, header: 'updatedAt', key: 'updatedAt' },
-    ];
-
-
-
-    const row = this.worksheet.addRows(
-      DataOutSourceAll
-    );
-
-
-    workbook.xlsx.writeBuffer().then((data) => {
-      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
-      fs.saveAs(blob, 'Report Outsource Database.xlsx');
-    });
-
-
-  }
-
-
-
-  readBorderEx(x: any, y: any) {
-    let ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    let x1 = x.split("")[0]
-    let x2 = Number(x.split("")[1])
-    let y1 = y.split("")[0]
-    let y2 = Number(y.split("")[1])
-    x.split("")[2] ? x2 = Number(x.split("")[1] + x.split("")[2]) : x2 = Number(x.split("")[1])
-    y.split("")[2] ? y2 = Number(y.split("")[1] + y.split("")[2]) : y2 = Number(y.split("")[1])
-
-
-    if (x1 == y1) {
-      for (let i = x2; i <= y2; i++) {
-        this.worksheet.getCell(x1 + i).border = { left: { style: 'double', color: { argb: '0000' } }, right: { style: 'double', color: { argb: '0000' } } }
-      }
-      let leftRightTop = this.worksheet.getCell(x1 + x2).border = { top: { style: 'double', color: { argb: '0000' } }, left: { style: 'double', color: { argb: '0000' } }, right: { style: 'double', color: { argb: '0000' } } }
-      let leftRightDown = this.worksheet.getCell(y1 + y2).border = { bottom: { style: 'double', color: { argb: '0000' } }, left: { style: 'double', color: { argb: '0000' } }, right: { style: 'double', color: { argb: '0000' } } }
-    } else {
-      for (let i = x2; i <= y2; i++) {
-        this.worksheet.getCell(x1 + i).border = { left: { style: 'double', color: { argb: '0000' } } }
-        this.worksheet.getCell(y1 + i).border = { right: { style: 'double', color: { argb: '0000' } } }
-      }
-    }
-
-    ABC.split("")
-    let startAZ = 0
-    let endAZ = 25
-    // 'A1','E3'
-    for (let i = startAZ; i <= endAZ; i++) {
-      if (x1 == ABC[i]) {
-        this.countX = i + 1
-        continue
-      }
-      if (y1 == ABC[i]) {
-        this.countY = i + 1
-        for (let i = this.countX; i < this.countY; i++) {
-          if (x2 == y2) {
-            let topDown = this.worksheet.getCell(ABC[i] + x2).border = { top: { style: 'double', color: { argb: '0000' } }, bottom: { style: 'double', color: { argb: '0000' } } }
-            let leftTopDown = this.worksheet.getCell(x1 + x2).border = { top: { style: 'double', color: { argb: '0000' } }, left: { style: 'double', color: { argb: '0000' } }, bottom: { style: 'double', color: { argb: '0000' } } }
-            let rightTopDown = this.worksheet.getCell(y1 + x2).border = { top: { style: 'double', color: { argb: '0000' } }, bottom: { style: 'double', color: { argb: '0000' } }, right: { style: 'double', color: { argb: '0000' } } }
-          } else {
-            let top = this.worksheet.getCell(ABC[i] + x2).border = { top: { style: 'double', color: { argb: '0000' } } }
-            let bottom = this.worksheet.getCell(ABC[i] + y2).border = { bottom: { style: 'double', color: { argb: '0000' } } }
-            let leftTop = this.worksheet.getCell(x1 + x2).border = { left: { style: 'double', color: { argb: '0000' } }, top: { style: 'double', color: { argb: '0000' } } }
-            let leftDown = this.worksheet.getCell(x1 + y2).border = { left: { style: 'double', color: { argb: '0000' } }, bottom: { style: 'double', color: { argb: '0000' } } }
-            let rightTop = this.worksheet.getCell(y1 + x2).border = { right: { style: 'double', color: { argb: '0000' } }, top: { style: 'double', color: { argb: '0000' } } }
-            let rightDown = this.worksheet.getCell(y1 + y2).border = { right: { style: 'double', color: { argb: '0000' } }, bottom: { style: 'double', color: { argb: '0000' } } }
-
-          }
-        }
-        break
-      }
-    }
-    if (x1 == y1 && x2 == y2) {
-      this.worksheet.getCell(x1 + x2).border = {
-        top: { style: 'double', color: { argb: '0000' } },
-        left: { style: 'double', color: { argb: '0000' } },
-        bottom: { style: 'double', color: { argb: '0000' } },
-        right: { style: 'double', color: { argb: '0000' } }
-      };
-    }
-  }
-
-
-  //---------------------------------ExportExcel-----------------------------------------//
 
 }
 

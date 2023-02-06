@@ -39,8 +39,7 @@ import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-dat
 import { ElectricalSearchComponent } from 'app/pages/electrical-database/electrical-search-database/electrical-search/electrical-search.component';
 import { ElectricalInputComponent } from 'app/pages/electrical-database/eletrical-input-database/electrical-input/electrical-input.component';
 import { ElectricalMasterComponent } from 'app/pages/electrical-database/electrical-master/electrical-master/electrical-master.component';
-// import { ElectricalInputComponent } from 'app/pages/electrical-database/input-database/input-database/input-database.component';
-// import { ElectricalSearchComponent } from 'app/pages/electrical-database/search-database/search-database/search-database.component';
+import { ElectricalTftDrivingComponent } from 'app/pages/electrical-database/electrical-TFT-Driving-voltage/electrical-tft-driving/electrical-tft-driving.component';
 // import { LoginComponent } from 'app/pages/login/login.component';
 
 // const path = "http://10.200.90.152:4014/Analysis-Report";
@@ -94,6 +93,5 @@ export const AdminLayoutRoutes: Routes = [
   { path: "electricalSearch", component: ElectricalSearchComponent },
   { path: "electricalInput", component: ElectricalInputComponent },
   { path: "electricalMaster", component: ElectricalMasterComponent },
-
-
+  { path: "electricalTFT", component: ElectricalTftDrivingComponent },
 ];

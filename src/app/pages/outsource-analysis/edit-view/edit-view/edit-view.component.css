@@ -1,0 +1,27 @@
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+input, select, textarea{
+  color: rgb(0, 0, 255) !important
+}
+
+.not{
+  color: rgb(0, 0, 0) !important
+}
+
+
+input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
+.error {
+  border: 1px rgb(255, 0, 0) solid;
+}
+
+label{
+  font-weight: 600;
+}

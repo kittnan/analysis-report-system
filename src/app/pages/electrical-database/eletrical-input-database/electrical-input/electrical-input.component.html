@@ -10,7 +10,8 @@
       Database<i class="bi bi-file-earmark-plus" style="font-size: 1.5em ml-2"></i></button>
   </div>
   <div class="w-30 mr-3">
-    <button *ngIf="UserLevel != 1 && UserLevel != 2" routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[1].path" class="btn btn-block">Master
+    <button *ngIf="UserLevel != 1 && UserLevel != 2" routerLinkActive="btn btn-primary"
+      [routerLink]="RouterMenu[1].path" class="btn btn-block">Master
       Electrical<i class="bi bi-list-ul" style="font-size: 1.5em ml-2"></i></button>
   </div>
 </div>
@@ -19,14 +20,15 @@
 <div class="col-12"
   style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
 
-  <!-- <div class="row">
+
+  <div class="row">
     <div class="col-lg-6">
       <h3>INPUT DATABASE</h3>
     </div>
-  </div> -->
+  </div>
 
 
-  <div class="row mt-5">
+  <div class="row mt-1">
     <div class="col-lg-2">
       <label for="">Model</label>
       <input class="form-control" list="listModel" (keyup)="modelList()" type="text" [(ngModel)]="model">
@@ -57,70 +59,128 @@
   <div class="row mt-3">
     <div *ngIf="onHide[0] == 1" class="col-lg-4">
       <button [ngClass]="{'abc': dataTable == 1}" class="btn btn-block" id="Product"
-        (click)="clickSelect($event)">Product Electrical Space./Value</button>
+        (click)="clickSelect($event)">Product Electrical Spec./Value</button>
     </div>
-    <!-- <div *ngIf="onHide[1] == 1" class="col-lg-4">
-      <button [ngClass]="{'abc': dataTable == 2}" class="btn btn-block abc" id="test"
-        (click)="clickSelect($event)">test</button>
-    </div> -->
+    <div *ngIf="onHide[1] == 1" class="col-lg-4">
+      <button [ngClass]="{'abc': dataTable == 2}" class="btn btn-block abc" id="TFTDriving"
+        (click)="clickSelect($event)">TFT Driving voltage</button>
+    </div>
   </div>
 
 
 
-  <div *ngIf="dataTable == 1" class="myInput mt-3 " style="width: 47em">
+  <div *ngIf="dataTable == 1" class="myInput mt-3 " style="width: 100%">
     <div class="row mt-3">
       <div class="col-lg-12">
-        <h5>Product Electrical Space./Value</h5>
+        <h5>Product Electrical Spec.</h5>
       </div>
       <div class="col-lg-12 align-self-center ">
-
-        <span for=""><b>Pattern : </b>{{Datalist.pattern}}</span>
+        <div class="row">
+          <div class="col-lg-6">
+            <label for="" style="font-size: 19px; font-weight: 100;">Measurement Pattern :</label>
+            <span style="color: blue; font-size: 19px"> {{Datalist.pattern}}</span>
+          </div>
+          <div class="col-lg-6">
+            <!-- <button class="" (click)="addInput(item)"><i class="bi bi-plus-square"></i></button> -->
+            <button class="btn" style="padding: 0 0 0 0;margin: 0;color: black;background-color: white;"
+              (click)="addInput(item)">
+              <i class="bi bi-file-earmark-plus" style="font-size: 27px"></i></button>
+            <button *ngIf="data[0].ng.length > 1" class="btn"
+              style="padding: 0 0 0 0;margin: 0;color: black;background-color: white;" (click)="delInput(item)">
+              <i class="bi bi-file-earmark-minus" style="font-size: 27px"></i></button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div *ngIf="model" class="row mt-3 col-lg-12">
-      <div class="mr-1">
-        <label for=""><b>Name (Unit)</b></label>
-        <div class="mt-1" *ngFor="let item of data">
-          <button class="myInput" style="width: 12em">{{item.name || "-" }}</button>
-          <!-- <input class="form-control" [(ngModel)]="item.min" type="text"> -->
+    <div *ngIf="model" class="row mt-2 col-lg-12" style="margin-right: 0%;">
+      <div class="col-12">
+        <div class="row">
+          <div class="" style="width: 33em">
+          </div>
+          <div class="">
+
+          </div>
+
         </div>
       </div>
-      <div class="mr-1">
-        <label for=""><b>Min.</b></label>
-        <div class="mt-1" *ngFor="let item of data">
-          <button class="myInput" style="width: 5em">{{item.min||0}}</button>
-          <!-- <input class="form-control" [(ngModel)]="item.min" type="text"> -->
+      <div class="col-12">
+        <div class="row">
+          <div class="" style="width: 10em">
+            <!-- <label for="">Name (Unit)</label> -->
+            <button class="myInput text-center B" style="width: 10em ; height:100%;">Name (Unit)</button>
+          </div>
+          <div class="" style="width: 5em">
+            <!-- <label for="">Min.</label> -->
+            <button class="myInput text-center B" style="width: 5em ; height:100%;">Min.</button>
+          </div>
+          <div class="" style="width: 6em">
+            <!-- <label for="">Typ.</label> -->
+            <button class="myInput text-center B" style="width: 6em ; height:100%;">Typ.</button>
+          </div>
+          <div class="" style="width: 6em">
+            <!-- <label for="">Max.</label> -->
+            <button class="myInput text-center B" style="width: 6em ; height:100%;">Max.</button>
+          </div>
+          <div class="" style="width: 6em">
+            <!-- <label for="">Good sample</label> -->
+            <button class="d-flex myInput text-center B align-items-center justify-content-center"
+              style="width: 6em ; height:100%;">Good sample</button>
+          </div>
+          <div *ngFor="let item of data[0].ng ; let i = index">
+            <div class="" style="width: 6em">
+              <!-- <label for="">NG/Test sample</label> -->
+              <button class="d-flex myInput text-center B align-items-center justify-content-center"
+                style="width: 6em ; height:100%;">NG/Test samp {{i+1}}</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row" *ngFor="let row of data; let i=index">
+          <div class="col-12">
+            <div class="row">
+              <div class="">
+                <button class="myInput text-center B item" style="width: 10em">{{row.name || "-" }}</button>
+              </div>
+              <div class="">
+                <button class="myInput text-center" style="width: 5em">{{row.min||0}}</button>
+              </div>
+              <div class="">
+                <button class="myInput text-center" style="width: 6em">{{row.typ||0}}</button>
+              </div>
+              <div class="">
+                <button class="myInput text-center" style="width: 6em ;">{{row.max||0}}</button>
+              </div>
+              <div class="">
+                <button class="myInput text-center" style="width: 6em ;">{{row.good||0}}</button>
+              </div>
+              <div class="" *ngFor="let ng of row.ng; let i_ng=index">
+                <!-- <input [ngClass]="{'myInput' : ng.status == true}"[ngClass]="ng.status == true? 'myInputGreen text-center' : 'myInputRed text-center'"
+                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"> -->
+                <input class="myInput text-center"
+                  [ngClass]="{'myInputGreen': (ng.status == true && ng.value != null),'myInputRed': (ng.status == false && ng.value != null)}"
+                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"
+                  data-bs-toggle="tooltip" data-bs-html="true" [title]="row.name">
+
+
+                <!-- <input class="myInput text-center" [ngClass]="{'myInputGreen text-center' : ng.status == true}" [ngClass]="{'myInputRed text-center' : ng.status == false && ng.value != null}"
+                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"> -->
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="mr-1">
-        <label for=""><b>Typ.</b></label>
+
+      <!-- <div class="">
+        <label for="">NG/Test sample</label>
         <div class="mt-1" *ngFor="let item of data">
-          <button class="myInput" style="width: 5em">{{item.typ||0}}</button>
-          <!-- <input class="form-control" [(ngModel)]="item.typ" type="text"> -->
+          <input [ngClass]="item.statuss == true ? 'myInputGreen text-center' : 'myInputRed text-center'"
+            [(ngModel)]="item.Ngs" type="number" style="width: 7em" (keyup)="calculator()" (change)="calculator()">
         </div>
-      </div>
-      <div class="mr-1">
-        <label for=""><b>Max</b></label>
-        <div class="mt-1" *ngFor="let item of data">
-          <button class="myInput" style="width: 5em">{{item.max||0}}</button>
-          <!-- <input class="form-control" [(ngModel)]="item.max" type="text"> -->
-        </div>
-      </div>
-      <div class="mr-1">
-        <label for=""><b>Good</b></label>
-        <div class="mt-1" *ngFor="let item of data">
-          <button class="myInput" style="width: 6em">{{item.good||0}}</button>
-          <!-- <input class="form-control" [(ngModel)]="item.good" type="text"> -->
-        </div>
-      </div>
-      <div class="">
-        <label for=""><b>NG</b></label>
-        <div class="mt-1" *ngFor="let item of data">
-          <input [ngClass]="item.status == true ? 'myInputGreen' : 'myInputRed'" [(ngModel)]="item.Ng" type="number"
-            style="width: 7em" (keyup)="calculator()" (change)="calculator()">
-        </div>
-      </div>
+      </div> -->
+
+
     </div>
 
     <div class="mt-4"></div>
@@ -133,5 +193,14 @@
   </div>
 
 
-  <app-electrical-search *ngIf="dataTable == 2" [model]="'3000'"></app-electrical-search>
+  <!-- <app-electrical-search *ngIf="dataTable == 2" [model]="model"></app-electrical-search> -->
+  <app-electrical-tft-driving *ngIf="dataTable == 2" [model]="model"></app-electrical-tft-driving>
+
+  <!-- <button (click)="testing()">aksdkaskdkase</button> -->
+
 </div>
+
+
+<!--
+<button (click)="ExportExcel2()" > slkdkljalskdf</button>
+<app-electrical-search></app-electrical-search> -->

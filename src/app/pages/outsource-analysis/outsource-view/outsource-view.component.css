@@ -69,3 +69,7 @@
     /* visibility:visible; */
     /* color: red; */
 }
+
+label{
+  font-weight: 600;
+}

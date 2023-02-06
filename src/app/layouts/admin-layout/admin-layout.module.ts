@@ -58,6 +58,7 @@ import { SearchDatabaseComponent } from 'app/pages/outsource-analysis/search-dat
 import { ElectricalSearchComponent } from 'app/pages/electrical-database/electrical-search-database/electrical-search/electrical-search.component';
 import { ElectricalInputComponent } from 'app/pages/electrical-database/eletrical-input-database/electrical-input/electrical-input.component';
 import { ElectricalMasterComponent } from 'app/pages/electrical-database/electrical-master/electrical-master/electrical-master.component';
+import { ElectricalTftDrivingComponent } from 'app/pages/electrical-database/electrical-TFT-Driving-voltage/electrical-tft-driving/electrical-tft-driving.component';
 
 @NgModule({
   imports: [
@@ -119,7 +120,7 @@ import { ElectricalMasterComponent } from 'app/pages/electrical-database/electri
     ElectricalSearchComponent,
     ElectricalInputComponent,
     ElectricalMasterComponent,
-
+    ElectricalTftDrivingComponent,
   ]
 })
 
