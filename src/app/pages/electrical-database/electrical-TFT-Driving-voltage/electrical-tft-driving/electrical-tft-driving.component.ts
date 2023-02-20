@@ -4,6 +4,10 @@ import Swal from 'sweetalert2';
 import { match } from 'assert';
 import { element } from 'protractor';
 import { Timeouts } from 'selenium-webdriver';
+import { Workbook } from 'exceljs'
+import * as fs from 'file-saver';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+var FileSaver = require('file-saver');
 
 @Component({
   selector: 'app-electrical-tft-driving',
@@ -18,8 +22,6 @@ export class ElectricalTftDrivingComponent implements OnInit {
   @ViewChild('fileUpload') fileUpload!: ElementRef
 
   tempUpload: any[] = []
-  urlImagePart: any
-  urlImageCircuit: any
   getDataM: any
   errorValue: any
   onZoom: boolean
@@ -31,70 +33,120 @@ export class ElectricalTftDrivingComponent implements OnInit {
   listFile: any[] = []
   nameFile: any[] = []
   listDelete: any[] = []
-  urlOld: any[] = []
-  urlOldShow : any[] = []
+  urlOld: any
+  urlOldShow: any[] = []
   listFileName: any[] = []
-  // test : any = "col-lg-6"
-  // master:any
-  constructor(private api: HttpService) { }
+  widthTable: any = 33.366666
+  labelTft: any
+  SelectPath: any
+  pattern: any
+  EmSize: any
+  ButtonUpdate: any
+  CheckFileOver: boolean = true
+  Path: any
+  joo: any[] = ["ngo", "ngg"]
+  count: any[] = [0, 0, 0, 0]
+  disableSub: boolean = true
+  toggleBT: boolean = false;
+  hidden: boolean = true;
+  constructor(private api: HttpService, private http: HttpClient) { }
 
 
   //TODO init
   async ngOnInit(): Promise<void> {
-
-    this.dataUrl = await this.getUrl()
-    this.nameFile = await this.getUrlImage()
-    // console.log(this.nameFile);
-    // this.nameFile = this.SplitNameFile(this.nameFile)
-    this.listFile = this.nameFile
-
+    // this.LoadingPage = true
+    // setTimeout(() => {
+      // this.LoadingPage = false
+      this.hidden = false
+    // }, 1000);
     this.getDataM = await this.getData()
-    this.setUrlImage()
     this.data = this.getValueData()
-    this.getId()
-    this.calculator()
+    this.data = this.data.map((d: any) => {
+      return {
+        ...d,
+        ng: [{ value: null, status: false }],
+      }
+    })
+    document.documentElement.style.setProperty('--css_1', this.widthTable + 'em');
+    document.documentElement.style.setProperty('--css_2', this.widthTable - 15 + 'em');
+    document.documentElement.style.setProperty('--css_3', this.widthTable - 6 + 'em');
+    for (const item of this.data) {
+      item.err ? item.err : item.err = 0
+    }
+    this.labelTft = {
+      name: [
+        "Part arrangement drawing",
+        "Circuit diagram",
+      ]
+    }
+    this.showEdit(false)
+    this.urlPath()
+    // console.log(this.data);
 
   }
 
+  test2(){
+    if (this.data) {
 
+    }
+    console.log("asdas");
 
-  async EditUpdate() {
-    let getData = await this.getUrl()
-    let item = getData[0]?.urlImage
-    this.listFile = this.SplitNameFile(item)
   }
-
 
   async showEdit(e: boolean) {
+    // console.log(this.data);
+
     this.editOn = e
     let test = await this.getUrlid(this.model)
     if (test) {
-      this.urlOld = test.urlImage
+      this.urlOld = {
+        PartDrawing: test.PartDrawing,
+        CircuitDiagram: test.CircuitDiagram,
+      }
     }
-    // console.log(test.urlImage);
-    this.urlOldShow = []
-    for (const iterator of this.urlOld) {
-      this.urlOldShow.push(iterator.split("TFT/")[1])
-    }
-    // console.log(this.urlOld.iterator.split(this.model)[0]);
 
-    // this.urlOldShow = this.urlOld.
+    let PartDrawing = []
+    let CircuitDiagram = []
+    let data
+    if (this.urlOld) {
+      // console.log(this.urlOld);
+
+      for (const iterator of this.urlOld.PartDrawing) {
+        PartDrawing.push(iterator.split("TFT/")[1])
+      }
+      for (const iterator of this.urlOld.CircuitDiagram) {
+        CircuitDiagram.push(iterator.split("TFT/")[1])
+      }
+    }
+    data = {
+      PartDrawing: PartDrawing,
+      CircuitDiagram: CircuitDiagram,
+    }
+    if (this.SelectPath == "Part arrangement drawing") {
+      this.urlOldShow = data.PartDrawing
+      this.urlOldShow = this.urlOldShow.map(e => ({ name: e }))
+      // console.log(this.urlOldShow.length);
+      this.count[0] = this.urlOldShow.length
+      this.count[1] = this.urlOldShow.length
+    }
+    if (this.SelectPath == "Circuit diagram") {
+      this.urlOldShow = data.CircuitDiagram
+      this.urlOldShow = this.urlOldShow.map(e => ({ name: e }))
+      // console.log(this.urlOldShow.length);
+      this.count[0] = this.urlOldShow.length
+      this.count[1] = this.urlOldShow.length
+    }
+    // console.log(this.urlOld);
+    // console.log(this.tempUpload);
+
   }
   // editOn
-
-  //TODO getID
-  async getId() {
-    const file = await this.getUrl()
-    const data = file.find(e => e.model == this.model)
-    if (data) {
-      return data._id
-    }
-  }
 
   //TODO getValueData
   getValueData() {
     const data = this.getDataM.find(e => e.model == this.model)
     if (data) {
+      this.pattern = data.pattern
       return data.value
     }
   }
@@ -103,89 +155,65 @@ export class ElectricalTftDrivingComponent implements OnInit {
   getData() {
     const data = this.api.getMasterTFT().toPromise()
     if (data) {
+
       return data
     }
   }
 
-  //TODO setURLImageng
-  async setUrlImage() {
-    this.dataUrl = await this.getUrl()
-    const data = this.dataUrl.find(e => e.model == this.model)
-    if (data) {
-      // console.log(data.urlImage[0]);
 
-      // this.urlImagePart = [data.urlImage[0]]
-      this.urlImagePart = data.urlImage.slice(0,1)
-      // data.urlImage.splice(0, 1)
-      this.urlImageCircuit = data.urlImage.slice(1)
-    }
-  }
-
-  //TODO URL
-  getUrl() {
-    const data = this.api.getUrlTFT().toPromise()
-    if (data) {
-      return data
-    }
-  }
-
-  async getUrlImage() {
-    const data = await this.api.getUrlTFT().toPromise()
-    if (data) {
-      return data[0]?.urlImage
-    }
-  }
 
 
   async getUrlid(model: any) {
-    const data = await this.api.getUrlTFT().toPromise()
+    const data = await this.api.getMasterTFT().toPromise()
     if (data) {
       // console.log(data);
       const item = await data.find(e => e.model == model)
-      return item
       // console.log(item);
+      return item
 
+    }
+  }
+  setErrorValue() {
+    for (const item of this.data) {
+      item.err = this.errorValue
+    }
+    this.cal()
+    this.errorValue = null
+  }
+
+  calculator(e: any, i: any) {
+    let vat = (e.good * (e.err / 100))
+    let min = e.good - vat
+    let max = e.good + vat
+
+    if (e.ng[i].value != null && min <= e.ng[i].value && e.ng[i].value <= max) {
+      e.ng[i].status = true
+    }
+    else {
+      e.ng[i].status = false
     }
   }
 
   //TODO calculator
-  calculator() {
+  cal() {
+    for (const item of this.data) {
+      // console.log(item);
+      for (const [i, iterator] of item.ng.entries()) {
+        // console.log(iterator);
+        let vat = (item.good * (item.err / 100))
+        let min = item.good - vat
+        let max = item.good + vat
 
-    for (const item of this.getDataM[0].value) {
-      item.err ? item.err : item.err = 0
-      let vat = (item.good * (item.err / 100))
-      let min = item.good - vat
-      let max = item.good + vat
-      // console.log(min, "  ", max);
-
-      if (min > 0) {
-        if (min <= item.Ng && item.Ng <= max) {
-          item.status = true
-        } else {
-          item.status = false
+        if (item.ng[i].value != null && min <= item.ng[i].value && item.ng[i].value <= max) {
+          item.ng[i].status = true
         }
-      } else {
-        if (min >= item.Ng && item.Ng >= max) {
-          item.status = true
-        } else {
-          item.status = false
+        else {
+          item.ng[i].status = false
         }
       }
     }
-
-    // console.log(this.data);
-
   }
-
-  //TODO error %
-  setErrorValue() {
-    for (const item of this.getDataM[0].value) {
-      item.err = this.errorValue
-    }
-    this.calculator()
-    this.errorValue = null
-  }
-
+  // row.err
 
 
   //TODO magnify
@@ -274,6 +302,9 @@ export class ElectricalTftDrivingComponent implements OnInit {
   //TODO cutNameUrl
   SplitNameFile(DataOld: any[]) {
     let DataNew: any[] = []
+    // console.log(typeof DataOld);
+    // console.log(DataOld);
+
     if (DataOld.length > 0) {
       for (const item of DataOld) {
         let items = item.split("/")
@@ -287,42 +318,48 @@ export class ElectricalTftDrivingComponent implements OnInit {
     }
   }
 
-
+  //TODO submit -----------------------
   async submit() {
-    let resUpload = []
-    if (this.model) {
-      if (this.tempUpload.length > 0) {
-        const formData = await this.addFormData(this.tempUpload, this.model)
-        resUpload = await this.api.uploadImage(formData).toPromise()
+    Swal.fire({
+      title: 'Do you want to update data ?',
+      icon: 'question',
+      showCancelButton: true,
+    }).then(async r => {
+      if (r.isConfirmed) {
+        //---start---
+        let resUpload = []
+        let sendData
+        let PartD, CircuitD
+        let CheckHave = await this.getUrlid(this.model)
+        if (this.model) {
+          if (this.tempUpload.length > 0) {
+            const formData = await this.addFormData(this.tempUpload, this.model)
+            resUpload = await this.api.uploadImage(formData).toPromise()
+          }
+          this.SelectPath == "Part arrangement drawing" ? PartD = this.urlOld?.PartDrawing.concat(resUpload) : PartD = undefined
+          this.SelectPath == "Circuit diagram" ? CircuitD = this.urlOld?.CircuitDiagram.concat(resUpload) : CircuitD = undefined
+          sendData = {
+            model: this.model,
+            PartDrawing: PartD,
+            CircuitDiagram: CircuitD,
+            delete: this.listDelete
+          }
+          const sandDataForm = await this.api.putDataTFT(CheckHave._id, sendData).toPromise()
+          this.tempUpload = []
+          this.temp = []
+          this.listDelete = []
+          this.toggleBT = false
+          this.showEdit(false)
+        }
+        //---end---
+        setTimeout(() => {
+          Swal.fire('Success', '', 'success')
+        }, 200);
       }
-      const sendData = {
-        model: this.model,
-        urlImage: this.urlOld.concat(resUpload),
-        delete : this.listDelete
-      }
+    })
 
-      let CheckHave = await this.getUrlid(this.model)
-      if (CheckHave) {
-        const sandDataForm = await this.api.putUrlTFT(CheckHave._id, sendData).toPromise()
-      } else {
-        const sandDataForm = await this.api.addUrlTFT(sendData).toPromise()
-      }
-      // console.log(sendData);
 
-      Swal.fire('Success', '', 'success')
-      this.tempUpload = []
-      this.temp = []
-      this.listDelete = []
-      // this.showEdit(true)
-      this.setUrlImage()
-      this.showEdit(false)
-    } else {
-      Swal.fire({
-        title: 'Warning !',
-        icon: 'warning',
-        text: 'Please Choose data'
-      })
-    }
+
 
 
   }
@@ -348,14 +385,17 @@ export class ElectricalTftDrivingComponent implements OnInit {
 
 
   //---------------------------------UploadFile-----------------------------------------//
+  //TODO Upload
   upload(e: any) {
     const data: any[] = []
     const files = e.target.files
     data.push(...files)
-    // console.log(data);
     this.fileUpload.nativeElement.value = ""
     this.tempUpload = this.duplicate(data)
-    // console.log(this.tempUpload);
+    this.temp = [...this.tempUpload]
+    this.checkSizeFile()
+    this.count[2] = this.tempUpload.length
+    this.BTSubmitCheck()
   }
 
   //---------------------------------DeleteFile----------------------------------------//
@@ -366,17 +406,19 @@ export class ElectricalTftDrivingComponent implements OnInit {
       showCancelButton: true
     }).then(ans => {
       if (ans.isConfirmed) {
-        console.log(file);
 
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
         this.temp = this.temp.filter((f: any) => f != file);
-        this.urlOld = this.urlOld.filter((f: any) => f != this.urlOld[0].split(this.model)[0]+file);
+        this.urlOld.PartDrawing = this.urlOld.PartDrawing.filter((f: any) => f.split("TFT/")[1] != file.name);
+        this.urlOld.CircuitDiagram = this.urlOld.CircuitDiagram.filter((f: any) => f.split("TFT/")[1] != file.name);
         this.urlOldShow = this.urlOldShow.filter((f: any) => f != file);
         this.listDelete.push(file)
-        console.log(this.listDelete);
-
+        this.checkSizeFile()
         setTimeout(() => {
           Swal.fire('Success', '', 'success')
+          this.count[1] = this.urlOldShow.length
+          this.count[2] = this.tempUpload.length
+          this.BTSubmitCheck()
         }, 200);
       }
     })
@@ -384,14 +426,41 @@ export class ElectricalTftDrivingComponent implements OnInit {
   //---------------------------------CheckSizeFile-----------------------------------------//
   //TODO CheckSizeFile
 
+  clsImage() {
+    this.temp = []
+    this.tempUpload = []
+    this.BTSubmitCheck()
+  }
 
+  //TODO CheckSizeFile
+  checkSizeFile() {
+    let dateSize = 0
+    if (this.tempUpload.length == 0) {
+      this.EmSize = 0
+      this.CheckFileOver = true
+    }
+    for (const item of this.tempUpload) {
+      dateSize = dateSize + item.size
+      this.EmSize = dateSize
 
+      if (this.EmSize / 1048576 > 30) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Limit File Size 30Mb',
+          text: 'Try Again',
+        })
+      }
 
+    }
 
+    // this.EmSize = dateSize
+    // console.log(this.EmSize);
+    // console.log(this.tempUpload);
+    // console.log(this.CheckFileOver);
+  }
 
 
   //---------------------------------Token-----------------------------------------//
-
 
   addFormData(files: any, controlNo: any) {
     return new Promise(resolve => {
@@ -416,7 +485,222 @@ export class ElectricalTftDrivingComponent implements OnInit {
       return token;
     }
   }
-  //---------------------------------Token-----------------------------------------//
 
+
+  //TODO addInput
+  addInput() {
+    this.widthTable = this.widthTable + 6.135
+    document.documentElement.style.setProperty('--css_1', this.widthTable + 'em');
+    document.documentElement.style.setProperty('--css_2', this.widthTable - 15 + 'em');
+    document.documentElement.style.setProperty('--css_3', this.widthTable - 6.135 + 'em');
+    this.data = this.data.map((d: any) => {
+      d.ng.push({ value: null, status: false })
+      return {
+        ...d,
+      }
+    })
+  }
+
+  //TODO delInput
+  delInput() {
+    this.widthTable = this.widthTable - 6.135
+    document.documentElement.style.setProperty('--css_1', this.widthTable + 'em');
+    document.documentElement.style.setProperty('--css_2', this.widthTable - 15 + 'em');
+    document.documentElement.style.setProperty('--css_3', this.widthTable - 6.135 + 'em');
+    this.data = this.data.map((d: any) => {
+      // console.log(d);
+      d.ng.pop()
+      return {
+        ...d,
+      }
+    })
+  }
+
+  //TODO -----------ExportExcel-------------
+  //TODO ExportExcel
+  //TODO -------------------------------------
+  ExportExcel() {
+    ///claimStock-project
+
+    // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
+    this.http.get('http://localhost:4200/assets/report tft driving voltage.xlsx', { responseType: "arraybuffer" })
+      // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
+      .subscribe(
+        data => {
+          // console.log(data);
+          const workbook = new Workbook();
+          const arrayBuffer = new Response(data).arrayBuffer();
+          arrayBuffer.then((data) => {
+            workbook.xlsx.load(data)
+              .then(() => {
+                const worksheet = workbook.getWorksheet(2);
+
+                worksheet.getCell('C3').value = `${this.model}`;
+                worksheet.getCell('C4').value = `${this.pattern}`;
+
+                // border(worksheet, 'G7', '000000', 'medium', 1, 1, 1, 1)
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `B${index + 8}`
+                  worksheet.getCell(cell).value = { 'richText': [{ 'text': `${item.measure || ""}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
+                  border(worksheet, cell, '000000', 'medium', 0, 1, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `C${index + 8}`
+                  worksheet.getCell(cell).value = item.name || 0
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `D${index + 8}`
+                  worksheet.getCell(cell).value = Number(item.good || 0);
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (const [index, item] of this.data.entries()) {
+                  let cell = `E${index + 8}`
+                  worksheet.getCell(cell).value = Number(item.err || 0);
+                  alignment(worksheet, cell, 'middle', 'center')
+                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                }
+                for (let i = 0; i < this.data[0].ng.length; i++) {
+                  let key = ["F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"]
+                  let label = `${key[i]}${6}`
+                  let label2 = `${key[i]}${7}`
+                  // console.log(i);
+                  worksheet.getCell(label).value = { 'richText': [{ 'text': 'NG/Test', 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
+                  worksheet.getCell(label2).value = { 'richText': [{ 'text': `sample ${i + 1}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
+                  alignment(worksheet, label, 'middle', 'center')
+                  alignment(worksheet, label2, 'middle', 'center')
+                  border(worksheet, label, '000000', 'medium', 1, 0, 0, 1)
+                  border(worksheet, label2, '000000', 'medium', 0, 0, 1, 1)
+                  fill(worksheet, label, 'DDEBF7') //blue
+                  fill(worksheet, label2, 'DDEBF7') //blue
+                  for (const [index, item] of this.data.entries()) {
+                    let cell = `${key[i]}${index + 8}`
+                    if (item.ng[i].status == 1) {
+                      if (item.ng[i].value == null) {
+                        worksheet.getCell(cell).value = "-"
+                        fill(worksheet, cell, 'FFFFFF') //while
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                      } else {
+                        worksheet.getCell(cell).value = Number(item.ng[i].value);
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                        fill(worksheet, cell, 'a7ffbb') //green
+                      }
+                    } else {
+                      if (item.ng[i].value == null) {
+                        worksheet.getCell(cell).value = "-"
+                        fill(worksheet, cell, 'FFFFFF') //while
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                      } else {
+                        worksheet.getCell(cell).value = Number(item.ng[i].value);
+                        alignment(worksheet, cell, 'middle', 'center')
+                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
+                        fill(worksheet, cell, 'ffa8b0') //rad
+                      }
+                    }
+                  }
+                }
+
+
+
+                workbook.xlsx.writeBuffer().then((data: any) => {
+                  const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                  fs.saveAs(blob, `${this.model} TFT.xlsx`);
+                });
+              });
+          });
+        },
+        error => {
+          console.log(error);
+        }
+      );
+
+    function fill(worksheet: any, cell: string, color: string) {
+      worksheet.getCell(cell).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: color },
+      };
+    }
+    function border(ws: any, cells: string, colors: string, styles: string, tops: any, lefts: any, bottoms: any, rights: any) {
+      ws.getCell(cells).border = {
+        top: tops ? { style: styles, color: { argb: colors } } : null,
+        left: lefts ? { style: styles, color: { argb: colors } } : null,
+        bottom: bottoms ? { style: styles, color: { argb: colors } } : null,
+        right: rights ? { style: styles, color: { argb: colors } } : null
+      };
+    }
+    function alignment(ws: any, cells: string, verticals: string, horizontals: string) {
+      ws.getCell(cells).alignment = { vertical: verticals, horizontal: horizontals };
+    }
+
+  }
+
+
+
+  BTSubmitCheck() {
+    if ((this.count[0] == this.count[1]) && (this.count[2] == 0)) {
+      // console.log("true");
+      this.disableSub = true
+    } else {
+      this.disableSub = false
+      // console.log("qwewqeqwewe");
+    }
+    // console.log(this.CheckFileOver);
+
+  }
+
+  async urlPath() {
+    const url = await this.api.getPath().toPromise()
+    this.Path = `${url.split("Outsource")[0]}mastereletrical/TFT/`
+    // console.log(this.Path);
+  }
+
+  dropdown(i: any, j: any, x: any) {
+    let max = document.getElementById(`drop${0}${j + 1}`)
+    if (i < x.length - 1) {
+      document.getElementById(`drop${i + 1}${j}`).focus();
+    } else {
+      if (max) {
+        document.getElementById(`drop${0}${j + 1}`).focus();
+      }
+    }
+  }
+
+  // testload: any
+
+  async downloadImageOnly(file: any) {
+    // let value = { name: "3001-jU6.png" }
+    const data = await this.api.getBASE64(file).toPromise()
+    // alert(data)
+    downloadBase64File(data, file.name)
+    function downloadBase64File(contentBase64, fileName) {
+      const linkSource = `data:application/pdf;base64,${contentBase64}`;
+      const downloadLink = document.createElement('a');
+      document.body.appendChild(downloadLink);
+
+      downloadLink.href = linkSource;
+      downloadLink.target = '_self';
+      downloadLink.download = fileName;
+      downloadLink.click();
+    }
+  }
+  // download(filename, text) {
+
+  BTC() {
+    if (this.toggleBT == true) {
+      this.toggleBT = false
+    } else {
+      this.toggleBT = true
+    }
+  }
+
+  // closeAuto(){
+  //   this.toggleBT = false
+  // }
 
 }

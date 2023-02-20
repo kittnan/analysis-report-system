@@ -619,29 +619,44 @@ export class HttpService {
 
 
   //------TFTDriving Voltage
+  putDataTFT(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/TFTDrivingVoltage/" + id, data)
+  }
   uploadImage(data: any): Observable<any> {
     return this.http.post(this.Url + "/TFTDrivingVoltage/upload/", data)
   }
   addMasterTFT(data: any): Observable<any> {
     return this.http.post(this.Url + "/TFTDrivingVoltage/", data)
   }
+  deleteMasterTFT(): Observable<any> {
+    return this.http.delete(this.Url + "/TFTDrivingVoltage/")
+  }
   getMasterTFT(): Observable<any> {
     return this.http.get(this.Url + "/TFTDrivingVoltage/")
   }
-  getUrlTFT(): Observable<any> {
-    return this.http.get(this.Url + "/ImageUrlTFT/")
+  getBASE64(data: any): Observable<any> {
+    return this.http.post(this.Url + "/TFTDrivingVoltage/getFile", data)
   }
 
-  putUrlTFT(id: any, data: any): Observable<any> {
-    return this.http.put(this.Url + "/ImageUrlTFT/" + id, data)
+  //Resistance
+  getMasterResis(): Observable<any> {
+    return this.http.get(this.Url + "/ResistanceDatabase/")
   }
-
-  addUrlTFT(data: any): Observable<any> {
-    return this.http.post(this.Url + "/ImageUrlTFT/", data)
+  putDataResis(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/ResistanceDatabase/" + id, data)
   }
-  deleteTFT(id: any): Observable<any> {
-    return this.http.delete(this.Url + "/ImageUrlTFT/" + id);
+  uploadResis(data: any): Observable<any> {
+    return this.http.post(this.Url + "/ResistanceDatabase/upload/", data)
   }
-
+  getBASE64Resis(data: any): Observable<any> {
+    return this.http.post(this.Url + "/ResistanceDatabase/getFile", data)
+  }
+  deleteMasterResis(): Observable<any> {
+    return this.http.delete(this.Url + "/ResistanceDatabase/")
+  }
+  addMasterResis(data: any): Observable<any> {
+    return this.http.post(this.Url + "/ResistanceDatabase/", data)
+  }
+  // TFTDrivingVoltage/getFile
 }
 // getDataView

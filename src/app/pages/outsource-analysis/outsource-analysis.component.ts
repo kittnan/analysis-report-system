@@ -291,10 +291,10 @@ export class OutsourceAnalysisComponent implements OnInit {
       if (r.isConfirmed) {
         this.CkModel = "";
         //this.RegisNo = "";
-        this.customYear = "",
-          this.datalist.size = "",
-          this.datalist.customer = "",
-          this.DefectiveName = "";
+        this.customYear = ""
+        this.datalist.size = ""
+        this.datalist.customer = ""
+        this.DefectiveName = ""
         this.ReferKTC = "";
         this.CauseOfDefective = "";
         this.MakerSup = "";
@@ -524,7 +524,7 @@ export class OutsourceAnalysisComponent implements OnInit {
 
   }
 
-  CLS(){
+  CLS() {
     this.OccurBListCk = ""
   }
 

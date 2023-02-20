@@ -5,3 +5,48 @@ input, select, textarea{
 label{
   font-weight: 600;
 }
+
+
+.spinner {
+  z-index: 21;
+  position: relative;
+  border: 10px solid #f3f3f3;
+  /* Light grey */
+  border-top: 10px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
+.loading {
+  display: flex;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(180, 180, 180, 0.938);
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  animation: fade 0.25s linear 0.25s infinite alternate;
+}
+
+@keyframes fade {
+  0% {
+      background-color: rgba(180, 180, 180, 0.938);
+  }
+  100% {
+      background-color: rgba(136, 136, 136, 0.938);
+  }
+}

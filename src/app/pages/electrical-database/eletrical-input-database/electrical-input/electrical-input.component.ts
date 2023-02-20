@@ -31,6 +31,8 @@ export class ElectricalInputComponent implements OnInit {
   Datalist: any
   MasterModel: any
   MasterTFT: any
+  MasterResis:any
+
   dataOld: any
   dataTable: any
   nameTable: any
@@ -40,7 +42,8 @@ export class ElectricalInputComponent implements OnInit {
 
   // ? Fix ID
   IdModelNumber = environment.IdModelNumber
-
+  myForm: any;
+  things: any
   constructor(private api: HttpService, private http: HttpClient) { }
   //TODO init
 
@@ -48,6 +51,7 @@ export class ElectricalInputComponent implements OnInit {
     this.routes()
     this.getMasterProductSpec()
     this.getMasterTFT()
+    this.getMasterResis()
     this.getModel()
     this.data = []
     this.UserLevel = sessionStorage.getItem("UserLevel1")
@@ -174,6 +178,10 @@ export class ElectricalInputComponent implements OnInit {
     // console.log(this.MasterTFT);
   }
 
+  async getMasterResis() {
+    this.MasterResis = await this.api.getMasterResis().toPromise()
+  }
+
 
   //TODO select product
   clickSelect(e: any) {
@@ -186,6 +194,9 @@ export class ElectricalInputComponent implements OnInit {
       case "TFTDriving":
         this.dataTable = 2
         break;
+      case "Resistance":
+        this.dataTable = 3
+        break;
       default:
         break;
     }
@@ -197,10 +208,12 @@ export class ElectricalInputComponent implements OnInit {
   //TODO show dave if have
   filterMaster() {
     this.onHide = []
-    let ProductSpec = this.MasterProductSpec.find(e => e.model == this.model)
-    let TFTDriving = this.MasterTFT.find(e => e.model == this.model)
+    let ProductSpec = this.MasterProductSpec?.find(e => e.model == this.model)
+    let TFTDriving = this.MasterTFT?.find(e => e.model == this.model)
+    let Resistance = this.MasterResis?.find(e => e.model == this.model)
     ProductSpec ? this.onHide[0] = 1 : this.onHide[0] = 0
     TFTDriving ? this.onHide[1] = 1 : this.onHide[1] = 0
+    Resistance ? this.onHide[2] = 1 : this.onHide[2] = 0
     // console.log(this.onHide);
     // console.log("dataTable" , this.dataTable);
   }
@@ -229,8 +242,8 @@ export class ElectricalInputComponent implements OnInit {
 
 
           const workbook = new Workbook();
-          const arryBuffer = new Response(data).arrayBuffer();
-          arryBuffer.then((data) => {
+          const arrayBuffer = new Response(data).arrayBuffer();
+          arrayBuffer.then((data) => {
             workbook.xlsx.load(data)
               .then(() => {
                 const worksheet = workbook.getWorksheet(2);
@@ -352,11 +365,7 @@ export class ElectricalInputComponent implements OnInit {
 
 
 
-  //TODO Tasting
-  testing() {
-    // console.log(this.data);
-    // console.log(this.data3);
-  }
+
 
 
 
@@ -369,6 +378,16 @@ export class ElectricalInputComponent implements OnInit {
   // if(row.ng[1].value==0) return 'myInputGreen'
   // return 'myInputRed'
   // }
+  dropdown(i: any, j: any, x: any) {
+    let max = document.getElementById(`drop${0}${j + 1}`)
+    if (i < x.length - 1) {
+      document.getElementById(`drop${i + 1}${j}`).focus();
+    } else {
+      if (max) {
+        document.getElementById(`drop${0}${j + 1}`).focus();
+      }
+    }
+  }
 
 }
 

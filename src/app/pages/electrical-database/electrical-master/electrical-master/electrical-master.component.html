@@ -6,11 +6,11 @@
 
 <div class="d-flex">
   <div class="w-30 mr-3">
-    <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[0].path" class="btn btn-block">Input
+    <button routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[0].path" class="btn btn-block" >Input
       Database<i class="bi bi-file-earmark-plus" style="font-size: 1.5em ml-2"></i></button>
   </div>
   <div class="w-30 mr-3">
-    <button *ngIf="RouterMenu[1]" routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[1].path" class="btn btn-block">Master
+    <button *ngIf="RouterMenu[1]" routerLinkActive="btn btn-primary" [routerLink]="RouterMenu[1].path" class="btn btn-block" >Master
       Electrical<i class="bi bi-list-ul" style="font-size: 1.5em ml-2"></i></button>
   </div>
 </div>
@@ -35,30 +35,30 @@
     </div>
   </div>
 
-  <div *ngFor="let item of master">
-    <div *ngIf="masterList == item" class="row mt-3">
+  <!-- <div *ngFor="let item of master"> -->
+    <div class="row mt-3" *ngIf="masterList">
       <div class="col-lg-12">
         <input hidden type="file" id="files" (change)="ImportMaster($event)" multiple="false">
         <label  class="btn btn-info mr-5" for="files" ><i class="bi bi-box-arrow-in-down" style="font-size: 1rem;" ></i>Import Master Database</label>
         <button  class="btn btn-success" (click)="ExportMaster()" ><i class="bi bi-file-earmark-plus" style="font-size: 1rem;"></i>Export Master Database</button>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 
-  <!-- <div *ngIf="masterList == 'Product Electrical Spec'" class="row mt-3">
-    <div class="col-lg-12">
+  <!-- <div *ngIf="masterList == this.master" class="row mt-3"> -->
+    <!-- <div class="col-lg-12">
       <input hidden type="file" id="files" (change)="ImportMaster($event)" multiple="false">
       <label  class="btn btn-info mr-5" for="files" ><i class="bi bi-box-arrow-in-down" style="font-size: 1rem;" ></i>Import Master Database</label>
       <button  class="btn btn-success" (click)="ExportMaster()" ><i class="bi bi-file-earmark-plus" style="font-size: 1rem;"></i>Export Master Database</button>
-    </div>
-  </div> -->
+    </div> -->
+  <!-- </div> -->
 
 
 
 
   <!-- <input type="file" id="files" hidden/> -->
-
-  <!-- <input type="file" (change)="onFileChange($event)" multiple="false" />
+<!--
+  <input type="file" (change)="onFileChange($event)" multiple="false" />
   <button (click)="export()">Export!</button> -->
 <!-- <app-electrical-search></app-electrical-search> -->
 <!-- <button>asdasd</button> -->

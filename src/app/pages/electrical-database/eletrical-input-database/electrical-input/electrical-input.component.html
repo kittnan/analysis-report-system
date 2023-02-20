@@ -65,6 +65,10 @@
       <button [ngClass]="{'abc': dataTable == 2}" class="btn btn-block abc" id="TFTDriving"
         (click)="clickSelect($event)">TFT Driving voltage</button>
     </div>
+    <div *ngIf="onHide[2] == 1" class="col-lg-4">
+      <button [ngClass]="{'abc': dataTable == 3}" class="btn btn-block abc" id="Resistance"
+        (click)="clickSelect($event)">Resistance database</button>
+    </div>
   </div>
 
 
@@ -72,21 +76,29 @@
   <div *ngIf="dataTable == 1" class="myInput mt-3 " style="width: 100%">
     <div class="row mt-3">
       <div class="col-lg-12">
-        <h5>Product Electrical Spec.</h5>
+        <div class="row d-flex justify-content-between" style="margin: 1px;">
+          <h5 class="d-flex align-items-center" style="margin: 0px;font-weight: bold;">Product Electrical Spec.</h5>
+          <div *ngIf="dataTable == 1">
+            <button (click)="ExportExcel()" class="btn btn-sm  text-primary"
+              style="text-align: right; cursor: pointer;">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
+          </div>
+        </div>
       </div>
-      <div class="col-lg-12 align-self-center ">
+
+
+      <div class="col-lg-12 align-self-center pt-2 ">
         <div class="row">
-          <div class="col-lg-6">
-            <label for="" style="font-size: 19px; font-weight: 100;">Measurement Pattern :</label>
+          <div class="" style="margin-left: 1em;width: 32.7em;">
+            <label for="" style="font-size: 19px; font-weight: bold;">Measurement Pattern :</label>
             <span style="color: blue; font-size: 19px"> {{Datalist.pattern}}</span>
           </div>
-          <div class="col-lg-6">
+          <div class="">
             <!-- <button class="" (click)="addInput(item)"><i class="bi bi-plus-square"></i></button> -->
-            <button class="btn" style="padding: 0 0 0 0;margin: 0;color: black;background-color: white;"
+            <button class="btn H1" style="padding: 0 0 0 0;margin: 0;"
               (click)="addInput(item)">
               <i class="bi bi-file-earmark-plus" style="font-size: 27px"></i></button>
-            <button *ngIf="data[0].ng.length > 1" class="btn"
-              style="padding: 0 0 0 0;margin: 0;color: black;background-color: white;" (click)="delInput(item)">
+            <button *ngIf="data[0].ng.length > 1" class="btn H2"
+              style="padding: 0 0 0 0;margin: 0;" (click)="delInput(item)">
               <i class="bi bi-file-earmark-minus" style="font-size: 27px"></i></button>
           </div>
         </div>
@@ -108,30 +120,34 @@
         <div class="row">
           <div class="" style="width: 10em">
             <!-- <label for="">Name (Unit)</label> -->
-            <button class="myInput text-center B" style="width: 10em ; height:100%;">Name (Unit)</button>
+            <label class="myInput text-center B header d-flex align-items-center"
+              style="width: 10em ; height:100%;">Name (Unit)</label>
           </div>
           <div class="" style="width: 5em">
             <!-- <label for="">Min.</label> -->
-            <button class="myInput text-center B" style="width: 5em ; height:100%;">Min.</button>
+            <label class="myInput text-center B header d-flex align-items-center"
+              style="width: 5em ; height:100%;">Min.</label>
           </div>
           <div class="" style="width: 6em">
             <!-- <label for="">Typ.</label> -->
-            <button class="myInput text-center B" style="width: 6em ; height:100%;">Typ.</button>
+            <label class="myInput text-center B header d-flex align-items-center"
+              style="width: 6em ; height:100%;">Typ.</label>
           </div>
           <div class="" style="width: 6em">
             <!-- <label for="">Max.</label> -->
-            <button class="myInput text-center B" style="width: 6em ; height:100%;">Max.</button>
+            <label class="myInput text-center B header d-flex align-items-center"
+              style="width: 6em ; height:100%;">Max.</label>
           </div>
           <div class="" style="width: 6em">
             <!-- <label for="">Good sample</label> -->
-            <button class="d-flex myInput text-center B align-items-center justify-content-center"
-              style="width: 6em ; height:100%;">Good sample</button>
+            <label class="d-flex myInput text-center B header align-items-center justify-content-center"
+              style="width: 6em ; height:100%;">Good sample</label>
           </div>
           <div *ngFor="let item of data[0].ng ; let i = index">
             <div class="" style="width: 6em">
               <!-- <label for="">NG/Test sample</label> -->
-              <button class="d-flex myInput text-center B align-items-center justify-content-center"
-                style="width: 6em ; height:100%;">NG/Test samp {{i+1}}</button>
+              <label class="d-flex myInput text-center B header align-items-center justify-content-center"
+                style="width: 6em ; height:100%;">NG/Test samp {{i+1}}</label>
             </div>
           </div>
 
@@ -158,9 +174,9 @@
               <div class="" *ngFor="let ng of row.ng; let i_ng=index">
                 <!-- <input [ngClass]="{'myInput' : ng.status == true}"[ngClass]="ng.status == true? 'myInputGreen text-center' : 'myInputRed text-center'"
                   [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"> -->
-                <input class="myInput text-center"
+                <input class="myInput text-center" [id]="('drop'+i)+i_ng"
                   [ngClass]="{'myInputGreen': (ng.status == true && ng.value != null),'myInputRed': (ng.status == false && ng.value != null)}"
-                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"
+                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)" (keyup.enter)="dropdown(i,i_ng,data)"
                   data-bs-toggle="tooltip" data-bs-html="true" [title]="row.name">
 
 
@@ -185,22 +201,31 @@
 
     <div class="mt-4"></div>
   </div>
-  <div *ngIf="dataTable == 1" class="row mt-3">
+  <!-- <div *ngIf="dataTable == 1" class="row mt-3">
     <div class="col-lg-3">
       <button (click)="ExportExcel()" class="btn btn-sm  text-primary"
         style="text-align: right; cursor: pointer;">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
     </div>
-  </div>
+  </div> -->
 
 
   <!-- <app-electrical-search *ngIf="dataTable == 2" [model]="model"></app-electrical-search> -->
   <app-electrical-tft-driving *ngIf="dataTable == 2" [model]="model"></app-electrical-tft-driving>
+  <app-electrical-resistance *ngIf="dataTable == 3" [model]="model"></app-electrical-resistance>
 
   <!-- <button (click)="testing()">aksdkaskdkase</button> -->
 
 </div>
 
+<div>
+
+</div>
+<!-- <input type="text" placeholder="Username" (keyup.enter)="index.focus()">
+<input [id]="index" type="text"placeholder="Password" > -->
 
 <!--
 <button (click)="ExportExcel2()" > slkdkljalskdf</button>
 <app-electrical-search></app-electrical-search> -->
+
+
+

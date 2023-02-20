@@ -1,172 +1,252 @@
-<div class="loading" *ngIf="LoadingPage">
+<!-- <div class="loading" *ngIf="LoadingPage">
   <div class="spinner">
-
   </div>
-</div>
+</div> -->
 
-<div class="myInput mt-3" style="width: 100%">
+<!-- <div class="center" *ngIf="!data">
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+</div> -->
+
+
+
+<div [hidden]="hidden" *ngIf="data?.length > 0" class="myInput mt-3" style="width: 100%" (mouseup)="this.toggleBT = false" >
   <div class="col-lg-12">
-
     <div class="row mt-3 label">
-      <div class="col-lg-8 pl-0 pr-0">
-        <h5>TFT Driving Voltage</h5>
-        <label for=""> Confirm TFT LCD driving voltage of NG sample compare with Good sample</label>
-        <div>
-          <label for=""> Model :</label><span class="blue"> {{model}}</span>
-        </div>
 
+      <div class="col-lg-12">
+        <div class="row d-flex justify-content-between">
+          <h5 class="d-flex align-items-center" style="margin: 0px;font-weight: bold;">TFT Driving Voltage.</h5>
+          <div>
+            <button (click)="ExportExcel()" class="btn btn-sm  text-primary"
+              style="text-align: right; cursor: pointer;">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12 pl-0 pr-0 pt-2">
+        <label class="B" for="" style="font-size: 19px; font-weight: bold;"> Confirm TFT LCD driving voltage of NG
+          sample compare
+          with Good sample</label>
+        <div class="">
+          <label for="" style="font-size: 19px; font-weight: bold;"> Model :</label><span class="blue"
+            style="font-size: 19px;font-weight: 100;"> {{model}}</span>
+        </div>
+        <div class="row">
+          <div class="" style="width: 27em;margin-left: 1em;">
+            <label for="" style="font-size: 19px; font-weight: bold;"> Measurement Pattern :</label><span class="blue"
+              style="font-size: 19px;font-weight: 100;">
+              {{pattern}}</span>
+          </div>
+          <div class="">
+            <button class="btn" style="padding: 0 0 0 0;margin: 0;color: black;background-color: white;"
+              (click)="addInput()">
+              <i class="bi bi-file-earmark-plus" style="font-size: 27px"></i></button>
+            <button *ngIf="data[0].ng.length > 1" class="btn"
+              style="padding: 0 0 0 0;margin: 0;color: black;background-color: white;" (click)="delInput()">
+              <i class="bi bi-file-earmark-minus" style="font-size: 27px"></i></button>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="row mt-2 label">
-          <div class="col-lg-12 pl-0 pr-0">
-            <label for="" class="myInput text-center">TFT LCD driving voltage</label>
-          </div>
+
+
+  <div class="col pl-0 pr-0 sc_1">
+    <div class="col-lg-12 label">
+      <div class="row">
+        <div class="pl-0 pr-0" style="width: 100% ;">
+          <label for="" class="myInput text-center header">TFT LCD driving voltage</label>
         </div>
-        <div class="row label">
-          <div class="col-lg-4 pl-0 pr-0">
-            <label for="" class="myInput d-flex align-items-center justify-content-center text-center ">Measure ment
-              Point</label>
-          </div>
-          <div class="col-lg-2 pr-0 pl-0">
-            <label for="" class="myInput d-flex align-items-center justify-content-center"> Voltage Name</label>
-          </div>
-          <div class="col-lg-6 pl-0 pr-0">
-            <div class="row">
-              <div class="col-lg-12">
-                <label for="" class="myInput text-center">Sample</label>
-              </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row label">
+        <div class="col">
+          <div class="row" style="height: 100%;">
+            <div class="pl-0 pr-0">
+              <label style="width: 9em;" for=""
+                class="myInput d-flex align-items-center justify-content-center text-center header">Measure ment
+                Point</label>
             </div>
-            <div class="col-lg-12">
+            <div class="pl-0 pr-0">
+              <label style="width: 5.7em" for=""
+                class="myInput d-flex align-items-center justify-content-center text-center header">Voltage
+                Name</label>
+            </div>
+            <div class="pl-0 pr-0" style="margin-left: 1em;">
               <div class="row">
-                <div class="col-lg-4 pl-0 pr-0">
-                  <label for="" class="myInput text-center">Good</label>
+                <div class="pl-0 pr-0">
+                  <label for="" class="myInput text-center sc_2 header">Sample</label>
                 </div>
-                <div class="col-lg-4 pl-0 pr-0">
-                  <input type="text" class="myInput text-center" placeholder="Err%" type="number"
+              </div>
+              <div class="row">
+                <div class="pl-0 pr-0" style="width: 6em ;">
+                  <label for="" class="myInput text-center header">Good</label>
+                </div>
+                <div class="pl-0 pr-0" style="width: 6em ;margin-left: 2px">
+                  <input type="text" class="myInput text-center header" placeholder="Err%" type="number"
                     [(ngModel)]="errorValue" (change)="setErrorValue()">
                 </div>
-                <div class="col-lg-4 pl-0 pr-0">
-                  <label for="" class="myInput text-center">NG</label>
+                <div class="pl-0 pr-0 " style="width: 6em ; margin-left: 2px"
+                  *ngFor="let item of data[0]?.ng;let i = index">
+                  <label for="" class="myInput text-center header">NG {{i+1}}</label>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col-lg-4 pl-0 pr-0">
-            <label for="" *ngFor="let item of data"
-              class="myCss d-flex align-items-center justify-content-center text-center">{{item.measure}}</label>
-          </div>
-          <div class="col-lg-2 pl-0 pr-0">
-            <label for="" *ngFor="let item of data"
-              class="myCss d-flex align-items-center justify-content-center text-center">{{item.name}}</label>
-          </div>
-          <div class="col-lg-6">
-            <div class="row">
-              <div class="col-lg-12"></div>
-              <div class="col-lg-4 pl-0 pr-0">
-                <label for="" *ngFor="let item of data"
-                  class="myCss d-flex align-items-center justify-content-center text-center blue">{{item.good}}</label>
-              </div>
-              <div class="col-lg-4 pl-0 pr-0">
-                <input *ngFor="let item of data"
-                  class="myCss d-flex align-items-center justify-content-center text-center" type="number"
-                  [(ngModel)]="item.err" (keyup)="calculator()">
-              </div>
-              <div class="col-lg-4 pl-0 pr-0">
-                <input *ngFor="let item of data"
-                  [ngClass]="item.status == true ? 'myInputGreen d-flex align-items-center justify-content-center text-center' : 'myInputRed d-flex align-items-center justify-content-center text-center'"
-                  [(ngModel)]="item.Ng" type="number" (keyup)="calculator()">
-              </div>
+      <div class="row" *ngFor="let row of data; let i=index">
+        <div class="col-12">
+          <div class="row">
+            <div class="">
+              <label style="width: 9em;" for="" class="myInput text-center label">{{row.measure}}</label>
             </div>
-          </div>
-        </div>
-      </div>
-      <!-- {{urlImagePart|json}} -->
-
-      <div *ngIf="urlImagePart?.length > 0 " class="col-lg-6 pr-0">
-        <div class="col-lg-12">
-          <label for="" class="mr-2 label" style="font-size: 16px;"><u>Part arrangement drawing</u></label>
-        </div>
-        <div class="col-lg-12 pr-0">
-          <div class="img-magnifier-container" *ngFor="let item of urlImagePart let  i = index;">
-            <img [id]="i" [src]="item" width="100%" height="100%" (mouseover)="magnify(i, 3)" (mouseleave)="zoomOut()">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="urlImageCircuit?.length > 0" class="row mt-3">
-      <div class="col-lg-12 pl-0 pr-0">
-        <label for="" class="mr-2 label" style="font-size: 16px;"><u>Circuit diagram</u></label>
-      </div>
-      <div class="col-lg-12 pl-0 pr-0">
-        <div class="row">
-          <div class="col-lg-12" *ngFor="let item of urlImageCircuit let  i = index;">
-            <div class="img-magnifier-container pr-0 pl-0">
-              <img [id]="i+1" [src]="item" width="100%" height="100%" (mouseover)="magnify(i+1, 3)"
-                (mouseleave)="zoomOut()">
+            <div class="">
+              <label style="width: 5.7em;" for=""
+                class="myInput text-center d-flex align-items-center justify-content-center">{{row.name}}</label>
+            </div>
+            <div class="">
+              <label style="width: 6em;" for="" class="myInput text-center">{{row.good}}</label>
+            </div>
+            <div class="">
+              <input style="width: 6em;" class="myInput text-center" type="number" [(ngModel)]="row.err"
+                (keyup)="cal()">
+            </div>
+            <div class="" *ngFor="let ng of row.ng; let i_ng=index">
+              <input class="myInput text-center" [id]="('drop'+i)+i_ng"
+                [ngClass]="{'myInputGreen': (ng.status == true && ng.value != null),'myInputRed': (ng.status == false && ng.value != null)}"
+                [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"
+                (keyup.enter)="dropdown(i,i_ng,data)" data-bs-toggle="tooltip" data-bs-html="true"
+                [title]="row.measure">
             </div>
           </div>
         </div>
       </div>
     </div>
-
+    <div class="pt-3"></div>
   </div>
 
-</div>
 
-<div class="col-lg-12 pl-0">
+
+  <div *ngIf="urlOld?.PartDrawing?.length > 0 " class="row mt-5">
+    <div class="col-lg-12">
+      <label for="" class="mr-2 label" style="font-size: 16px;"><u>Part arrangement drawing</u></label>
+    </div>
+    <div class="col-lg-12 pr-0">
+      <div class="img-magnifier-container" *ngFor="let item of urlOld?.PartDrawing let  i = index;">
+        <img [id]="item.split('TFT/')[1]" [src]="item" width="100%" height="100%"
+          (mouseover)="magnify(item.split('TFT/')[1], 3)" (mouseleave)="zoomOut()">
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div *ngIf="urlOld?.CircuitDiagram?.length > 0" class="row mt-3">
+    <div class="col-lg-12">
+      <label for="" class="mr-2 label" style="font-size: 16px;"><u>Circuit diagram</u></label>
+    </div>
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-12" *ngFor="let item of urlOld?.CircuitDiagram let  i = index;">
+          <div class="img-magnifier-container pr-0 pl-0">
+            <img [id]="item.split('TFT/')[1]" [src]="item" width="100%" height="100%"
+              (mouseover)="magnify(item.split('TFT/')[1], 3)" (mouseleave)="zoomOut()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<div [hidden]="hidden" class="col-lg-12 pl-0" *ngIf="data?.length > 0">
   <div class="row">
-    <div class="col-lg-2">
-      <button class="btn btn-block" (click)="showEdit(true)">Edit image</button>
+    <div class="col">
+      <button (click)="BTC()"  class="btn btn-sm btn-primary mr-0">EDIT IMAGE</button>
     </div>
   </div>
   <div>
   </div>
 </div>
 
-<div *ngIf="editOn" class="row pt-3">
+<div [hidden]="!toggleBT" class="pt-3">
+  <label for="">Select Path:</label>
+  <select class="form-control" name="" style="width: 25em;" [(ngModel)]="SelectPath" (click)="showEdit(true)"
+    (change)="clsImage();">
+    <option value=""></option>
+    <option value="" *ngFor="let list of labelTft?.name" [value]="list">{{list}}</option>
+  </select>
+</div>
+
+<div *ngIf="SelectPath && toggleBT" class="row pt-3">
   <div class="col-lg-12">
     <label for="">File</label>
     <input class="ml-1" type="file" #fileUpload [multiple]="true" (change)="upload($event)">
   </div>
   <div class="col-lg-12">
-    <ul>
+    <ul style="margin-right: 3em;">
       <li *ngFor="let file of urlOldShow ;let i = index" class="d-flex align-items-center justify-content-between">
-        {{i+1}}. {{file}}
+        {{i+1}}. {{file.name}}
         <span>
+          <a target="_blank" title="ImageName" class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"
+            (click)="downloadImageOnly(file)"><i class="bi bi-download" style="font-size: 12px;"></i></a>
           <button class="btn btn-sm text-primary" (click)="onClickDel(file)">Delete</button>
         </span>
       </li>
       <li *ngFor="let file of tempUpload ;let i = index" class="d-flex align-items-center justify-content-between">
         {{i+1+urlOldShow.length}}. {{file.name}}
         <span>
-          <button class="btn btn-sm text-primary" (click)="onClickDel(file)">Delete</button>
+          {{file.size|fileSize}}
+          <button class="btn btn-sm text-primary ml-2" (click)="onClickDel(file)">Delete</button>
         </span>
       </li>
+      <tbody *ngIf="(urlOldShow.length == 0)&&(tempUpload.length == 0)" class="subtext-color">
+        <tr>
+          <td>
+            No files.
+          </td>
+          <td>
+
+          </td>
+        </tr>
+      </tbody>
     </ul>
   </div>
+  <div class="col-lg-12">
+    <div class="d-flex justify-content-center">
+      <div class="col-lg-3">
+        <!-- <span class="" [hidden]="!EmSize">{{this.EmSize|fileSize}}</span> -->
+        <!-- {{this.EmSize}} -->
+        <button [disabled]="disableSub || (this.EmSize / 1048576 > 30)" class="btn btn-block"
+          (click)="submit()">update</button>
 
-
-
-  <!-- <div class="col-lg-12">
-    <label for="" *ngFor="let item of dataUrl"></label>
-  </div> -->
-  <div class="col-lg-4">
-    <button class="btn btn-block" (click)="submit()">update</button>
-    <button class="btn btn-block" (click)="showEdit(false)">close</button>
+        <!-- <button [disabled]="((urlOldShow?.length == ButtonUpdate)&&(tempUpload.length == 0))&&(CheckFileOver == true)"
+          class="btn btn-block" (click)="submit()">update</button> -->
+        <!-- <button class="btn btn-block" (click)="showEdit(false);clsImage()">close</button> -->
+      </div>
+    </div>
   </div>
+
+</div>
+<div>
 </div>
 
-
-<!-- <div class="col-lg-12">
-  <div *ngFor="let item of dataUrl[0].urlImage">
-    <span>{{item}}</span>
+<!--
+<div class="ring">Loading
+  <div class="spinner">
   </div>
-  {{dataUrl|json}}
 </div> -->

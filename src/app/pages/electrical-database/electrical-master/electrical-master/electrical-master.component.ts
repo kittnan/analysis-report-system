@@ -24,8 +24,8 @@ export class ElectricalMasterComponent implements OnInit {
   master: any[] = []
   masterList: any
   urls: any[] = []
-
-
+  dataOldTFT: any
+  resUpload : any
   constructor(private api: HttpService) { }
   //-----------------------------------------------------------------------------------------------------//
   //TODO init
@@ -74,9 +74,20 @@ export class ElectricalMasterComponent implements OnInit {
   //TODO get urlMaster
   async getUrlMaster() {
     const ProductSpec = await this.api.getMasterProductSpec().toPromise()
-    if (ProductSpec) {
-      this.urls.push(ProductSpec[ProductSpec.length - 1].urlMaster[0])
-    }
+    const TFT = await this.api.getMasterTFT().toPromise()
+    // console.log(TFT);
+
+    ProductSpec.length > 0 ? this.urls.push(ProductSpec[ProductSpec.length - 1].urlMaster[0]) : undefined
+    TFT.length > 0 ? this.urls.push(TFT[TFT.length - 1].urlMaster[0]) : undefined
+    // console.log(this.urls);
+
+    // if (ProductSpec) {
+    //   this.urls.push(ProductSpec[ProductSpec.length - 1].urlMaster[0])
+    // }
+    // if (TFT) {
+    //   this.urls.push(TFT[TFT.length - 1].urlMaster[0])
+    // }
+
   }
 
   //TODO rename
@@ -108,11 +119,17 @@ export class ElectricalMasterComponent implements OnInit {
       const bstr: string = e.target.result;
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
       /* grab first sheet */
+
+      const data: any[] = []
+      const files = evt.target.files
+      data.push(...files)
+      const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
+      this.resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      // console.log(ws?.C2?.h);
-      ////////////call function master//////////////
       this.ImportExcelList(evt, ws)
+
 
     };
     reader.readAsBinaryString(target.files[0]);
@@ -129,6 +146,7 @@ export class ElectricalMasterComponent implements OnInit {
       case this.master[2]:
         break;
       case this.master[3]:
+        this.TFTDriving(evt, ws)
         break;
       case this.master[4]:
         break;
@@ -147,8 +165,9 @@ export class ElectricalMasterComponent implements OnInit {
 
   //TODO F.Electrical value
   async ElectricalValue(evt: any, ws: any) {
+    this.fullData = []
     let D2 = "Electrical value specification of all product. (Refer from Manafacturing Specification)"
-    if (ws?.D2?.h == D2) {
+    if (ws?.B2?.h == D2) {
       const colExcel = 5
       const number = []
 
@@ -214,14 +233,14 @@ export class ElectricalMasterComponent implements OnInit {
       }
       // console.log(this.fullData);
 
-      const data: any[] = []
-      const files = evt.target.files
-      data.push(...files)
-      const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
-      let resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+      // const data: any[] = []
+      // const files = evt.target.files
+      // data.push(...files)
+      // const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
+      // let resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
       // console.log(resUpload);
 
-      let url = { urlMaster: resUpload }
+      let url = { urlMaster: this.resUpload }
       this.fullData.push(url)
       // console.log(this.fullData);
 
@@ -230,7 +249,7 @@ export class ElectricalMasterComponent implements OnInit {
       Swal.fire('success', '', 'success')
       let doo = document.getElementById("files") as HTMLInputElement
       setTimeout(() => {
-        doo.value =''
+        doo.value = ''
         this.fullData = []
       }, 1000);
 
@@ -240,6 +259,117 @@ export class ElectricalMasterComponent implements OnInit {
       }, 200);
 
     }
+  }
+
+  //TODO F.TFTDriving
+  async TFTDriving(evt: any, ws: any) {
+    let D2 = "TFT Driving Voltage"
+    // console.log(ws);
+    this.fullData = []
+    if (ws?.B2?.h == D2) {
+      const colExcel = 5
+      const number = []
+
+      /* save data */
+      this.dataExcel = <AOA>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
+      // console.log(this.dataExcel[colExcel - 2]);
+      //num excel list
+      for (let index = 3; index < this.dataExcel.length; index++) {
+        if (this.dataExcel[index][0] != undefined) {
+          number.push(this.dataExcel[index][0])
+        }
+      }
+
+      for (let x = 0; x < number.length; x++) {
+        this.data = {
+          pattern: "",
+          model: "",
+          value: []
+        }
+        // const x = 0
+        let item = []
+        for (let [index, key] of this.dataExcel[x + colExcel - 2].entries()) {
+          // console.log(index,key);
+          if (index == 0) {
+            this.data.model = key
+          }
+          if (index == 1) {
+            this.data.pattern = key
+          }
+          item.push(key)
+        }
+
+        //list name min typ max good
+        for (let index = 1; index < this.dataExcel[x + colExcel - 2].length; index = index + 3) {
+          let list: any = {}
+          for (const [i, key] of item.slice(index, index + 4).entries()) {
+            // console.log(item.slice(index, index + 6));
+            if (i == 1) {
+              list.measure = key
+            }
+            if (i == 2) {
+              list.name = key
+            }
+            if (i == 3) {
+              list.good = key
+            }
+            if (i + 1 == item.slice(index, index + 3).length) {
+              this.data.value.push(list)
+            }
+          }
+          if (index + 1 == this.dataExcel[x + colExcel - 2].length) {
+            this.data.value.pop()
+          }
+        }
+        this.fullData.push(this.data)
+      }
+      // console.log(this.fullData);
+
+      // const data: any[] = []
+      // const files = evt.target.files
+      // data.push(...files)
+      // const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
+      // let resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+      //upload to /mastereletrical use all
+      // console.log(resUpload);
+
+      let url = { urlMaster: this.resUpload }
+      this.fullData.push(url)
+      // let newData = this.dataOldTFT.map((dataNew:any,i:any)=>{
+      //   return {
+      //     ...dataNew,...this.fullData[i]
+      //   }
+      // })
+      // console.log(this.fullData);
+
+      // let newData = this.fullData.map((dataNew: any, i: any) => {
+      //   return {
+      //     ...dataNew, ...this.dataOldTFT[i]
+      //   }
+      // })
+
+
+      // let newData = [...this.dataOldTFT,...this.fullData]
+      // console.log(newData);
+      // console.log(newData);
+      // console.log(this.fullData);
+
+      const deletes = await this.api.deleteMasterTFT().toPromise()
+      const sandData = this.api.addMasterTFT(this.fullData).toPromise()
+      Swal.fire('success', '', 'success')
+      let doo = document.getElementById("files") as HTMLInputElement
+      setTimeout(() => {
+        doo.value = ''
+        this.fullData = []
+      }, 1000);
+
+    } else {
+      setTimeout(() => {
+        Swal.fire('Data incompatibility !', '', 'error')
+      }, 200);
+
+    }
+
   }
 
 
@@ -254,6 +384,7 @@ export class ElectricalMasterComponent implements OnInit {
       case this.master[2]:
         break;
       case this.master[3]:
+        window.open(this.urls[1], '_blank');
         break;
       case this.master[4]:
         break;
@@ -271,7 +402,14 @@ export class ElectricalMasterComponent implements OnInit {
   }
 
 
+  // async getMasterImageURL() {
+  //   // TFT
+  //   if (this.masterList == this.master[3]) {
+  //     this.dataOldTFT = await this.api.getMasterTFT().toPromise()
+  //     // console.log(this.dataOldTFT);
 
+  //   }
+  // }
 
 
 }
