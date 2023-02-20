@@ -28,7 +28,7 @@
   <div class="row">
     <div class="col-lg-5">
       <label for="">Master :</label>
-      <select class="form-control" name="" [(ngModel)]="masterList">
+      <select class="form-control" name="" [(ngModel)]="masterList" (change)="getMasterImageURL()">
         <option value=""></option>
         <option value="" *ngFor="let list of master" [value]="list" >{{list}}</option>
       </select>

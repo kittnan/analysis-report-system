@@ -342,11 +342,11 @@ export class ElectricalMasterComponent implements OnInit {
       // })
       // console.log(this.fullData);
 
-      // let newData = this.fullData.map((dataNew: any, i: any) => {
-      //   return {
-      //     ...dataNew, ...this.dataOldTFT[i]
-      //   }
-      // })
+      let newData = this.fullData.map((dataNew: any, i: any) => {
+        return {
+          ...dataNew, ...this.dataOldTFT[i]
+        }
+      })
 
 
       // let newData = [...this.dataOldTFT,...this.fullData]
@@ -355,7 +355,7 @@ export class ElectricalMasterComponent implements OnInit {
       // console.log(this.fullData);
 
       const deletes = await this.api.deleteMasterTFT().toPromise()
-      const sandData = this.api.addMasterTFT(this.fullData).toPromise()
+      const sandData = this.api.addMasterTFT(newData).toPromise()
       Swal.fire('success', '', 'success')
       let doo = document.getElementById("files") as HTMLInputElement
       setTimeout(() => {
@@ -402,14 +402,13 @@ export class ElectricalMasterComponent implements OnInit {
   }
 
 
-  // async getMasterImageURL() {
-  //   // TFT
-  //   if (this.masterList == this.master[3]) {
-  //     this.dataOldTFT = await this.api.getMasterTFT().toPromise()
-  //     // console.log(this.dataOldTFT);
-
-  //   }
-  // }
+  async getMasterImageURL() {
+    // TFT
+    if (this.masterList == this.master[3]) {
+      this.dataOldTFT = await this.api.getMasterTFT().toPromise()
+      // console.log(this.dataOldTFT);
+    }
+  }
 
 
 }

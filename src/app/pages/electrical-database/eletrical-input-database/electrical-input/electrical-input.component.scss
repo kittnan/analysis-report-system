@@ -192,24 +192,26 @@ input::-webkit-calendar-picker-indicator {
   background-color:#ffffff;
   color: green;
 }
-.H1:hover {
-  background-color:green !important;
-  color: white !important
-}
 .H1:focus {
   background-color:rgb(255, 255, 255) !important;
   color: green !important
 }
+.H1:hover {
+  background-color:green !important;
+  color: white !important
+}
+
+
 
 .H2{
   background-color:#ffffff;
   color: red;
 }
-.H2:hover {
+.H2:focus {
+  background-color:#ffffff !important;
+  color: red !important;
+}
+.H2:hover{
   background-color: red !important;
   color: white !important
-}
-.H2:focus {
-  background-color:rgb(255, 255, 255) !important;
-  color:  red !important
 }

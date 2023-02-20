@@ -321,3 +321,33 @@ bodY {
     transform: scale(0);
   }
 }
+
+
+
+.H1{
+  background-color:#ffffff;
+  color: green;
+}
+.H1:focus {
+  background-color:rgb(255, 255, 255) !important;
+  color: green !important
+}
+.H1:hover {
+  background-color:green !important;
+  color: white !important
+}
+
+
+
+.H2{
+  background-color:#ffffff;
+  color: red;
+}
+.H2:focus {
+  background-color:#ffffff !important;
+  color: red !important;
+}
+.H2:hover{
+  background-color: red !important;
+  color: white !important
+}
