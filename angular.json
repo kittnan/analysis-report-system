@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pd-free-angularcli": {
+    "Analysis-Report": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -69,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "pd-free-angularcli:build"
+            "browserTarget": "Analysis-Report:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "pd-free-angularcli:build:production"
+              "browserTarget": "Analysis-Report:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pd-free-angularcli:build"
+            "browserTarget": "Analysis-Report:build"
           }
         },
         "test": {
@@ -119,7 +119,7 @@
         }
       }
     },
-    "pd-free-angularcli-e2e": {
+    "Analysis-Report-e2e": {
       "root": "e2e",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -128,7 +128,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "pd-free-angularcli:serve"
+            "devServerTarget": "Analysis-Report:serve"
           }
         },
         "lint": {
@@ -147,7 +147,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular-devkit/build-angular:ng-package",
           "options": {
             "tsConfig": "projects/my-lib/tsconfig.lib.json",
             "project": "projects/my-lib/ng-package.json"
@@ -179,7 +179,7 @@
       }
     }
   },
-  "defaultProject": "pd-free-angularcli",
+  "defaultProject": "Analysis-Report",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

@@ -31,7 +31,7 @@ export class ElectricalInputComponent implements OnInit {
   Datalist: any
   MasterModel: any
   MasterTFT: any
-  MasterResis:any
+  MasterResis: any
 
   dataOld: any
   dataTable: any
@@ -234,7 +234,7 @@ export class ElectricalInputComponent implements OnInit {
     ///claimStock-project
 
     // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
-    this.http.get('http://localhost:4200/assets/report product electrical space.xlsx', { responseType: "arraybuffer" })
+    this.http.get('assets/report product electrical space.xlsx', { responseType: "arraybuffer" })
       // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
       .subscribe(
         data => {

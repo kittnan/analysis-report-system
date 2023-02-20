@@ -61,14 +61,15 @@
       <button [ngClass]="{'abc': dataTable == 1}" class="btn btn-block" id="Product"
         (click)="clickSelect($event)">Product Electrical Spec./Value</button>
     </div>
-    <div *ngIf="onHide[1] == 0" class="col-lg-4">
+    <div *ngIf="onHide[1] == 2" class="col-lg-4">
       <button [ngClass]="{'abc': dataTable == 2}" class="btn btn-block abc" id="TFTDriving"
         (click)="clickSelect($event)">TFT Driving voltage</button>
     </div>
-    <div *ngIf="onHide[2] == 0" class="col-lg-4">
+    <div *ngIf="onHide[2] == 2" class="col-lg-4">
       <button [ngClass]="{'abc': dataTable == 3}" class="btn btn-block abc" id="Resistance"
         (click)="clickSelect($event)">Resistance database</button>
     </div>
+
   </div>
 
 
@@ -94,11 +95,10 @@
           </div>
           <div class="">
             <!-- <button class="" (click)="addInput(item)"><i class="bi bi-plus-square"></i></button> -->
-            <button class="btn H1" style="padding: 0 0 0 0;margin: 0;"
-              (click)="addInput(item)">
+            <button class="btn H1" style="padding: 0 0 0 0;margin: 0;" (click)="addInput(item)">
               <i class="bi bi-file-earmark-plus" style="font-size: 27px"></i></button>
-            <button *ngIf="data[0].ng.length > 1" class="btn H2"
-              style="padding: 0 0 0 0;margin: 0;" (click)="delInput(item)">
+            <button *ngIf="data[0].ng.length > 1" class="btn H2" style="padding: 0 0 0 0;margin: 0;"
+              (click)="delInput(item)">
               <i class="bi bi-file-earmark-minus" style="font-size: 27px"></i></button>
           </div>
         </div>
@@ -176,8 +176,8 @@
                   [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"> -->
                 <input class="myInput text-center" [id]="('drop'+i)+i_ng"
                   [ngClass]="{'myInputGreen': (ng.status == true && ng.value != null),'myInputRed': (ng.status == false && ng.value != null)}"
-                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)" (keyup.enter)="dropdown(i,i_ng,data)"
-                  data-bs-toggle="tooltip" data-bs-html="true" [title]="row.name">
+                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"
+                  (keyup.enter)="dropdown(i,i_ng,data)" data-bs-toggle="tooltip" data-bs-html="true" [title]="row.name">
 
 
                 <!-- <input class="myInput text-center" [ngClass]="{'myInputGreen text-center' : ng.status == true}" [ngClass]="{'myInputRed text-center' : ng.status == false && ng.value != null}"
@@ -210,8 +210,8 @@
 
 
   <!-- <app-electrical-search *ngIf="dataTable == 2" [model]="model"></app-electrical-search> -->
-  <app-electrical-tft-driving *ngIf="dataTable == 2" [model]="model"></app-electrical-tft-driving>
-  <app-electrical-resistance *ngIf="dataTable == 3" [model]="model"></app-electrical-resistance>
+  <!-- <app-electrical-tft-driving *ngIf="dataTable &&dataTable == 2" [model]="model"></app-electrical-tft-driving>
+  <app-electrical-resistance *ngIf="dataTable &&dataTable == 3" [model]="model"></app-electrical-resistance> -->
 
   <!-- <button (click)="testing()">aksdkaskdkase</button> -->
 
@@ -226,6 +226,3 @@
 <!--
 <button (click)="ExportExcel2()" > slkdkljalskdf</button>
 <app-electrical-search></app-electrical-search> -->
-
-
-
