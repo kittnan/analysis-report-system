@@ -32,7 +32,7 @@ export class ElectricalInputComponent implements OnInit {
   MasterModel: any
   MasterTFT: any
   MasterResis: any
-
+  MasterOtp: any
   dataOld: any
   dataTable: any
   nameTable: any
@@ -52,6 +52,7 @@ export class ElectricalInputComponent implements OnInit {
     this.getMasterProductSpec()
     this.getMasterTFT()
     this.getMasterResis()
+    this.getMasterOtp()
     this.getModel()
     this.data = []
     this.UserLevel = sessionStorage.getItem("UserLevel1")
@@ -182,11 +183,14 @@ export class ElectricalInputComponent implements OnInit {
     this.MasterResis = await this.api.getMasterResis().toPromise()
   }
 
+  async getMasterOtp() {
+    this.MasterOtp = await this.api.getMasterOTP().toPromise()
+  }
+
 
   //TODO select product
   clickSelect(e: any) {
     this.nameTable = e.target.innerText
-    // console.log(e.target.innerText);
     switch (e.target.id) {
       case "Product":
         this.dataTable = 1
@@ -196,6 +200,12 @@ export class ElectricalInputComponent implements OnInit {
         break;
       case "Resistance":
         this.dataTable = 3
+        break;
+      case "OTP":
+        this.dataTable = 4
+        break;
+      case "OTPFinal":
+        this.dataTable = 5
         break;
       default:
         break;
@@ -211,9 +221,13 @@ export class ElectricalInputComponent implements OnInit {
     let ProductSpec = this.MasterProductSpec?.find(e => e.model == this.model)
     let TFTDriving = this.MasterTFT?.find(e => e.model == this.model)
     let Resistance = this.MasterResis?.find(e => e.model == this.model)
+    let otp = this.MasterOtp?.find(e => (e.model == this.model) && (e.name == "1st"))
+    let otpFinal = this.MasterOtp?.find(e => (e.model == this.model) && (e.name == "Final"))
     ProductSpec ? this.onHide[0] = 1 : this.onHide[0] = 0
     TFTDriving ? this.onHide[1] = 1 : this.onHide[1] = 0
     Resistance ? this.onHide[2] = 1 : this.onHide[2] = 0
+    otp ? this.onHide[3] = 1 : this.onHide[3] = 0
+    otpFinal ? this.onHide[4] = 1 : this.onHide[4] = 0
     // console.log(this.onHide);
     // console.log("dataTable" , this.dataTable);
   }

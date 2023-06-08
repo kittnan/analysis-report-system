@@ -134,8 +134,8 @@ export class ElectricalSearchComponent implements OnInit {
     ///claimStock-project
 
     // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
-    // this.http.get('http://localhost:4200/assets/New Microsoft Excel Worksheet.xlsx', { responseType: "arraybuffer" })
-    this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
+    this.http.get('/assets/New Microsoft Excel Worksheet.xlsx', { responseType: "arraybuffer" })
+    // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
       .subscribe(
         data => {
           console.log(data);

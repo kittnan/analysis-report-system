@@ -22,7 +22,9 @@
               "src/favicon.ico",
               "src/manifest.webmanifest",
               "src/.htaccess",
-              "src/assets/report product electrical space.xlsx"
+              "src/assets/report product electrical space.xlsx",
+              "src/assets/report resistance database.xlsx",
+              "src/assets/report tft driving voltage.xlsx"
             ],
             "styles": [
               "src/styles.css",

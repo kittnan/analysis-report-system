@@ -60,6 +60,9 @@ import { ElectricalInputComponent } from 'app/pages/electrical-database/eletrica
 import { ElectricalMasterComponent } from 'app/pages/electrical-database/electrical-master/electrical-master/electrical-master.component';
 import { ElectricalTftDrivingComponent } from 'app/pages/electrical-database/electrical-TFT-Driving-voltage/electrical-tft-driving/electrical-tft-driving.component';
 import { ElectricalResistanceComponent } from 'app/pages/electrical-database/electrical-resistance/electrical-resistance/electrical-resistance.component';
+import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical-otp/electrical-otp/electrical-otp.component';
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -122,6 +125,8 @@ import { ElectricalResistanceComponent } from 'app/pages/electrical-database/ele
     ElectricalMasterComponent,
     ElectricalTftDrivingComponent,
     ElectricalResistanceComponent,
+
+    ElectricalOtpComponent,
   ]
 })
 

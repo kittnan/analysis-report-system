@@ -43,7 +43,7 @@
       </select> -->
 
 
-      <!-- <input class="form-control" type="text"> -->
+      <!-- <input class="form-conCLStrol" type="text"> -->
     </div>
     <div class="col-lg-2">
       <label for="">Size (inch)</label>
@@ -61,13 +61,21 @@
       <button [ngClass]="{'abc': dataTable == 1}" class="btn btn-block" id="Product"
         (click)="clickSelect($event)">Product Electrical Spec./Value</button>
     </div>
-    <div *ngIf="onHide[1] == 2" class="col-lg-4">
+    <div *ngIf="onHide[1] == 1" class="col-lg-4">
       <button [ngClass]="{'abc': dataTable == 2}" class="btn btn-block abc" id="TFTDriving"
         (click)="clickSelect($event)">TFT Driving voltage</button>
     </div>
-    <div *ngIf="onHide[2] == 2" class="col-lg-4">
+    <div *ngIf="onHide[2] == 1" class="col-lg-4">
       <button [ngClass]="{'abc': dataTable == 3}" class="btn btn-block abc" id="Resistance"
         (click)="clickSelect($event)">Resistance database</button>
+    </div>
+    <div *ngIf="onHide[3] == 1" class="col-lg-4">
+      <button [ngClass]="{'abc': dataTable == 4}" class="btn btn-block abc" id="OTP" (click)="clickSelect($event)">Otp
+        Data (1st FCT)</button>
+    </div>
+    <div *ngIf="onHide[4] == 1" class="col-lg-4">
+      <button [ngClass]="{'abc': dataTable == 5}" class="btn btn-block abc" id="OTPFinal"
+        (click)="clickSelect($event)">Otp Data (Final FCT)</button>
     </div>
 
   </div>
@@ -172,46 +180,32 @@
                 <button class="myInput text-center" style="width: 6em ;">{{row.good||0}}</button>
               </div>
               <div class="" *ngFor="let ng of row.ng; let i_ng=index">
-                <!-- <input [ngClass]="{'myInput' : ng.status == true}"[ngClass]="ng.status == true? 'myInputGreen text-center' : 'myInputRed text-center'"
-                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"> -->
                 <input class="myInput text-center" [id]="('drop'+i)+i_ng"
                   [ngClass]="{'myInputGreen': (ng.status == true && ng.value != null),'myInputRed': (ng.status == false && ng.value != null)}"
-                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"
-                  (keyup.enter)="dropdown(i,i_ng,data)" data-bs-toggle="tooltip" data-bs-html="true" [title]="row.name">
-
-
-                <!-- <input class="myInput text-center" [ngClass]="{'myInputGreen text-center' : ng.status == true}" [ngClass]="{'myInputRed text-center' : ng.status == false && ng.value != null}"
-                  [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"> -->
+                  [(ngModel)]="ng.value" type="number" style="width: 6em ;cursor: initial;"
+                  (keyup)="calculator(row,i_ng)" (keyup.enter)="dropdown(i,i_ng,data)" data-bs-toggle="tooltip"
+                  data-bs-html="true" [title]="row.name">
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- <div class="">
-        <label for="">NG/Test sample</label>
-        <div class="mt-1" *ngFor="let item of data">
-          <input [ngClass]="item.statuss == true ? 'myInputGreen text-center' : 'myInputRed text-center'"
-            [(ngModel)]="item.Ngs" type="number" style="width: 7em" (keyup)="calculator()" (change)="calculator()">
-        </div>
-      </div> -->
-
-
     </div>
 
     <div class="mt-4"></div>
   </div>
-  <!-- <div *ngIf="dataTable == 1" class="row mt-3">
-    <div class="col-lg-3">
-      <button (click)="ExportExcel()" class="btn btn-sm  text-primary"
-        style="text-align: right; cursor: pointer;">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
-    </div>
-  </div> -->
 
 
-  <!-- <app-electrical-search *ngIf="dataTable == 2" [model]="model"></app-electrical-search> -->
-  <!-- <app-electrical-tft-driving *ngIf="dataTable &&dataTable == 2" [model]="model"></app-electrical-tft-driving>
-  <app-electrical-resistance *ngIf="dataTable &&dataTable == 3" [model]="model"></app-electrical-resistance> -->
+
+  <app-electrical-tft-driving *ngIf="dataTable && dataTable == 2" [model]="model"
+    [dataMain]="dataOld"></app-electrical-tft-driving>
+  <app-electrical-resistance *ngIf="dataTable && dataTable == 3" [model]="model"
+    [dataMain]="dataOld"></app-electrical-resistance>
+  <app-electrical-otp *ngIf="dataTable && dataTable == 4" [model]="model" [dataTable]="dataTable"
+    [dataMain]="dataOld"></app-electrical-otp>
+  <app-electrical-otp *ngIf="dataTable && dataTable == 5" [model]="model" [dataTable]="dataTable"
+    [dataMain]="dataOld"></app-electrical-otp>
 
   <!-- <button (click)="testing()">aksdkaskdkase</button> -->
 

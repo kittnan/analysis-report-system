@@ -3,7 +3,7 @@
   border-radius: 6px;
   border: 1px solid #84bbf3;
   display: inline-block;
-  cursor: pointer;
+  // cursor: default;
   color: #000000;
   font-family: Arial;
   font-size: 15px;
@@ -267,13 +267,28 @@ bodY {
   padding: 0;
   box-sizing: border-box;
 }
+
+
+
+
 .center {
+  animation: 1s fadeIn;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #000000;
+  background: #00000022;
+  visibility: hidden;
 }
+@keyframes fadeIn {
+  0% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+
 .wave {
   width: 5px;
   height: 100px;
@@ -320,7 +335,11 @@ bodY {
   100% {
     transform: scale(0);
   }
+
 }
+
+
+
 
 
 
@@ -350,4 +369,12 @@ bodY {
 .H2:hover{
   background-color: red !important;
   color: white !important
+}
+
+
+.CLR{
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  font-size: 15px;
 }

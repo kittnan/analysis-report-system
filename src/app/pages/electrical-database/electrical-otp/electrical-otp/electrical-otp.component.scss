@@ -223,14 +223,14 @@ $primary_4: var(--css_4);
   padding-left: 0;
   padding-right: 0;
   text-align: center;
-  font-size: 14px;
-  // cursor: default;
+  font-size: 13px;
+  cursor: default;
   // cursor: grab;
-  cursor: $primary_4 !important
+  // cursor: $primary_4 !important
 }
 #registration div label:first-child {
   background-color: #00faff2e;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 // #registration > div > label{
@@ -365,9 +365,9 @@ $primary_3: var(--css_3);
 
 
 .IPS{
-  // background-color:none;
+  background-color:#00faff2e;
   color: rgb(0, 0, 0);
-  cursor: pointer;
+  cursor: pointer !important
 }
 // .IPS:focus {
 //   background-color:rgb(0, 0, 0) !important;
@@ -375,5 +375,5 @@ $primary_3: var(--css_3);
 // }
 .IPS:hover {
   // background-color: #00ff4a!important;
-  color:  #00ff4a !important
+  color:  #ff0000 !important
 }

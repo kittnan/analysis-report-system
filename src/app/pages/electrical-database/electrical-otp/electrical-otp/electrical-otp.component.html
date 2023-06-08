@@ -1,0 +1,136 @@
+<div class="loading" *ngIf="LoadingPage">
+  <div class="spinner">
+  </div>
+</div>
+
+<div class="center" *ngIf="!data">
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+</div>
+
+
+
+<!-- <div *ngIf="data" class="myInput mt-3" style="width: 100%" (mouseup)="this.toggleBT = false"> -->
+<div *ngIf="data" class="myInput mt-3" style="width: 100%">
+
+  <div class="col-lg-12">
+    <div class="row mt-3 label">
+      <div class="col-lg-12">
+        <div class="row d-flex justify-content-between">
+          <div class="row" style="margin: 0px;">
+            <h5 class="d-flex align-items-center mr-1" style="margin: 0px;font-weight: bold;">OTP Data</h5>
+            <h5 *ngIf="this.dataTable == 4" class="d-flex align-items-center" style="margin: 0px;font-weight: bold;color: red;">(1st FCT)</h5>
+            <h5 *ngIf="this.dataTable == 5" class="d-flex align-items-center" style="margin: 0px;font-weight: bold;color: red;">(Final FCT)</h5>
+          </div>
+
+
+          <div>
+            <button (click)="ExportExcel()" class="btn btn-sm  text-primary"
+              style="text-align: right; cursor: pointer;">Export <i class="bi bi-file-earmark-spreadsheet"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12 pl-0 pr-0 pt-2">
+        <label class="B" for="" style="font-size: 19px; font-weight: bold;">Confirm OTP value of NG sample compare with
+          Good sample from Final function process.</label>
+        <div class="">
+          <label for="" style="font-size: 19px; font-weight: bold;"> Model :</label>
+          <span class="blue mr-3" style="font-size: 19px;font-weight: 100;"> {{model}} </span>
+          <span class="blue mr-3" style="font-size: 19px;font-weight: 100;"> {{dataMain?.size?dataMain?.size:''}}
+          </span>
+          <span class="blue mr-3" style="font-size: 19px;font-weight: 100;">
+            {{dataMain?.customer?dataMain?.customer:''}} </span>
+
+
+        </div>
+        <!-- <div class="pt-3">
+          <button class="btn H1" style="padding: 0 0 0 0;margin: 0;" (click)="addInput()">
+            <i class="bi bi-file-earmark-plus" style="font-size: 27px"></i></button>
+          <button class="btn H2" style="padding: 0 0 0 0;margin: 0;" (click)="delInput()">
+            <i class="bi bi-file-earmark-minus" style="font-size: 27px"></i></button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+  <div class="pt-2">
+
+  </div>
+
+  <div class="row" style="margin: 0;" id="registration">
+    <div class="col">
+      <div class="row" style="width: 30rem;">
+        <input type="file" id="files" hidden multiple="false" (change)="readFileText($event)">
+        <label for="files" class="myInput CLR IPS B">OTP from NG Sample (upload file .LOG) <i
+            class="bi bi-upload"></i></label>
+      </div>
+      <div class="row" style="width: 30rem;">
+        <div style="width: 3.75rem;">
+          <label class="myInput CLR">Writing command</label>
+        </div>
+        <div style="width: 3.75rem;">
+          <label class="myInput CLR">Writing time</label>
+        </div>
+        <div style="width: 7.5rem;">
+          <label class="myInput CLR d-flex align-items-center justify-content-center">OTP Address</label>
+        </div>
+        <div style="width: 15rem;">
+          <label class="myInput CLR d-flex align-items-center justify-content-center">OTP Written Parameter</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="row" style="width: 30rem;">
+        <label class="myInput CLR" style="font-size: 13px;">OTP from Good Sample</label>
+      </div>
+      <div class="row" style="width: 30rem;">
+        <div style="width: 3.75rem;">
+          <label class="myInput CLR">Writing command</label>
+        </div>
+        <div style="width: 3.75rem;">
+          <label class="myInput CLR">Writing time</label>
+        </div>
+        <div style="width: 7.5rem;">
+          <label class="myInput CLR d-flex align-items-center justify-content-center">OTP Address</label>
+        </div>
+        <div style="width: 15rem;">
+          <label class="myInput CLR d-flex align-items-center justify-content-center">OTP Written Parameter</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngFor="let row of data;let i = index" style="margin: 0;">
+    <div class="col">
+      <div class="row " style="width: 30rem;">
+        <div style="width: 3.75rem;" *ngFor="let item of row.data;let i = index">
+          <div *ngFor="let ng of item.ng">
+            <input class="myInput CLR" style="height: auto;" type="text" readonly [(ngModel)]="ng.value"
+              (keyup)="cal(ng,row.data[i])"
+              [ngClass]="{'myInputRed': (ng.status == false && ng.value != null)}">
+            <label for=""></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row" style="width: 30rem;">
+        <div style="width: 3.75rem;" *ngFor="let item of row.data">
+          <label class="myInput CLR">{{item.good}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

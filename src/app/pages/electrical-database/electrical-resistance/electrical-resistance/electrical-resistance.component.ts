@@ -5,7 +5,8 @@ import { Workbook } from 'exceljs'
 import * as fs from 'file-saver';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { allowedNodeEnvironmentFlags } from 'process';
-
+import * as XLSX from 'xlsx';
+type AOA = any[][];
 
 @Component({
   selector: 'app-electrical-resistance',
@@ -16,31 +17,39 @@ export class ElectricalResistanceComponent implements OnInit {
   LoadingPage: boolean;
   //TODO Var
   @Input() model: any
+  @Input() dataMain: any
   @ViewChild('fileUpload') fileUpload!: ElementRef
 
 
   // var
   data: any
+  cashe: any
   dataGND: any
   dataVCC: any
+  pattern: any
   urlOldUse: any
+  errorValue: any
+  widthTable: any = 24
   urlOldShow: any;
   EmSize: number;
-  pattern: any
   toggleBT: Boolean = false
   disableSub: boolean = true;
   CheckFileOver: boolean;
   count: any[] = [0, 0, 0, 0];
   tempUpload: any[] = [];
   listDelete: any[] = [];
+  wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
+  fileName: string = 'SheetJS.xlsx';
+
   constructor(private api: HttpService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getDataResistance()
     this.getUrlOld()
-
+    document.documentElement.style.setProperty('--css_1', this.widthTable + 'rem');
+    document.documentElement.style.setProperty('--css_2', this.widthTable + 8 + 'rem');
+    document.documentElement.style.setProperty('--css_4', 'grab');
   }
-
 
   async getUrlOld() {
     let url = await this.getUrlid(this.model)
@@ -54,79 +63,125 @@ export class ElectricalResistanceComponent implements OnInit {
       }
     })
     this.count[0] = this.urlOldShow.length
+    // console.log(this.data);
   }
 
   async getDataResistance() {
     let data = await this.api.getMasterResis().toPromise()
     let item = data.find(e => e.model == this.model)
     let doo = item.value
-    // console.log(item);
-    doo = doo.map((d: any) => {
-      return {
-        ...d,
-        ng_1: [
-          {
-            value: null,
-            status: false
-          }
-        ],
-        ng_2: [
-          {
-            value: null,
-            status: false
-          }
-        ],
-        ng_3: [
-          {
-            value: null,
-            status: false
-          }
-        ]
+    for (const item of doo) {
+      for (const value of item.list) {
+        if (value.Good && value.Good != 'infinity') {
+          value.Good = value.Good.toFixed(2)
+        }
+        if (value.Good == 'infinity') {
+          value.Good = "∞"
+        }
       }
-    })
-    this.pattern = item.pattern
+    }
+
+    // console.log(item);
+    for (const item of doo) {
+      item.list = item.list.map((d: any) => {
+        return {
+          ...d,
+          ng: [{ value: null, status: false }],
+          err: `0 %`
+        }
+      })
+    }
+    // TODO แก้ไขบางตัว
+    // let test001 = doo.map((d: any) => {
+    //   return {
+    //     ...d,...d[0]
+    //   }
+    // })
+    // console.log(test001);
     this.data = doo
+  }
+
+  //TODO addInput
+  addInput() {
+    this.widthTable = this.widthTable + 6
+    document.documentElement.style.setProperty('--css_1', this.widthTable + 'rem');
+    document.documentElement.style.setProperty('--css_2', this.widthTable + 8 + 'rem');
+    for (const item of this.data) {
+      item.list = item.list.map((d: any) => {
+        d.ng.push({ value: null, status: false })
+        return {
+          ...d,
+        }
+      })
+    }
+  }
+
+  //TODO delInput
+  delInput() {
+    this.widthTable = this.widthTable - 6
+    document.documentElement.style.setProperty('--css_1', this.widthTable + 'rem');
+    document.documentElement.style.setProperty('--css_2', this.widthTable + 8 + 'rem');
+    for (const item of this.data) {
+      item.list = item.list.map((d: any) => {
+        d.ng.pop()
+        return {
+          ...d,
+        }
+      })
+    }
+  }
+
+  setErrorValue() {
+    for (const item of this.data) {
+      for (const setValue of item.list) {
+        setValue.err = `${item.err} %`
+        for (let index = 0; index < setValue.ng.length; index++) {
+          this.calculator(setValue, index)
+        }
+        // console.log(setValue.err);
+        if (setValue.err == `null %` || setValue.err == `undefined %`) {
+          // console.log("aaa");
+          setValue.err = `0 %`
+        }
+      }
+    }
     // console.log(this.data);
-
-
 
   }
 
-
-
   //TODO calc
-  calculator(e: any, i: any, j: any) {
-    let vat = (e.good * (5 / 100))
-    let min = e.good - vat
-    let max = e.good + vat
+  calculator(e: any, i: any) {
+    // console.log(e,i);
 
-    if (j == 1) {
-      if (e.ng_1[i].value != null && min <= e.ng_1[i].value && e.ng_1[i].value <= max) {
-        e.ng_1[i].status = true
+    let dataErr = e.err.split("%")[0]
+
+    if (Number(e.Good) || e.Good == 0) {
+      let vat = (Number(e.Good) * (Number(dataErr) / 100))
+      let min = Number(e.Good) - vat
+      let max = Number(e.Good) + vat
+      // console.log(min , max , e.Good );
+
+
+      if (e.ng[i].value != null && min <= e.ng[i].value && e.ng[i].value <= max) {
+        e.ng[i].status = true
       }
       else {
-        e.ng_1[i].status = false
+        e.ng[i].status = false
+      }
+
+    } else {
+      if (e.ng[i].value == "∞") {
+        e.ng[i].status = true
+      } else {
+        e.ng[i].status = false
       }
     }
 
-    if (j == 2) {
-      if (e.ng_2[i].value != null && min <= e.ng_2[i].value && e.ng_2[i].value <= max) {
-        e.ng_2[i].status = true
-      }
-      else {
-        e.ng_2[i].status = false
-      }
+    if (e.ng[i].value == "" && e.ng[i].value != "0") {
+      e.ng[i].value = null
     }
 
-    if (j == 2) {
-      if (e.ng_3[i].value != null && min <= e.ng_3[i].value && e.ng_3[i].value <= max) {
-        e.ng_3[i].status = true
-      }
-      else {
-        e.ng_3[i].status = false
-      }
-    }
-
+    // console.log(e.ng[i].value);
 
   }
 
@@ -429,9 +484,9 @@ export class ElectricalResistanceComponent implements OnInit {
   ExportExcel() {
     ///claimStock-project
 
-    // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
-    this.http.get('http://localhost:4200/assets/report resistance database.xlsx', { responseType: "arraybuffer" })
-      // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
+    // this.http.get('assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
+    this.http.get('assets/report resistance database.xlsx', { responseType: "arraybuffer" })
+      // this.http.get('http://localhost:4200/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
       .subscribe(
         data => {
           // console.log(data);
@@ -440,226 +495,162 @@ export class ElectricalResistanceComponent implements OnInit {
           arrayBuffer.then((data) => {
             workbook.xlsx.load(data)
               .then(() => {
+                let ABC = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                  "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ"
+                  , "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ"]
+                // console.log(ABC.split(""));
+
                 const worksheet = workbook.getWorksheet(2);
+                worksheet.getCell('C3').value = `${this.model}`;
+                worksheet.getCell('D3').value = `${this.dataMain?.size ? this.dataMain?.size : ""}`;
+                worksheet.getCell('E3').value = `${this.dataMain?.customer ? this.dataMain?.customer : ""}`;
 
-                worksheet.getCell('D3').value = `${this.model}`;
-                worksheet.getCell('D4').value = `${this.pattern}`;
+                // worksheet.getCell('D4').value = `${this.pattern}`;
+                // console.log(`${ABC[1 + (0 * 5) + (0 * this.data[0].list[0].ng.length)]}6);
+                // // border(worksheet, 'G7', '000000', 'medium', 1, 1, 1, 1)
+                for (let index = 0; index < this.data.length; index++) {
+                  if (index < this.data.length - 1) {
 
-                // border(worksheet, 'G7', '000000', 'medium', 1, 1, 1, 1)
-                for (const [index, item] of this.data.entries()) {
-                  let cell = `B${index + 8}`
-                  // worksheet.getCell(cell).value = { 'richText': [{ 'text': `${item.number || ""}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
-                  worksheet.getCell(cell).value = item.number
-                  alignment(worksheet, cell, 'middle', 'center')
-                  border(worksheet, cell, '000000', 'medium', 0, 1, 1, 1)
-                }
-                for (const [index, item] of this.data.entries()) {
-                  let cell = `C${index + 8}`
-                  worksheet.getCell(cell).value = item.name || 0
-                  alignment(worksheet, cell, 'middle', 'center')
-                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                }
-                for (const [index, item] of this.data.entries()) {
-                  let cell = `D${index + 8}`
-                  worksheet.getCell(cell).value = Number(item.good || 0);
-                  alignment(worksheet, cell, 'middle', 'center')
-                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                }
-                // for (const [index, item] of this.data.entries()) {
-                //   let cell = `E${index + 8}`
-                //   worksheet.getCell(cell).value = Number(item.err || 0);
-                //   alignment(worksheet, cell, 'middle', 'center')
-                //   border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                // }
-                for (let i = 0; i < this.data[0].ng_1.length; i++) {
-                  let key = ["E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"]
-                  // let label = `${key[i]}${6}`
-                  // let label2 = `${key[i]}${7}`
-                  // console.log(i);
-                  // worksheet.getCell(label).value = { 'richText': [{ 'text': 'NG/Test', 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
-                  // worksheet.getCell(label2).value = { 'richText': [{ 'text': `sample ${i + 1}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
-                  // alignment(worksheet, label, 'middle', 'center')
-                  // alignment(worksheet, label2, 'middle', 'center')
-                  // border(worksheet, label, '000000', 'medium', 1, 0, 0, 1)
-                  // border(worksheet, label2, '000000', 'medium', 0, 0, 1, 1)
-                  // fill(worksheet, label, 'DDEBF7') //blue
-                  // fill(worksheet, label2, 'DDEBF7') //blue
-                  for (const [index, item] of this.data.entries()) {
-                    let cell = `${key[i]}${index + 8}`
-                    if (item.ng_1[i].status == 1) {
-                      if (item.ng_1[i].value == null) {
-                        worksheet.getCell(cell).value = "-"
-                        fill(worksheet, cell, 'FFFFFF') //while
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                      } else {
-                        worksheet.getCell(cell).value = Number(item.ng_1[i].value);
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                        fill(worksheet, cell, 'a7ffbb') //green
-                      }
-                    } else {
-                      if (item.ng_1[i].value == null) {
-                        worksheet.getCell(cell).value = "-"
-                        fill(worksheet, cell, 'FFFFFF') //while
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                      } else {
-                        worksheet.getCell(cell).value = Number(item.ng_1[i].value);
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                        fill(worksheet, cell, 'ffa8b0') //rad
-                      }
+
+                    //header
+
+                    worksheet.mergeCells(`${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6:${ABC[1 + 3 + (index * 5) + (index * this.data[0].list[0].ng.length) + this.data[0].list[0].ng.length]}6`);
+                    worksheet.getCell(`${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`).value = Bold(`Resistance reference with ${this.data[index].name} (k ꭥ)`)
+                    border(worksheet, `${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`, '000000', 'medium', 1, 1, 1, 1)
+                    fill(worksheet, `${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`, 'DDEBF7')
+                    worksheet.getCell(`${ABC[1 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold(`No.`)
+                    worksheet.getCell(`${ABC[2 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold(`Name`)
+                    worksheet.getCell(`${ABC[3 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold(`Good`)
+                    worksheet.getCell(`${ABC[4 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold(`Err`)
+
+
+                    for (let i = 1; i < 5; i++) {
+                      alignment(worksheet, `${ABC[i + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'middle', 'center')
+                      border(worksheet, `${ABC[i + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, '000000', 'medium', 1, 1, 1, 1)
+                      fill(worksheet, `${ABC[i + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'DDEBF7')
                     }
-                  }
-                }
-                /// ----------------------------------------------------------------------------------- ///
-                // border(worksheet, 'G7', '000000', 'medium', 1, 1, 1, 1)
-                for (const [index, item] of this.data.entries()) {
-                  let cell = `G${index + 8}`
-                  // worksheet.getCell(cell).value = { 'richText': [{ 'text': `${item.number || ""}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
-                  worksheet.getCell(cell).value = item.number
-                  alignment(worksheet, cell, 'middle', 'center')
-                  border(worksheet, cell, '000000', 'medium', 0, 1, 1, 1)
-                }
-                for (const [index, item] of this.data.entries()) {
-                  let cell = `H${index + 8}`
-                  worksheet.getCell(cell).value = item.name || 0
-                  alignment(worksheet, cell, 'middle', 'center')
-                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                }
-                for (const [index, item] of this.data.entries()) {
-                  let cell = `I${index + 8}`
-                  worksheet.getCell(cell).value = Number(item.good || 0);
-                  alignment(worksheet, cell, 'middle', 'center')
-                  border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                }
-                // for (const [index, item] of this.data.entries()) {
-                //   let cell = `E${index + 8}`
-                //   worksheet.getCell(cell).value = Number(item.err || 0);
-                //   alignment(worksheet, cell, 'middle', 'center')
-                //   border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                // }
+                    alignment(worksheet, `${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`, 'middle', 'center')
 
-                for (let i = 0; i < this.data[0].ng_2.length; i++) {
-                  let key = ["J"]
-                  // let label = `${key[i]}${6}`
-                  // let label2 = `${key[i]}${7}`
-                  // console.log(i);
-                  // worksheet.getCell(label).value = { 'richText': [{ 'text': 'NG/Test', 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
-                  // worksheet.getCell(label2).value = { 'richText': [{ 'text': `sample ${i + 1}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] }
-                  // alignment(worksheet, label, 'middle', 'center')
-                  // alignment(worksheet, label2, 'middle', 'center')
-                  // border(worksheet, label, '000000', 'medium', 1, 0, 0, 1)
-                  // border(worksheet, label2, '000000', 'medium', 0, 0, 1, 1)
-                  // fill(worksheet, label, 'DDEBF7') //blue
-                  // fill(worksheet, label2, 'DDEBF7') //blue
-                  for (const [index, item] of this.data.entries()) {
-                    let cell = `${key[i]}${index + 8}`
-                    if (item.ng_2[i].status == 1) {
-                      if (item.ng_2[i].value == null) {
-                        worksheet.getCell(cell).value = "-"
-                        fill(worksheet, cell, 'FFFFFF') //while
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                      } else {
-                        worksheet.getCell(cell).value = Number(item.ng_2[i].value);
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                        fill(worksheet, cell, 'a7ffbb') //green
-                      }
-                    } else {
-                      if (item.ng_2[i].value == null) {
-                        worksheet.getCell(cell).value = "-"
-                        fill(worksheet, cell, 'FFFFFF') //while
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                      } else {
-                        worksheet.getCell(cell).value = Number(item.ng_2[i].value);
-                        alignment(worksheet, cell, 'middle', 'center')
-                        border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                        fill(worksheet, cell, 'ffa8b0') //rad
-                      }
+                    for (const [j, ng] of this.data[0].list[0].ng.entries()) {
+                      worksheet.getCell(`${ABC[j + 5 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold(`NG sample ${j + 1}`)
+                      alignment(worksheet, `${ABC[j + 5 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'middle', 'center')
+                      border(worksheet, `${ABC[j + 5 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, '000000', 'medium', 1, 1, 1, 1)
+                      fill(worksheet, `${ABC[j + 5 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'DDEBF7')
                     }
-                  }
-                }
-
-                /// ----------------------------------------------------------------------------------- ///
-                // border(worksheet, 'G7', '000000', 'medium', 1, 1, 1, 1)
 
 
-                for (const [index, item] of this.data.entries()) {
-                  if (index < this.data.length - 1) {
-                    let cell = `L${index + 8}`
-                    // worksheet.getCell(cell).value = { 'richText': [{ 'text': `${item.number || ""}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
-                    worksheet.getCell(cell).value = item.number
-                    alignment(worksheet, cell, 'middle', 'center')
-                    border(worksheet, cell, '000000', 'medium', 0, 1, 1, 1)
-                  }
-                }
-                for (const [index, item] of this.data.entries()) {
-                  if (index < this.data.length - 1) {
-                    let cell = `M${index + 8}`
-                    // worksheet.getCell(cell).value = { 'richText': [{ 'text': `${item.number || ""}`, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
-                    worksheet.getCell(cell).value = this.data[index + 1].number
-                    alignment(worksheet, cell, 'middle', 'center')
-                    border(worksheet, cell, '000000', 'medium', 0, 1, 1, 1)
-                  }
-                }
-                for (const [index, item] of this.data.entries()) {
-                  if (index < this.data.length - 1) {
-                    let cell = `N${index + 8}`
-                    worksheet.getCell(cell).value = item.name || 0
-                    alignment(worksheet, cell, 'middle', 'center')
-                    border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                  }
-                }
-                for (const [index, item] of this.data.entries()) {
-                  if (index < this.data.length - 1) {
-                    let cell = `O${index + 8}`
-                    worksheet.getCell(cell).value = this.data[index + 1].name
-                    alignment(worksheet, cell, 'middle', 'center')
-                    border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                  }
-                }
-                for (const [index, item] of this.data.entries()) {
-                  if (index < this.data.length - 1) {
-                    let cell = `P${index + 8}`
-                    worksheet.getCell(cell).value = Number(item.good || 0);
-                    alignment(worksheet, cell, 'middle', 'center')
-                    border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                  }
-                }
-                for (let i = 0; i < this.data[0].ng_3.length; i++) {
-                  let key = ["Q"]
-                  for (const [index, item] of this.data.entries()) {
-                    let cell = `${key[i]}${index + 8}`
-                    if (index < this.data.length - 1) {
-                      if (item.ng_3[i].status == 1) {
-                        if (item.ng_3[i].value == null) {
-                          worksheet.getCell(cell).value = "-"
-                          fill(worksheet, cell, 'FFFFFF') //while
-                          alignment(worksheet, cell, 'middle', 'center')
-                          border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                        } else {
-                          worksheet.getCell(cell).value = Number(item.ng_3[i].value);
-                          alignment(worksheet, cell, 'middle', 'center')
-                          border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                          fill(worksheet, cell, 'a7ffbb') //green
-                        }
-                      } else {
-                        if (item.ng_3[i].value == null) {
-                          worksheet.getCell(cell).value = "-"
-                          fill(worksheet, cell, 'FFFFFF') //while
-                          alignment(worksheet, cell, 'middle', 'center')
-                          border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                        } else {
-                          worksheet.getCell(cell).value = Number(item.ng_3[i].value);
-                          alignment(worksheet, cell, 'middle', 'center')
-                          border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
-                          fill(worksheet, cell, 'ffa8b0') //rad
+                    for (let i = 0; i < this.data[index].list.length; i++) {
+                      let data = this.data[index].list[i]
+                      //data
+                      worksheet.getCell(`${ABC[1 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Number
+                      worksheet.getCell(`${ABC[2 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Name
+                      worksheet.getCell(`${ABC[3 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Good
+                      worksheet.getCell(`${ABC[4 + (index * (5 + data.ng.length))]}${i + 8}`).value = `${data.err}`
+                      if (i % 2) {
+                        for (let x = 1; x < 5; x++) {
+                          fill(worksheet, `${ABC[x + (index * (5 + data.ng.length))]}${i + 8}`, 'E2EFDA')
                         }
                       }
+
+                      for (let x = 1; x < 5; x++) {
+                        border(worksheet, `${ABC[x + (index * (5 + data.ng.length))]}${i + 8}`, '000000', 'thin', 0, 1, 1, 1)
+                      }
+
+
+                      for (const [j, ng] of data.ng.entries()) {
+                        //data
+                        let cell = `${ABC[j + 5 + (index * (5 + data.ng.length))]}${i + 8}`
+                        worksheet.getCell(cell).value = ng.value
+                        alignment(worksheet, cell, 'middle', 'right')
+                        border(worksheet, cell, '000000', 'thin', 0, 1, 1, 1)
+                        if (ng.status == 1) {
+                          if (ng.value != null) {
+                            fill(worksheet, cell, 'a7ffbb') //green
+                          }
+                        } else {
+                          if (ng.value != null) {
+                            fill(worksheet, cell, 'ffa8b0') //rad
+                          } else {
+                            worksheet.getCell(cell).value = "-"
+                            fill(worksheet, cell, 'FFFFFF') //while
+                          }
+                        }
+                      }
+                      alignment(worksheet, `${ABC[1 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                      alignment(worksheet, `${ABC[2 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                      alignment(worksheet, `${ABC[3 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'right')
+                      alignment(worksheet, `${ABC[4 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                    }
+                  }
+
+                  if (index == this.data.length - 1) {
+                    //header
+                    worksheet.mergeCells(`${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6:${ABC[1 + 5 + (index * 5) + (index * this.data[0].list[0].ng.length) + this.data[0].list[0].ng.length]}6`);
+                    worksheet.getCell(`${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`).value = Bold(`Resistance reference with between (k ꭥ)`)
+                    worksheet.getCell(`${ABC[1 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold("No.")
+                    worksheet.getCell(`${ABC[2 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold("No.")
+                    worksheet.getCell(`${ABC[3 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold("Name")
+                    worksheet.getCell(`${ABC[4 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold("Name")
+                    worksheet.getCell(`${ABC[5 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold("Good")
+                    worksheet.getCell(`${ABC[6 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold("Err")
+                    border(worksheet, `${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`, '000000', 'medium', 1, 1, 1, 1)
+                    fill(worksheet, `${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`, 'DDEBF7')
+
+                    for (let i = 1; i < 7; i++) {
+                      alignment(worksheet, `${ABC[i + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'middle', 'center')
+                      border(worksheet, `${ABC[i + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, '000000', 'medium', 1, 1, 1, 1)
+                      fill(worksheet, `${ABC[i + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'DDEBF7')
+                    }
+
+                    alignment(worksheet, `${ABC[1 + (index * 5) + (index * this.data[0].list[0].ng.length)]}6`, 'middle', 'center')
+                    for (const [j, ng] of this.data[0].list[0].ng.entries()) {
+                      worksheet.getCell(`${ABC[j + 7 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`).value = Bold(`NG sample ${j + 1}`)
+                      alignment(worksheet, `${ABC[j + 7 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'middle', 'center')
+                      border(worksheet, `${ABC[j + 7 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, '000000', 'medium', 1, 1, 1, 1)
+                      fill(worksheet, `${ABC[j + 7 + (index * (5 + this.data[0].list[0].ng.length))]}${7}`, 'DDEBF7')
+                    }
+                    for (let i = 0; i < this.data[index].list.length; i++) {
+                      let data = this.data[index].list[i]
+                      worksheet.getCell(`${ABC[1 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Number_A
+                      worksheet.getCell(`${ABC[2 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Number_B
+                      worksheet.getCell(`${ABC[3 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Name_A
+                      worksheet.getCell(`${ABC[4 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Name_B
+                      worksheet.getCell(`${ABC[5 + (index * (5 + data.ng.length))]}${i + 8}`).value = data.Good
+                      worksheet.getCell(`${ABC[6 + (index * (5 + data.ng.length))]}${i + 8}`).value = `${data.err}`
+
+                      if (i % 2) {
+                        for (let x = 1; x < 7; x++) {
+                          fill(worksheet, `${ABC[x + (index * (5 + data.ng.length))]}${i + 8}`, 'E2EFDA')
+                        }
+                      }
+                      for (let x = 1; x < 7; x++) {
+                        border(worksheet, `${ABC[x + (index * (5 + data.ng.length))]}${i + 8}`, '000000', 'thin', 1, 1, 1, 1)
+                      }
+
+                      for (const [j, ng] of data.ng.entries()) {
+                        let cell = `${ABC[j + 7 + (index * (5 + data.ng.length))]}${i + 8}`
+                        worksheet.getCell(cell).value = ng.value
+                        alignment(worksheet, cell, 'middle', 'right')
+                        border(worksheet, cell, '000000', 'thin', 1, 1, 1, 1)
+                        if (ng.status == 1) {
+                          if (ng.value != null) {
+                            fill(worksheet, cell, 'a7ffbb') //green
+                          }
+                        } else {
+                          if (ng.value != null) {
+                            fill(worksheet, cell, 'ffa8b0') //rad
+                          } else {
+                            worksheet.getCell(cell).value = "-"
+                            fill(worksheet, cell, 'FFFFFF') //while
+                          }
+                        }
+                      }
+                      alignment(worksheet, `${ABC[1 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                      alignment(worksheet, `${ABC[2 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                      alignment(worksheet, `${ABC[3 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                      alignment(worksheet, `${ABC[4 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
+                      alignment(worksheet, `${ABC[5 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'right')
+                      alignment(worksheet, `${ABC[6 + (index * (5 + data.ng.length))]}${i + 8}`, 'middle', 'center')
                     }
                   }
                 }
@@ -676,6 +667,9 @@ export class ElectricalResistanceComponent implements OnInit {
           console.log(error);
         }
       );
+    function Bold(str: string) {
+      return { 'richText': [{ 'text': str, 'font': { 'bold': true, 'size': 16, 'name': 'Calibri' } }] };
+    }
 
     function fill(worksheet: any, cell: string, color: string) {
       worksheet.getCell(cell).fill = {
@@ -684,6 +678,7 @@ export class ElectricalResistanceComponent implements OnInit {
         fgColor: { argb: color },
       };
     }
+
     function border(ws: any, cells: string, colors: string, styles: string, tops: any, lefts: any, bottoms: any, rights: any) {
       ws.getCell(cells).border = {
         top: tops ? { style: styles, color: { argb: colors } } : null,
@@ -692,31 +687,161 @@ export class ElectricalResistanceComponent implements OnInit {
         right: rights ? { style: styles, color: { argb: colors } } : null
       };
     }
+
     function alignment(ws: any, cells: string, verticals: string, horizontals: string) {
       ws.getCell(cells).alignment = { vertical: verticals, horizontal: horizontals };
     }
-
-  }
-
-  dropdown(i: any, j: any, x: any ,y:any) {
-    let max = document.getElementById(`${y}${0}${j + 1}`)
-    if (i < x.length - 1) {
-      document.getElementById(`${y}${i + 1}${j}`).focus();
-    } else {
-      if (max) {
-        document.getElementById(`${y}${0}${j + 1}`).focus();
+    function generateToken(n: number) {
+      var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var token = '';
+      for (var i = 0; i < n; i++) {
+        token += chars[Math.floor(Math.random() * chars.length)];
       }
+      return token;
     }
   }
 
-  dropdown_1(i: any, j: any, x: any ,y:any) {
-    let max = document.getElementById(`${y}${0}${j + 1}`)
-    if (i < x.length - 2) {
-      document.getElementById(`${y}${i + 1}${j}`).focus();
-    } else {
-      if (max) {
-        document.getElementById(`${y}${0}${j + 1}`).focus();
+
+  Drag(e: any) {
+    let pos = { top: 0, left: 0, x: 0, y: 0 };
+    const ele = document.getElementById('container');
+    ele.style.cursor = 'grabbing';
+    document.documentElement.style.setProperty('--css_4', 'grabbing');
+    pos = {
+      // The current scroll
+      left: ele.scrollLeft,
+      top: ele.scrollTop,
+      // Get the current mouse position
+      x: e.clientX,
+      y: e.clientY,
+    };
+
+
+    const mouseMoveHandler = function (e) {
+
+      // How far the mouse has been moved
+      const dx = e.clientX - pos.x;
+      const dy = e.clientY - pos.y;
+
+      // Scroll the element
+      ele.scrollTop = pos.top - dy;
+      ele.scrollLeft = pos.left - dx;
+      // ele.style.cursor = 'grabbing';
+
+
+    };
+
+
+    const mouseUpHandler = function () {
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+
+
+      ele.style.cursor = 'grab';
+      document.documentElement.style.setProperty('--css_4', 'grab');
+      ele.style.removeProperty('user-select');
+    };
+
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+
+  }
+
+
+  calAfterInput(data : any) {
+    // console.log(data);
+    data.err = `${data.err} %`
+    for (const item of this.data) {
+      for (const data of item.list) {
+        for (let index = 0; index < data.ng.length; index++) {
+          this.calculator(data, index)
+
+        }
       }
     }
+    this.cashe = data.err
   }
+
+  returnInput(a,e){
+    let goo = document.getElementById(`${a.name}${e}`) as HTMLInputElement
+    goo.value = this.cashe
+  }
+
+
+  clearInput(e :any){
+    let doo = e.split("%")[0]
+    this.cashe = `${doo}%`
+  }
+
+  inputData(evt: any, index: any, names: any) {
+    // console.log(index,names);
+
+    const data: any[] = []
+    // const files = e.target.files
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const files = evt.target.files
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      console.log(wsname);
+      if (wsname == "Resistance") {
+        const colExcel = 5
+        let data = readData(ws)
+        for (const [index, iterator] of data.entries()) {
+          if (iterator && iterator != "∞") {
+            data[index] = iterator.toFixed(2)
+          }
+        }
+        // })
+        // console.log(data);
+
+
+        let too = this.data.find((e) => e.name == names)
+        // console.log(too,name);
+        for (const [i, item] of too.list.entries()) {
+          item.ng[index - 1].value = null
+
+          if (i < data.length) {
+            item.ng[index - 1].value = data[i]
+            this.calculator(item, index - 1)
+
+          }
+        }
+      } else {
+        Swal.fire('Data incompatibility !', '', 'error')
+      }
+
+      // console.log(this.data);
+
+    };
+    reader.readAsBinaryString(target.files[0]);
+    remove()
+
+
+    function readData(ws: any) {
+      let data = []
+      let dataExcel = <AOA>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
+      for (let index = 3; index < dataExcel.length; index++) {
+        if (dataExcel[index][3] != undefined) {
+          data.push(dataExcel[index][3])
+        }
+      }
+      // console.log(data);
+      return data
+    }
+
+    function remove() {
+      let d = document.getElementById(`files${index - 1}${names}`) as HTMLInputElement
+      d.value = ""
+    }
+  }
+
+
+
 }

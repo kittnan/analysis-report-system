@@ -383,8 +383,8 @@ export class AnalysisDataListComponent implements OnInit {
         this.MergeRequest = result_merge
         let tempMap: any = await this.mapToDataTable(result_merge)
         const guest = sessionStorage.getItem('UserEmployeeCode')
-
-        // tempMap = await this.filterStatus(tempMap);
+        //TODO Hidden status
+        tempMap = await this.filterStatus(tempMap);
 
         if (guest == 'guest') {
           console.log(tempMap);
@@ -409,12 +409,18 @@ export class AnalysisDataListComponent implements OnInit {
   }
 
   // ! filter status ongoing, done, done with delay
+  //TODO Hidden status
   filterStatus(data: any) {
     return new Promise(resolve => {
       const result = data.filter((d: any) =>
-        d.statusShow.toLowerCase() == 'ongoing' ||
-        d.statusShow.toLowerCase().includes('done')
+        // d.statusShow.toLowerCase() == 'ongoing' ||
+        // d.statusShow.toLowerCase().includes('done')
+        d.statusShow.toLowerCase() != 'ongoing with delay' &&
+        d.statusShow.toLowerCase() != 'done with delay' &&
+        d.statusShow.toLowerCase() != 'cancel'
       )
+      console.log(data);
+
       resolve(result)
     })
   }
@@ -848,7 +854,6 @@ export class AnalysisDataListComponent implements OnInit {
         const str = JSON.stringify(foo)
         sessionStorage.setItem('datalist_filter', str)
         Swal.fire('SUCCESS', '', 'success')
-
       }
     })
   }

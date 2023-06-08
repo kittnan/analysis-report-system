@@ -657,6 +657,22 @@ export class HttpService {
   addMasterResis(data: any): Observable<any> {
     return this.http.post(this.Url + "/ResistanceDatabase/", data)
   }
-  // TFTDrivingVoltage/getFile
+
+
+  // OTP
+  getMasterOTP(): Observable<any> {
+    return this.http.get(this.Url + "/OTPDatabase/")
+  }
+  addMasterOTP(data: any): Observable<any> {
+    return this.http.post(this.Url + "/OTPDatabase/", data)
+  }
+  insertDataOTP(id: any, data: any): Observable<any> {
+    return this.http.put(this.Url + "/OTPDatabase/" + id, data)
+  }
+
+
+
+
+
 }
 // getDataView

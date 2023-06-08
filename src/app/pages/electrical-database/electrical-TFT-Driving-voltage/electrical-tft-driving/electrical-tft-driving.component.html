@@ -1,9 +1,11 @@
-<!-- <div class="loading" *ngIf="LoadingPage">
+<!-- <div class="loading" *ngIf="!data">
   <div class="spinner">
   </div>
 </div> -->
 
-<!-- <div class="center" *ngIf="!data">
+
+
+<div class="center" *ngIf="!Path">
   <div class="wave"></div>
   <div class="wave"></div>
   <div class="wave"></div>
@@ -14,11 +16,11 @@
   <div class="wave"></div>
   <div class="wave"></div>
   <div class="wave"></div>
-</div> -->
+</div>
 
 
 
-<div [hidden]="hidden" *ngIf="data?.length > 0" class="myInput mt-3" style="width: 100%" (mouseup)="this.toggleBT = false" >
+<div [hidden]="!Path && !xxx" *ngIf="data?.length > 0" class="myInput mt-3" style="width: 100%" (mouseup)="this.toggleBT = false" >
   <div class="col-lg-12">
     <div class="row mt-3 label">
 
@@ -37,8 +39,10 @@
           sample compare
           with Good sample</label>
         <div class="">
-          <label for="" style="font-size: 19px; font-weight: bold;"> Model :</label><span class="blue"
-            style="font-size: 19px;font-weight: 100;"> {{model}}</span>
+          <label for="" style="font-size: 19px; font-weight: bold;"> Model :</label>
+          <span class="blue mr-3" style="font-size: 19px;font-weight: 100;"> {{model}} </span>
+          <span class="blue mr-3" style="font-size: 19px;font-weight: 100;"> {{dataMain.size?dataMain?.size:''}} </span>
+          <span class="blue mr-3" style="font-size: 19px;font-weight: 100;"> {{dataMain?.customer?dataMain?.customer:''}} </span>
         </div>
         <div class="row">
           <div class="" style="width: 27em;margin-left: 1em;">
@@ -94,7 +98,7 @@
                   <label for="" class="myInput text-center header">Good</label>
                 </div>
                 <div class="pl-0 pr-0" style="width: 6em ;margin-left: 2px">
-                  <input type="text" class="myInput text-center header" placeholder="Err%" type="number"
+                  <input type="Number" class="myInput text-center header" placeholder="Err%"
                     [(ngModel)]="errorValue" (change)="setErrorValue()">
                 </div>
                 <div class="pl-0 pr-0 " style="width: 6em ; margin-left: 2px"
@@ -111,21 +115,20 @@
         <div class="col-12">
           <div class="row">
             <div class="">
-              <label style="width: 9em;" for="" class="myInput text-center label">{{row.measure}}</label>
+              <label style="width: 9em;" for="" class="myInput text-center label CLR">{{row.measure}}</label>
             </div>
             <div class="">
               <label style="width: 5.7em;" for=""
-                class="myInput text-center d-flex align-items-center justify-content-center">{{row.name}}</label>
+                class="myInput text-center d-flex align-items-center justify-content-center CLR">{{row.name}}</label>
             </div>
             <div class="">
-              <label style="width: 6em;" for="" class="myInput text-center">{{row.good}}</label>
+              <label style="width: 6em;" for="" class="myInput text-center" CLR>{{row.good}}</label>
             </div>
             <div class="">
-              <input style="width: 6em;" class="myInput text-center" type="number" [(ngModel)]="row.err"
-                (keyup)="cal()">
+              <input style="width: 6em;" class="myInput text-center CLR" type="" [(ngModel)]="row.err" [id]="i"  onfocus="this.value=''" (focus)="clearInput(row.err)" (blur)="returnInput(i)" (change)="cal(row)">
             </div>
             <div class="" *ngFor="let ng of row.ng; let i_ng=index">
-              <input class="myInput text-center" [id]="('drop'+i)+i_ng"
+              <input class="myInput text-center CLR" [id]="('drop'+i)+i_ng"
                 [ngClass]="{'myInputGreen': (ng.status == true && ng.value != null),'myInputRed': (ng.status == false && ng.value != null)}"
                 [(ngModel)]="ng.value" type="number" style="width: 6em" (keyup)="calculator(row,i_ng)"
                 (keyup.enter)="dropdown(i,i_ng,data)" data-bs-toggle="tooltip" data-bs-html="true"
@@ -173,7 +176,7 @@
 
 
 </div>
-<div [hidden]="hidden" class="col-lg-12 pl-0" *ngIf="data?.length > 0">
+<div [hidden]="!Path" class="col-lg-12 pl-0" *ngIf="data?.length > 0">
   <div class="row">
     <div class="col">
       <button (click)="BTC()"  class="btn btn-sm btn-primary mr-0">EDIT IMAGE</button>

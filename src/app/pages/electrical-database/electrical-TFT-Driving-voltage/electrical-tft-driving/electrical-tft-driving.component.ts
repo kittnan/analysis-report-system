@@ -7,6 +7,7 @@ import { Timeouts } from 'selenium-webdriver';
 import { Workbook } from 'exceljs'
 import * as fs from 'file-saver';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+// import { interval, Subscription } from 'rxjs';
 var FileSaver = require('file-saver');
 
 @Component({
@@ -19,6 +20,7 @@ export class ElectricalTftDrivingComponent implements OnInit {
 
   //TODO Var
   @Input() model: any
+  @Input() dataMain : any
   @ViewChild('fileUpload') fileUpload!: ElementRef
 
   tempUpload: any[] = []
@@ -49,16 +51,16 @@ export class ElectricalTftDrivingComponent implements OnInit {
   disableSub: boolean = true
   toggleBT: boolean = false;
   hidden: boolean = true;
+  loading:boolean = false;
+  xxx:any
+  cashe: string;
   constructor(private api: HttpService, private http: HttpClient) { }
-
 
   //TODO init
   async ngOnInit(): Promise<void> {
-    // this.LoadingPage = true
-    // setTimeout(() => {
-      // this.LoadingPage = false
-      this.hidden = false
-    // }, 1000);
+    // this.hidden = false
+
+
     this.getDataM = await this.getData()
     this.data = this.getValueData()
     this.data = this.data.map((d: any) => {
@@ -71,7 +73,8 @@ export class ElectricalTftDrivingComponent implements OnInit {
     document.documentElement.style.setProperty('--css_2', this.widthTable - 15 + 'em');
     document.documentElement.style.setProperty('--css_3', this.widthTable - 6 + 'em');
     for (const item of this.data) {
-      item.err ? item.err : item.err = 0
+      item.err ? item.err : item.err = `0 %`
+      // item.err ? item.err : item.err = 0
     }
     this.labelTft = {
       name: [
@@ -82,26 +85,21 @@ export class ElectricalTftDrivingComponent implements OnInit {
     this.showEdit(false)
     this.urlPath()
     // console.log(this.data);
-
   }
 
-  test2(){
-    if (this.data) {
-
-    }
-    console.log("asdas");
-
+  onLoad() {
+    console.log("assdasd");
   }
 
   async showEdit(e: boolean) {
     // console.log(this.data);
 
     this.editOn = e
-    let test = await this.getUrlid(this.model)
-    if (test) {
+    let b = await this.getUrlid(this.model)
+    if (b) {
       this.urlOld = {
-        PartDrawing: test.PartDrawing,
-        CircuitDiagram: test.CircuitDiagram,
+        PartDrawing: b.PartDrawing,
+        CircuitDiagram: b.CircuitDiagram,
       }
     }
 
@@ -175,17 +173,23 @@ export class ElectricalTftDrivingComponent implements OnInit {
   }
   setErrorValue() {
     for (const item of this.data) {
-      item.err = this.errorValue
+      item.err = `${this.errorValue} %`
     }
-    this.cal()
+    // this.cal()
+    for (const item of this.data) {
+      for (let index = 0; index < item.ng.length; index++) {
+        this.calculator(item, index)
+      }
+    }
     this.errorValue = null
   }
 
   calculator(e: any, i: any) {
-    let vat = (e.good * (e.err / 100))
+    let swap = Number(e.err.split("%")[0])
+    let vat = (e.good * (swap / 100))
     let min = e.good - vat
     let max = e.good + vat
-
+    // console.log(min,max);
     if (e.ng[i].value != null && min <= e.ng[i].value && e.ng[i].value <= max) {
       e.ng[i].status = true
     }
@@ -195,14 +199,18 @@ export class ElectricalTftDrivingComponent implements OnInit {
   }
 
   //TODO calculator
-  cal() {
+  cal(e :any) {
+    e.err = `${e.err} %`
     for (const item of this.data) {
+      let swapData = Number(item.err.split("%")[0])
       // console.log(item);
       for (const [i, iterator] of item.ng.entries()) {
         // console.log(iterator);
-        let vat = (item.good * (item.err / 100))
+        let vat = (item.good * (swapData / 100))
         let min = item.good - vat
         let max = item.good + vat
+        // console.log(min,max);
+
 
         if (item.ng[i].value != null && min <= item.ng[i].value && item.ng[i].value <= max) {
           item.ng[i].status = true
@@ -212,6 +220,7 @@ export class ElectricalTftDrivingComponent implements OnInit {
         }
       }
     }
+    this.cashe = e.err
   }
   // row.err
 
@@ -523,7 +532,7 @@ export class ElectricalTftDrivingComponent implements OnInit {
     ///claimStock-project
 
     // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
-    this.http.get('http://localhost:4200/assets/report tft driving voltage.xlsx', { responseType: "arraybuffer" })
+    this.http.get('assets/report tft driving voltage.xlsx', { responseType: "arraybuffer" })
       // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
       .subscribe(
         data => {
@@ -558,7 +567,7 @@ export class ElectricalTftDrivingComponent implements OnInit {
                 }
                 for (const [index, item] of this.data.entries()) {
                   let cell = `E${index + 8}`
-                  worksheet.getCell(cell).value = Number(item.err || 0);
+                  worksheet.getCell(cell).value = item.err
                   alignment(worksheet, cell, 'middle', 'center')
                   border(worksheet, cell, '000000', 'medium', 0, 0, 1, 1)
                 }
@@ -637,6 +646,14 @@ export class ElectricalTftDrivingComponent implements OnInit {
     function alignment(ws: any, cells: string, verticals: string, horizontals: string) {
       ws.getCell(cells).alignment = { vertical: verticals, horizontal: horizontals };
     }
+    function generateToken(n: number) {
+      var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var token = '';
+      for (var i = 0; i < n; i++) {
+        token += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return token;
+    }
 
   }
 
@@ -699,8 +716,33 @@ export class ElectricalTftDrivingComponent implements OnInit {
     }
   }
 
-  // closeAuto(){
-  //   this.toggleBT = false
-  // }
+  loading_data(){
+    if (!this.data) {
+        this.loading = true
+    }else{
+      setTimeout(() => {
+        this.loading = false
+        this.hidden = false
+      }, 100);
+    }
+    // this.toggleBT = false
+    // console.log("sas");
+
+  }
+
+  returnInput(e :any){
+    let goo = document.getElementById(`${e}`) as HTMLInputElement
+    goo.value = this.cashe
+  }
+
+
+  clearInput(e :any){
+    let doo = e.split("%")[0]
+    this.cashe = `${doo}%`
+    // console.log(this.cashe);
+
+  }
+
+
 
 }
