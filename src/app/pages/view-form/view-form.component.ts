@@ -43,6 +43,8 @@ export class ViewFormComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    console.log('@@@@@@@');
+
     const form = await this.getForm(this.FormId);
 
     form ? this.form = form : this.form = []
