@@ -43,7 +43,6 @@ export class ViewFormComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    console.log('@@@@@@@');
 
     const form = await this.getForm(this.FormId);
 
@@ -60,8 +59,6 @@ export class ViewFormComponent implements OnInit {
 
 
   pdfLabel() {
-    // requestItem
-    console.log(this.form.requestItem);
 
     const head = this.form.requestNumber
     const model = this.form.ktcModelNumber
