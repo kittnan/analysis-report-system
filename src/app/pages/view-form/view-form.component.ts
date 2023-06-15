@@ -74,7 +74,7 @@ export class ViewFormComponent implements OnInit {
     const pic = this.form.userApprove3Name
     const date = new Date(this.form.issuedDate).toLocaleString('en-US').split(',');
     const requester = this.form.requestItem
-    const qrText = head + ";" + model + ";" + defect + ";" + lot + ";" + sendNg + ";" + pic + ";" + date[0];
+    const qrText = head + ";" + model + ";" + defect + ";" + lot + ";" + sendNg + ";" + pic + ";" + date[0] + ":" + requester;
     var label = {
       pageSize: {
         width: 378,
