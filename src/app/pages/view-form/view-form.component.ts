@@ -58,8 +58,6 @@ export class ViewFormComponent implements OnInit {
 
 
   pdfLabel() {
-    console.log(this.form);
-
     const head = this.form.requestNumber
     const model = this.form.ktcModelNumber
     const defect1 = this.form.defectiveName.substring(0, 95)
