@@ -58,6 +58,9 @@ export class ViewFormComponent implements OnInit {
 
 
   pdfLabel() {
+    // requestItem
+    console.log(this.form.requestItem);
+
     const head = this.form.requestNumber
     const model = this.form.ktcModelNumber
     const defect1 = this.form.defectiveName.substring(0, 95)
@@ -68,7 +71,8 @@ export class ViewFormComponent implements OnInit {
     const sendNg = this.form.sendNgAnalysis
     const pic = this.form.userApprove3Name
     const date = new Date(this.form.issuedDate).toLocaleString('en-US').split(',');
-    const qrText = head + "/" + model + "/" + defect + "/" + lot + "/" + sendNg + "/" + pic + "/" + date[0];
+    const requester = this.form.requestItem
+    const qrText = head + ";" + model + ";" + defect + ";" + lot + ";" + sendNg + ";" + pic + ";" + date[0];
     var label = {
       pageSize: {
         width: 378,
@@ -163,7 +167,14 @@ export class ViewFormComponent implements OnInit {
                   bold: true
                 },
                 {
-                  text: date[0]
+                  text: date[0] + '\n'
+                },
+                {
+                  text: 'Requester: ',
+                  bold: true
+                },
+                {
+                  text: requester
                 }
               ],
               fontSize: 11
