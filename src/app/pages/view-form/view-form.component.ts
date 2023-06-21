@@ -70,7 +70,7 @@ export class ViewFormComponent implements OnInit {
     const sendNg = this.form.sendNgAnalysis
     const pic = this.form.userApprove3Name
     const date = new Date(this.form.issuedDate).toLocaleString('en-US').split(',');
-    const requester = this.form.requestItem
+    const requester = this.form.requestFormSectionName
     const qrText = head + ";" + model + ";" + defect + ";" + lot + ";" + sendNg + ";" + pic + ";" + date[0] + ";" + requester;
     var label = {
       pageSize: {
