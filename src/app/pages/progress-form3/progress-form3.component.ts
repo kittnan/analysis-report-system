@@ -48,6 +48,7 @@ export class ProgressForm3Component implements OnInit {
     CategoryCause: new FormControl(null, Validators.required),
     AnalysisLevel: new FormControl(null, Validators.required),
     CanAnalysis: new FormControl(null, Validators.required),
+    RelatedToESD: new FormControl(null, Validators.required),
     ReportNo: new FormControl(null, Validators.required),
     Approve: new FormControl(null, Validators.required),
     File: new FormControl(null, Validators.required),
@@ -193,6 +194,7 @@ export class ProgressForm3Component implements OnInit {
             result.causeOfDefect ? this.CategoryCause.setValue(result.causeOfDefect) : null
             result.analysisLevel ? this.AnalysisLevel.setValue(result.analysisLevel) : null
             result.canAnalysis ? this.CanAnalysis.setValue(result.canAnalysis) : null
+            result.relatedToESD ? this.RelatedToESD.setValue(result.relatedToESD) : null
             result.analysisReportNo ? this.ReportNo.setValue(result.analysisReportNo) : null
             result.treatMent ? this.TreatmentOfNg.setValue(result.treatMent) : null
 
@@ -440,6 +442,7 @@ export class ProgressForm3Component implements OnInit {
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
         canAnalysis: this.CanAnalysis.value || null,
+        relatedToESD: this.RelatedToESD.value || null,
         startAnalyzeDate: this.AnalyzeDate.value || null,
         finishAnalyzeDate: this.ResultDate.value || null,
         finishReportDate: this.ReportDate.value || null,
@@ -462,6 +465,7 @@ export class ProgressForm3Component implements OnInit {
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
         canAnalysis: this.CanAnalysis.value || null,
+        relatedToESD: this.RelatedToESD.value || null,
         startAnalyzeDate: this.AnalyzeDate.value || null,
         finishAnalyzeDate: this.ResultDate.value || null,
         finishReportDate: this.ReportDate.value || null,
@@ -543,6 +547,7 @@ export class ProgressForm3Component implements OnInit {
         sourceOfDefect: this.SourceOfDefect.value,
         analysisLevel: this.AnalysisLevel.value,
         canAnalysis: this.CanAnalysis.value,
+        relatedToESD: this.RelatedToESD.value,
         startAnalyzeDate: this.AnalyzeDate.value,
         finishAnalyzeDate: this.ResultDate.value,
         finishReportDate: this.ReportDate.value,
@@ -2660,6 +2665,7 @@ export class ProgressForm3Component implements OnInit {
   get CategoryCause() { return this.ResultForm.get('CategoryCause') }
   get AnalysisLevel() { return this.ResultForm.get('AnalysisLevel') }
   get CanAnalysis() { return this.ResultForm.get('CanAnalysis') }
+  get RelatedToESD() { return this.ResultForm.get('RelatedToESD') }
   get ReportNo() { return this.ResultForm.get('ReportNo') }
   get Approve() { return this.ResultForm.get('Approve') }
   get TempCause() { return this.ResultForm.get('TempCause') }

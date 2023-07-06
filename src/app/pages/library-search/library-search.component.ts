@@ -148,6 +148,11 @@ export class LibrarySearchComponent implements OnInit {
       headerTooltip: "Ng Ratio(%)"
     },
     {
+      field: 'relatedToESD',
+      headerName: "Related To ESD",
+      headerTooltip: "Related To ESD"
+    },
+    {
       field: 'result',
       headerName: "Result",
       headerTooltip: "Result Analysis"
@@ -365,6 +370,7 @@ export class LibrarySearchComponent implements OnInit {
           Ng_Qty: Number(merge.ngQuantity),
           Ng_Ratio: Number(ratio),
           Result: merge.result,
+          relatedToESD: merge.relatedToESD,
           REQ_From: merge.requestFormSectionName,
           REQ_Name: merge.issuer,
           UserNow: merge.userApproveName,
@@ -614,6 +620,7 @@ export class LibrarySearchComponent implements OnInit {
           Occur_Place: data.occurBName,
           Issuer: data.issuer,
           Request_From_Department: data.requestFormSectionName,
+          relatedToESD: data.relatedToESD,
           Analysis_Result: data.causeOfDefect,
           Category_Cause: data.defectCatagory,
           Issue_Date: data.issuedDate ? ((data.issuedDate).split('T'))[0] : data.issuedDate,

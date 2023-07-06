@@ -59,6 +59,7 @@ export class ProgressForm4Component implements OnInit {
     sourceOfDefect: new FormControl('', Validators.required),
     analysisLevel: new FormControl('', Validators.required),
     canAnalysis: new FormControl('', Validators.required),
+    relatedToESD: new FormControl('', Validators.required),
     result: new FormControl('', Validators.required),
   })
 
@@ -68,10 +69,10 @@ export class ProgressForm4Component implements OnInit {
   }
 
   // ? master
-  SourceList :any
-  AnalysisLevelList :any
-  CauseList :any
-  TreatmentList :any
+  SourceList: any
+  AnalysisLevelList: any
+  CauseList: any
+  TreatmentList: any
 
 
   constructor(
@@ -153,7 +154,7 @@ export class ProgressForm4Component implements OnInit {
         this.tempFile = this.Result.files
 
         // this.FileReportName = (this.result.file.split('/'))[6]
-        this.FileReportName = this.Result.file? (this.Result.file.split('/'))[5] : []
+        this.FileReportName = this.Result.file ? (this.Result.file.split('/'))[5] : []
 
         this.AnalysisForm.setValue({
           _id: this.Result._id,
@@ -161,7 +162,8 @@ export class ProgressForm4Component implements OnInit {
           result: this.Result.result || '',
           sourceOfDefect: this.Result.sourceOfDefect || '',
           analysisLevel: this.Result.analysisLevel || '',
-          canAnalysis: this.Result.canAnalysis || ''
+          canAnalysis: this.Result.canAnalysis || '',
+          relatedToESD: this.Result.relatedToESD || ''
         })
 
 

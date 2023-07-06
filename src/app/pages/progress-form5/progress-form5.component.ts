@@ -66,6 +66,7 @@ export class ProgressForm5Component implements OnInit {
     sourceOfDefect: new FormControl('', Validators.required),
     analysisLevel: new FormControl('', Validators.required),
     canAnalysis: new FormControl('', Validators.required),
+    relatedToESD: new FormControl('', Validators.required),
     result: new FormControl('', Validators.required),
   })
 
@@ -163,7 +164,8 @@ export class ProgressForm5Component implements OnInit {
           result: this.result.result || '',
           sourceOfDefect: this.result.sourceOfDefect || '',
           analysisLevel: this.result.analysisLevel || '',
-          canAnalysis: this.result.canAnalysis || ''
+          canAnalysis: this.result.canAnalysis || '',
+          relatedToESD: this.result.relatedToESD || ''
         })
 
 

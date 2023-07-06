@@ -114,6 +114,11 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "NG Ratio(%)"
     },
     {
+      field: 'relatedToESD',
+      headerName: "Related To ESD",
+      headerTooltip: "Related To ESD"
+    },
+    {
       field: 'sendNgAnalysis',
       filter: 'agNumberColumnFilter',
       headerName: "Sent NG(pcs)",
@@ -170,6 +175,7 @@ export class AnalysisDataListComponent implements OnInit {
       headerName: "Can Analysis",
       headerTooltip: "Can Analysis"
     },
+
     {
       field: 'analysisLevel',
       headerName: "Analysis Level",
@@ -185,7 +191,6 @@ export class AnalysisDataListComponent implements OnInit {
       headerName: "Claim No",
       headerTooltip: "Claim No"
     },
-
     {
       field: 'issueDate',
       filter: false,
@@ -707,6 +712,7 @@ export class AnalysisDataListComponent implements OnInit {
           NG_Quantity: data.ngQuantity,
           // NG_Ratio: data.ngRatio? data.ngRatio + '%': '',
           NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
+          RelatedToESD: data.relatedToESD,
           Sent_NG_To_Analysis: data.sendNgAnalysis,
           Defect_Category: data.defectCatagory,
           Abnormal_Lot_Level: data.abnormalLotLevel,

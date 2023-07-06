@@ -50,6 +50,7 @@ export class RejectForm3Component implements OnInit {
     CategoryCause: new FormControl(null, Validators.required),
     AnalysisLevel: new FormControl(null, Validators.required),
     CanAnalysis: new FormControl(null, Validators.required),
+    relatedToESD: new FormControl(null, Validators.required),
     ReportNo: new FormControl(null),
     Approve: new FormControl(null, Validators.required),
     TempCause: new FormControl(null),
@@ -217,6 +218,7 @@ export class RejectForm3Component implements OnInit {
         this.SourceOfDefect.setValue(data2[0].sourceOfDefect);
         this.AnalysisLevel.setValue(data2[0].analysisLevel);
         this.CanAnalysis.setValue(data2[0].canAnalysis);
+        this.relatedToESD.setValue(data2[0].relatedToESD);
         this.ReportNo.setValue(data2[0].analysisReportNo);
         this.TreatmentOfNg.setValue(data2[0].treatMent)
         let st = data2[0].startAnalyzeDate ? data2[0].startAnalyzeDate.split("T") : null;
@@ -402,6 +404,7 @@ export class RejectForm3Component implements OnInit {
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
         canAnalysis: this.CanAnalysis.value || null,
+        relatedToESD: this.relatedToESD.value || null,
         startAnalyzeDate: this.AnalyzeDate.value || null,
         finishAnalyzeDate: this.ResultDate.value || null,
         finishReportDate: this.ReportDate.value || null,
@@ -424,6 +427,7 @@ export class RejectForm3Component implements OnInit {
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
         canAnalysis: this.CanAnalysis.value || null,
+        relatedToESD: this.relatedToESD.value || null,
         startAnalyzeDate: this.AnalyzeDate.value || null,
         finishAnalyzeDate: this.ResultDate.value || null,
         finishReportDate: this.ReportDate.value || null,
@@ -458,6 +462,7 @@ export class RejectForm3Component implements OnInit {
         sourceOfDefect: this.SourceOfDefect.value,
         analysisLevel: this.AnalysisLevel.value,
         canAnalysis: this.CanAnalysis.value,
+        relatedToESD: this.relatedToESD.value,
         startAnalyzeDate: this.AnalyzeDate.value,
         finishAnalyzeDate: this.ResultDate.value,
         finishReportDate: this.ReportDate.value,
@@ -804,6 +809,7 @@ export class RejectForm3Component implements OnInit {
   get CategoryCause() { return this.ResultForm.get('CategoryCause') }
   get AnalysisLevel() { return this.ResultForm.get('AnalysisLevel') }
   get CanAnalysis() { return this.ResultForm.get('CanAnalysis') }
+  get relatedToESD() { return this.ResultForm.get('relatedToESD') }
   get ReportNo() { return this.ResultForm.get('ReportNo') }
   get Approve() { return this.ResultForm.get('Approve') }
   get TempCause() { return this.ResultForm.get('TempCause') }
