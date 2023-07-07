@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal, { SweetAlertResult } from 'sweetalert2'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import { ColDef, GridApi, GridReadyEvent, RowNode } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, RowNode, ValueGetterParams } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
 
@@ -116,7 +116,14 @@ export class AnalysisDataListComponent implements OnInit {
     {
       field: 'relatedToESD',
       headerName: "Related To ESD",
-      headerTooltip: "Related To ESD"
+      headerTooltip: "Related To ESD",
+      valueFormatter: ((p: any) => {
+        if (p.data.relatedToESD) {
+          return p.data.relatedToESD.charAt(0).toUpperCase() + p.data.relatedToESD.slice(1);
+        } else {
+          return ''
+        }
+      })
     },
     {
       field: 'sendNgAnalysis',

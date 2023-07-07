@@ -150,7 +150,14 @@ export class LibrarySearchComponent implements OnInit {
     {
       field: 'relatedToESD',
       headerName: "Related To ESD",
-      headerTooltip: "Related To ESD"
+      headerTooltip: "Related To ESD",
+      valueFormatter: ((p: any) => {
+        if (p.data.relatedToESD) {
+          return p.data.relatedToESD.charAt(0).toUpperCase() + p.data.relatedToESD.slice(1);
+        } else {
+          return ''
+        }
+      })
     },
     {
       field: 'result',
