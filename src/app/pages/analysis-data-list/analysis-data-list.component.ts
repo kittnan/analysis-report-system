@@ -396,11 +396,9 @@ export class AnalysisDataListComponent implements OnInit {
         let tempMap: any = await this.mapToDataTable(result_merge)
         const guest = sessionStorage.getItem('UserEmployeeCode')
         //TODO Hidden status
-        tempMap = await this.filterStatus(tempMap);
+        // tempMap = await this.filterStatus(tempMap);
 
         if (guest == 'guest') {
-          console.log(tempMap);
-
           this.rowData = tempMap.filter(d => !(d.requestNumber.toLowerCase()).includes('amt'))
         } else {
           this.rowData = tempMap
