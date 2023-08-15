@@ -6,7 +6,7 @@ import { environment } from 'environments/environment.prod'
 import Swal from 'sweetalert2'
 
 import { HttpService } from 'app/service/http.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 @Component({
   selector: 'app-progress-form1',
   templateUrl: './progress-form1.component.html',
@@ -17,11 +17,16 @@ import { Router } from '@angular/router';
 export class ProgressForm1Component implements OnInit {
 
   constructor(private api: HttpService,
-    // private api: RequestServiceService, 
+    // private api: RequestServiceService,
     private modalService: NgbModal,
-    private route: Router
-    ) {
-
+    private route: Router,
+    private routerActive: ActivatedRoute
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+      }
+    })
   }
 
   // ? Form Conttrol
@@ -51,13 +56,15 @@ export class ProgressForm1Component implements OnInit {
     TempModelNumber: new FormControl(null),
     Size: new FormControl(null, Validators.required),
     Customer: new FormControl(null, Validators.required),
+    TBN: new FormControl(null, Validators.required),
+    TBNNumber: new FormControl(null),
   })
 
   NoteApprove = new FormControl(null);
   NoteReject = new FormControl(null);
 
-  // ? Session
-  FormId = sessionStorage.getItem('FormId');
+  // ? Params
+  formId: any = null
 
 
 
@@ -108,7 +115,7 @@ export class ProgressForm1Component implements OnInit {
   MinDate2: any;
 
   // ? Session
-  UserSection1Id: any = sessionStorage.getItem('UserSection1Id');
+  UserSection1Id: any = localStorage.getItem('AR_UserSection1Id');
 
   // ? Toggle
   toggleDefectName: any = false;
@@ -142,12 +149,12 @@ export class ProgressForm1Component implements OnInit {
 
   CheckStatusUser() {
     let LevelList = [];
-    sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
-    sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
-    sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
-    sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
-    sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
-    sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
+    localStorage.getItem('AR_UserLevel1') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel1')) : false
+    localStorage.getItem('AR_UserLevel2') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel2')) : false
+    localStorage.getItem('AR_UserLevel3') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel3')) : false
+    localStorage.getItem('AR_UserLevel4') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel4')) : false
+    localStorage.getItem('AR_UserLevel5') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel5')) : false
+    localStorage.getItem('AR_UserLevel6') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel6')) : false
 
     if (LevelList.find(i => i == '2') || LevelList.find(i => i == '0')) {
     } else {
@@ -284,7 +291,7 @@ export class ProgressForm1Component implements OnInit {
   }
 
   GetRequestForm() {
-    let d = this.FormId;
+    let d = this.formId;
     this.api.FindFormById(d).subscribe((data: any) => {
       if (data) {
         // console.log(data);
@@ -298,6 +305,8 @@ export class ProgressForm1Component implements OnInit {
         this.RequestSection.setValue(data.requestFormSectionName);
         this.ModelNumber.setValue(data.ktcModelNumber);
         this.LotNumber.setValue(data.pcLotNumber);
+        this.TBN.setValue(data.TBN);
+        this.TBNNumber.setValue(data.TBNNumber);
         this.DefectName.setValue(data.defectiveName);
         this.DefectCode.setValue(data.defectiveCode);
         this.InputQ.setValue(data.inputQuantity);
@@ -340,6 +349,18 @@ export class ProgressForm1Component implements OnInit {
 
 
   // ? Event
+
+  // todo change TBN
+  onChangeTBN() {
+    if (this.TBN.value === 'normal') {
+      this.TBNNumber.setValidators(null)
+      this.TBNNumber.updateValueAndValidity()
+      this.TBNNumber.setValue(null)
+    } else {
+      this.TBNNumber.setValidators(Validators.required)
+      this.TBNNumber.updateValueAndValidity()
+    }
+  }
 
   // todo เลือก Occur A แล้ว ยิงapi ไป get ค่า ของ occurB
   OnChangeOccurA() {
@@ -579,6 +600,8 @@ export class ProgressForm1Component implements OnInit {
               size: this.Size.value,
               customer: this.Customer.value,
               pcLotNumber: this.LotNumber.value || '-',
+              TBN: this.TBN.value,
+              TBNNumber: this.TBNNumber.value,
               defectiveCode: this.DefectCode.value,
               defectiveName: this.DefectName.value,
               inputQuantity: this.InputQ.value,
@@ -605,10 +628,10 @@ export class ProgressForm1Component implements OnInit {
             // console.log(da);
 
 
-            this.api.UpadateRequestForm(this.FormId, da).subscribe((data: any) => {
+            this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
 
-              let Fname = sessionStorage.getItem('UserFirstName')
-              let Lname = sessionStorage.getItem('UserLastName')
+              let Fname = localStorage.getItem('AR_UserFirstName')
+              let Lname = localStorage.getItem('AR_UserLastName')
               if (data) {
                 const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Window)</p><br>" +
                   "Please analysis the defect as link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
@@ -624,7 +647,7 @@ export class ProgressForm1Component implements OnInit {
                 this.api.SendEmailTo(sendMail).subscribe((data: any) => {
                   // console.log("Send mail ", data);
                   this.alertSuccess();
-      this.route.navigate(['/manageForm'])
+                  this.route.navigate(['/manageForm'])
 
                   // location.href = "#/manageForm";
                 })
@@ -663,14 +686,14 @@ export class ProgressForm1Component implements OnInit {
             userApproveName: sum,
           }
 
-          this.api.UpadateRequestForm(this.FormId, d).subscribe((data: any) => {
+          this.api.UpadateRequestForm(this.formId, d).subscribe((data: any) => {
 
             this.api.GetUser(d.userApprove).subscribe((data: any) => {
               if (data.length > 0) {
                 this.SendRejectUser = data[0];
                 console.log(this.SendRejectUser);
-                let Fname = sessionStorage.getItem('UserFirstName')
-                let Lname = sessionStorage.getItem('UserLastName')
+                let Fname = localStorage.getItem('AR_UserFirstName')
+                let Lname = localStorage.getItem('AR_UserLastName')
                 const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(Issuer)</p><br>" +
                   "Analysis request not approve as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
                   "<p>From " + Fname + " " + Lname + "(Requestor approval)</p>";
@@ -684,7 +707,7 @@ export class ProgressForm1Component implements OnInit {
                 }
                 this.api.SendEmailTo(sendMail).subscribe((data: any) => {
                   this.alertSuccess();
-      this.route.navigate(['/manageForm'])
+                  this.route.navigate(['/manageForm'])
 
                   // location.href = "#/manageForm";
                 })
@@ -924,6 +947,8 @@ export class ProgressForm1Component implements OnInit {
   get TempModelNumber() { return this.RequestForm.get('TempModelNumber') }
   get Size() { return this.RequestForm.get('Size') }
   get Customer() { return this.RequestForm.get('Customer') }
+  get TBN() { return this.RequestForm.get('TBN') }
+  get TBNNumber() { return this.RequestForm.get('TBNNumber') }
 
   alertSuccess() {
     Swal.fire({

@@ -40,7 +40,7 @@ export class MasterOutsourceComponent implements OnInit {
 
   //-----------------------------------------------------------------------------------------//
   ngOnInit(): void {
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {
@@ -206,12 +206,12 @@ export class MasterOutsourceComponent implements OnInit {
 
   }
 
-  check(){
+  check() {
     if (this.addMaster == this.listMaster[0].name) {
-      this.onAdd = this.listMaster[0].list.find((l:any)=> l.toLowerCase()==this.listName.toLowerCase())
+      this.onAdd = this.listMaster[0].list.find((l: any) => l.toLowerCase() == this.listName.toLowerCase())
     }
     if (this.addMaster == this.listMaster[1].name) {
-      this.onAdd = this.listMaster[1].list.find((l:any)=> l.toLowerCase()==this.listName.toLowerCase())
+      this.onAdd = this.listMaster[1].list.find((l: any) => l.toLowerCase() == this.listName.toLowerCase())
     }
 
     //

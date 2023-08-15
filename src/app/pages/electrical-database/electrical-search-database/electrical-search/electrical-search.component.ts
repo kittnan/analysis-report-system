@@ -52,7 +52,7 @@ export class ElectricalSearchComponent implements OnInit {
 
   //-----------------------------------------------------------------------------------------------------//
   routes() {
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {
@@ -135,7 +135,7 @@ export class ElectricalSearchComponent implements OnInit {
 
     // this.http.get('/assets/F5110.1 RGA.xlsx', { responseType: "arraybuffer" })
     this.http.get('/assets/New Microsoft Excel Worksheet.xlsx', { responseType: "arraybuffer" })
-    // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
+      // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
       .subscribe(
         data => {
           console.log(data);
@@ -163,14 +163,14 @@ export class ElectricalSearchComponent implements OnInit {
         }
       );
 
-    function fill(worksheet: any, call: string, color: string){
+    function fill(worksheet: any, call: string, color: string) {
       worksheet.getCell(call).fill = {
         type: 'pattern',
-        pattern:'solid',
-        fgColor:{argb:color},
+        pattern: 'solid',
+        fgColor: { argb: color },
       };
     }
-    function border(worksheet: any, call: string, color: string , style:any) {
+    function border(worksheet: any, call: string, color: string, style: any) {
       worksheet.getCell(call).border = {
         top: { style: style, color: { argb: color } },
         left: { style: style, color: { argb: color } },

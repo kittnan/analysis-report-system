@@ -19,12 +19,12 @@ export class OutsourceViewComponent implements OnInit {
 
   }
 
-  public UserLevel1 = sessionStorage.getItem('UserLevel1');
-  public UserLevel2 = sessionStorage.getItem('UserLevel2');
-  public UserLevel3 = sessionStorage.getItem('UserLevel3');
-  public UserLevel4 = sessionStorage.getItem('UserLevel4');
-  public UserLevel5 = sessionStorage.getItem('UserLevel5');
-  public UserLevel6 = sessionStorage.getItem('UserLevel6');
+  public UserLevel1 = localStorage.getItem('AR_UserLevel1');
+  public UserLevel2 = localStorage.getItem('AR_UserLevel2');
+  public UserLevel3 = localStorage.getItem('AR_UserLevel3');
+  public UserLevel4 = localStorage.getItem('AR_UserLevel4');
+  public UserLevel5 = localStorage.getItem('AR_UserLevel5');
+  public UserLevel6 = localStorage.getItem('AR_UserLevel6');
   ArrUserLevel: any
 
   ngOnInit(): void {
@@ -32,7 +32,7 @@ export class OutsourceViewComponent implements OnInit {
     this.Data = JSON.parse(sessionStorage.getItem('dataAll'));
     this.RegisterNo = this.Data.registerNo.slice(0, 7)
     this.nameSplitFile()
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {

@@ -25,7 +25,7 @@ export class LibrarySearchComponent implements OnInit {
   IdModelNumber = environment.IdModelNumber
 
   // ? Session
-  GuestUserStatus = sessionStorage.getItem('UserEmployeeCode')
+  GuestUserStatus = localStorage.getItem('AR_UserEmployeeCode')
 
   // ?API
   ModelNumberList: any;

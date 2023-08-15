@@ -1,616 +1,677 @@
-<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+<div class="col-12"
+  style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
 
-    <form [formGroup]="RequestForm">
-        <!-- // -----------PART 1 -->
+  <form [formGroup]="RequestForm">
+    <!-- // -----------PART 1 -->
+    <div class="row">
+
+
+      <!-- ? ----------------------------- BOX 1 -->
+      <div class="col-md-12 ">
         <div class="row">
-
-
-            <!-- ? ----------------------------- BOX 1 -->
-            <div class="col-md-12 ">
-                <div class="row">
-                    <h6>Analysis Request Form</h6>
-                </div>
-            </div>
-
-
-            <div class="col-md-12 border-bottom">
-                <!-- ! ----------------------------------------ROW 1 -->
-                <div class="row">
-                    <!-- * -------------------------------------------------Request Item -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': RequestItem.invalid}">Request Item
-                                <i *ngIf="RequestItem.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-                            <div class="input-group mb-3">
-                                <select disabled formControlName="RequestItem" class="custom-select subtext-color" style="cursor: pointer;">
-                                    <option *ngFor="let item of Model; let i=index" [value]="item._id">
-                                        {{item.name}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Request Item -->
-
-
-                    <!-- * -------------------------------------------------Request Number -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-                            <label class="head-label">Request Number </label>
-                            <p class="subtext-color">{{RequestNumber.value}}</p>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Request Number -->
-                </div>
-                <!-- ! ----------------------------------------ROW 1 -->
-
-                <!-- ! ----------------------------------------ROW 2 -->
-                <div class="row">
-                    <!-- * -------------------------------------------------Issued Date -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-                            <label class="head-label" [ngClass]="{'text-danger': IssueDate.invalid}">Issued Date <i
-                                    *ngIf="IssueDate.invalid" class="bi bi-x-square-fill"></i></label>
-                            <input type="date" formControlName="IssueDate" class="form-control subtext-color" [min]="MinDate1" [max]="MaxDate1" (blur)="onChangeIssueDate()">
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Issued Date -->
-
-
-                    <!-- * -------------------------------------------------Reply Date -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': ReplyDate.invalid}">Reply Date <i
-                                    *ngIf="ReplyDate.invalid" class="bi bi-x-square-fill"></i></label>
-                            <input type="date" formControlName="ReplyDate" class="form-control subtext-color" [min]="MinDate2">
-
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Reply Date -->
-
-                    <!-- * -------------------------------------------------Department-Section -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label">Request from (Department-Section)</label>
-                            <p class="subtext-color">{{RequestSection.value}}</p>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Department-Section -->
-                </div>
-                <!-- ! ----------------------------------------ROW 2 -->
-            </div>
-            <!-- ? ----------------------------- BOX 1 -->
-
-
-            <!-- ? ----------------------------- BOX 2 -->
-            <div class="col-md-12" style="margin-top: 50px;">
-                <div class="row">
-                    <h6>Detail of NG Product</h6>
-                </div>
-            </div>
-
-            <!-- ! ----------------------------------------ROW 1 -->
-            <div class="col-lg-12 border-bottom">
-                <div class="row">
-
-                    <!-- * -------------------------------------------------KTC Model Number -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <label class="head-label" [ngClass]="{'text-danger': ModelNumber.invalid}">Model
-                                        Number
-                                        <i *ngIf="ModelNumber.invalid" class="bi bi-x-square-fill"></i>
-                                    </label>
-                                    <input type="search" formControlName="ModelNumber" class="form-control subtext-color" (click)="ToggleFilterModelNumber();" (keyup)="OnkeyUpModelNumber();">
-                                    <div class="show-select">
-                                        <select *ngIf="ModelNumberToggle" formControlName="TempModelNumber" size="5" class="custom-select subtext-color" (change)="ToggleFilterModelNumber(); SetModelNum();">
-                                            <option *ngFor="let item of ModelNumberFilter" [value]="item.name">
-                                                {{item.name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <label class="head-label" [ngClass]="{'text-danger': Size.invalid}">Size (inch)</label>
-                                    <!-- <p class="mt-2 subtext-color">{{Size.value}}</p> -->
-                                    <input type="text" class="form-control subtext-color" formControlName="Size">
-                                </div>
-                                <div class="col-lg-5">
-                                    <label class="head-label" [ngClass]="{'text-danger': Customer.invalid}">Customer</label>
-                                    <!-- <p class="mt-2 subtext-color">{{Customer.value}}</p> -->
-                                    <input type="text" class="form-control subtext-color" formControlName="Customer">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------KTC Model Number -->
-
-
-                    <!-- * -------------------------------------------------CPR Lot Number/CRR Lot Number -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': LotNumber.invalid}">CPR Lot Number/CRR Lot Number
-                                <i *ngIf="LotNumber.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-                            <input type="text" class="form-control subtext-color" formControlName="LotNumber">
-                        </div>
-                    </div>
-
-                    <!-- * -------------------------------------------------CPR Lot Number/CRR Lot Number -->
-
-
-
-                </div>
-                <!-- ! ----------------------------------------ROW 1 -->
-
-                <!-- ! ----------------------------------------ROW 2 -->
-                <div class="row">
-
-                    <!-- * -------------------------------------------------Defective Name -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-
-                        <div class="form-group">
-                            <label class="head-label" [ngClass]="{'text-danger': DefectName.invalid}">Defective Name
-                                <i *ngIf="DefectName.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-                            <input class="form-control subtext-color" (click)="toggleDefectName=!toggleDefectName" type="text" formControlName="DefectName" (input)="filterUsers()">
-                            <div *ngIf="toggleDefectName">
-                                <select *ngIf="toggleDefectName && DefectName.valid" class="custom-select subtext-color show-select" size="6" formControlName="TempDefectName" (change)="OnClickFilter()">
-                                    <option *ngFor="let item of filterdOptions; let i=index" [value]="item._id"
-                                        (click)="toggleDefectName=!toggleDefectName">
-                                        {{item.defectName}} || code: {{item.defectCode}}
-                                    </option>
-                                </select>
-                                <select *ngIf="DefectName.invalid && toggleDefectName" class="custom-select subtext-color show-select" size="6" formControlName="TempDefectName" (change)="toggleDefectName=!toggleDefectName ; OnClickFilter()">
-                                    <option *ngFor="let item of DefectList; let i=index" [value]="item._id"
-                                        (click)="toggleDefectName=!toggleDefectName">
-                                        {{item.defectName}} || code : {{item.defectCode}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-
-
-
-                    <!-- * -------------------------------------------------Defective Name -->
-
-                    <!-- * -------------------------------------------------Defective Code -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label">Defective Code</label>
-                            <p class="subtext-color">{{DefectCode.value}}</p>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Defective Code -->
-
-
-
-
-
-
-
-
-                </div>
-                <!-- ! ----------------------------------------ROW 2 -->
-
-                <!-- ! ----------------------------------------ROW 3 -->
-                <div class="row">
-
-                    <!-- * -------------------------------------------------Input Quantity (Pcs) -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': InputQ.invalid}">Input Quantity (Pcs)
-                                <i *ngIf="InputQ.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-
-                            <input type="number" formControlName="InputQ" class="form-control subtext-color" (keyup)="CheckNumber()" (change)="CheckNumber();SetRatio();">
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Input Quantity (Pcs) -->
-                    <!-- * -------------------------------------------------NG Quantity (Pcs) -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': NGQ.invalid}">NG Quantity (Pcs)
-                                <i *ngIf="NGQ.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-
-                            <input type="number" formControlName="NGQ" class="form-control subtext-color" (change)="CheckNumber2()" (keyup)="CheckNumber2();SetRatio();">
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------NG Quantity (Pcs) -->
-
-
-
-
-
-                </div>
-                <!-- ! ----------------------------------------ROW 3 -->
-
-                <!-- ! ----------------------------------------ROW 4 -->
-                <div class="row">
-
-
-                    <!-- * -------------------------------------------------NG Ratio (%) -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-                            <label class="head-label">NG Ratio (%) </label>
-                            <p class="subtext-color">{{NGR.value |number : '.1-2'}}</p>
-                            <p *ngIf="NGR.invalid" class="subtext-color">-</p>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------NG Ratio (%) -->
-
-                    <!-- * -------------------------------------------------Send NG To Analysis (Pcs) -->
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-
-                            <label class="head-label" [ngClass]="{'text-danger': SendNG.invalid}">Send NG To Analysis (Pcs)
-                                <i *ngIf="SendNG.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-
-                            <input type="number" formControlName="SendNG" class="form-control subtext-color" (change)="CheckNumber3()" (keyup)="CheckNumber3()">
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Send NG To Analysis (Pcs) -->
-
-
-
-
-
-                </div>
-                <!-- ! ----------------------------------------ROW 4 -->
-
-
-                <!-- ! ----------------------------------------ROW 5 -->
-                <div class="row">
-
-                    <!-- * -------------------------------------------------Production Phase -->
-
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': ProductPhase.invalid}">Production Phase
-                                <i *ngIf="ProductPhase.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-
-                            <div class="input-group mb-3">
-                                <select formControlName="ProductPhase" class="custom-select subtext-color" style="cursor: pointer;">
-                                    <option *ngFor="let item of ProductPhaseList; let i=index" [value]="item.name">
-                                        {{item.name}}
-                                    </option>
-
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Production Phase -->
-
-                    <!-- * -------------------------------------------------Defect Catagory -->
-
-                    <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': DefectCategory.invalid}">Defect Catagory
-                                <i *ngIf="DefectCategory.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-
-                            <div class="input-group mb-3">
-                                <select formControlName="DefectCategory" class="custom-select subtext-color" style="cursor: pointer;" (change)="onChangeDefectCategory()">
-                                    <option *ngFor="let item of DefectCategoryList; let i=index" [value]="item.name">
-                                        {{item.name}}
-                                    </option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Defect Catagory -->
-
-
-                    <!-- * -------------------------------------------------Claim no. -->
-
-                    <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': ClaimNo.invalid}">Claim no.
-                                <i *ngIf="ClaimNo.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-
-                            <input type="text" class="form-control subtext-color" formControlName="ClaimNo">
-
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Claim no. -->
-
-
-
-
-
-                </div>
-                <!-- ! ----------------------------------------ROW 5 -->
-
-
-
-
-                <!-- ! ----------------------------------------ROW 6 -->
-                <div class="row">
-
-                    <!-- * -------------------------------------------------Occur Place A -->
-
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-                            <label class="head-label" [ngClass]="{'text-danger': OccurA.invalid}">Occur Place A
-                                <i *ngIf="OccurA.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-                            <div class="input-group mb-3">
-                                <select class="custom-select subtext-color" formControlName="OccurA" style="cursor: pointer;" (change)="OnChangeOccurA();">
-                                    <option *ngFor="let item of OccurAList; let i=index" [value]="item._id">
-                                        {{item.name}}
-                                    </option>
-
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Occur Place A -->
-
-
-                    <!-- * -------------------------------------------------Occur Place B -->
-
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-                            <label class="head-label" [ngClass]="{'text-danger': OccurB.invalid}">Occur Place B
-                                <i *ngIf="OccurB.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-                            <div class="input-group mb-3">
-                                <select class="custom-select subtext-color" formControlName="OccurB" style="cursor: pointer;">
-                                    <option disabled [value]="null">select occur place A</option>
-                                    <option *ngFor="let item of OccurBList; let i=index" [value]="item.name">
-                                        {{item.name}}
-                                    </option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- * -------------------------------------------------Occur Place B -->
-
-
-                </div>
-                <!-- ! ----------------------------------------ROW 6 -->
-
-
-                <!-- ! ----------------------------------------ROW 7 -->
-                <div class="row">
-                    <!-- * -------------------------------------------------Abnormal Lot Level -->
-
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="form-group">
-
-
-                            <label class="head-label" [ngClass]="{'text-danger': Abnormal.invalid}">Abnormal Lot Level
-                                <i *ngIf="Abnormal.invalid" class="bi bi-x-square-fill"></i>
-                            </label>
-                            <div class="input-group mb-3">
-
-                                <select class="custom-select subtext-color" formControlName="Abnormal" style="cursor: pointer;">
-                                    <option [value]="'-'">-</option>
-                                    <option *ngFor="let item of AbnormalLevelList; let i=index" [value]="item.name">
-                                        {{item.name}}
-                                    </option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- * -------------------------------------------------Abnormal Lot Level -->
-                </div>
-
-                <!-- ! ----------------------------------------ROW 7 -->
-
-
-
-            </div>
-            <!-- ? ----------------------------- BOX 2 -->
+          <h6>Analysis Request Form</h6>
         </div>
-        <!-- // -----------PART 1 -->
+      </div>
 
 
-
-        <!-- // -----------PART 2 -->
+      <div class="col-md-12 border-bottom">
+        <!-- ! ----------------------------------------ROW 1 -->
         <div class="row">
-            <table class="table">
-                <thead>
-                    <th width="80%">Files</th>
-                    <th width="20%">
-                        <!-- <input type="file" (change)="upload($event)"> -->
-                        <input type="file" (change)="upload($event)" #fileUpload style="display: none;" [formControl]="fileInput">
-                        <div class="">
-                            <button class="btn btn-sm btn-primary" (click)="fileUpload.click()">
-                                Upload
-                                <i class="bi bi-upload" style="font-size: 1rem;"></i>
-                            </button>
-                        </div>
-                    </th>
-                </thead>
-                <tbody class="subtext-color">
-                    <tr *ngFor="let item of FileList; let i=index">
-                        <td>
-                            {{item.name}} ( {{item.size |fileSize}} )
-                        </td>
-                        <td>
-                            <button (click)="OnClickDeleteFile(item)" class="btn btn-sm btn-outline-danger mr-2" style="cursor: pointer;"><i
-                                    class="bi bi-trash" style="font-size: 1rem;"></i></button>
-                            <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-outline-success mr-0" style="cursor: pointer;"><i
-                                    class="bi bi-download" style="font-size: 1rem;"></i></a>
-                        </td>
-                    </tr>
+          <!-- * -------------------------------------------------Request Item -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
 
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6">
-                <label class="head-label" for="">Comment</label>
-                <button class="btn btn-block" (click)="showComment(comment)">Show Comment</button>
+              <label class="head-label" [ngClass]="{'text-danger': RequestItem.invalid}">Request Item
+                <i *ngIf="RequestItem.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <div class="input-group mb-3">
+                <select disabled formControlName="RequestItem" class="custom-select subtext-color"
+                  style="cursor: pointer;">
+                  <option *ngFor="let item of Model; let i=index" [value]="item._id">
+                    {{item.name}}
+                  </option>
+                </select>
+              </div>
             </div>
+          </div>
+          <!-- * -------------------------------------------------Request Item -->
+
+
+          <!-- * -------------------------------------------------Request Number -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+              <label class="head-label">Request Number </label>
+              <p class="subtext-color">{{RequestNumber.value}}</p>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Request Number -->
         </div>
+        <!-- ! ----------------------------------------ROW 1 -->
 
-        <!-- // -----------PART 2 -->
-
-
-
-        <!-- // -----------PART 3 -->
-        <!-- * -----------------------------------------------------Issue Data -->
+        <!-- ! ----------------------------------------ROW 2 -->
         <div class="row">
-            <div class="col-12 mt-5">
+          <!-- * -------------------------------------------------Issued Date -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+              <label class="head-label" [ngClass]="{'text-danger': IssueDate.invalid}">Issued Date <i
+                  *ngIf="IssueDate.invalid" class="bi bi-x-square-fill"></i></label>
+              <input type="date" formControlName="IssueDate" class="form-control subtext-color" [min]="MinDate1"
+                [max]="MaxDate1" (blur)="onChangeIssueDate()">
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Issued Date -->
+
+
+          <!-- * -------------------------------------------------Reply Date -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': ReplyDate.invalid}">Reply Date <i
+                  *ngIf="ReplyDate.invalid" class="bi bi-x-square-fill"></i></label>
+              <input type="date" formControlName="ReplyDate" class="form-control subtext-color" [min]="MinDate2">
+
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Reply Date -->
+
+          <!-- * -------------------------------------------------Department-Section -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label">Request from (Department-Section)</label>
+              <p class="subtext-color">{{RequestSection.value}}</p>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Department-Section -->
+        </div>
+        <!-- ! ----------------------------------------ROW 2 -->
+      </div>
+      <!-- ? ----------------------------- BOX 1 -->
+
+
+      <!-- ? ----------------------------- BOX 2 -->
+      <div class="col-md-12" style="margin-top: 50px;">
+        <div class="row">
+          <h6>Detail of NG Product</h6>
+        </div>
+      </div>
+
+      <!-- ! ----------------------------------------ROW 1 -->
+      <div class="col-lg-12 border-bottom">
+        <div class="row">
+
+          <!-- * -------------------------------------------------KTC Model Number -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="head-label" [ngClass]="{'text-danger': ModelNumber.invalid}">Model
+                    Number
+                    <i *ngIf="ModelNumber.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <input type="search" formControlName="ModelNumber" class="form-control subtext-color"
+                    (click)="ToggleFilterModelNumber();" (keyup)="OnkeyUpModelNumber();">
+                  <div class="show-select">
+                    <select *ngIf="ModelNumberToggle" formControlName="TempModelNumber" size="5"
+                      class="custom-select subtext-color" (change)="ToggleFilterModelNumber(); SetModelNum();">
+                      <option *ngFor="let item of ModelNumberFilter" [value]="item.name">
+                        {{item.name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <label class="head-label" [ngClass]="{'text-danger': Size.invalid}">Size (inch)</label>
+                  <!-- <p class="mt-2 subtext-color">{{Size.value}}</p> -->
+                  <input type="text" class="form-control subtext-color" formControlName="Size">
+                </div>
+                <div class="col-lg-5">
+                  <label class="head-label" [ngClass]="{'text-danger': Customer.invalid}">Customer</label>
+                  <!-- <p class="mt-2 subtext-color">{{Customer.value}}</p> -->
+                  <input type="text" class="form-control subtext-color" formControlName="Customer">
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------KTC Model Number -->
+
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <!-- * -------------------------------------------------CPR Lot Number/CRR Lot Number -->
+              <div class="col-lg-5 col-md-5 col-sm-12">
                 <div class="form-group">
-                    <label class="head-label">Issuer</label>
-                    <p class="subtext-color">{{Issuer.value}}</p>
+
+                  <label class="head-label" [ngClass]="{'text-danger': LotNumber.invalid}">CPR Lot Number/CRR
+                    Lot Number
+                    <i *ngIf="LotNumber.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <input type="text" class="form-control subtext-color" formControlName="LotNumber">
                 </div>
-            </div>
-        </div>
+              </div>
 
-        <!-- * -----------------------------------------------------Issue Data -->
+              <!-- * -------------------------------------------------CPR Lot Number/CRR Lot Number -->
 
-
-
-        <!-- * -----------------------------------------------------Approve  -->
-
-        <div class="row">
-            <div class="col-12 mt-5">
+              <!-- * -------------------------------------------------Normal/TBN Lot -->
+              <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-group">
-                    <label class="head-label" [ngClass]="{'text-danger': Aprrove.invalid}">Approve
-                        <i *ngIf="Aprrove.invalid" class="bi bi-x-square-fill"></i>
-                    </label>
-                    <div class="input-group mb-3">
-                        <select formControlName="Aprrove" class="custom-select subtext-color" style="cursor: pointer;" (change)="OnApproveChange();">
-                            <option disabled [value]="null">--select--</option>
-                            <option *ngFor="let item of ApproveList" [value]="item._id">
-                                {{item.FirstName}} {{item.LastName}} || {{item.Email}}
-                            </option>
-                        </select>
-                    </div>
 
+                  <label class="head-label" [ngClass]="{'text-danger': TBN.invalid}">Normal/TBN. Lot
+                    <i *ngIf="TBN.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <div class="input-group mb-3">
+                    <select formControlName="TBN" class="custom-select subtext-color" style="cursor: pointer;"
+                      (change)="onChangeTBN()">
+                      <option value="normal">
+                        Normal
+                      </option>
+                      <option value="TBN">
+                        TBN. Lot
+                      </option>
+                    </select>
 
+                  </div>
                 </div>
+              </div>
+
+              <!-- * -------------------------------------------------Normal/TBN Lot -->
+
+              <!-- * -------------------------------------------------TBN Lot Number -->
+              <div class="col-lg-3 col-md-3 col-sm-12">
+                <div class="form-group">
+                  <label class="head-label" [ngClass]="{'text-danger': TBN.value==='TBN' && TBNNumber.invalid}">TBN.
+                    Number
+                    <i *ngIf="TBN.value==='TBN' && TBNNumber.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <input [readOnly]="TBN.invalid ||TBN.value==='normal'" type="text" class="form-control subtext-color"
+                    formControlName="TBNNumber">
+                </div>
+              </div>
+
+              <!-- * -------------------------------------------------TBN Lot Number -->
+
+
             </div>
+          </div>
+
+
 
         </div>
-        <!-- * -----------------------------------------------------Approve  -->
+        <!-- ! ----------------------------------------ROW 1 -->
 
-        <!-- // -----------PART 3 -->
-
-
-
-        <!-- // -----------PART 4 -->
-        <!-- * -------------------------------------------------INPUT Submit -->
-
-
+        <!-- ! ----------------------------------------ROW 2 -->
         <div class="row">
-            <div class="col-6 mt-5">
-                <div class="row">
-                    <button type="button" class="btn btn-danger btn-lg btn-block " (click)="ModalNote(rejectNote)">Reject
-                        <i class="bi bi-x-square-fill"></i>
-                    </button>
-                </div>
+
+          <!-- * -------------------------------------------------Defective Name -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+
+            <div class="form-group">
+              <label class="head-label" [ngClass]="{'text-danger': DefectName.invalid}">Defective Name
+                <i *ngIf="DefectName.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <input class="form-control subtext-color" (click)="toggleDefectName=!toggleDefectName" type="text"
+                formControlName="DefectName" (input)="filterUsers()">
+              <div *ngIf="toggleDefectName">
+                <select *ngIf="toggleDefectName && DefectName.valid" class="custom-select subtext-color show-select"
+                  size="6" formControlName="TempDefectName" (change)="OnClickFilter()">
+                  <option *ngFor="let item of filterdOptions; let i=index" [value]="item._id"
+                    (click)="toggleDefectName=!toggleDefectName">
+                    {{item.defectName}} || code: {{item.defectCode}}
+                  </option>
+                </select>
+                <select *ngIf="DefectName.invalid && toggleDefectName" class="custom-select subtext-color show-select"
+                  size="6" formControlName="TempDefectName"
+                  (change)="toggleDefectName=!toggleDefectName ; OnClickFilter()">
+                  <option *ngFor="let item of DefectList; let i=index" [value]="item._id"
+                    (click)="toggleDefectName=!toggleDefectName">
+                    {{item.defectName}} || code : {{item.defectCode}}
+                  </option>
+                </select>
+              </div>
             </div>
-            <div class="col-6 mt-5">
-                <div class="row">
-                    <button type="button" [disabled]="RequestForm.invalid" class="btn btn-primary btn-lg btn-block " (click)="ModalNote(approveNote)">APPROVE
-                        <i class="bi bi-check-square-fill"></i>
-                    </button>
-                </div>
+
+          </div>
+
+
+
+
+
+          <!-- * -------------------------------------------------Defective Name -->
+
+          <!-- * -------------------------------------------------Defective Code -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label">Defective Code</label>
+              <p class="subtext-color">{{DefectCode.value}}</p>
             </div>
+          </div>
+          <!-- * -------------------------------------------------Defective Code -->
+
+
+
+
+
+
+
 
         </div>
+        <!-- ! ----------------------------------------ROW 2 -->
 
-        <!-- * -------------------------------------------------INPUT Submit -->
+        <!-- ! ----------------------------------------ROW 3 -->
+        <div class="row">
 
-        <!-- // -----------PART 4 -->
-    </form>
+          <!-- * -------------------------------------------------Input Quantity (Pcs) -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': InputQ.invalid}">Input Quantity (Pcs)
+                <i *ngIf="InputQ.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <input type="number" formControlName="InputQ" class="form-control subtext-color" (keyup)="CheckNumber()"
+                (change)="CheckNumber();SetRatio();">
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Input Quantity (Pcs) -->
+          <!-- * -------------------------------------------------NG Quantity (Pcs) -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': NGQ.invalid}">NG Quantity (Pcs)
+                <i *ngIf="NGQ.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <input type="number" formControlName="NGQ" class="form-control subtext-color" (change)="CheckNumber2()"
+                (keyup)="CheckNumber2();SetRatio();">
+            </div>
+          </div>
+          <!-- * -------------------------------------------------NG Quantity (Pcs) -->
+
+
+
+
+
+        </div>
+        <!-- ! ----------------------------------------ROW 3 -->
+
+        <!-- ! ----------------------------------------ROW 4 -->
+        <div class="row">
+
+
+          <!-- * -------------------------------------------------NG Ratio (%) -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+              <label class="head-label">NG Ratio (%) </label>
+              <p class="subtext-color">{{NGR.value |number : '.1-2'}}</p>
+              <p *ngIf="NGR.invalid" class="subtext-color">-</p>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------NG Ratio (%) -->
+
+          <!-- * -------------------------------------------------Send NG To Analysis (Pcs) -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+
+              <label class="head-label" [ngClass]="{'text-danger': SendNG.invalid}">Send NG To Analysis (Pcs)
+                <i *ngIf="SendNG.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <input type="number" formControlName="SendNG" class="form-control subtext-color" (change)="CheckNumber3()"
+                (keyup)="CheckNumber3()">
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Send NG To Analysis (Pcs) -->
+
+
+
+
+
+        </div>
+        <!-- ! ----------------------------------------ROW 4 -->
+
+
+        <!-- ! ----------------------------------------ROW 5 -->
+        <div class="row">
+
+          <!-- * -------------------------------------------------Production Phase -->
+
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': ProductPhase.invalid}">Production Phase
+                <i *ngIf="ProductPhase.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <div class="input-group mb-3">
+                <select formControlName="ProductPhase" class="custom-select subtext-color" style="cursor: pointer;">
+                  <option *ngFor="let item of ProductPhaseList; let i=index" [value]="item.name">
+                    {{item.name}}
+                  </option>
+
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Production Phase -->
+
+          <!-- * -------------------------------------------------Defect Catagory -->
+
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': DefectCategory.invalid}">Defect Catagory
+                <i *ngIf="DefectCategory.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <div class="input-group mb-3">
+                <select formControlName="DefectCategory" class="custom-select subtext-color" style="cursor: pointer;"
+                  (change)="onChangeDefectCategory()">
+                  <option *ngFor="let item of DefectCategoryList; let i=index" [value]="item.name">
+                    {{item.name}}
+                  </option>
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Defect Catagory -->
+
+
+          <!-- * -------------------------------------------------Claim no. -->
+
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': ClaimNo.invalid}">Claim no.
+                <i *ngIf="ClaimNo.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <input type="text" class="form-control subtext-color" formControlName="ClaimNo">
+
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Claim no. -->
+
+
+
+
+
+        </div>
+        <!-- ! ----------------------------------------ROW 5 -->
+
+
+
+
+        <!-- ! ----------------------------------------ROW 6 -->
+        <div class="row">
+
+          <!-- * -------------------------------------------------Occur Place A -->
+
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': OccurA.invalid}">Occur Place A
+                <i *ngIf="OccurA.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <div class="input-group mb-3">
+                <select class="custom-select subtext-color" formControlName="OccurA" style="cursor: pointer;"
+                  (change)="OnChangeOccurA();">
+                  <option *ngFor="let item of OccurAList; let i=index" [value]="item._id">
+                    {{item.name}}
+                  </option>
+
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Occur Place A -->
+
+
+          <!-- * -------------------------------------------------Occur Place B -->
+
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+              <label class="head-label" [ngClass]="{'text-danger': OccurB.invalid}">Occur Place B
+                <i *ngIf="OccurB.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <div class="input-group mb-3">
+                <select class="custom-select subtext-color" formControlName="OccurB" style="cursor: pointer;">
+                  <option disabled [value]="null">select occur place A</option>
+                  <option *ngFor="let item of OccurBList; let i=index" [value]="item.name">
+                    {{item.name}}
+                  </option>
+                </select>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- * -------------------------------------------------Occur Place B -->
+
+
+        </div>
+        <!-- ! ----------------------------------------ROW 6 -->
+
+
+        <!-- ! ----------------------------------------ROW 7 -->
+        <div class="row">
+          <!-- * -------------------------------------------------Abnormal Lot Level -->
+
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+
+              <label class="head-label" [ngClass]="{'text-danger': Abnormal.invalid}">Abnormal Lot Level
+                <i *ngIf="Abnormal.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <div class="input-group mb-3">
+
+                <select class="custom-select subtext-color" formControlName="Abnormal" style="cursor: pointer;">
+                  <option [value]="'-'">-</option>
+                  <option *ngFor="let item of AbnormalLevelList; let i=index" [value]="item.name">
+                    {{item.name}}
+                  </option>
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Abnormal Lot Level -->
+        </div>
+
+        <!-- ! ----------------------------------------ROW 7 -->
+
+
+
+      </div>
+      <!-- ? ----------------------------- BOX 2 -->
+    </div>
+    <!-- // -----------PART 1 -->
+
+
+
+    <!-- // -----------PART 2 -->
+    <div class="row">
+      <table class="table">
+        <thead>
+          <th width="80%">Files</th>
+          <th width="20%">
+            <!-- <input type="file" (change)="upload($event)"> -->
+            <input type="file" (change)="upload($event)" #fileUpload style="display: none;" [formControl]="fileInput">
+            <div class="">
+              <button class="btn btn-sm btn-primary" (click)="fileUpload.click()">
+                Upload
+                <i class="bi bi-upload" style="font-size: 1rem;"></i>
+              </button>
+            </div>
+          </th>
+        </thead>
+        <tbody class="subtext-color">
+          <tr *ngFor="let item of FileList; let i=index">
+            <td>
+              {{item.name}} ( {{item.size |fileSize}} )
+            </td>
+            <td>
+              <button (click)="OnClickDeleteFile(item)" class="btn btn-sm btn-outline-danger mr-2"
+                style="cursor: pointer;"><i class="bi bi-trash" style="font-size: 1rem;"></i></button>
+              <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-outline-success mr-0"
+                style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <label class="head-label" for="">Comment</label>
+        <button class="btn btn-block" (click)="showComment(comment)">Show Comment</button>
+      </div>
+    </div>
+
+    <!-- // -----------PART 2 -->
+
+
+
+    <!-- // -----------PART 3 -->
+    <!-- * -----------------------------------------------------Issue Data -->
+    <div class="row">
+      <div class="col-12 mt-5">
+        <div class="form-group">
+          <label class="head-label">Issuer</label>
+          <p class="subtext-color">{{Issuer.value}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- * -----------------------------------------------------Issue Data -->
+
+
+
+    <!-- * -----------------------------------------------------Approve  -->
+
+    <div class="row">
+      <div class="col-12 mt-5">
+        <div class="form-group">
+          <label class="head-label" [ngClass]="{'text-danger': Aprrove.invalid}">Approve
+            <i *ngIf="Aprrove.invalid" class="bi bi-x-square-fill"></i>
+          </label>
+          <div class="input-group mb-3">
+            <select formControlName="Aprrove" class="custom-select subtext-color" style="cursor: pointer;"
+              (change)="OnApproveChange();">
+              <option disabled [value]="null">--select--</option>
+              <option *ngFor="let item of ApproveList" [value]="item._id">
+                {{item.FirstName}} {{item.LastName}} || {{item.Email}}
+              </option>
+            </select>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+    <!-- * -----------------------------------------------------Approve  -->
+
+    <!-- // -----------PART 3 -->
+
+
+
+    <!-- // -----------PART 4 -->
+    <!-- * -------------------------------------------------INPUT Submit -->
+
+
+    <div class="row">
+      <div class="col-6 mt-5">
+        <div class="row">
+          <button type="button" class="btn btn-danger btn-lg btn-block " (click)="ModalNote(rejectNote)">Reject
+            <i class="bi bi-x-square-fill"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-6 mt-5">
+        <div class="row">
+          <button type="button" [disabled]="RequestForm.invalid" class="btn btn-primary btn-lg btn-block "
+            (click)="ModalNote(approveNote)">APPROVE
+            <i class="bi bi-check-square-fill"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- * -------------------------------------------------INPUT Submit -->
+
+    <!-- // -----------PART 4 -->
+  </form>
 </div>
 
 
 <ng-template #approveNote let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">Approve Note</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
-                <span aria-hidden="true">&times;</span>
-            </button>
-    </div>
-    <div class="modal-body">
+  <div class="modal-header">
+    <h4 class="modal-title">Approve Note</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
 
-        <div class="form-group">
-            <label>Note</label>
-            <textarea class="form-control" [formControl]="NoteApprove" cols="30" rows="10" style="height: 300px;"></textarea>
-        </div>
+    <div class="form-group">
+      <label>Note</label>
+      <textarea class="form-control" [formControl]="NoteApprove" cols="30" rows="10" style="height: 300px;"></textarea>
+    </div>
 
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" (click)="modal.dismiss('Cross click'); OnApprove();">APPROVE <i
-                    class="bi bi-check-square-fill"></i></button>
-    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="modal.dismiss('Cross click'); OnApprove();">APPROVE <i
+        class="bi bi-check-square-fill"></i></button>
+  </div>
 </ng-template>
 
 <ng-template #rejectNote let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">Reject Note</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
-                <span aria-hidden="true">&times;</span>
-            </button>
-    </div>
-    <div class="modal-body">
+  <div class="modal-header">
+    <h4 class="modal-title">Reject Note</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
 
-        <div class="form-group">
-            <label>Note</label>
-            <textarea class="form-control" [formControl]="NoteReject" cols="30" rows="10" style="height: 300px;"></textarea>
-        </div>
+    <div class="form-group">
+      <label>Note</label>
+      <textarea class="form-control" [formControl]="NoteReject" cols="30" rows="10" style="height: 300px;"></textarea>
+    </div>
 
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-danger" (click)="modal.dismiss('Cross click'); OnReject();">REJECT <i
-                    class="bi bi-x-square-fill"></i></button>
-    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" (click)="modal.dismiss('Cross click'); OnReject();">REJECT <i
+        class="bi bi-x-square-fill"></i></button>
+  </div>
 </ng-template>
 
 
 <ng-template #comment let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">Comment</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
+  <div class="modal-header">
+    <h4 class="modal-title">Comment</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
 
-        <div class="row" *ngFor="let item of CommentLists">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short" style="font-size: 1.3rem;"></i> {{item.to}}</label>
-                    <p class="box-comment" [ngClass]="item.class">{{item.note}}</p>
-                </div>
-            </div>
+    <div class="row" *ngFor="let item of CommentLists">
+      <div class="col-12">
+        <div class="form-group">
+          <label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short" style="font-size: 1.3rem;"></i>
+            {{item.to}}</label>
+          <p class="box-comment" [ngClass]="item.class">{{item.note}}</p>
         </div>
-
+      </div>
     </div>
+
+  </div>
 </ng-template>

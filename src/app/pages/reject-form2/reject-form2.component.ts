@@ -8,7 +8,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 // import * as fs from 'file-saver';
 import { HttpService } from 'app/service/http.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 
@@ -25,17 +25,25 @@ export class RejectForm2Component implements OnInit {
     // private api: ViewFormService,
     // private api: ProgressForm1Service,
     private api: HttpService,
-    private route: Router
-  ) { }
+    private route: Router,
+    private routerActive: ActivatedRoute
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+      }
+    })
+  }
 
+  // ? Params
+  formId: null | string = null
 
-  FormId = sessionStorage.getItem('FormId');
   // ? API
   form: any;
   result: any;
   AeEngList: any;
 
-  // ? Session 
+  // ? Session
   FormView = sessionStorage.getItem('FormView');
 
   // ? Form control
@@ -79,12 +87,12 @@ export class RejectForm2Component implements OnInit {
   }
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '3') || (lvl == '0'))
     // console.log(Level.length);
     const checkAEWindow = LevelList.filter(lvl => lvl == '3');
@@ -101,7 +109,7 @@ export class RejectForm2Component implements OnInit {
 
   getForm() {
 
-    this.api.FindFormById(this.FormId).subscribe((data: any) => {
+    this.api.FindFormById(this.formId).subscribe((data: any) => {
       if (data) {
         this.form = data;
         let str = this.form.issuedDate.split("T");
@@ -175,9 +183,9 @@ export class RejectForm2Component implements OnInit {
         noteApprove3: this.NoteApprove.value
       }
 
-      let Fname = sessionStorage.getItem('UserFirstName')
-      let Lname = sessionStorage.getItem('UserLastName')
-      this.api.UpadateRequestForm(sessionStorage.getItem('FormId'), d).subscribe((data: any) => {
+      let Fname = localStorage.getItem('AR_UserFirstName')
+      let Lname = localStorage.getItem('AR_UserLastName')
+      this.api.UpadateRequestForm(this.formId, d).subscribe((data: any) => {
         if (data) {
           const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Engineer)</p><br>" +
             "Please check analysis result and make report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
@@ -204,108 +212,11 @@ export class RejectForm2Component implements OnInit {
   }
 
 
-
-  // SetApproveEmail() {
-  //   this.AeEngList.forEach(item => {
-  //     this.AeApprove.value == item._id ? this.SendEmailUser = item : this.SendEmailUser = null
-  //   });
-  // }
-
   // ? Modal
 
   ModalNote(content) {
     this.modalService.open(content, { size: 'lg' });
   }
-
-  // ? FUNCTION
-  // SetPathFile() {
-  //   if (this.FileListname.length > 0) {
-  //     this.FileListname.forEach(i => {
-  //       this.progressForm1.FindPath(i).subscribe((data: any) => {
-  //         if (data.length > 0) {
-  //           this.PathListName.push(data[0].path);
-  //         }
-
-  //       })
-  //     });
-
-  //   }
-  // }
-
-  // todo Cancle request and delete file list
-  // OnCancle() {
-
-  //   Swal.fire({
-  //     title: 'Do you want to Delete ?',
-  //     showCancelButton: true,
-  //     icon: 'error',
-  //     confirmButtonText: 'Delete',
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-
-  //       if (this.FileListname.length > 0) {
-
-
-  //         let round = 0;
-  //         this.FileListname.forEach((item, index) => {
-  //           round += 1;
-
-  //           let body = {
-  //             path: this.PathListName[index]
-  //           }
-
-  //           this.rs.RemoveFile(body).subscribe((data: any) => {
-  //             if (data) {
-  //               let d = {
-  //                 path: this.PathListName[index]
-  //               }
-  //               this.rs.DeleteFileName(d).subscribe((data: any) => {
-  //               })
-  //             }
-  //           })
-
-  //         });
-
-  //         if (this.FileListname.length == round) {
-  //           round = 0;
-  //           this.FileListname = [];
-  //           this.PathListName = [];
-  //           let da = {
-  //             status: 0,
-  //             issuedDate: this.form.issuedDate,
-  //             replyDate: this.form.replyDate,
-  //             userApprove: null,
-  //             userApproveName: null
-  //           }
-  //           this.progressForm1.UpadateRequestForm(this.FormId, da).subscribe((data: any) => {
-  //             // console.log(data);
-  //             this.alertSuccess();
-  //             location.href = "#/manageForm";
-  //           })
-  //         }
-
-  //       } else {
-  //         let da = {
-  //           status: 0,
-  //           issuedDate: this.form.issuedDate,
-  //           replyDate: this.form.replyDate,
-  //           userApprove: null,
-  //           userApproveName: null
-  //         }
-  //         // console.log(da);
-
-  //         this.progressForm1.UpadateRequestForm(this.FormId, da).subscribe((data: any) => {
-  //           // console.log(data);
-  //           this.alertSuccess();
-  //           location.href = "#/manageForm";
-  //         })
-
-  //       }
-  //     }
-  //   })
-
-
-  // }
 
   OnReject() {
 
@@ -329,15 +240,15 @@ export class RejectForm2Component implements OnInit {
             userApprove: this.form.requesterId,
             userApproveName: sum,
           }
-          let id = sessionStorage.getItem('FormId');
+          let id = this.formId
           this.api.UpadateRequestForm(id, d).subscribe((data: any) => {
             if (data) {
               this.api.GetUser(d.userApprove).subscribe((data: any) => {
                 if (data.length > 0) {
                   this.SendRejectUser = data[0];
                   // console.log(this.SendRejectUser);
-                  let Fname = sessionStorage.getItem('UserFirstName')
-                  let Lname = sessionStorage.getItem('UserLastName')
+                  let Fname = localStorage.getItem('AR_UserFirstName')
+                  let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(Issuer)</p><br>" +
                     "Analysis request not approve as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Window)</p>";
@@ -364,16 +275,7 @@ export class RejectForm2Component implements OnInit {
 
     }
 
-    // Swal.fire({
-    //   title: 'Do you want to Reject ?',
-    //   showCancelButton: true,
-    //   icon: 'error',
-    //   confirmButtonText: 'Reject',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
 
-    //   }
-    // })
 
 
   }

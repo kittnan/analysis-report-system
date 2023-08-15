@@ -7,7 +7,7 @@ import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'
 // import { RequestServiceService } from '../request-form/request-service.service';
 import { HttpService } from 'app/service/http.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 
 @Component({
@@ -25,10 +25,19 @@ export class RejectForm3Component implements OnInit {
     // private reject3: RejectForm3Service,
     private modalService: NgbModal,
     private api: HttpService,
-    private route: Router
-  ) { }
+    private route: Router,
+    private routerActive: ActivatedRoute
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+      }
+    })
+  }
 
-  FormId = sessionStorage.getItem('FormId');
+  // ? Params
+  formId: null | string = null
+
 
   // ? API
   form: any;
@@ -138,12 +147,12 @@ export class RejectForm3Component implements OnInit {
   }
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '4') || (lvl == '0'))
     // console.log(Level.length);
 
@@ -182,7 +191,7 @@ export class RejectForm3Component implements OnInit {
 
   // ? API
   getForm() {
-    let d = sessionStorage.getItem('FormId');
+    let d = this.formId
 
     this.api.FindFormById(d).subscribe((data: any) => {
       // console.log('data',data);
@@ -207,7 +216,7 @@ export class RejectForm3Component implements OnInit {
   }
 
   getResult() {
-    let id = sessionStorage.getItem('FormId');
+    let id = this.formId
     this.api.FindResultByFormIdMain(id).subscribe((data2: any) => {
 
       if (data2.length > 0) {
@@ -352,7 +361,7 @@ export class RejectForm3Component implements OnInit {
     }).then(async answer => {
       if (answer.isConfirmed) {
         // alert('save')
-        const formId = sessionStorage.getItem('FormId')
+        const formId = this.formId
         const resultCheck: any = await this.checkResult(formId)
         // console.log(resultCheck);
 
@@ -397,8 +406,8 @@ export class RejectForm3Component implements OnInit {
       const ResultData = {
         analysisReportNo: this.ReportNo.value,
         formId: formId,
-        engineerId: sessionStorage.getItem('UserId'),
-        engineerName: (sessionStorage.getItem('UserFirstName') + "-" + sessionStorage.getItem('UserLastName')),
+        engineerId: localStorage.getItem('AR_UserId'),
+        engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value || null,
         causeOfDefect: this.CategoryCause.value || null,
         sourceOfDefect: this.SourceOfDefect.value || null,
@@ -454,9 +463,9 @@ export class RejectForm3Component implements OnInit {
 
       let d = {
         analysisReportNo: this.ReportNo.value,
-        formId: sessionStorage.getItem('FormId'),
-        engineerId: sessionStorage.getItem('UserId'),
-        engineerName: (sessionStorage.getItem('UserFirstName') + "-" + sessionStorage.getItem('UserLastName')),
+        formId: this.formId,
+        engineerId: localStorage.getItem('AR_UserId'),
+        engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value,
         causeOfDefect: this.CategoryCause.value,
         sourceOfDefect: this.SourceOfDefect.value,
@@ -492,9 +501,9 @@ export class RejectForm3Component implements OnInit {
           // console.log(d1);
 
 
-          this.api.UpdateForm(sessionStorage.getItem('FormId'), d1).subscribe((data: any) => {
-            let Fname = sessionStorage.getItem('UserFirstName')
-            let Lname = sessionStorage.getItem('UserLastName')
+          this.api.UpdateForm(this.formId, d1).subscribe((data: any) => {
+            let Fname = localStorage.getItem('AR_UserFirstName')
+            let Lname = localStorage.getItem('AR_UserLastName')
             if (data) {
               const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
                 "Please review analysis report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
@@ -548,15 +557,15 @@ export class RejectForm3Component implements OnInit {
             userApproveName: this.form.userApprove2Name,
           }
           // console.log("reject data", d);
-          let id = sessionStorage.getItem('FormId');
+          let id = this.formId
           this.api.UpadateRequestForm(id, d).subscribe((data: any) => {
             if (data) {
               this.api.GetUser(d.userApprove).subscribe((data: any) => {
                 if (data.length > 0) {
                   this.SendRejectUser = data[0];
                   // console.log(this.SendRejectUser);
-                  let Fname = sessionStorage.getItem('UserFirstName')
-                  let Lname = sessionStorage.getItem('UserLastName')
+                  let Fname = localStorage.getItem('AR_UserFirstName')
+                  let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Window)</p><br>" +
                     "Analysis result not approve as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
@@ -630,7 +639,7 @@ export class RejectForm3Component implements OnInit {
               userApprove: null,
               userApproveName: null
             }
-            this.api.UpadateRequestForm(this.FormId, da).subscribe((data: any) => {
+            this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
               // console.log(data);
               this.alertSuccess();
               // location.href = "#/manageForm";
@@ -649,7 +658,7 @@ export class RejectForm3Component implements OnInit {
           }
           // console.log(da);
 
-          this.api.UpadateRequestForm(this.FormId, da).subscribe((data: any) => {
+          this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
             // console.log(data);
             this.alertSuccess();
             // location.href = "#/manageForm";

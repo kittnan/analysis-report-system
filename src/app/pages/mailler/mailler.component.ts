@@ -11,7 +11,7 @@ import { HttpService } from 'app/service/http.service';
 export class MaillerComponent implements OnInit {
   constructor(
     private api: HttpService,
-    private route:Router
+    private route: Router
   ) { }
 
   Mailler: any;
@@ -27,23 +27,23 @@ export class MaillerComponent implements OnInit {
   ToggleBtn1 = false;
 
 
-  test1 = new FormControl(null,Validators.required)
+  test1 = new FormControl(null, Validators.required)
 
   ngOnInit(): void {
     this.CheckStatusUser();
     this.GetMailler();
   }
 
- 
-  
+
+
   CheckStatusUser() {
     let LevelList = [];
-    sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
-    sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
-    sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
-    sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
-    sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
-    sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
+    localStorage.getItem('AR_UserLevel1') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel1')) : false
+    localStorage.getItem('AR_UserLevel2') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel2')) : false
+    localStorage.getItem('AR_UserLevel3') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel3')) : false
+    localStorage.getItem('AR_UserLevel4') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel4')) : false
+    localStorage.getItem('AR_UserLevel5') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel5')) : false
+    localStorage.getItem('AR_UserLevel6') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel6')) : false
 
     if (LevelList.find(i => i == '0')) {
     } else {
@@ -82,7 +82,7 @@ export class MaillerComponent implements OnInit {
 
   CancelMailler() {
     const ans = confirm("Cancel ?")
-    if(ans){
+    if (ans) {
       this.Mail.reset();
       this.ToggleBtn1 = false;
       this.GetMailler();

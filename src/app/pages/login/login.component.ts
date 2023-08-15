@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
+import { LocalStorageService } from 'app/service/local-storage.service';
 import { environment } from 'environments/environment'
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { environment } from 'environments/environment'
 })
 export class LoginComponent implements OnInit {
 
-  appVersion :any
+  appVersion: any
 
   username: any;
   password: any;
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit {
   userEmpCode: any;
   userEmail: any;
   userStatus: any;
-  // loginStatus : any = sessionStorage.getItem('loginStatus'); 
+  // loginStatus : any = localStorage.getItem('AR_loginStatus');
 
   // ? Form Control
   LoginForm = new FormGroup({
@@ -36,15 +37,16 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private api: HttpService,
-    private route: Router
+    private route: Router,
+    private $local: LocalStorageService
   ) {
     this.appVersion = environment.appVersion
-   }
+  }
 
   ngOnInit(): void {
-    // console.log(sessionStorage.getItem('loginStatus'));
+    // console.log(localStorage.getItem('AR_loginStatus'));
 
-    if (sessionStorage.getItem('loginStatus') == "true") {
+    if (localStorage.getItem('AR_loginStatus') == "true") {
       this.route.navigate(['/manageForm'])
       // location.href = "#/manageForm"
     }
@@ -64,33 +66,33 @@ export class LoginComponent implements OnInit {
           this.userLogin = true;
           // console.log(data);
 
-          sessionStorage.setItem('UserId', data[0]._id);
-          sessionStorage.setItem('UserFirstName', data[0].FirstName);
-          sessionStorage.setItem('UserLastName', data[0].LastName);
-          sessionStorage.setItem('UserSection1Id', data[0].Section1Id);
-          sessionStorage.setItem('UserSection2Id', data[0].Section2Id);
-          sessionStorage.setItem('UserSection3Id', data[0].Section3Id);
-          sessionStorage.setItem('UserSection4Id', data[0].Section4Id);
-          sessionStorage.setItem('UserSection5Id', data[0].Section5Id);
-          sessionStorage.setItem('UserSection6Id', data[0].Section6Id);
-          sessionStorage.setItem('UserSection1Name', data[0].Section1Name);
-          sessionStorage.setItem('UserSection2Name', data[0].Section2Name);
-          sessionStorage.setItem('UserSection3Name', data[0].Section3Name);
-          sessionStorage.setItem('UserSection4Name', data[0].Section4Name);
-          sessionStorage.setItem('UserSection5Name', data[0].Section5Name);
-          sessionStorage.setItem('UserSection6Name', data[0].Section6Name);
-          sessionStorage.setItem('UserEmail', data[0].Email);
-          sessionStorage.setItem('UserEmployeeCode', data[0].EmployeeCode);
-          sessionStorage.setItem('loginStatus', this.userLogin);
-          sessionStorage.setItem('UserLevel1', data[0].Level1);
-          sessionStorage.setItem('UserLevel2', data[0].Level2);
-          sessionStorage.setItem('UserLevel3', data[0].Level3);
-          sessionStorage.setItem('UserLevel4', data[0].Level4);
-          sessionStorage.setItem('UserLevel5', data[0].Level5);
-          sessionStorage.setItem('UserLevel6', data[0].Level6);
-          // sessionStorage.setItem('requesterId', data[0]._id);
+          localStorage.setItem('AR_UserId', data[0]._id);
+          localStorage.setItem('AR_UserFirstName', data[0].FirstName);
+          localStorage.setItem('AR_UserLastName', data[0].LastName);
+          localStorage.setItem('AR_UserSection1Id', data[0].Section1Id);
+          localStorage.setItem('AR_UserSection2Id', data[0].Section2Id);
+          localStorage.setItem('AR_UserSection3Id', data[0].Section3Id);
+          localStorage.setItem('AR_UserSection4Id', data[0].Section4Id);
+          localStorage.setItem('AR_UserSection5Id', data[0].Section5Id);
+          localStorage.setItem('AR_UserSection6Id', data[0].Section6Id);
+          localStorage.setItem('AR_UserSection1Name', data[0].Section1Name);
+          localStorage.setItem('AR_UserSection2Name', data[0].Section2Name);
+          localStorage.setItem('AR_UserSection3Name', data[0].Section3Name);
+          localStorage.setItem('AR_UserSection4Name', data[0].Section4Name);
+          localStorage.setItem('AR_UserSection5Name', data[0].Section5Name);
+          localStorage.setItem('AR_UserSection6Name', data[0].Section6Name);
+          localStorage.setItem('AR_UserEmail', data[0].Email);
+          localStorage.setItem('AR_UserEmployeeCode', data[0].EmployeeCode);
+          localStorage.setItem('AR_loginStatus', this.userLogin);
+          localStorage.setItem('AR_UserLevel1', data[0].Level1);
+          localStorage.setItem('AR_UserLevel2', data[0].Level2);
+          localStorage.setItem('AR_UserLevel3', data[0].Level3);
+          localStorage.setItem('AR_UserLevel4', data[0].Level4);
+          localStorage.setItem('AR_UserLevel5', data[0].Level5);
+          localStorage.setItem('AR_UserLevel6', data[0].Level6);
+          // localStorage.setItem('requesterId', data[0]._id);
 
-          const guest = sessionStorage.getItem('UserEmployeeCode')
+          const guest = localStorage.getItem('AR_UserEmployeeCode')
           if (guest == 'guest') {
             this.route.navigate(['/dashboard-guest'])
 
@@ -118,12 +120,8 @@ export class LoginComponent implements OnInit {
   onLogout() {
     location.reload();
     this.userLogin = false;
-    sessionStorage.clear();
-    // location.href = "/#login";
-    // SidebarComponent.call;
-
-
-    // alert("Logout");
+    this.$local.clearLocal()
+    // sessionStorage.clear();
   }
 
   get UserName() { return this.LoginForm.get('UserName') }

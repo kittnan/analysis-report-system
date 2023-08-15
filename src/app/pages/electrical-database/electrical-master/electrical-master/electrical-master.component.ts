@@ -61,7 +61,7 @@ export class ElectricalMasterComponent implements OnInit {
   //-----------------------------------------------------------------------------------------------------//
   //TODO routes
   routes() {
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {
@@ -268,7 +268,7 @@ export class ElectricalMasterComponent implements OnInit {
 
         if (item.data[0].good.length == 2) {
           newData.push(`OTP Address: ${item.data[2].good}${item.data[3].good}\tRead data: ${item.data[0].good},${item.data[1].good},${item.data[2].good},${item.data[3].good},${item.data[4].good},${item.data[5].good},${item.data[6].good},${item.data[7].good},\n`)
-        }else{
+        } else {
           newData.push(`${item.data[0].good} ${item.data[1].good} ${item.data[2].good} ${item.data[3].good} ${item.data[4].good} ${item.data[5].good} ${item.data[6].good} ${item.data[7].good} \r\n`)
         }
       }

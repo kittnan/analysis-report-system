@@ -6,6 +6,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
+import { ActivatedRoute, Params } from '@angular/router';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -22,8 +23,8 @@ export class ViewFormComponent implements OnInit {
   PathListName: any = [];
 
   // ? Session
-  FormView = sessionStorage.getItem('FormView');
-  FormId = sessionStorage.getItem('FormId');
+  formView = sessionStorage.getItem('FormView');
+  formId = sessionStorage.getItem('FormId');
 
 
 
@@ -39,17 +40,25 @@ export class ViewFormComponent implements OnInit {
   constructor(
     private api: HttpService,
     // private progressForm1: ProgressForm1Service,
-    private modal: NgbModal
-  ) { }
+    private modal: NgbModal,
+    private routerActive: ActivatedRoute
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+        this.formView = param['formView']
+      }
+    })
+  }
 
   async ngOnInit(): Promise<void> {
 
-    const form = await this.getForm(this.FormId);
+    const form = await this.getForm(this.formId);
 
     form ? this.form = form : this.form = []
     // console.log(form);
 
-    const result = await this.getResult(this.FormId);
+    const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
 
@@ -197,12 +206,12 @@ export class ViewFormComponent implements OnInit {
   // ? check level login
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => lvl == '6');
     const checkAEWindow = LevelList.filter(lvl => lvl == '3');
     checkAEWindow.length > 0 ? this.toggleLabel = true : this.toggleLabel = false;

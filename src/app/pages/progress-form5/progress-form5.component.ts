@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
 // import { UserService } from '../user/user.service';
 import { HttpService } from 'app/service/http.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'environments/environment';
 
 @Component({
@@ -15,6 +15,9 @@ import { environment } from 'environments/environment';
   styleUrls: ['./progress-form5.component.css', '../pagesStyle.css']
 })
 export class ProgressForm5Component implements OnInit {
+
+  // ? Params
+  formId: null | string = null
 
 
   // ? API
@@ -87,10 +90,17 @@ export class ProgressForm5Component implements OnInit {
     // private api: ViewFormService,
     private modalService: NgbModal,
     private api: HttpService,
-    private route: Router
+    private route: Router,
+    private routerActive: ActivatedRoute
     // private api: RequestServiceService,
     // private us: UserService
-  ) { }
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+      }
+    })
+  }
 
   ngOnInit(): void {
     this.CheckStatusUser();
@@ -101,12 +111,12 @@ export class ProgressForm5Component implements OnInit {
 
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '6') || (lvl == '0'))
     // console.log(Level.length);
 
@@ -131,7 +141,7 @@ export class ProgressForm5Component implements OnInit {
 
   // ? API
   getForm() {
-    let d = sessionStorage.getItem('FormId');
+    let d = this.formId
     this.api.FindFormById(d).subscribe((data: any) => {
       if (data) {
         this.form = data;
@@ -147,7 +157,7 @@ export class ProgressForm5Component implements OnInit {
   }
 
   GetResult() {
-    let d = sessionStorage.getItem('FormId');
+    let d = this.formId
     this.api.FindResultByFormIdMain(d).subscribe((data: any) => {
       if (data) {
         this.result = data[0];
@@ -263,10 +273,10 @@ export class ProgressForm5Component implements OnInit {
                   noteNow: this.NoteApprove.value
                 }
 
-                let Fname = sessionStorage.getItem('UserFirstName')
-                let Lname = sessionStorage.getItem('UserLastName')
+                let Fname = localStorage.getItem('AR_UserFirstName')
+                let Lname = localStorage.getItem('AR_UserLastName')
 
-                this.api.UpdateForm(sessionStorage.getItem('FormId'), d).subscribe((data: any) => {
+                this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
                   if (data) {
                     const Content = "<p>To " + this.Approve.FirstName + " " + this.Approve.LastName + "</p><br>" +
                       "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
@@ -337,14 +347,14 @@ export class ProgressForm5Component implements OnInit {
             userApproveName: sum,
           }
           // console.log("reject data", d);
-          let id = sessionStorage.getItem('FormId');
+          let id = this.formId
           this.api.UpadateRequestForm(id, d).subscribe((data: any) => {
             if (data) {
               this.api.GetUser(d.userApprove).subscribe((data: any) => {
                 if (data.length > 0) {
                   this.SendRejectUser = data[0];
-                  let Fname = sessionStorage.getItem('UserFirstName')
-                  let Lname = sessionStorage.getItem('UserLastName')
+                  let Fname = localStorage.getItem('AR_UserFirstName')
+                  let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
                     "AE Approval not approve report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";

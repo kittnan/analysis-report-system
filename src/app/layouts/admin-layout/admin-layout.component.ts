@@ -10,20 +10,20 @@ import { Router } from '@angular/router';
 export class AdminLayoutComponent implements OnInit {
 
 
-  loginStatus:any;
+  loginStatus: any;
 
   constructor(
-    private route : Router
-  ){
+    private route: Router
+  ) {
 
   }
 
-  ngOnInit() { 
-    this.loginStatus = sessionStorage.getItem('loginStatus');
-    if(sessionStorage.getItem('loginStatus') != 'true'){
+  ngOnInit() {
+    this.loginStatus = localStorage.getItem('AR_loginStatus');
+    if (localStorage.getItem('AR_loginStatus') != 'true') {
       this.route.navigate(['/login'])
       // location.href="#/login"
-    } 
+    }
   }
 
 }

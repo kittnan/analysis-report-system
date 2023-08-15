@@ -9,7 +9,7 @@ import { Workbook } from 'exceljs'
 // import * as ExcelJS from 'exceljs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-progress-form3',
@@ -23,9 +23,19 @@ export class ProgressForm3Component implements OnInit {
     private api: HttpService,
     // private api: ViewFormService,
     private modalService: NgbModal,
-    private route: Router
+    private route: Router,
+    private routerActive: ActivatedRoute
     // private api: RejectForm2Service
-  ) { }
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+      }
+    })
+  }
+
+  // ? Params
+  formId: null | string = null
 
   // ? API
   form: any;
@@ -132,27 +142,27 @@ export class ProgressForm3Component implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.CheckStatusUser();
-    await this.getForm();
-    await this.GetListAll()
-    await this.getReportList();
+    this.getForm();
+    this.GetListAll()
+    this.getReportList();
   }
 
 
 
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '4') || (lvl == '0'))
     // console.log(Level.length);
 
     if (Level.length == 0) {
       // alert("No access!!");
-      this.route.navigate(['/manageForm'])
+      // this.route.navigate(['/manageForm'])
       // location.href = "#/manageForm"
     }
 
@@ -160,9 +170,8 @@ export class ProgressForm3Component implements OnInit {
 
   // ? API
   getForm() {
-    let idForm = sessionStorage.getItem('FormId');
 
-    this.api.FindFormById(idForm).subscribe((data: any) => {
+    this.api.FindFormById(this.formId).subscribe((data: any) => {
       if (data) {
         this.form = data;
         this.FileList = data.files;
@@ -175,7 +184,7 @@ export class ProgressForm3Component implements OnInit {
 
 
         // ! find result from formId
-        this.api.FindResultByFormIdMain(idForm).subscribe((data: any) => {
+        this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
           // todo have result
           if (data.length > 0) {
             const result = data[0]
@@ -391,12 +400,9 @@ export class ProgressForm3Component implements OnInit {
       showCancelButton: true
     }).then(async answer => {
       if (answer.isConfirmed) {
-        // alert('save')
-        const formId = sessionStorage.getItem('FormId')
-        const resultCheck: any = await this.checkResult(formId)
+        const resultCheck: any = await this.checkResult(this.formId)
         if (resultCheck.length == 0) {
-          const res: any = await this.insertResultWhenFinish(formId)
-          console.log(res);
+          const res: any = await this.insertResultWhenFinish(this.formId)
           if (res.length != 0) {
             this.alertSuccess()
           } else {
@@ -412,6 +418,9 @@ export class ProgressForm3Component implements OnInit {
           // console.log(res);
           if (res) {
             this.alertSuccess()
+            // setTimeout(() => {
+            //   window.self.close();
+            // }, 2000);
           }
 
 
@@ -421,7 +430,7 @@ export class ProgressForm3Component implements OnInit {
     })
   }
 
-  checkResult(formId) {
+  checkResult(formId: string) {
     return new Promise(resolve => {
       this.api.FindResultByFormIdMain(formId).subscribe((data: any) => {
         resolve(data)
@@ -429,14 +438,14 @@ export class ProgressForm3Component implements OnInit {
     })
   }
 
-  insertResultWhenFinish(formId) {
+  insertResultWhenFinish(formId: string) {
 
     return new Promise(async resolve => {
       const ResultData = {
         analysisReportNo: this.ReportNo.value,
         formId: formId,
-        engineerId: sessionStorage.getItem('UserId'),
-        engineerName: (sessionStorage.getItem('UserFirstName') + "-" + sessionStorage.getItem('UserLastName')),
+        engineerId: localStorage.getItem('AR_UserId'),
+        engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value || null,
         causeOfDefect: this.CategoryCause.value || null,
         sourceOfDefect: this.SourceOfDefect.value || null,
@@ -450,14 +459,13 @@ export class ProgressForm3Component implements OnInit {
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
       }
-      console.log(ResultData);
       this.api.PostResult(ResultData).subscribe((data: any) => {
         resolve(data)
       })
     })
   }
 
-  updateResultWhenDraft(resultId) {
+  updateResultWhenDraft(resultId: string) {
     return new Promise(resolve => {
       const ResultData = {
         result: this.Result.value || null,
@@ -534,14 +542,14 @@ export class ProgressForm3Component implements OnInit {
     // console.log(this.FileReportPath);
     // console.log(this.tempEngFile);
 
-    let ResultData
+    let ResultData = null
     const ans = confirm("Do you want to Approve ?")
     if (ans == true) {
       ResultData = {
         analysisReportNo: this.ReportNo.value,
-        formId: sessionStorage.getItem('FormId'),
-        engineerId: sessionStorage.getItem('UserId'),
-        engineerName: (sessionStorage.getItem('UserFirstName') + "-" + sessionStorage.getItem('UserLastName')),
+        formId: this.formId,
+        engineerId: localStorage.getItem('AR_UserId'),
+        engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value,
         causeOfDefect: this.CategoryCause.value,
         sourceOfDefect: this.SourceOfDefect.value,
@@ -583,9 +591,9 @@ export class ProgressForm3Component implements OnInit {
                 noteNow: this.NoteApprove.value,
                 noteApprove4: this.NoteApprove.value
               }
-              this.api.UpdateForm(sessionStorage.getItem('FormId'), d).subscribe((data: any) => {
-                let Fname = sessionStorage.getItem('UserFirstName')
-                let Lname = sessionStorage.getItem('UserLastName')
+              this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
+                let Fname = localStorage.getItem('AR_UserFirstName')
+                let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
                     "Please review analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
@@ -600,8 +608,10 @@ export class ProgressForm3Component implements OnInit {
                   this.api.SendEmailTo(sendMail).subscribe((data: any) => {
                     this.alertSuccess();
                     // location.href = "#/manageForm";
-                    this.route.navigate(['/manageForm'])
-
+                    // this.route.navigate(['/manageForm'])
+                    setTimeout(() => {
+                      window.self.close();
+                    }, 2000);
                   })
 
                 }
@@ -630,9 +640,9 @@ export class ProgressForm3Component implements OnInit {
               }
               // console.log("form",d);
 
-              this.api.UpdateForm(sessionStorage.getItem('FormId'), d).subscribe((data: any) => {
-                let Fname = sessionStorage.getItem('UserFirstName')
-                let Lname = sessionStorage.getItem('UserLastName')
+              this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
+                let Fname = localStorage.getItem('AR_UserFirstName')
+                let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
                     "Please review analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
@@ -646,9 +656,12 @@ export class ProgressForm3Component implements OnInit {
                   }
                   this.api.SendEmailTo(sendMail).subscribe((data: any) => {
                     this.alertSuccess();
-                    this.route.navigate(['/manageForm'])
+                    // this.route.navigate(['/manageForm'])
 
                     // location.href = "#/manageForm";
+                    setTimeout(() => {
+                      window.self.close();
+                    }, 2000);
                   })
 
                 }
@@ -687,15 +700,14 @@ export class ProgressForm3Component implements OnInit {
             userApproveName: this.form.userApprove2Name,
           }
           // console.log("reject data", d);
-          let id = sessionStorage.getItem('FormId');
-          this.api.UpadateRequestForm(id, d).subscribe((data: any) => {
+          this.api.UpadateRequestForm(this.formId, d).subscribe((data: any) => {
             if (data) {
               this.api.GetUser(d.userApprove).subscribe((data: any) => {
                 if (data.length > 0) {
                   this.SendRejectUser = data[0];
                   // console.log(this.SendRejectUser);
-                  let Fname = sessionStorage.getItem('UserFirstName')
-                  let Lname = sessionStorage.getItem('UserLastName')
+                  let Fname = localStorage.getItem('AR_UserFirstName')
+                  let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Window)</p><br>" +
                     "Analysis request not approve as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
@@ -708,9 +720,12 @@ export class ProgressForm3Component implements OnInit {
                   }
                   this.api.SendEmailTo(sendMail).subscribe((data: any) => {
                     this.alertSuccess();
-                    this.route.navigate(['/manageForm'])
+                    // this.route.navigate(['/manageForm'])
 
                     // location.href = "#/manageForm";
+                    setTimeout(() => {
+                      window.self.close();
+                    }, 2000);
                   })
                 }
               })
@@ -918,7 +933,7 @@ export class ProgressForm3Component implements OnInit {
       }
     })
   }
-  uploadFileNow(event) {
+  uploadFileNow(event: any) {
 
     Swal.fire({
       title: 'Do you want to Upload' + event.target.files[0].name + '?',
@@ -2653,7 +2668,7 @@ export class ProgressForm3Component implements OnInit {
 
   }
 
-  ModalNote(content) {
+  ModalNote(content: any) {
     this.modalService.open(content, { size: 'lg' });
   }
 

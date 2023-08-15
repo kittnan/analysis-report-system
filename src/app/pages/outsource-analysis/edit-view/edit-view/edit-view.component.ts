@@ -115,7 +115,7 @@ export class EditViewComponent implements OnInit {
     this.getGetDefect()
     this.getAllData()
 
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {

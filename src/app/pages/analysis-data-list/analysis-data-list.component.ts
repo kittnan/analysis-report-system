@@ -273,13 +273,13 @@ export class AnalysisDataListComponent implements OnInit {
 
   CheckStatusUser() {
     let LevelList = [];
-    sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
-    sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
-    sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
-    sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
-    sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
-    sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
-    const guest = sessionStorage.getItem('UserEmployeeCode')
+    localStorage.getItem('AR_UserLevel1') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel1')) : false
+    localStorage.getItem('AR_UserLevel2') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel2')) : false
+    localStorage.getItem('AR_UserLevel3') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel3')) : false
+    localStorage.getItem('AR_UserLevel4') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel4')) : false
+    localStorage.getItem('AR_UserLevel5') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel5')) : false
+    localStorage.getItem('AR_UserLevel6') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel6')) : false
+    const guest = localStorage.getItem('AR_UserEmployeeCode')
 
     if (LevelList.find(i => i == '3') ||
       LevelList.find(i => i == '4') ||
@@ -298,7 +298,7 @@ export class AnalysisDataListComponent implements OnInit {
   // ? API
   GetModelAll() {
     this.api.GetModelAll().subscribe((data: any) => {
-      const guest = sessionStorage.getItem('UserEmployeeCode')
+      const guest = localStorage.getItem('AR_UserEmployeeCode')
       if (guest == 'guest') {
         this.RequestItems = data.filter(d => !(d.name.toLowerCase()).includes('amt'))
       } else {
@@ -394,7 +394,7 @@ export class AnalysisDataListComponent implements OnInit {
         // console.log(result_merge);
         this.MergeRequest = result_merge
         let tempMap: any = await this.mapToDataTable(result_merge)
-        const guest = sessionStorage.getItem('UserEmployeeCode')
+        const guest = localStorage.getItem('AR_UserEmployeeCode')
         //TODO Hidden status
         // tempMap = await this.filterStatus(tempMap);
 

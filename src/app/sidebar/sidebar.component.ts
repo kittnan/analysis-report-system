@@ -74,12 +74,12 @@ export let equipmentItems: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   public menuItems: any[];
   equipmentItemsTemp: RouteInfo[]
-  public UserLevel1 = sessionStorage.getItem('UserLevel1');
-  public UserLevel2 = sessionStorage.getItem('UserLevel2');
-  public UserLevel3 = sessionStorage.getItem('UserLevel3');
-  public UserLevel4 = sessionStorage.getItem('UserLevel4');
-  public UserLevel5 = sessionStorage.getItem('UserLevel5');
-  public UserLevel6 = sessionStorage.getItem('UserLevel6');
+  public UserLevel1 = localStorage.getItem('AR_UserLevel1');
+  public UserLevel2 = localStorage.getItem('AR_UserLevel2');
+  public UserLevel3 = localStorage.getItem('AR_UserLevel3');
+  public UserLevel4 = localStorage.getItem('AR_UserLevel4');
+  public UserLevel5 = localStorage.getItem('AR_UserLevel5');
+  public UserLevel6 = localStorage.getItem('AR_UserLevel6');
   ngOnInit() {
 
     let ArrUserLevel = [];
@@ -103,7 +103,7 @@ export class SidebarComponent implements OnInit {
     // * 4 : Analysis ENG
     // * 5 : Analysis Reviewer
     // * 6 : Analysis Approve
-    if (ArrUserLevel.find(i => i == '1') && sessionStorage.getItem('UserEmployeeCode') == 'guest') {
+    if (ArrUserLevel.find(i => i == '1') && localStorage.getItem('AR_UserEmployeeCode') == 'guest') {
       let temp = [
         { path: '/dashboard-guest', title: 'Dashboard', icon: 'bi bi-bar-chart', class: '' },
         { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' },

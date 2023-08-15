@@ -130,7 +130,7 @@ export class OutsourceAnalysisComponent implements OnInit {
 
 
 
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {

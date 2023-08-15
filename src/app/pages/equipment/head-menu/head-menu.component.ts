@@ -13,7 +13,7 @@ export class HeadMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {
@@ -32,7 +32,7 @@ export class HeadMenuComponent implements OnInit {
           path: '/equipment-master-manage', title: 'MASTER', icon: 'bi bi-gear-wide'
         },
       ]
-    }else{
+    } else {
       this.RouterMenu = [
         {
           path: '/equipment', title: 'HOME', icon: 'bi bi-house'
@@ -40,7 +40,7 @@ export class HeadMenuComponent implements OnInit {
         {
           path: '/search-equipment', title: 'SEARCH', icon: 'bi bi-search'
         },
-        
+
       ]
     }
   }

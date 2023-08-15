@@ -1,5 +1,5 @@
 
-import { Component,HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
 import { Chart, registerables } from 'chart.js';
@@ -12,7 +12,7 @@ Chart.register(...registerables);
   styleUrls: ['./dashboard-guest.component.css']
 })
 export class DashboardGuestComponent implements OnInit {
-  
+
   // @HostListener('scroll', ['$event']) // for scroll events of the current element
   @HostListener('window:scroll', ['$event']) // for window scroll events
   scrollFunction() {
@@ -49,8 +49,8 @@ export class DashboardGuestComponent implements OnInit {
 
   ChartEngineer: Chart
 
-  ChartCorrectAnalysis:any
-  formQuery:any
+  ChartCorrectAnalysis: any
+  formQuery: any
   ColorStackChart = ['#B4FF9F', '#E4AEC5', '#FFD59E', '#FFA1A1', '#82A284', '#82A284', '#E4AEC5', '#FFC4DD', '#8479E1', '#8479E1', '#B4ECE3', '#FFF8D5', '#C4DDFF', '#7FB5FF', '#FEE2C5']
   ColorRGBChart: any[] = []
 
@@ -69,14 +69,14 @@ export class DashboardGuestComponent implements OnInit {
     return new Promise((resolve) => {
 
       let LevelList = [];
-      sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
-      sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
-      sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
-      sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
-      sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
-      sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
+      localStorage.getItem('AR_UserLevel1') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel1')) : false
+      localStorage.getItem('AR_UserLevel2') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel2')) : false
+      localStorage.getItem('AR_UserLevel3') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel3')) : false
+      localStorage.getItem('AR_UserLevel4') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel4')) : false
+      localStorage.getItem('AR_UserLevel5') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel5')) : false
+      localStorage.getItem('AR_UserLevel6') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel6')) : false
 
-      const guest = sessionStorage.getItem('UserEmployeeCode')
+      const guest = localStorage.getItem('AR_UserEmployeeCode')
       if (guest == 'guest') {
         setTimeout(() => {
           this.route.navigate(['/dashboard-guest'])
@@ -464,10 +464,10 @@ export class DashboardGuestComponent implements OnInit {
               display: false
             },
             datalabels: {
-              display: function(context) {
-                 return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+              display: function (context) {
+                return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
               }
-           }
+            }
           }
         },
 
@@ -537,12 +537,12 @@ export class DashboardGuestComponent implements OnInit {
               stacked: true
             }
           },
-          plugins:{
+          plugins: {
             datalabels: {
-              display: function(context) {
-                 return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+              display: function (context) {
+                return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
               }
-           }
+            }
           }
         },
 
@@ -579,10 +579,10 @@ export class DashboardGuestComponent implements OnInit {
             position: 'bottom'
           },
           datalabels: {
-            display: function(context) {
-               return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
             }
-         }
+          }
         },
 
       }
@@ -621,10 +621,10 @@ export class DashboardGuestComponent implements OnInit {
             position: 'bottom'
           },
           datalabels: {
-            display: function(context) {
-               return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
             }
-         }
+          }
         },
 
       }
@@ -637,7 +637,7 @@ export class DashboardGuestComponent implements OnInit {
   }
 
 
-  
+
   async setChartCauseModelCode(rawData: any, id: any) {
     const ChartData: any = await this.BuildDataForCauseChartModelCode(rawData)
     const ctx = document.getElementById(id) as HTMLCanvasElement
@@ -665,10 +665,10 @@ export class DashboardGuestComponent implements OnInit {
             position: 'bottom'
           },
           datalabels: {
-            display: function(context) {
-               return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
             }
-         }
+          }
         },
 
       }
@@ -706,10 +706,10 @@ export class DashboardGuestComponent implements OnInit {
             position: 'bottom'
           },
           datalabels: {
-            display: function(context) {
-               return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
             }
-         }
+          }
         },
 
       }
@@ -746,12 +746,12 @@ export class DashboardGuestComponent implements OnInit {
           },
 
         },
-        plugins:{
+        plugins: {
           datalabels: {
-            display: function(context) {
-               return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
             }
-         }
+          }
         }
 
       }
@@ -762,7 +762,7 @@ export class DashboardGuestComponent implements OnInit {
   private BuildDataForDefectChartModelCode(DATA: any) {
     return new Promise((resolve) => {
       const counter = {}
-      const newDATA = DATA.filter(d=> d.defectiveName != undefined)
+      const newDATA = DATA.filter(d => d.defectiveName != undefined)
       newDATA.forEach(function (obj) {
         var key = JSON.stringify(obj.defectiveName)
         counter[key] = (counter[key] || 0) + 1
@@ -806,7 +806,7 @@ export class DashboardGuestComponent implements OnInit {
       const uniqueModelCode: any = [...new Map(mergeDataFindModel.map(item => [item['ktcModelNumber'], item.ktcModelNumber])).values()]
       // console.log('uniqueModelCode', uniqueModelCode);
 
-      const l = uniqueModelCode.map((code: any,index:any) => {
+      const l = uniqueModelCode.map((code: any, index: any) => {
         const temp = findModel.map((f: any) => {
           return f.data.filter(i => i.ktcModelNumber == code).length
         })
@@ -838,7 +838,7 @@ export class DashboardGuestComponent implements OnInit {
   private BuildDataForDefectChartProcess(DATA: any) {
     return new Promise((resolve) => {
       const counter = {}
-      const newDATA = DATA.filter(d=> d.defectiveName != undefined)
+      const newDATA = DATA.filter(d => d.defectiveName != undefined)
       newDATA.forEach(function (obj) {
         var key = JSON.stringify(obj.defectiveName)
         counter[key] = (counter[key] || 0) + 1
@@ -882,7 +882,7 @@ export class DashboardGuestComponent implements OnInit {
       const occur: any = [...new Map(mergeDataFindModel.map(item => [item['occurBName'], item.occurBName])).values()]
       // console.log('uniqueModelCode', uniqueModelCode);
 
-      const l = occur.map((name: any,index:any) => {
+      const l = occur.map((name: any, index: any) => {
         const temp = findModel.map((f: any) => {
           return f.data.filter(i => i.occurBName == name).length
         })
@@ -914,7 +914,7 @@ export class DashboardGuestComponent implements OnInit {
   private BuildDataForCauseChartModelCode(DATA: any) {
     return new Promise((resolve) => {
       const counter = {}
-      const newDATA = DATA.filter(d=> d.causeOfDefect != undefined)
+      const newDATA = DATA.filter(d => d.causeOfDefect != undefined)
       newDATA.forEach(function (obj) {
         var key = JSON.stringify(obj.causeOfDefect)
         counter[key] = (counter[key] || 0) + 1
@@ -958,7 +958,7 @@ export class DashboardGuestComponent implements OnInit {
       const uniqueModelCode: any = [...new Map(mergeDataFindModel.map(item => [item['ktcModelNumber'], item.ktcModelNumber])).values()]
       // console.log('uniqueModelCode', uniqueModelCode);
 
-      const l = uniqueModelCode.map((code: any,index:any) => {
+      const l = uniqueModelCode.map((code: any, index: any) => {
         const temp = findModel.map((f: any) => {
           return f.data.filter(i => i.ktcModelNumber == code).length
         })
@@ -990,7 +990,7 @@ export class DashboardGuestComponent implements OnInit {
   private BuildDataForCauseChartProcess(DATA: any) {
     return new Promise((resolve) => {
       const counter = {}
-      const newDATA = DATA.filter(d=> d.causeOfDefect != undefined)
+      const newDATA = DATA.filter(d => d.causeOfDefect != undefined)
       newDATA.forEach(function (obj) {
         var key = JSON.stringify(obj.causeOfDefect)
         counter[key] = (counter[key] || 0) + 1
@@ -1034,7 +1034,7 @@ export class DashboardGuestComponent implements OnInit {
       const occur: any = [...new Map(mergeDataFindModel.map(item => [item['occurBName'], item.occurBName])).values()]
       // console.log('uniqueModelCode', uniqueModelCode);
 
-      const l = occur.map((name: any,index:any) => {
+      const l = occur.map((name: any, index: any) => {
         const temp = findModel.map((f: any) => {
           return f.data.filter(i => i.occurBName == name).length
         })
@@ -1220,7 +1220,7 @@ export class DashboardGuestComponent implements OnInit {
   }
 
 
-  
+
 
   // todo on toggle Defect ---- Model and Process
   async onClickDefectFilter(key: any) {
@@ -1322,6 +1322,6 @@ export class DashboardGuestComponent implements OnInit {
   scrollTo(element: any): void {
     (document.getElementById(element) as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
   }
-  
+
 
 }

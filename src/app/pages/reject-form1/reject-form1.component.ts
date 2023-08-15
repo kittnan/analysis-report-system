@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'environments/environment.prod'
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 
 @Component({
@@ -18,10 +18,19 @@ export class RejectForm1Component implements OnInit {
     // private api: RequestServiceService,
     private modalService: NgbModal,
     private api: HttpService,
-    private route: Router
+    private route: Router,
+    private routerActive: ActivatedRoute
     // private progressForm3: ProgressForm3Service,
-  ) { }
+  ) {
+    this.routerActive.queryParams.subscribe((param: Params) => {
+      if (param) {
+        this.formId = param['formId']
+      }
+    })
+  }
 
+  // ? Params
+  formId: null | string = null
 
   // ? Form Conttrol
   RequestForm = new FormGroup({
@@ -50,13 +59,13 @@ export class RejectForm1Component implements OnInit {
     Aprrove: new FormControl(null, Validators.required),
     TempDefectName: new FormControl(null),
     TempModelNumber: new FormControl(null),
+    TBN: new FormControl(null, Validators.required),
+    TBNNumber: new FormControl(null),
   })
 
   NoteApprove = new FormControl(null);
   NoteReject = new FormControl(null);
 
-  // ? Session
-  FormId = sessionStorage.getItem('FormId');
 
 
 
@@ -107,7 +116,7 @@ export class RejectForm1Component implements OnInit {
   MinDate2: any;
 
   // ? Session
-  UserSection1Id: any = sessionStorage.getItem('UserSection1Id');
+  UserSection1Id: any = localStorage.getItem('AR_UserSection1Id');
 
   // ? Toggle
   ToggleTest: any = false;
@@ -137,12 +146,12 @@ export class RejectForm1Component implements OnInit {
 
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '1') || (lvl == '0') || (lvl == '3'))
     // console.log(Level.length);
 
@@ -271,7 +280,7 @@ export class RejectForm1Component implements OnInit {
       this.api.GetApprove(this.RequestSection.value, 2).subscribe((data: any) => {
         if (data.length > 0) {
           // this.ApproveList = data;
-          const MyUserId = sessionStorage.getItem('UserId')
+          const MyUserId = localStorage.getItem('AR_UserId')
           this.ApproveList = data.filter(user => user._id != MyUserId)
         } else {
           this.ApproveList = [];
@@ -281,7 +290,7 @@ export class RejectForm1Component implements OnInit {
   }
 
   GetRequestForm() {
-    let d = this.FormId;
+    let d = this.formId;
     this.api.FindFormById(d).subscribe((data: any) => {
       // console.log(data);
       this.form = data
@@ -294,6 +303,8 @@ export class RejectForm1Component implements OnInit {
         this.Customer.setValue(data.customer);
         // this.OnkeyUpModelNumber();
         this.LotNumber.setValue(data.pcLotNumber);
+        this.TBN.setValue(data.TBN);
+        this.TBNNumber.setValue(data.TBNNumber);
         this.DefectName.setValue(data.defectiveName);
         this.DefectCode.setValue(data.defectiveCode);
         this.InputQ.setValue(data.inputQuantity);
@@ -333,7 +344,17 @@ export class RejectForm1Component implements OnInit {
 
 
   // ? Event
-
+  // todo change TBN
+  onChangeTBN() {
+    if (this.TBN.value === 'normal') {
+      this.TBNNumber.setValidators(null)
+      this.TBNNumber.updateValueAndValidity()
+      this.TBNNumber.setValue(null)
+    } else {
+      this.TBNNumber.setValidators(Validators.required)
+      this.TBNNumber.updateValueAndValidity()
+    }
+  }
   // todo เลือก Occur A แล้ว ยิงapi ไป get ค่า ของ occurB
   OnChangeOccurA() {
     // console.log(this.OccurA);
@@ -479,7 +500,7 @@ export class RejectForm1Component implements OnInit {
                   files: this.FileList
                 }
 
-                this.api.UpadateRequestForm(this.FormId, dataToApi).subscribe((data: any) => {
+                this.api.UpadateRequestForm(this.formId, dataToApi).subscribe((data: any) => {
                   if (data) {
                     this.fileInput.reset();
                     this.alertSuccess();
@@ -528,7 +549,7 @@ export class RejectForm1Component implements OnInit {
       if (result.isConfirmed) {
 
 
-        const IdForm = this.FormId
+        const IdForm = this.formId
         this.api.RemoveFile(file).then((data: any) => {
           if (data) {
             const indexOfFile = this.FileList.indexOf(file);
@@ -563,7 +584,7 @@ export class RejectForm1Component implements OnInit {
       title: 'Do you want to Submit ?',
       showCancelButton: true,
       icon: 'success',
-      confirmButtonText: 'Submit',
+      confirmButtonText: 'SubFmit',
     }).then((result) => {
       if (result.isConfirmed) {
 
@@ -580,6 +601,8 @@ export class RejectForm1Component implements OnInit {
                 size: this.Size.value,
                 customer: this.Customer.value,
                 pcLotNumber: this.LotNumber.value || '-',
+                TBN: this.TBN.value,
+                TBNNumber: this.TBNNumber.value,
                 defectiveCode: this.DefectCode.value,
                 defectiveName: this.DefectName.value,
                 inputQuantity: this.InputQ.value,
@@ -604,9 +627,9 @@ export class RejectForm1Component implements OnInit {
 
               }
               // console.log(da);
-              this.api.UpadateRequestForm(this.FormId, da).subscribe((data: any) => {
-                let Fname = sessionStorage.getItem('UserFirstName')
-                let Lname = sessionStorage.getItem('UserLastName')
+              this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
+                let Fname = localStorage.getItem('AR_UserFirstName')
+                let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(Requestor approval)</p><br>" +
                     "Please approve analysis request as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
@@ -656,7 +679,7 @@ export class RejectForm1Component implements OnInit {
   async deleteEngFile() {
     // console.log('1');
 
-    this.api.FindResultByFormIdMain(this.FormId).subscribe((data: any) => {
+    this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
       if (data.length > 0) {
         const result = data[0]
         const files = result.files
@@ -712,7 +735,7 @@ export class RejectForm1Component implements OnInit {
 
   async updateRequestForm() {
 
-    this.api.FindResultByFormIdMain(this.FormId).subscribe((data: any) => {
+    this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
       if (data.length > 0) {
         const result = data[0];
         const dataResult = {
@@ -733,7 +756,7 @@ export class RejectForm1Component implements OnInit {
               userApprove: null,
               userApproveName: null
             }
-            this.api.UpadateRequestForm(this.FormId, dataForm).subscribe((data: any) => {
+            this.api.UpadateRequestForm(this.formId, dataForm).subscribe((data: any) => {
               if (data) {
                 this.alertSuccess();
                 this.route.navigate(['/manageForm'])
@@ -752,7 +775,7 @@ export class RejectForm1Component implements OnInit {
           userApprove: null,
           userApproveName: null
         }
-        this.api.UpadateRequestForm(this.FormId, dataForm).subscribe((data: any) => {
+        this.api.UpadateRequestForm(this.formId, dataForm).subscribe((data: any) => {
           if (data) {
             this.alertSuccess();
             this.route.navigate(['/manageForm'])
@@ -771,7 +794,7 @@ export class RejectForm1Component implements OnInit {
           userApprove: null,
           userApproveName: null
         }
-        this.api.UpadateRequestForm(this.FormId, dataForm).subscribe((data: any) => {
+        this.api.UpadateRequestForm(this.formId, dataForm).subscribe((data: any) => {
           if (data) {
             this.alertSuccess();
             this.route.navigate(['/manageForm'])
@@ -1100,7 +1123,8 @@ export class RejectForm1Component implements OnInit {
   get Aprrove() { return this.RequestForm.get('Aprrove') }
   get TempDefectName() { return this.RequestForm.get('TempDefectName') }
   get TempModelNumber() { return this.RequestForm.get('TempModelNumber') }
-
+  get TBN() { return this.RequestForm.get('TBN') }
+  get TBNNumber() { return this.RequestForm.get('TBNNumber') }
   alertSuccess() {
     Swal.fire({
       title: 'SUCCESS',

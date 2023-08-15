@@ -20,7 +20,7 @@ export class ManageFormComponent implements OnInit {
   // ?
   LoadingPage: boolean;
 
-  // ? api 
+  // ? api
   FormListAll = [];
   tempList = [];
   FormList = [];
@@ -30,9 +30,9 @@ export class ManageFormComponent implements OnInit {
   // ? form control
   SelectStatus = new FormControl('inProcess');
 
-  // ? 
+  // ?
   UserLevel = [];
-  UserId = sessionStorage.getItem('UserId')
+  UserId = localStorage.getItem('AR_UserId')
 
   // ? data table
   DataFilter = [];
@@ -40,7 +40,7 @@ export class ManageFormComponent implements OnInit {
   PageNow = 1;
   CountPage: any;
   CountList = [10, 20, 50, 100]
-  Count:Number = 1
+  Count: Number = 1
   Sort = new FormControl(-1)
 
   // ? search
@@ -88,13 +88,13 @@ export class ManageFormComponent implements OnInit {
     return new Promise(resolve => {
 
       let LevelList = [];
-      sessionStorage.getItem('UserLevel1') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel1')) : false
-      sessionStorage.getItem('UserLevel2') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel2')) : false
-      sessionStorage.getItem('UserLevel3') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel3')) : false
-      sessionStorage.getItem('UserLevel4') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel4')) : false
-      sessionStorage.getItem('UserLevel5') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel5')) : false
-      sessionStorage.getItem('UserLevel6') != "null" ? LevelList.push(sessionStorage.getItem('UserLevel6')) : false
-      const guest = sessionStorage.getItem('UserEmployeeCode')
+      localStorage.getItem('AR_UserLevel1') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel1')) : false
+      localStorage.getItem('AR_UserLevel2') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel2')) : false
+      localStorage.getItem('AR_UserLevel3') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel3')) : false
+      localStorage.getItem('AR_UserLevel4') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel4')) : false
+      localStorage.getItem('AR_UserLevel5') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel5')) : false
+      localStorage.getItem('AR_UserLevel6') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel6')) : false
+      const guest = localStorage.getItem('AR_UserEmployeeCode')
 
       if (guest == 'guest') {
         this.route.navigate(['/dashboard'])
@@ -156,12 +156,14 @@ export class ManageFormComponent implements OnInit {
     const View1 = [1, 2, 2.1]
     const View2 = [3, 4, 5, 6, 3.1, 4.3, 5.4, 6.4]
     let StatusForm = item.status;
-    sessionStorage.setItem('FormId', item._id)
+    localStorage.setItem('AR_FormId', item._id)
     if (this.UserId == item.userApprove) {
       let temp1 = Inprocess.find(ar => ar == StatusForm);
       if (temp1) {
-        this.route.navigate(["/progressForm" + StatusForm])
+        // this.route.navigate(["/progressForm" + StatusForm])
         // location.href = "#/progressForm" + StatusForm
+        const url = `#/progressForm${StatusForm}?formId=${item._id}`
+        window.open(url, '_blank');
       } else if (StatusForm == Reject1[0] || StatusForm == Reject1[1]) {
         this.route.navigate(["/rejectForm1"])
         // location.href = "#/rejectForm1";
@@ -179,12 +181,24 @@ export class ManageFormComponent implements OnInit {
     } else {
       const result1 = View1.find(arr => arr == StatusForm)
       const result2 = View2.find(arr => arr == StatusForm)
+      let formView: string = "0"
       if (result1) {
-        sessionStorage.setItem('FormView', '1');
+        formView = '1'
+        // sessionStorage.setItem('FormView', '1');
       } else if (result2) {
-        sessionStorage.setItem('FormView', '2');
+        formView = '2'
+        // sessionStorage.setItem('FormView', '2');
       }
-      this.route.navigate(['/viewForm'])
+      const url = `#/viewForm?formId=${item._id}&formView=${formView}`
+      window.open(url, '_blank');
+      // this.route.navigate(['/viewForm'], {
+      //   queryParams: {
+      //     a: '1',
+      //     b: '2'
+      //   }
+      // })
+      // alert()
+      // this.route.navigate(['/viewForm'])
       // location.href = "#/viewForm";
     }
 
@@ -196,13 +210,12 @@ export class ManageFormComponent implements OnInit {
   // ? Search filter
   onSearchChange(event: any) {
     let query = event.target.value
-
   }
 
 
   // ? Data table Fn'
   numPage(count: any, value: number) {
-    if(value==0)return 1
+    if (value == 0) return 1
     return Math.ceil(Number(count) / value)
   }
 
@@ -225,7 +238,7 @@ export class ManageFormComponent implements OnInit {
   onSelectCountNum() {
     this.get()
   }
-  onSelectSort(){
+  onSelectSort() {
     this.get()
   }
 
@@ -238,6 +251,22 @@ export class ManageFormComponent implements OnInit {
       this.LoadingPage = false;
 
     }, 500);
+  }
+
+  // ? html function
+  htmlEng(item: any) {
+    if (item && item.result.length > 0) {
+      const result = item.result[0]
+      if (result.finishAnalyzeDate && result.result) return 'Making Report'
+    }
+    return 'Under Analysis'
+  }
+  cssEng(item: any) {
+    if (item && item.result.length > 0) {
+      const result = item.result[0]
+      if (result.finishAnalyzeDate && result.result) return 'text-blue'
+    }
+    return 'text-black'
   }
 
 }

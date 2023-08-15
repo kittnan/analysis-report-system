@@ -87,10 +87,36 @@
 
           </div>
         </div>
+
         <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="form-group">
-            <label class="head-label" for="">CPR Lot Number/CRR Lot Number</label>
-            <p class="subtext-color" *ngIf="form">{{form.pcLotNumber}}</p>
+          <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <div class="form-group">
+
+                <label class="head-label">CPR Lot Number/CRR
+                  Lot Number
+                </label>
+                <p class="subtext-color" *ngIf="form">{{form.pcLotNumber}}</p>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="form-group">
+
+                <label class="head-label">Normal/TBN. Lot
+                </label>
+                <p class="subtext-color" *ngIf="form">{{form.TBN}}</p>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <div class="form-group">
+                <label class="head-label">TBN.
+                  Number
+                </label>
+                <p class="subtext-color" *ngIf="form">{{form.TBNNumber}}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

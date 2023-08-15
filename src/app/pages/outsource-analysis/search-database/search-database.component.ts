@@ -160,12 +160,12 @@ export class SearchDatabaseComponent implements OnInit {
     filter: true,
 
   }
-  public UserLevel1 = sessionStorage.getItem('UserLevel1');
-  public UserLevel2 = sessionStorage.getItem('UserLevel2');
-  public UserLevel3 = sessionStorage.getItem('UserLevel3');
-  public UserLevel4 = sessionStorage.getItem('UserLevel4');
-  public UserLevel5 = sessionStorage.getItem('UserLevel5');
-  public UserLevel6 = sessionStorage.getItem('UserLevel6');
+  public UserLevel1 = localStorage.getItem('AR_UserLevel1');
+  public UserLevel2 = localStorage.getItem('AR_UserLevel2');
+  public UserLevel3 = localStorage.getItem('AR_UserLevel3');
+  public UserLevel4 = localStorage.getItem('AR_UserLevel4');
+  public UserLevel5 = localStorage.getItem('AR_UserLevel5');
+  public UserLevel6 = localStorage.getItem('AR_UserLevel6');
   ArrUserLevel: any
 
   interval$!: Subscription;
@@ -197,7 +197,7 @@ export class SearchDatabaseComponent implements OnInit {
     this.getGetDefect()
 
     // this.OnClickSearch()
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {
@@ -510,7 +510,7 @@ export class SearchDatabaseComponent implements OnInit {
     this.rowData = await this.api.FilterSearch(condition).toPromise()
     if (this.rowData.length != 0) {
       this.rowData.map(merge => {
-        merge['projectName'] = `${merge?.size?merge?.size:""} / ${merge?.customer?merge?.customer:""}`
+        merge['projectName'] = `${merge?.size ? merge?.size : ""} / ${merge?.customer ? merge?.customer : ""}`
         merge['createdAt'] = `${merge.createdAt.slice(8, 10)}-${merge.createdAt.slice(5, 7)}-${merge.createdAt.slice(0, 4)}`
         return merge
       })

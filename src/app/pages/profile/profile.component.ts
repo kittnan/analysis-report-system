@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
+import { LocalStorageService } from 'app/service/local-storage.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-profile',
@@ -14,7 +15,9 @@ export class ProfileComponent implements OnInit {
   constructor(
     private api: HttpService,
     private modalService: NgbModal,
-    private route: Router) { }
+    private route: Router,
+    private $local: LocalStorageService
+  ) { }
 
 
   User: any;
@@ -33,7 +36,7 @@ export class ProfileComponent implements OnInit {
   }
 
   GetUser() {
-    this.UserId = sessionStorage.getItem('UserId');
+    this.UserId = localStorage.getItem('AR_UserId');
     this.api.GetUser(this.UserId).subscribe((data: any) => {
       if (data) {
         this.User = data[0];
@@ -79,7 +82,8 @@ export class ProfileComponent implements OnInit {
   }
 
   Logout() {
-    sessionStorage.clear();
+    this.$local.clearLocal()
+    // sessionStorage.clear();
     this.route.navigate(['/login'])
     // location.href = "#/login";
   }

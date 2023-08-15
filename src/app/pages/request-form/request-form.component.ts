@@ -47,6 +47,8 @@ export class RequestFormComponent implements OnInit {
     TempModelNumber: new FormControl(null),
     Size: new FormControl(null, Validators.required),
     Customer: new FormControl(null, Validators.required),
+    TBN: new FormControl(null, Validators.required),
+    TBNNumber: new FormControl(null),
 
   })
 
@@ -110,7 +112,7 @@ export class RequestFormComponent implements OnInit {
   MinDate2: any;
 
   // ? Session
-  UserSection1Id: any = sessionStorage.getItem('UserSection1Id');
+  UserSection1Id: any = localStorage.getItem('AR_UserSection1Id');
 
   // ? Toggle
   DefectFilter: any = [];
@@ -151,12 +153,12 @@ export class RequestFormComponent implements OnInit {
   // ? check status ก่อน  เข้า page
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '1') || (lvl == '0'));
     if (Level.length == 0) {
       // alert("No access")
@@ -279,8 +281,8 @@ export class RequestFormComponent implements OnInit {
   // GetDefect() {
   //   this.DefectList = null;
   //   this.DefectName.reset();
-  //   // todo ถ้ามีคำว่า fm ให้ get defectname  ทั้งหมด 
-  //   var re = /fm/gi; 
+  //   // todo ถ้ามีคำว่า fm ให้ get defectname  ทั้งหมด
+  //   var re = /fm/gi;
   //   const findFm = this.ModelName.search(re);
   //   if(findFm != -1){
   //     this.rs.GetDefect().subscribe((data: any) => {
@@ -322,7 +324,7 @@ export class RequestFormComponent implements OnInit {
     if (this.RequestSection.valid) {
       this.api.GetApprove(this.RequestSection.value, 2).subscribe((data: any) => {
         if (data.length > 0) {
-          const MyUserId = sessionStorage.getItem('UserId')
+          const MyUserId = localStorage.getItem('AR_UserId')
           this.ApproveList = data.filter(user => user._id != MyUserId)
           // this.ApproveList = data;
           // this.OnApproveChange();
@@ -339,7 +341,20 @@ export class RequestFormComponent implements OnInit {
   }
 
 
-  // ? Event 
+  // ? Event
+
+  // todo change TBN
+  onChangeTBN() {
+    if (this.TBN.value === 'normal') {
+      this.TBNNumber.setValidators(null)
+      this.TBNNumber.updateValueAndValidity()
+      this.TBNNumber.setValue(null)
+    } else {
+      this.TBNNumber.setValidators(Validators.required)
+      this.TBNNumber.updateValueAndValidity()
+    }
+  }
+
   OnChangeRequestItem() {
 
     this.Model.forEach(i => {
@@ -349,7 +364,7 @@ export class RequestFormComponent implements OnInit {
     });
     this.GetRequestFormByIdRequest();
 
-    // * get master list 
+    // * get master list
     this.GetDefect();
     this.GetOccurAList();
 
@@ -507,7 +522,7 @@ export class RequestFormComponent implements OnInit {
 
   async updateForm() {
     // ? insert form
-    console.log('2');
+    // console.log('2');
     // console.log("form start");
     // console.log(this.fileToUp);
 
@@ -520,12 +535,12 @@ export class RequestFormComponent implements OnInit {
           alert("Duplicate request number continue to change request number !!");
           window.scrollTo(0, 0);
         } else {
-          // const fname = sessionStorage.getItem('UserFirstName');
-          // const lname = sessionStorage.getItem('UserLastName');
-          let Fname = sessionStorage.getItem('UserFirstName')
-          let Lname = sessionStorage.getItem('UserLastName')
+          // const fname = localStorage.getItem('AR_UserFirstName');
+          // const lname = localStorage.getItem('AR_UserLastName');
+          let Fname = localStorage.getItem('AR_UserFirstName')
+          let Lname = localStorage.getItem('AR_UserLastName')
           let da = {
-            requesterId: sessionStorage.getItem('UserId'),
+            requesterId: localStorage.getItem('AR_UserId'),
             requesterName: `${Fname}-${Lname}`,
             requestItem: this.ModelName,
             requestItemId: this.RequestItem.value,
@@ -538,6 +553,8 @@ export class RequestFormComponent implements OnInit {
             size: this.Size.value,
             customer: this.Customer.value,
             pcLotNumber: this.LotNumber.value || '-',
+            TBN: this.TBN.value,
+            TBNNumber: this.TBNNumber.value,
             defectiveCode: this.DefectCode.value,
             defectiveName: this.DefectName.value,
             inputQuantity: this.InputQ.value,
@@ -562,7 +579,6 @@ export class RequestFormComponent implements OnInit {
             noteNow: this.NoteApprove.value
 
           }
-          console.log(da);
 
           this.api.PostRequestForm(da).subscribe((data: any) => {
             if (data.length > 0) {
@@ -740,14 +756,14 @@ export class RequestFormComponent implements OnInit {
 
 
 
-  // ? Function 
+  // ? Function
 
   // todo filter
 
 
   SetIssuer() {
-    const fName = sessionStorage.getItem('UserFirstName');
-    let lName = sessionStorage.getItem('UserLastName');
+    const fName = localStorage.getItem('AR_UserFirstName');
+    let lName = localStorage.getItem('AR_UserLastName');
     lName = lName.substring(0, 1);
     const SumName = fName + '-' + lName;
     this.Issuer.setValue(SumName);
@@ -862,20 +878,20 @@ export class RequestFormComponent implements OnInit {
 
   SetSectionList() {
     this.tempSectionName = [
-      sessionStorage.getItem('UserSection1Name'),
-      sessionStorage.getItem('UserSection2Name'),
-      sessionStorage.getItem('UserSection3Name'),
-      sessionStorage.getItem('UserSection4Name'),
-      sessionStorage.getItem('UserSection5Name'),
-      sessionStorage.getItem('UserSection6Name')
+      localStorage.getItem('AR_UserSection1Name'),
+      localStorage.getItem('AR_UserSection2Name'),
+      localStorage.getItem('AR_UserSection3Name'),
+      localStorage.getItem('AR_UserSection4Name'),
+      localStorage.getItem('AR_UserSection5Name'),
+      localStorage.getItem('AR_UserSection6Name')
     ]
     this.tempSectionId = [
-      sessionStorage.getItem('UserSection1Id'),
-      sessionStorage.getItem('UserSection2Id'),
-      sessionStorage.getItem('UserSection3Id'),
-      sessionStorage.getItem('UserSection4Id'),
-      sessionStorage.getItem('UserSection5Id'),
-      sessionStorage.getItem('UserSection6Id'),
+      localStorage.getItem('AR_UserSection1Id'),
+      localStorage.getItem('AR_UserSection2Id'),
+      localStorage.getItem('AR_UserSection3Id'),
+      localStorage.getItem('AR_UserSection4Id'),
+      localStorage.getItem('AR_UserSection5Id'),
+      localStorage.getItem('AR_UserSection6Id'),
     ]
 
     if (this.tempSectionName.length > 0) {
@@ -912,7 +928,7 @@ export class RequestFormComponent implements OnInit {
 
 
 
-  // this.Griup.get('asdasd').value 
+  // this.Griup.get('asdasd').value
   // this.asdasd.value
   get RequestItem() { return this.RequestForm.get('RequestItem') }
   get RequestNumber() { return this.RequestForm.get('RequestNumber') }
@@ -939,6 +955,8 @@ export class RequestFormComponent implements OnInit {
   get TempModelNumber() { return this.RequestForm.get('TempModelNumber') }
   get Size() { return this.RequestForm.get('Size') }
   get Customer() { return this.RequestForm.get('Customer') }
+  get TBN() { return this.RequestForm.get('TBN') }
+  get TBNNumber() { return this.RequestForm.get('TBNNumber') }
 
 
   pageLoadStart() {

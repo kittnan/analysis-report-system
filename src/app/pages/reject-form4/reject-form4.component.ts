@@ -62,12 +62,12 @@ export class RejectForm4Component implements OnInit {
 
   CheckStatusUser() {
     let LevelList = [];
-    LevelList.push(sessionStorage.getItem('UserLevel1'))
-    LevelList.push(sessionStorage.getItem('UserLevel2'))
-    LevelList.push(sessionStorage.getItem('UserLevel3'))
-    LevelList.push(sessionStorage.getItem('UserLevel4'))
-    LevelList.push(sessionStorage.getItem('UserLevel5'))
-    LevelList.push(sessionStorage.getItem('UserLevel6'))
+    LevelList.push(localStorage.getItem('AR_UserLevel1'))
+    LevelList.push(localStorage.getItem('AR_UserLevel2'))
+    LevelList.push(localStorage.getItem('AR_UserLevel3'))
+    LevelList.push(localStorage.getItem('AR_UserLevel4'))
+    LevelList.push(localStorage.getItem('AR_UserLevel5'))
+    LevelList.push(localStorage.getItem('AR_UserLevel6'))
     const Level = LevelList.filter(lvl => (lvl == '5') || (lvl == '0'))
     // console.log(Level.length);
 
@@ -177,8 +177,8 @@ export class RejectForm4Component implements OnInit {
         noteNow: this.NoteApprove.value
       }
       this.api.UpdateForm(sessionStorage.getItem('FormId'), d).subscribe((data: any) => {
-        let Fname = sessionStorage.getItem('UserFirstName')
-        let Lname = sessionStorage.getItem('UserLastName')
+        let Fname = localStorage.getItem('AR_UserFirstName')
+        let Lname = localStorage.getItem('AR_UserLastName')
         if (data) {
           const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Approval)</p><br>" +
             "Please approve analysis report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
@@ -235,8 +235,8 @@ export class RejectForm4Component implements OnInit {
                 if (data.length > 0) {
                   this.SendRejectUser = data[0];
                   // console.log(this.SendRejectUser);
-                  let Fname = sessionStorage.getItem('UserFirstName')
-                  let Lname = sessionStorage.getItem('UserLastName')
+                  let Fname = localStorage.getItem('AR_UserFirstName')
+                  let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
                     "AE Reviewer not approve report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";

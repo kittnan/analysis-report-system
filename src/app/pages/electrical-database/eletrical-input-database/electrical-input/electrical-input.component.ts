@@ -61,7 +61,7 @@ export class ElectricalInputComponent implements OnInit {
   //TODO Routes
   routes() {
 
-    const access: any = sessionStorage.getItem('UserEmployeeCode')
+    const access: any = localStorage.getItem('AR_UserEmployeeCode')
     if (access == 'admin') {
       this.RouterMenu = [
         {
