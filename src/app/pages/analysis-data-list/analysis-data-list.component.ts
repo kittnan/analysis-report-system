@@ -125,6 +125,7 @@ export class AnalysisDataListComponent implements OnInit {
         }
       })
     },
+
     {
       field: 'sendNgAnalysis',
       filter: 'agNumberColumnFilter',
@@ -197,6 +198,11 @@ export class AnalysisDataListComponent implements OnInit {
       field: 'claimNo',
       headerName: "Claim No",
       headerTooltip: "Claim No"
+    },
+    {
+      field: 'TBNShow',
+      headerName: "TBN",
+      headerTooltip: "TBN"
     },
     {
       field: 'issueDate',
@@ -496,41 +502,41 @@ export class AnalysisDataListComponent implements OnInit {
         // console.log(merge);
         let ratio: any = Number(merge.ngRatio).toFixed(2)
 
-        const map = {
-          Status: merge.statusShow,
-          Reg_No: merge.requestNumber,
-          Model: merge.ktcModelNumber,
-          Project_Name: `${merge.size} / ${merge.customer}`,
-          Defect_Name: merge.defectiveName,
-          Lot_Number: merge.pcLotNumber,
-          Input_Qty: Number(merge.inputQuantity),
-          NG_Qty: Number(merge.ngQuantity),
-          NG_Ratio: Number(ratio),
-          Sent_NG_Analysis: Number(merge.sendNgAnalysis),
-          Production_Phase: merge.productionPhase,
-          Defect_Category: merge.defectCatagory,
-          Claim_No: merge.claimNo,
-          Abnormal_Lot_Level: merge.abnormalLotLevel,
-          Occur_Place: `${merge.occurBName}, ${merge.occurB}`,
-          Issuer: merge.issuer,
-          Req_From: merge.requestFormSectionName,
-          Cause_Of_Defect: merge.causeOfDefect,
-          Analysis_Result: merge.result,
-          Can_Analysis: merge.canAnalysis,
-          Source_Of_Defect: merge.sourceOfDefect,
-          Category_Cause: merge.defectCatagory,
-          Analysis_Level: merge.analysisLevel,
-          Issue_Date: new Date(merge.issuedDate).toLocaleDateString("en-US"),
-          Reply_Date: new Date(merge.replyDate).toLocaleDateString("en-US"),
-          Start_Analyze_Date: merge.startAnalyzeDate ? new Date(merge.startAnalyzeDate).toLocaleDateString("en-US") : "",
-          Finish_Analysis_Date: merge.finishAnalyzeDate ? new Date(merge.finishAnalyzeDate).toLocaleDateString("en-US") : "",
-          Finish_Analysis_Report_Date: merge.finishReportDate ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : "",
-          Total_Analysis_Date: merge.diffReport,
-          Technician_PIC: merge.userApprove2Name,
-          Engineer_PIC: merge.userApprove3Name,
-          User_Now: merge.userApproveName,
-          FormId: merge.FormId
-        }
+        // const map = {
+        //   Status: merge.statusShow,
+        //   Reg_No: merge.requestNumber,
+        //   Model: merge.ktcModelNumber,
+        //   Project_Name: `${merge.size} / ${merge.customer}`,
+        //   Defect_Name: merge.defectiveName,
+        //   Lot_Number: merge.pcLotNumber,
+        //   Input_Qty: Number(merge.inputQuantity),
+        //   NG_Qty: Number(merge.ngQuantity),
+        //   NG_Ratio: Number(ratio),
+        //   Sent_NG_Analysis: Number(merge.sendNgAnalysis),
+        //   Production_Phase: merge.productionPhase,
+        //   Defect_Category: merge.defectCatagory,
+        //   Claim_No: merge.claimNo,
+        //   Abnormal_Lot_Level: merge.abnormalLotLevel,
+        //   Occur_Place: `${merge.occurBName}, ${merge.occurB}`,
+        //   Issuer: merge.issuer,
+        //   Req_From: merge.requestFormSectionName,
+        //   Cause_Of_Defect: merge.causeOfDefect,
+        //   Analysis_Result: merge.result,
+        //   Can_Analysis: merge.canAnalysis,
+        //   Source_Of_Defect: merge.sourceOfDefect,
+        //   Category_Cause: merge.defectCatagory,
+        //   Analysis_Level: merge.analysisLevel,
+        //   Issue_Date: new Date(merge.issuedDate).toLocaleDateString("en-US"),
+        //   Reply_Date: new Date(merge.replyDate).toLocaleDateString("en-US"),
+        //   Start_Analyze_Date: merge.startAnalyzeDate ? new Date(merge.startAnalyzeDate).toLocaleDateString("en-US") : "",
+        //   Finish_Analysis_Date: merge.finishAnalyzeDate ? new Date(merge.finishAnalyzeDate).toLocaleDateString("en-US") : "",
+        //   Finish_Analysis_Report_Date: merge.finishReportDate ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : "",
+        //   Total_Analysis_Date: merge.diffReport,
+        //   Technician_PIC: merge.userApprove2Name,
+        //   Engineer_PIC: merge.userApprove3Name,
+        //   User_Now: merge.userApproveName,
+        //   FormId: merge.FormId
+        // }
 
         merge['projectName'] = `${merge.size} / ${merge.customer}`
         merge.inputQuantity = Number(merge.inputQuantity)
@@ -543,7 +549,7 @@ export class AnalysisDataListComponent implements OnInit {
         merge.startAnalyzeDate = merge.startAnalyzeDate ? new Date(merge.startAnalyzeDate).toLocaleDateString("en-US") : ""
         merge.finishAnalyzeDate = merge.finishAnalyzeDate ? new Date(merge.finishAnalyzeDate).toLocaleDateString("en-US") : ""
         merge.finishReportDate = merge.finishReportDate ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : ""
-
+        merge.TBNShow = merge.TBN && merge.TBN != 'normal' ? merge.TBNNumber : 'Normal'
         return merge
       })
 
@@ -732,12 +738,13 @@ export class AnalysisDataListComponent implements OnInit {
           Analysis_Level: data.analysisLevel,
           Category_Cause: data.defectCatagory,
           Claim_No: data.claimNo,
+          TBN: data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal',
           Issue_Date: data.issuedDate,
           Reply_Date: data.replyDate,
           Start_Analysis_Date: data.startAnalyzeDate,
           Finish_Analysis_Date: data.finishAnalyzeDate,
           Total_Analysis_Date: data.diffReport,
-          Technicial_PIC: data.userApprove2Name,
+          Technical_PIC: data.userApprove2Name,
           Engineer_PIC: data.userApprove3Name,
           Responsible_Person: data.userApproveName,
           Status: data.statusShow,
@@ -830,16 +837,9 @@ export class AnalysisDataListComponent implements OnInit {
   }
 
   onCellClicked(item: any) {
-    // console.log(item);
     const form = item.data
-
-
-    sessionStorage.setItem('FormId', form.FormId);
-    sessionStorage.setItem('FormView', '2');
-    const url = '#/viewForm'
+    const url = `#/viewForm?formId=${form.FormId}&formView=2`
     window.open(url, '_blank');
-    // this.route.navigate(['/viewForm'])
-    // location.href = "#/viewForm";
   }
   showCountRows() {
     return this.gridApi.getDisplayedRowCount()

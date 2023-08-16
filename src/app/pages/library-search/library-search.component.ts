@@ -160,6 +160,11 @@ export class LibrarySearchComponent implements OnInit {
       })
     },
     {
+      field: 'TBNShow',
+      headerName: "TBN",
+      headerTooltip: "TBN"
+    },
+    {
       field: 'result',
       headerName: "Result",
       headerTooltip: "Result Analysis"
@@ -217,12 +222,6 @@ export class LibrarySearchComponent implements OnInit {
     this.GetRequestItem()
     this.getKeySearch();
     this.onPageLoaded();
-
-    // let currentdate:any = new Date();
-    // let oneJan:any = new Date(currentdate.getFullYear(), 0, 1);
-    // let numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
-    // let result = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
-    // console.log(`The week number of the current date (${currentdate}) is ${result}.`);
   }
 
   // ? API
@@ -366,23 +365,23 @@ export class LibrarySearchComponent implements OnInit {
         const status = this.setStatusForm(merge.status);
 
         let ratio: any = Number(merge.ngRatio).toFixed(2)
-        const map = {
-          Req_No: merge.requestNumber,
-          Model: merge.ktcModelNumber,
-          Project_Name: `${merge.size} / ${merge.customer}`,
-          Defect_Name: merge.defectiveName,
-          Occur_Place: merge.occurBName,
-          Lot_Number: merge.pcLotNumber,
-          Input_Qty: Number(merge.inputQuantity),
-          Ng_Qty: Number(merge.ngQuantity),
-          Ng_Ratio: Number(ratio),
-          Result: merge.result,
-          relatedToESD: merge.relatedToESD,
-          REQ_From: merge.requestFormSectionName,
-          REQ_Name: merge.issuer,
-          UserNow: merge.userApproveName,
-          Status: status,
-        }
+        // const map = {
+        //   Req_No: merge.requestNumber,
+        //   Model: merge.ktcModelNumber,
+        //   Project_Name: `${merge.size} / ${merge.customer}`,
+        //   Defect_Name: merge.defectiveName,
+        //   Occur_Place: merge.occurBName,
+        //   Lot_Number: merge.pcLotNumber,
+        //   Input_Qty: Number(merge.inputQuantity),
+        //   Ng_Qty: Number(merge.ngQuantity),
+        //   Ng_Ratio: Number(ratio),
+        //   Result: merge.result,
+        //   relatedToESD: merge.relatedToESD,
+        //   REQ_From: merge.requestFormSectionName,
+        //   REQ_Name: merge.issuer,
+        //   UserNow: merge.userApproveName,
+        //   Status: status,
+        // }
         merge['projectName'] = `${merge.size} / ${merge.customer}`
         merge['statusShow'] = status
         merge.inputQuantity = Number(merge.inputQuantity)
@@ -392,6 +391,7 @@ export class LibrarySearchComponent implements OnInit {
         merge.occurPlace = merge.occurBName
         merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
         merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
+        merge.TBNShow = merge.TBN && merge.TBN != 'normal' ? merge.TBNNumber : 'Normal'
 
         return merge
       })
@@ -420,17 +420,16 @@ export class LibrarySearchComponent implements OnInit {
   }
 
   onCellClicked(e: any) {
-    // console.log(e);
-    // console.log(e.data);
-    const find_data = this.Sum.find(i => i.requestNumber == e.data.requestNumber)
-    // console.log(find_data);
-    // i.requestNumber
-    if (find_data !== undefined) {
-      sessionStorage.setItem('FormId', find_data._id);
-      sessionStorage.setItem('FormView', '2');
 
-      const url = '#/viewForm'
+    const find_data = this.Sum.find(i => i.requestNumber == e.data.requestNumber)
+    if (find_data !== undefined) {
+      const url = `#/viewForm?formId=${find_data._id}&formView=2`
       window.open(url, '_blank');
+      // sessionStorage.setItem('FormId', find_data._id);
+      // sessionStorage.setItem('FormView', '2');
+
+      // const url = '#/viewForm'
+      // window.open(url, '_blank');
       // this.route.navigate(['/viewForm'])
 
       // location.href = "#/viewForm";
@@ -616,10 +615,12 @@ export class LibrarySearchComponent implements OnInit {
         const newData = {
           Register_No: data.requestNumber,
           KTC_Model_Number: data.ktcModelNumber,
+          ProjectName: data.projectName,
           Defect_Name: data.defectiveName,
           Lot_Number: data.pcLotNumber,
           Input_Quantity: data.inputQuantity,
           NG_Quantity: data.ngQuantity,
+          NG_Ratio: data.ratio,
           Sent_NG_To_Analysis: data.sendNgAnalysis,
           Production_Phase: data.productionPhase,
           Defect_Category: data.defectCatagory,
@@ -628,17 +629,45 @@ export class LibrarySearchComponent implements OnInit {
           Issuer: data.issuer,
           Request_From_Department: data.requestFormSectionName,
           relatedToESD: data.relatedToESD,
+          TBN: data.TBNShow,
+          Result: data.result,
           Analysis_Result: data.causeOfDefect,
           Category_Cause: data.defectCatagory,
           Issue_Date: data.issuedDate ? ((data.issuedDate).split('T'))[0] : data.issuedDate,
           Reply_Date: data.replyDate ? ((data.replyDate).split('T'))[0] : data.replyDate,
           Start_Analysis_Date: data.startAnalyzeDate ? ((data.startAnalyzeDate).split('T'))[0] : data.startAnalyzeDate,
           Finish_Analysis_Date: data.finishAnalyzeDate ? ((data.finishAnalyzeDate).split('T'))[0] : data.finishAnalyzeDate,
-          Technicial_PIC: data.userApprove2Name,
+          Technical_PIC: data.userApprove2Name,
           Engineer_PIC: data.userApprove3Name,
           Responsible_Person: data.userApproveName,
           Status: status
         }
+        // const newData = {
+        //   Register_No: data.requestNumber,
+        //   KTC_Model_Number: data.ktcModelNumber,
+        //   Defect_Name: data.defectiveName,
+        //   Lot_Number: data.pcLotNumber,
+        //   Input_Quantity: data.inputQuantity,
+        //   NG_Quantity: data.ngQuantity,
+        //   Sent_NG_To_Analysis: data.sendNgAnalysis,
+        //   Production_Phase: data.productionPhase,
+        //   Defect_Category: data.defectCatagory,
+        //   Abnormal_Lot_Level: data.abnormalLotLevel,
+        //   Occur_Place: data.occurBName,
+        //   Issuer: data.issuer,
+        //   Request_From_Department: data.requestFormSectionName,
+        //   relatedToESD: data.relatedToESD,
+        //   Analysis_Result: data.causeOfDefect,
+        //   Category_Cause: data.defectCatagory,
+        //   Issue_Date: data.issuedDate ? ((data.issuedDate).split('T'))[0] : data.issuedDate,
+        //   Reply_Date: data.replyDate ? ((data.replyDate).split('T'))[0] : data.replyDate,
+        //   Start_Analysis_Date: data.startAnalyzeDate ? ((data.startAnalyzeDate).split('T'))[0] : data.startAnalyzeDate,
+        //   Finish_Analysis_Date: data.finishAnalyzeDate ? ((data.finishAnalyzeDate).split('T'))[0] : data.finishAnalyzeDate,
+        //   Technicial_PIC: data.userApprove2Name,
+        //   Engineer_PIC: data.userApprove3Name,
+        //   Responsible_Person: data.userApproveName,
+        //   Status: status
+        // }
         return newData
       })
       resolve(temp)

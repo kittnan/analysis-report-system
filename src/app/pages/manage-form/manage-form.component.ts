@@ -165,16 +165,24 @@ export class ManageFormComponent implements OnInit {
         const url = `#/progressForm${StatusForm}?formId=${item._id}`
         window.open(url, '_blank');
       } else if (StatusForm == Reject1[0] || StatusForm == Reject1[1]) {
-        this.route.navigate(["/rejectForm1"])
+        // this.route.navigate(["/rejectForm1"])
+        const url = `#/rejectForm1?formId=${item._id}`
+        window.open(url, '_blank');
         // location.href = "#/rejectForm1";
       } else if (StatusForm == Reject1[2]) {
-        this.route.navigate(["/rejectForm2"])
+        const url = `#/rejectForm2?formId=${item._id}`
+        window.open(url, '_blank');
+        // this.route.navigate(["/rejectForm2"])
         // location.href = "#/rejectForm2";
       } else if (StatusForm == Reject1[3]) {
-        this.route.navigate(["/rejectForm3"])
+        const url = `#/rejectForm3?formId=${item._id}`
+        window.open(url, '_blank');
+        // this.route.navigate(["/rejectForm3"])
         // location.href = "#/rejectForm3";
       } else if (StatusForm == Reject1[4]) {
-        this.route.navigate(["/rejectForm3"])
+        const url = `#/rejectForm3?formId=${item._id}`
+        window.open(url, '_blank');
+        // this.route.navigate(["/rejectForm3"])
         // location.href = "#/rejectForm3";
       }
 

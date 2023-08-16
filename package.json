@@ -1,11 +1,12 @@
 {
   "name": "Analysis-Report",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
     "build": "ng build --prod",
+    "prebuild": "npm --no-git-tag-version version patch",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
