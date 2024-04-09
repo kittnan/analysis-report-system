@@ -77,6 +77,9 @@ export class HttpService {
   Login(data: any): Observable<any> {
     return this.http.post(this.Url + "/Login/in", data);
   }
+  LoginSSO(data: any): Observable<any> {
+    return this.http.post(this.Url + "/Login/inSSO", data);
+  }
 
   // ? manage form
 

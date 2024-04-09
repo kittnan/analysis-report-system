@@ -6,3 +6,7 @@
 .form-control {
     font-size: 20px;
 }
+.tt {
+  cursor: pointer;
+  transition: all ease 1s;
+}

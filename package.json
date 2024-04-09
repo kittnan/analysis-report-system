@@ -1,11 +1,11 @@
 {
   "name": "Analysis-Report",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
-    "build": "ng build --prod",
+    "build": "ng build Analysis-Report --prod --aot --baseHref=/Analysis-Report/ --buildOptimizer --extractCss --extractLicenses --no-namedChunks --optimization --outputHashing=all --no-sourceMap --no-vendorChunk",
     "prebuild": "npm --no-git-tag-version version patch",
     "test": "ng test",
     "lint": "ng lint",

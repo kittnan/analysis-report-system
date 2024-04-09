@@ -61,7 +61,7 @@ export class ProgressForm3Component implements OnInit {
     RelatedToESD: new FormControl(null, Validators.required),
     ReportNo: new FormControl(null, Validators.required),
     Approve: new FormControl(null, Validators.required),
-    File: new FormControl(null, Validators.required),
+    File: new FormControl(null),
     TempCause: new FormControl(null),
     htmlReport: new FormControl(null)
 

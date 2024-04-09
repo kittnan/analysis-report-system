@@ -35,6 +35,8 @@ export class LoginComponent implements OnInit {
     PassWord: new FormControl(null, Validators.required)
   })
 
+  SSOToggle: boolean = false
+
   constructor(
     private api: HttpService,
     private route: Router,
@@ -53,67 +55,129 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    try {
+      if (this.LoginForm.valid) {
 
-    if (this.LoginForm.valid) {
+        if (this.SSOToggle) {
 
-      let Data = {
-        username: this.UserName.value,
-        password: this.PassWord.value
-      }
+          let Data = {
+            username: this.UserName.value,
+            password: this.PassWord.value
+          }
+          this.api.LoginSSO(Data).subscribe((data) => {
+            if (data.length > 0) {
+              this.userLogin = true;
+              localStorage.setItem('AR_UserId', data[0]._id);
+              localStorage.setItem('AR_UserFirstName', data[0].FirstName);
+              localStorage.setItem('AR_UserLastName', data[0].LastName);
+              localStorage.setItem('AR_UserSection1Id', data[0].Section1Id);
+              localStorage.setItem('AR_UserSection2Id', data[0].Section2Id);
+              localStorage.setItem('AR_UserSection3Id', data[0].Section3Id);
+              localStorage.setItem('AR_UserSection4Id', data[0].Section4Id);
+              localStorage.setItem('AR_UserSection5Id', data[0].Section5Id);
+              localStorage.setItem('AR_UserSection6Id', data[0].Section6Id);
+              localStorage.setItem('AR_UserSection1Name', data[0].Section1Name);
+              localStorage.setItem('AR_UserSection2Name', data[0].Section2Name);
+              localStorage.setItem('AR_UserSection3Name', data[0].Section3Name);
+              localStorage.setItem('AR_UserSection4Name', data[0].Section4Name);
+              localStorage.setItem('AR_UserSection5Name', data[0].Section5Name);
+              localStorage.setItem('AR_UserSection6Name', data[0].Section6Name);
+              localStorage.setItem('AR_UserEmail', data[0].Email);
+              localStorage.setItem('AR_UserEmployeeCode', data[0].EmployeeCode);
+              localStorage.setItem('AR_loginStatus', this.userLogin);
+              localStorage.setItem('AR_UserLevel1', data[0].Level1);
+              localStorage.setItem('AR_UserLevel2', data[0].Level2);
+              localStorage.setItem('AR_UserLevel3', data[0].Level3);
+              localStorage.setItem('AR_UserLevel4', data[0].Level4);
+              localStorage.setItem('AR_UserLevel5', data[0].Level5);
+              localStorage.setItem('AR_UserLevel6', data[0].Level6);
+              // localStorage.setItem('requesterId', data[0]._id);
 
-      this.api.Login(Data).subscribe((data) => {
-        if (data.length > 0) {
-          this.userLogin = true;
-          // console.log(data);
+              const guest = localStorage.getItem('AR_UserEmployeeCode')
+              if (guest == 'guest') {
+                this.route.navigate(['/dashboard-guest'])
 
-          localStorage.setItem('AR_UserId', data[0]._id);
-          localStorage.setItem('AR_UserFirstName', data[0].FirstName);
-          localStorage.setItem('AR_UserLastName', data[0].LastName);
-          localStorage.setItem('AR_UserSection1Id', data[0].Section1Id);
-          localStorage.setItem('AR_UserSection2Id', data[0].Section2Id);
-          localStorage.setItem('AR_UserSection3Id', data[0].Section3Id);
-          localStorage.setItem('AR_UserSection4Id', data[0].Section4Id);
-          localStorage.setItem('AR_UserSection5Id', data[0].Section5Id);
-          localStorage.setItem('AR_UserSection6Id', data[0].Section6Id);
-          localStorage.setItem('AR_UserSection1Name', data[0].Section1Name);
-          localStorage.setItem('AR_UserSection2Name', data[0].Section2Name);
-          localStorage.setItem('AR_UserSection3Name', data[0].Section3Name);
-          localStorage.setItem('AR_UserSection4Name', data[0].Section4Name);
-          localStorage.setItem('AR_UserSection5Name', data[0].Section5Name);
-          localStorage.setItem('AR_UserSection6Name', data[0].Section6Name);
-          localStorage.setItem('AR_UserEmail', data[0].Email);
-          localStorage.setItem('AR_UserEmployeeCode', data[0].EmployeeCode);
-          localStorage.setItem('AR_loginStatus', this.userLogin);
-          localStorage.setItem('AR_UserLevel1', data[0].Level1);
-          localStorage.setItem('AR_UserLevel2', data[0].Level2);
-          localStorage.setItem('AR_UserLevel3', data[0].Level3);
-          localStorage.setItem('AR_UserLevel4', data[0].Level4);
-          localStorage.setItem('AR_UserLevel5', data[0].Level5);
-          localStorage.setItem('AR_UserLevel6', data[0].Level6);
-          // localStorage.setItem('requesterId', data[0]._id);
+                // location.href = "#/dashboard-guest";
+              } else {
+                this.route.navigate(['/manageForm'])
 
-          const guest = localStorage.getItem('AR_UserEmployeeCode')
-          if (guest == 'guest') {
-            this.route.navigate(['/dashboard-guest'])
+                // location.href = "#/manageForm";
+              }
 
-            // location.href = "#/dashboard-guest";
-          } else {
-            this.route.navigate(['/manageForm'])
+              // location.reload();
 
-            // location.href = "#/manageForm";
+              // window.location.href = "/#dashboard"
+
+            } else {
+              alert("Login Fail");
+            }
+          })
+        } else {
+
+          let Data = {
+            username: this.UserName.value,
+            password: this.PassWord.value
           }
 
-          // location.reload();
+          this.api.Login(Data).subscribe((data) => {
+            if (data.length > 0) {
+              this.userLogin = true;
+              localStorage.setItem('AR_UserId', data[0]._id);
+              localStorage.setItem('AR_UserFirstName', data[0].FirstName);
+              localStorage.setItem('AR_UserLastName', data[0].LastName);
+              localStorage.setItem('AR_UserSection1Id', data[0].Section1Id);
+              localStorage.setItem('AR_UserSection2Id', data[0].Section2Id);
+              localStorage.setItem('AR_UserSection3Id', data[0].Section3Id);
+              localStorage.setItem('AR_UserSection4Id', data[0].Section4Id);
+              localStorage.setItem('AR_UserSection5Id', data[0].Section5Id);
+              localStorage.setItem('AR_UserSection6Id', data[0].Section6Id);
+              localStorage.setItem('AR_UserSection1Name', data[0].Section1Name);
+              localStorage.setItem('AR_UserSection2Name', data[0].Section2Name);
+              localStorage.setItem('AR_UserSection3Name', data[0].Section3Name);
+              localStorage.setItem('AR_UserSection4Name', data[0].Section4Name);
+              localStorage.setItem('AR_UserSection5Name', data[0].Section5Name);
+              localStorage.setItem('AR_UserSection6Name', data[0].Section6Name);
+              localStorage.setItem('AR_UserEmail', data[0].Email);
+              localStorage.setItem('AR_UserEmployeeCode', data[0].EmployeeCode);
+              localStorage.setItem('AR_loginStatus', this.userLogin);
+              localStorage.setItem('AR_UserLevel1', data[0].Level1);
+              localStorage.setItem('AR_UserLevel2', data[0].Level2);
+              localStorage.setItem('AR_UserLevel3', data[0].Level3);
+              localStorage.setItem('AR_UserLevel4', data[0].Level4);
+              localStorage.setItem('AR_UserLevel5', data[0].Level5);
+              localStorage.setItem('AR_UserLevel6', data[0].Level6);
+              // localStorage.setItem('requesterId', data[0]._id);
 
-          // window.location.href = "/#dashboard"
+              const guest = localStorage.getItem('AR_UserEmployeeCode')
+              if (guest == 'guest') {
+                this.route.navigate(['/dashboard-guest'])
 
-        } else {
-          alert("Login Fail");
+                // location.href = "#/dashboard-guest";
+              } else {
+                this.route.navigate(['/manageForm'])
+
+                // location.href = "#/manageForm";
+              }
+
+              // location.reload();
+
+              // window.location.href = "/#dashboard"
+
+            } else {
+              alert("Login Fail");
+            }
+          })
         }
-      })
-    } else {
+
+      } else {
+        alert("Login Fail");
+      }
+    } catch (error) {
+      console.log("🚀 ~ error:", error)
       alert("Login Fail");
+
     }
+
 
   }
 
