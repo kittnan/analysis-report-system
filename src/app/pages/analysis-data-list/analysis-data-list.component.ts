@@ -240,6 +240,28 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "Total Analysis Date"
     },
     {
+      field: 'onTimeResult', filter: true, resizable: true, cellStyle: (params: any) => {
+        let color = ''
+        params.value == "On due" ? color = "lightgreen" : false
+        params.value == "Over due" ? color = "orange" : false
+        params.value == "Ongoing" ? color = "lightsalmon" : false
+        return { backgroundColor: color }
+      },
+      headerName: "On Time Result",
+      headerTooltip: "On Time Result"
+    },
+    {
+      field: 'onTimeReport', filter: true, resizable: true, cellStyle: (params: any) => {
+        let color = ''
+        params.value == "On due" ? color = "lightgreen" : false
+        params.value == "Over due" ? color = "orange" : false
+        params.value == "Ongoing" ? color = "lightsalmon" : false
+        return { backgroundColor: color }
+      },
+      headerName: "On Time Report",
+      headerTooltip: "On Time Report"
+    },
+    {
       field: 'userApprove2Name',
       headerName: "Technician PIC",
       headerTooltip: "Technician PIC"
@@ -559,65 +581,67 @@ export class AnalysisDataListComponent implements OnInit {
 
   setStatusRequest(merges: any) {
     return new Promise(resolve => {
-      merges.map((merge: any) => {
-        merge.issuedDate = ((merge.issuedDate).split('T'))[0]
-        merge.replyDate = ((merge.replyDate).split('T'))[0]
-        merge.startAnalyzeDate ? merge.startAnalyzeDate = ((merge.startAnalyzeDate).split('T'))[0] : false
-        merge.finishAnalyzeDate ? merge.finishAnalyzeDate = ((merge.finishAnalyzeDate).split('T'))[0] : false
-        merge.finishReportDate ? merge.finishReportDate = ((merge.finishReportDate).split('T'))[0] : false
+      merges.map((item: any) => {
+        item.issuedDate = ((item.issuedDate).split('T'))[0]
+        item.replyDate = ((item.replyDate).split('T'))[0]
+        item.startAnalyzeDate ? item.startAnalyzeDate = ((item.startAnalyzeDate).split('T'))[0] : false
+        item.finishAnalyzeDate ? item.finishAnalyzeDate = ((item.finishAnalyzeDate).split('T'))[0] : false
+        item.finishReportDate ? item.finishReportDate = ((item.finishReportDate).split('T'))[0] : false
         // console.log(merge.result);
 
-        this.setStatusShow(merge, 5)
+        this.setStatusShow(item, 5)
+        this.setStatusShow(item, 6)
+        this.setStatusShow(item, 7)
 
         if (
-          merge.status == 1 ||
-          merge.status == 2 ||
-          merge.status == 2.1
+          item.status == 1 ||
+          item.status == 2 ||
+          item.status == 2.1
         ) {
-          this.setStatusShow(merge, 1)
+          this.setStatusShow(item, 1)
         }
         else if (
-          merge.status == 3 ||
-          merge.status == 3.1 ||
-          merge.status == 4 ||
-          merge.status == 4.3 ||
-          merge.status == 5 ||
-          merge.status == 5.4 ||
-          merge.status == 6.4
+          item.status == 3 ||
+          item.status == 3.1 ||
+          item.status == 4 ||
+          item.status == 4.3 ||
+          item.status == 5 ||
+          item.status == 5.4 ||
+          item.status == 6.4
         ) {
-          this.setStatusShow(merge, 2)
+          this.setStatusShow(item, 2)
         }
         else if (
-          merge.status == 6
+          item.status == 6
         ) {
-          this.setStatusShow(merge, 3)
+          this.setStatusShow(item, 3)
         }
         else if (
-          merge.status == 0
+          item.status == 0
         ) {
-          this.setStatusShow(merge, 4)
+          this.setStatusShow(item, 4)
         }
       })
       resolve('ok')
     })
   }
 
-  setStatusShow(merge: any, key: any) {
+  setStatusShow(item: any, key: any) {
     return new Promise(resolve => {
       // console.log(key, merge);
 
       const dateNow = new Date().getTime();
-      const issueDate = new Date(merge.issuedDate).getTime()
-      const replyDate = new Date(merge.replyDate).getTime();
-      const finishAnalyzeDate = new Date(merge.finishAnalyzeDate).getTime()
-      const finishReportDate = new Date(merge.finishReportDate).getTime()
+      const issueDate = new Date(item.issuedDate).getTime()
+      const replyDate = new Date(item.replyDate).getTime();
+      const finishAnalyzeDate = new Date(item.finishAnalyzeDate).getTime()
+      const finishReportDate = new Date(item.finishReportDate).getTime()
       // console.log(merge.finishReportDate, merge.issuedDate);
       // console.log(finishReportDate, issueDate);
 
       switch (key) {
         case 1:
-          merge['statusShow'] = 'Ongoing'
-          merge['color'] = 'Ongoing'
+          item['statusShow'] = 'Ongoing'
+          item['color'] = 'Ongoing'
           // if (dateNow <= replyDate) {
           //   merge['statusShow'] = 'Ongoing'
           //   merge['color'] = 'Ongoing'
@@ -627,38 +651,63 @@ export class AnalysisDataListComponent implements OnInit {
           // }
           break;
         case 2:
-          if (merge.result != undefined) {
-            merge['statusShow'] = 'Making report'
-            merge['color'] = 'MakingReport'
+          if (item.result != undefined) {
+            item['statusShow'] = 'Making report'
+            item['color'] = 'MakingReport'
           } else if (dateNow <= replyDate) {
-            merge['statusShow'] = 'Ongoing'
-            merge['color'] = 'Ongoing'
+            item['statusShow'] = 'Ongoing'
+            item['color'] = 'Ongoing'
           } else {
-            merge['statusShow'] = 'Ongoing with delay'
-            merge['color'] = 'OngoingWithDelay'
+            item['statusShow'] = 'Ongoing with delay'
+            item['color'] = 'OngoingWithDelay'
           }
           break;
         case 3:
           if (finishAnalyzeDate <= replyDate) {
-            merge['statusShow'] = 'Done'
-            merge['color'] = 'Done'
+            item['statusShow'] = 'Done'
+            item['color'] = 'Done'
           } else {
-            merge['statusShow'] = 'Done with delay'
-            merge['color'] = 'DoneWithDelay'
+            item['statusShow'] = 'Done with delay'
+            item['color'] = 'DoneWithDelay'
           }
           break;
         case 4:
-          merge['statusShow'] = 'Cancel'
-          merge['color'] = 'Cancel'
+          item['statusShow'] = 'Cancel'
+          item['color'] = 'Cancel'
           break;
         case 5:
           let difference = finishReportDate - issueDate
           var daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
-          daysDifference >= 0 ? merge['diffReport'] = `${daysDifference} Day` : merge['diffReport'] = "No result"
-          daysDifference == 0 ? merge['diffReport'] = `1 Day` : false
+          daysDifference >= 0 ? item['diffReport'] = `${daysDifference} Day` : item['diffReport'] = "No result"
+          daysDifference == 0 ? item['diffReport'] = `1 Day` : false
+          break;
+        case 6:
+          item.onTimeResult = 'Ongoing'
+          let diffOnTimeResult = replyDate - finishAnalyzeDate
+          let dayOnTimeResult = Math.floor(diffOnTimeResult / 1000 / 60 / 60 / 24);
+          if (diffOnTimeResult == 0) {
+            item.onTimeResult = 'On due'
+          } else {
+            if (dayOnTimeResult >= 0) {
+              item.onTimeResult = 'On due'
+            } else if (dayOnTimeResult < 0) {
+              item.onTimeResult = 'Over due'
+            }
+          }
+          break;
+        case 7:
+          item.onTimeReport = 'Ongoing'
+
+          let diffOnTimeReport = finishReportDate - finishAnalyzeDate
+          let dayOnTimeReport = Math.floor(diffOnTimeReport / 1000 / 60 / 60 / 24);
+          if (dayOnTimeReport <= 10) {
+            item.onTimeReport = 'On due'
+          } else if (dayOnTimeReport > 10) {
+            item.onTimeReport = 'Over due'
+          }
           break;
       }
-      resolve(merge)
+      resolve(item)
     })
 
   }
@@ -709,10 +758,10 @@ export class AnalysisDataListComponent implements OnInit {
 
 
 
-  setDataBeforeExcel(datas) {
+  setDataBeforeExcel(datas: any) {
 
     return new Promise(async resolve => {
-      const temp = datas.map(data => {
+      const temp = datas.map((data: any) => {
         const newData = {
           Register_No: data.requestNumber,
           KTC_Model_Number: data.ktcModelNumber,
@@ -743,7 +792,10 @@ export class AnalysisDataListComponent implements OnInit {
           Reply_Date: data.replyDate,
           Start_Analysis_Date: data.startAnalyzeDate,
           Finish_Analysis_Date: data.finishAnalyzeDate,
+          Finish_Analysis_Report_Date: data.finishReportDate,
           Total_Analysis_Date: data.diffReport,
+          On_Time_Result: data.onTimeResult,
+          On_Time_Report: data.onTimeReport,
           Technical_PIC: data.userApprove2Name,
           Engineer_PIC: data.userApprove3Name,
           Responsible_Person: data.userApproveName,
@@ -757,7 +809,7 @@ export class AnalysisDataListComponent implements OnInit {
     })
   }
 
-  onLoadingExcel(datas) {
+  onLoadingExcel(datas: any) {
     return new Promise(async resolve => {
       const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datas);
       const workbook: XLSX.WorkBook = {
@@ -774,7 +826,7 @@ export class AnalysisDataListComponent implements OnInit {
       const date = new Date();
       const ModalName = await this.setModelName()
       // const fileName = 'example.xlsx';
-      let fileName
+      let fileName = ''
       const dateStart = this.DateStart.valid ? this.DateStart.value : "Previous"
       const dateEnd = this.DateEnd.valid ? this.DateEnd.value : "Now"
       // console.log(this.Month.value);
