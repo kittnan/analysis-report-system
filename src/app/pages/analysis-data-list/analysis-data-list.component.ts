@@ -240,23 +240,34 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "Total Analysis Date"
     },
     {
-      field: 'onTimeResult', filter: true, resizable: true, cellStyle: (params: any) => {
+      field: 'onTimeResult', filter: true, resizable: true,
+      cellStyle: (params: any) => {
         let color = ''
         params.value == "On due" ? color = "lightgreen" : false
         params.value == "Over due" ? color = "orange" : false
         params.value == "Ongoing" ? color = "lightsalmon" : false
+
+        params.value == "Over Due" ? color = "lightsalmon" : false
         return { backgroundColor: color }
+      },
+      valueFormatter: (p: any) => {
+        let words = p.value.split(" ");
+        let capitalizedWords = words.map((word: any) => word.charAt(0).toUpperCase() + word.slice(1));
+        let result = capitalizedWords.join(" ");
+        return result
       },
       headerName: "On Time Result",
       headerTooltip: "On Time Result"
     },
     {
-      field: 'onTimeReport', filter: true, resizable: true, cellStyle: (params: any) => {
+      field: 'onTimeReport', filter: true, resizable: true,
+      cellStyle: (params: any) => {
         let color = ''
         params.value == "On due" ? color = "lightgreen" : false
         params.value == "Over due" ? color = "orange" : false
         params.value == "Ongoing" ? color = "lightsalmon" : false
         return { backgroundColor: color }
+
       },
       headerName: "On Time Report",
       headerTooltip: "On Time Report"
@@ -590,8 +601,7 @@ export class AnalysisDataListComponent implements OnInit {
         // console.log(merge.result);
 
         this.setStatusShow(item, 5)
-        this.setStatusShow(item, 6)
-        this.setStatusShow(item, 7)
+
 
         if (
           item.status == 1 ||
@@ -621,6 +631,8 @@ export class AnalysisDataListComponent implements OnInit {
         ) {
           this.setStatusShow(item, 4)
         }
+        this.setStatusShow(item, 6)
+        this.setStatusShow(item, 7)
       })
       resolve('ok')
     })
@@ -684,6 +696,7 @@ export class AnalysisDataListComponent implements OnInit {
         case 6:
           item.onTimeResult = 'Ongoing'
           let diffOnTimeResult = replyDate - finishAnalyzeDate
+
           let dayOnTimeResult = Math.floor(diffOnTimeResult / 1000 / 60 / 60 / 24);
           if (diffOnTimeResult == 0) {
             item.onTimeResult = 'On due'
@@ -692,6 +705,14 @@ export class AnalysisDataListComponent implements OnInit {
               item.onTimeResult = 'On due'
             } else if (dayOnTimeResult < 0) {
               item.onTimeResult = 'Over due'
+            }
+          }
+          if (!finishAnalyzeDate) {
+            if (item.statusShow == 'Ongoing') {
+              item.onTimeResult = 'Ongoing'
+            }
+            if (item.statusShow == 'Ongoing with delay') {
+              item.onTimeResult = 'Over Due'
             }
           }
           break;
@@ -703,7 +724,17 @@ export class AnalysisDataListComponent implements OnInit {
           if (dayOnTimeReport <= 10) {
             item.onTimeReport = 'On due'
           } else if (dayOnTimeReport > 10) {
-            item.onTimeReport = 'Over due'
+            item.onTimeReport = 'Over Due'
+          }
+
+          if (finishAnalyzeDate && !item.finishReportDate && item.statusShow == 'Making report') {
+            let today = new Date().getTime()
+            let diffDay = today - finishAnalyzeDate
+            if (diffDay <= 10) {
+              item.onTimeReport = 'Ongoing'
+            } else if (diffDay > 10) {
+              item.onTimeReport = 'Over due'
+            }
           }
           break;
       }
