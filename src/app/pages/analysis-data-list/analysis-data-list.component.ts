@@ -245,9 +245,7 @@ export class AnalysisDataListComponent implements OnInit {
         let color = ''
         params.value == "On due" ? color = "lightgreen" : false
         params.value == "Over due" ? color = "orange" : false
-        params.value == "Ongoing" ? color = "lightsalmon" : false
-
-        params.value == "Over Due" ? color = "lightsalmon" : false
+        params.value == "Ongoing" ? color = "rgba(255,255,224,255)" : false
         return { backgroundColor: color }
       },
       valueFormatter: (p: any) => {
@@ -265,9 +263,15 @@ export class AnalysisDataListComponent implements OnInit {
         let color = ''
         params.value == "On due" ? color = "lightgreen" : false
         params.value == "Over due" ? color = "orange" : false
-        params.value == "Ongoing" ? color = "lightsalmon" : false
+        params.value == "Ongoing" ? color = "rgba(255,255,224,255)" : false
         return { backgroundColor: color }
 
+      },
+      valueFormatter: (p: any) => {
+        let words = p.value.split(" ");
+        let capitalizedWords = words.map((word: any) => word.charAt(0).toUpperCase() + word.slice(1));
+        let result = capitalizedWords.join(" ");
+        return result
       },
       headerName: "On Time Report",
       headerTooltip: "On Time Report"
@@ -698,7 +702,7 @@ export class AnalysisDataListComponent implements OnInit {
           let diffOnTimeResult = replyDate - finishAnalyzeDate
 
           let dayOnTimeResult = Math.floor(diffOnTimeResult / 1000 / 60 / 60 / 24);
-          if (diffOnTimeResult == 0) {
+          if (dayOnTimeResult == 0) {
             item.onTimeResult = 'On due'
           } else {
             if (dayOnTimeResult >= 0) {
@@ -712,7 +716,7 @@ export class AnalysisDataListComponent implements OnInit {
               item.onTimeResult = 'Ongoing'
             }
             if (item.statusShow == 'Ongoing with delay') {
-              item.onTimeResult = 'Over Due'
+              item.onTimeResult = 'Over due'
             }
           }
           break;
@@ -721,15 +725,17 @@ export class AnalysisDataListComponent implements OnInit {
 
           let diffOnTimeReport = finishReportDate - finishAnalyzeDate
           let dayOnTimeReport = Math.floor(diffOnTimeReport / 1000 / 60 / 60 / 24);
-          if (dayOnTimeReport <= 10) {
+          if (dayOnTimeReport <= 10 && (item.statusShow == 'Done' || item.statusShow == 'Done with delay')) {
             item.onTimeReport = 'On due'
-          } else if (dayOnTimeReport > 10) {
-            item.onTimeReport = 'Over Due'
+          } else if (dayOnTimeReport > 10 && (item.statusShow == 'Done' || item.statusShow == 'Done with delay')) {
+            item.onTimeReport = 'Over due'
           }
 
           if (finishAnalyzeDate && !item.finishReportDate && item.statusShow == 'Making report') {
             let today = new Date().getTime()
             let diffDay = today - finishAnalyzeDate
+            diffDay = Math.floor(diffDay / 1000 / 60 / 60 / 24);
+
             if (diffDay <= 10) {
               item.onTimeReport = 'Ongoing'
             } else if (diffDay > 10) {
