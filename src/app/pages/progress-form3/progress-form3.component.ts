@@ -63,7 +63,10 @@ export class ProgressForm3Component implements OnInit {
     Approve: new FormControl(null, Validators.required),
     File: new FormControl(null),
     TempCause: new FormControl(null),
-    htmlReport: new FormControl(null)
+    htmlReport: new FormControl(null),
+    JudgementDefect: new FormControl(null, Validators.required),
+    Remark: new FormControl(null, Validators.required),
+
 
   })
 
@@ -2686,6 +2689,8 @@ export class ProgressForm3Component implements OnInit {
   get TempCause() { return this.ResultForm.get('TempCause') }
   get File() { return this.ResultForm.get('File') }
   get htmlReport() { return this.ResultForm.get('htmlReport') }
+  get JudgementDefect() { return this.ResultForm.get('JudgementDefect') }
+  get Remark() { return this.ResultForm.get('Remark') }
 
   alertSuccess() {
     Swal.fire({

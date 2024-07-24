@@ -437,7 +437,38 @@
       </div>
 
       <div class="row mt-2">
-        <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="form-group ">
+            <label [ngClass]="{'text-danger': JudgementDefect.invalid}" class="head-label">Judgement Defect
+              <i *ngIf="JudgementDefect.invalid" class="bi bi-x-square-fill"></i>
+            </label>
+            <div class="input-group mb-3 ">
+              <select class="custom-select subtext-color" formControlName="JudgementDefect">
+                <option [value]="null"></option>
+                <option *ngFor="let item of AnalysisLevelList;" [value]="item.name">{{item.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+          <div class="form-group">
+
+            <label [ngClass]="{'text-danger': Remark.invalid}" class="head-label">Remark
+              <i *ngIf="Remark.invalid" class="bi bi-x-square-fill"></i>
+            </label>
+            <input type="search" formControlName="Remark" (click)="ToggleCauseFilter();" (keyup)="FilterCause();"
+              class="form-control subtext-color">
+            <div class="show-select">
+              <select *ngIf="CauseToggle" class="custom-select subtext-color" size="5" formControlName="TempCause"
+                (change)="ToggleCauseFilter(); SetCause();">
+                <option *ngFor="let item of CauseFilter;" [value]="item.name">{{item.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
           <table class="table table-bordered">
             <thead *ngIf="!toggleAttFileEng">
               <tr>
