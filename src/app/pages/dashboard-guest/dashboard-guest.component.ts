@@ -48,6 +48,7 @@ export class DashboardGuestComponent implements OnInit {
   ChartCauseSMT: Chart
 
   ChartEngineer: Chart
+  ChartEngineerAnalysis: Chart
 
   ChartCorrectAnalysis: any
   formQuery: any
@@ -209,7 +210,9 @@ export class DashboardGuestComponent implements OnInit {
     this.callChartCauseModelCode(ExtendModel)
 
     const tempChartENG: any = await this.setChartEngineer(ExtendModel, 'ChartEngineer')
+    const tempChartENGanalysis: any = await this.setChartEngineerA(ExtendModel, 'ChartEngineerAnalysis')
     this.ChartEngineer = tempChartENG
+    this.ChartEngineerAnalysis = tempChartENGanalysis
   }
 
   private setExtendModel() {
@@ -1321,6 +1324,78 @@ export class DashboardGuestComponent implements OnInit {
 
   scrollTo(element: any): void {
     (document.getElementById(element) as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+  }
+
+  async setChartEngineerA(rawData: any, id: any) {
+    let ChartData: any = await this.BuildDataForEngineerChart(rawData)
+
+    const engineers: any = await this.getEngineer()
+    let eng = engineers.map((s: any) => {
+      return s._id
+    })
+
+
+
+    let label = ['PNL', 'MDL', 'DST_FM', 'AMT_FM', 'AMT', 'SMT']
+    ChartData.data = ChartData.data.map((w: any) => {
+      let status = 0
+      if (w.label == "Finish") { status = 6 }
+      if (w.label == "Under Approve") { status = 5 }
+      if (w.label == "Under Review") { status = 4 }
+      if (w.label == "Remain") { status = 99 }
+
+      let dataset: any = []
+      for (const item of label) {
+        let count = 0
+        if(status == 99){
+          for (const iterator of eng) {
+            count = count + rawData[item]?.filter((d: any) => d.userApprove3 == iterator && d.userApprove == iterator).length
+          }
+        }
+        dataset.push(status != 99 ? rawData[item]?.filter((d: any) => d.status == status)?.length : count)
+      }
+      return {
+        ...w,
+        data: dataset
+      }
+
+    })
+
+
+
+
+    const ctx = document.getElementById(id) as HTMLCanvasElement
+    const data = {
+      labels: ['PNL', 'MDL', 'DST-FM', 'AMT-FM', 'AMT', 'SMT'],
+      datasets: ChartData.data
+    }
+    const newChart: Chart = new Chart(ctx, {
+      type: 'bar',
+      data: data,
+      plugins: [ChartDataLabels],
+      options: {
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          },
+        },
+        plugins: {
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
+          }
+        }
+
+
+
+      },
+
+    })
+    return newChart
   }
 
 

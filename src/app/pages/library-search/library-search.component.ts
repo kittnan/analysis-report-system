@@ -148,6 +148,12 @@ export class LibrarySearchComponent implements OnInit {
       headerTooltip: "Ng Ratio(%)"
     },
     {
+      field: 'judgementDefect',
+      filter: 'agNumberColumnFilter',
+      headerName: "Judgement defect",
+      headerTooltip: "Judgement defect"
+    },
+    {
       field: 'relatedToESD',
       headerName: "Related To ESD",
       headerTooltip: "Related To ESD",

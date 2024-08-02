@@ -58,7 +58,7 @@ export class ProgressForm5Component implements OnInit {
   tempFileTotal: number = 0;
   inputFile = new FormControl(null);
 
-
+  judgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
   // ? comment
   CommentLists: any = [];
 
@@ -71,6 +71,8 @@ export class ProgressForm5Component implements OnInit {
     canAnalysis: new FormControl('', Validators.required),
     relatedToESD: new FormControl('', Validators.required),
     result: new FormControl('', Validators.required),
+    judgementDefect : new FormControl('', Validators.required),
+    remark : new FormControl(''),
   })
 
 
@@ -175,7 +177,9 @@ export class ProgressForm5Component implements OnInit {
           sourceOfDefect: this.result.sourceOfDefect || '',
           analysisLevel: this.result.analysisLevel || '',
           canAnalysis: this.result.canAnalysis || '',
-          relatedToESD: this.result.relatedToESD || ''
+          relatedToESD: this.result.relatedToESD || '',
+          judgementDefect: this.form.judgementDefect || '',
+          remark: this.form.remark || ''
         })
 
 
@@ -270,7 +274,9 @@ export class ProgressForm5Component implements OnInit {
                   userApprove: null,
                   userApproveName: null,
                   noteApprove6: this.NoteApprove.value,
-                  noteNow: this.NoteApprove.value
+                  noteNow: this.NoteApprove.value,
+                  judgementDefect: this.AnalysisForm.value.judgementDefect,
+                  remark: this.AnalysisForm.value.remark
                 }
 
                 let Fname = localStorage.getItem('AR_UserFirstName')
@@ -288,13 +294,13 @@ export class ProgressForm5Component implements OnInit {
                       Subject: "Analysis request was closed: " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                         this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                     }
-                    this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                      this.Spinner = false;
-                      this.alertSuccess();
-                      // location.href = "#/manageForm";
-                      this.route.navigate(['/manageForm'])
+                    // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    //   this.Spinner = false;
+                    //   this.alertSuccess();
+                    //   // location.href = "#/manageForm";
+                    //   this.route.navigate(['/manageForm'])
 
-                    })
+                    // })
                   }
                 })
               }
@@ -345,6 +351,8 @@ export class ProgressForm5Component implements OnInit {
             noteReject5: this.NoteReject.value,
             userApprove: this.form.userApprove3,
             userApproveName: sum,
+            judgementDefect: this.AnalysisForm.value.judgementDefect,
+            remark: this.AnalysisForm.value.remark
           }
           // console.log("reject data", d);
           let id = this.formId
@@ -366,12 +374,12 @@ export class ProgressForm5Component implements OnInit {
                     Subject: "AE Approval not approve report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    this.alertSuccess();
-                    // location.href = "#/manageForm";
-                    this.route.navigate(['/manageForm'])
+                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                  //   this.alertSuccess();
+                  //   // location.href = "#/manageForm";
+                  //   this.route.navigate(['/manageForm'])
 
-                  })
+                  // })
                 }
               })
             }

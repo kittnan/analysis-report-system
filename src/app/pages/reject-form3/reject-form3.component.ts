@@ -63,6 +63,8 @@ export class RejectForm3Component implements OnInit {
     ReportNo: new FormControl(null),
     Approve: new FormControl(null, Validators.required),
     TempCause: new FormControl(null),
+    judgementDefect: new FormControl('', Validators.required),
+    remark: new FormControl(''),
   })
 
   IssueDate = new FormControl(null);
@@ -114,6 +116,8 @@ export class RejectForm3Component implements OnInit {
   // ? Base64
   imageBase64_1: any;
   imageBase64_2: any;
+
+  judgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
 
   wordAZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
   ReportList: any = [];
@@ -218,7 +222,6 @@ export class RejectForm3Component implements OnInit {
   getResult() {
     let id = this.formId
     this.api.FindResultByFormIdMain(id).subscribe((data2: any) => {
-
       if (data2.length > 0) {
         this.result = data2[0];
         this.ResultId = data2[0]._id;
@@ -229,6 +232,8 @@ export class RejectForm3Component implements OnInit {
         this.CanAnalysis.setValue(data2[0].canAnalysis);
         this.relatedToESD.setValue(data2[0].relatedToESD);
         this.ReportNo.setValue(data2[0].analysisReportNo);
+        this.judgementDefect.setValue(this.form.judgementDefect)
+        this.remark.setValue(this.form.remark)
         this.TreatmentOfNg.setValue(data2[0].treatMent)
         let st = data2[0].startAnalyzeDate ? data2[0].startAnalyzeDate.split("T") : null;
         let st2 = data2[0].finishAnalyzeDate ? data2[0].finishAnalyzeDate.split("T") : null;
@@ -496,7 +501,9 @@ export class RejectForm3Component implements OnInit {
             userApprove: this.Approve.value,
             userApproveName: this.ApproveName,
             noteNow: this.NoteApprove.value,
-            noteApprove4: this.NoteApprove.value
+            noteApprove4: this.NoteApprove.value,
+            judgementDefect: this.judgementDefect.value,
+            remark: this.remark.value
           }
           // console.log(d1);
 
@@ -516,12 +523,12 @@ export class RejectForm3Component implements OnInit {
                 Subject: "Please review analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                   this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
               }
-              this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                this.alertSuccess();
-                // location.href = "#/manageForm";
-                this.route.navigate(['/manageForm'])
+              // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+              //   this.alertSuccess();
+              //   // location.href = "#/manageForm";
+              //   this.route.navigate(['/manageForm'])
 
-              })
+              // })
 
             }
 
@@ -555,6 +562,8 @@ export class RejectForm3Component implements OnInit {
             noteReject3: this.NoteReject.value,
             userApprove: this.form.userApprove2,
             userApproveName: this.form.userApprove2Name,
+            judgementDefect: this.judgementDefect.value,
+            remark: this.remark.value
           }
           // console.log("reject data", d);
           let id = this.formId
@@ -576,12 +585,12 @@ export class RejectForm3Component implements OnInit {
                     Subject: "Analysis result not approve : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    this.alertSuccess();
-                    this.route.navigate(['/manageForm'])
+                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                  //   this.alertSuccess();
+                  //   this.route.navigate(['/manageForm'])
 
-                    // location.href = "#/manageForm";
-                  })
+                  //   // location.href = "#/manageForm";
+                  // })
                 }
               })
 
@@ -822,6 +831,9 @@ export class RejectForm3Component implements OnInit {
   get ReportNo() { return this.ResultForm.get('ReportNo') }
   get Approve() { return this.ResultForm.get('Approve') }
   get TempCause() { return this.ResultForm.get('TempCause') }
+  get judgementDefect() { return this.ResultForm.get('judgementDefect') }
+  get remark() { return this.ResultForm.get('remark') }
+
 
   alertSuccess() {
     Swal.fire({

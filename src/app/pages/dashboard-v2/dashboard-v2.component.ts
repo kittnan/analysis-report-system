@@ -54,6 +54,7 @@ export class DashboardV2Component implements OnInit {
   ChartCauseSMT: Chart
 
   ChartEngineer: Chart
+  ChartEngineerAnalysis: Chart
 
   formQuery: any
 
@@ -205,6 +206,7 @@ export class DashboardV2Component implements OnInit {
     this.ChartCauseSMT.destroy()
 
     this.ChartEngineer.destroy()
+    this.ChartEngineerAnalysis.destroy()
   }
 
   private async callChart(data: any) {
@@ -221,7 +223,9 @@ export class DashboardV2Component implements OnInit {
     this.callChartCauseModelCode(ExtendModel)
 
     const tempChartENG: any = await this.setChartEngineer(ExtendModel, 'ChartEngineer')
+    const tempChartENGanalysis: any = await this.setChartEngineerA(ExtendModel, 'ChartEngineerAnalysis')
     this.ChartEngineer = tempChartENG
+    this.ChartEngineerAnalysis = tempChartENGanalysis
   }
 
   private setExtendModel() {
@@ -427,7 +431,6 @@ export class DashboardV2Component implements OnInit {
       AMT: { percent: percentCorrectAMT },
       SMT: { percent: percentCorrectSMT },
     }
-    console.log('ChartCorrectAnalysis', this.ChartCorrectAnalysis);
 
 
   }
@@ -751,9 +754,6 @@ export class DashboardV2Component implements OnInit {
 
   async setChartEngineer(rawData: any, id: any) {
     const ChartData: any = await this.BuildDataForEngineerChart(rawData)
-    // console.clear()
-    // console.log('ChartData', ChartData);
-
     const ctx = document.getElementById(id) as HTMLCanvasElement
     const data = {
       labels: ChartData.labels,
@@ -783,6 +783,7 @@ export class DashboardV2Component implements OnInit {
 
       }
     })
+
     return newChart
   }
 
@@ -1445,7 +1446,9 @@ export class DashboardV2Component implements OnInit {
       const newDATA: any = tempData.reduce((prev: any, now: any) => {
         return prev.concat(now)
       }, [])
-      // console.log('newDATA', newDATA);
+      console.log(tempData);
+      console.log(newDATA);
+
       let Eng: any = {
         receive: [],
         remain: [],
@@ -1457,7 +1460,8 @@ export class DashboardV2Component implements OnInit {
 
 
       const engineers: any = await this.getEngineer()
-      // console.log(engineers);
+
+
       engineers.map(async engineer => {
         // console.log("name", engineer.FirstName);
         const requests = newDATA.filter((request: any) => request.userApprove3 == engineer._id)
@@ -1465,7 +1469,10 @@ export class DashboardV2Component implements OnInit {
 
         // console.log(requests);
         if (requests.length > 0) {
+          console.log(1);
+
           const requestCounted: any = await this.countRequestEngineer(requests, engineer)
+
           // console.log(requestCounted);
           if (requestCounted.receive != 0) {
             Eng.receive.push(requestCounted.receive)
@@ -1517,11 +1524,14 @@ export class DashboardV2Component implements OnInit {
         data: [finish, underApprove, underReview, remain]
       }
       // this.EngineerUpdateTime = this.SetUpdateTime(DATA)
+      console.log(newENG);
+
       resolve(newENG)
 
     })
   }
 
+  //TODO today
   countRequestEngineer(requests, engineer) {
     let count = {
       receive: 0,
@@ -1531,13 +1541,19 @@ export class DashboardV2Component implements OnInit {
       finish: 0,
       engineerName: ""
     }
+
+
     return new Promise(resolve => {
       // console.log("requests", requests);
       count.receive = requests.length
 
       const remain = requests.filter(request => request.userApprove == engineer._id)
+      console.log(requests.length);
+      console.log(remain);
+
       // console.log("remain", remain);
       count.remain = remain.length
+
 
       const underReview = requests.filter(request => request.status == 4)
       // console.log("underReview", underReview.length);
@@ -1715,4 +1731,80 @@ export class DashboardV2Component implements OnInit {
 
 
 
+  async setChartEngineerA(rawData: any, id: any) {
+    let ChartData: any = await this.BuildDataForEngineerChart(rawData)
+
+    const engineers: any = await this.getEngineer()
+    let eng = engineers.map((s: any) => {
+      return s._id
+    })
+
+
+
+    let label = ['PNL', 'MDL', 'DST_FM', 'AMT_FM', 'AMT', 'SMT']
+    ChartData.data = ChartData.data.map((w: any) => {
+      let status = 0
+      if (w.label == "Finish") { status = 6 }
+      if (w.label == "Under Approve") { status = 5 }
+      if (w.label == "Under Review") { status = 4 }
+      if (w.label == "Remain") { status = 99 }
+
+      let dataset: any = []
+      for (const item of label) {
+        let count = 0
+        if(status == 99){
+          for (const iterator of eng) {
+            count = count + rawData[item]?.filter((d: any) => d.userApprove3 == iterator && d.userApprove == iterator).length
+          }
+        }
+        dataset.push(status != 99 ? rawData[item]?.filter((d: any) => d.status == status)?.length : count)
+      }
+      return {
+        ...w,
+        data: dataset
+      }
+
+    })
+
+
+
+
+    const ctx = document.getElementById(id) as HTMLCanvasElement
+    const data = {
+      labels: ['PNL', 'MDL', 'DST-FM', 'AMT-FM', 'AMT', 'SMT'],
+      datasets: ChartData.data
+    }
+    const newChart: Chart = new Chart(ctx, {
+      type: 'bar',
+      data: data,
+      plugins: [ChartDataLabels],
+      options: {
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          },
+        },
+        plugins: {
+          datalabels: {
+            display: function (context) {
+              return context.dataset.data[context.dataIndex] !== 0; // or >= 1 or ...
+            }
+          }
+        }
+
+
+
+      },
+
+    })
+    return newChart
+  }
+
+
+
 }
+
+

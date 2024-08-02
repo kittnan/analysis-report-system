@@ -437,7 +437,7 @@
       </div>
 
       <div class="row mt-2">
-        <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="col-lg-2 col-md-2 col-sm-12">
           <div class="form-group ">
             <label [ngClass]="{'text-danger': JudgementDefect.invalid}" class="head-label">Judgement Defect
               <i *ngIf="JudgementDefect.invalid" class="bi bi-x-square-fill"></i>
@@ -445,30 +445,21 @@
             <div class="input-group mb-3 ">
               <select class="custom-select subtext-color" formControlName="JudgementDefect">
                 <option [value]="null"></option>
-                <option *ngFor="let item of AnalysisLevelList;" [value]="item.name">{{item.name}}
-                </option>
+                <option *ngFor="let item of JudgementDefects;" [value]="item">{{item}}
+                <!-- <option  value="1">Latent</option> -->
               </select>
             </div>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12">
           <div class="form-group">
-
             <label [ngClass]="{'text-danger': Remark.invalid}" class="head-label">Remark
               <i *ngIf="Remark.invalid" class="bi bi-x-square-fill"></i>
             </label>
-            <input type="search" formControlName="Remark" (click)="ToggleCauseFilter();" (keyup)="FilterCause();"
-              class="form-control subtext-color">
-            <div class="show-select">
-              <select *ngIf="CauseToggle" class="custom-select subtext-color" size="5" formControlName="TempCause"
-                (change)="ToggleCauseFilter(); SetCause();">
-                <option *ngFor="let item of CauseFilter;" [value]="item.name">{{item.name}}
-                </option>
-              </select>
-            </div>
+            <input type="search" formControlName="Remark" class="form-control subtext-color">
           </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="col-lg-6 col-md-6 col-sm-12" style="align-content: end;">
           <table class="table table-bordered">
             <thead *ngIf="!toggleAttFileEng">
               <tr>
@@ -478,7 +469,7 @@
                 <th *ngIf="tempFileTotal==0">Files ( total: 0 B ) <span class="text-danger"> Limit total
                     30 Mb.</span></th>
 
-                <th width="15%" class="text-center">
+                <th width="30%" class="text-center">
                   <input type="file" (change)="attFilesENG($event)" #fileUpload style="display: none;"
                     [formControl]="inputFile">
                   <button class="btn btn-sm btn-primary" (click)="fileUpload.click()">
@@ -642,7 +633,7 @@
         </div>
         <div class="col-lg-6">
           <button [disabled]="ResultForm.invalid && !FileReport" class="btn btn-primary btn-lg btn-block " type="button"
-            (click)="ModalNote(approveNote);">Submit</button>
+            (click)="ModalNote(approveNote);">Submits</button>
         </div>
       </div>
     </div>

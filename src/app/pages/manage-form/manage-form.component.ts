@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
-
+var moment = require('moment')
 
 @Component({
   selector: 'app-manage-form',
@@ -24,7 +24,7 @@ export class ManageFormComponent implements OnInit {
   FormListAll = [];
   tempList = [];
   FormList = [];
-
+  permission: any = []
 
 
   // ? form control
@@ -42,6 +42,9 @@ export class ManageFormComponent implements OnInit {
   CountList = [10, 20, 50, 100]
   Count: Number = 1
   Sort = new FormControl(-1)
+  //TODO boat san
+  remain = new FormControl('null')
+  status = new FormControl('null')
 
   // ? search
   KeySearch: any
@@ -52,18 +55,24 @@ export class ManageFormComponent implements OnInit {
     await this.SetUserStatus();
     // this.GetRequest();
     // this.OnSelectStatus();
-
     this.get()
   }
 
   async get() {
     this.PageNow = 1;
     const userLevelStr = JSON.stringify(this.UserLevel)
-    const result = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0)
-    const count = await this.getCount(this.SelectStatus.value, this.UserId, userLevelStr, 1);
+    const result = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
+    const count = await this.getCount(this.SelectStatus.value, this.UserId, userLevelStr, 1, null, null);
+
+
     this.Count = count[0].count;
+
     this.CountPage = this.numPage(count[0].count, this.CountNum.value)
     this.DataFilter = result
+    this.DataFilter = this.rep(this.DataFilter)
+    console.log(this.remain.value);
+    console.log(this.status.value);
+
   }
 
   SetUserStatus() {
@@ -95,7 +104,7 @@ export class ManageFormComponent implements OnInit {
       localStorage.getItem('AR_UserLevel5') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel5')) : false
       localStorage.getItem('AR_UserLevel6') != "null" ? LevelList.push(localStorage.getItem('AR_UserLevel6')) : false
       const guest = localStorage.getItem('AR_UserEmployeeCode')
-
+      this.permission = LevelList
       if (guest == 'guest') {
         this.route.navigate(['/dashboard'])
       }
@@ -113,10 +122,11 @@ export class ManageFormComponent implements OnInit {
         location.href = "#/login"
       }
       resolve(true)
+
     })
   }
 
-  async getCount(action: string, id: string, level: any, count: number) {
+  async getCount(action: string, id: string, level: any, count: number, remain: any, status_form: any) {
     const params = {
       action: action,
       id: id,
@@ -124,12 +134,14 @@ export class ManageFormComponent implements OnInit {
       page: 1,
       sort: 1,
       level: level,
-      count: count
+      count: count,
+      remain: remain,
+      status_form: status_form
     }
     return await this.api.RequestManage(params).toPromise()
   }
 
-  async getRequest(action: string, id: string, limit: number, page: number, sort: number, level: any, count: number) {
+  async getRequest(action: string, id: string, limit: number, page: number, sort: number, level: any, count: number, remain: any, status_form: any) {
     const params = {
       action: action,
       id: id,
@@ -137,7 +149,9 @@ export class ManageFormComponent implements OnInit {
       page: page,
       sort: sort,
       level: level,
-      count: count
+      count: count,
+      remain: remain,
+      status_form: status_form
     }
     return await this.api.RequestManage(params).toPromise()
   }
@@ -232,7 +246,8 @@ export class ManageFormComponent implements OnInit {
     const userLevelStr = JSON.stringify(this.UserLevel)
     this.PageNow += 1
     this.PageNow > this.CountPage ? this.PageNow = this.CountPage : this.PageNow
-    this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0)
+    this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
+    this.DataFilter = this.rep(this.DataFilter)
   }
 
 
@@ -240,8 +255,8 @@ export class ManageFormComponent implements OnInit {
     const userLevelStr = JSON.stringify(this.UserLevel)
     this.PageNow -= 1
     this.PageNow <= 1 ? this.PageNow = 1 : this.PageNow
-    this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0)
-
+    this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
+    this.DataFilter = this.rep(this.DataFilter)
   }
   onSelectCountNum() {
     this.get()
@@ -277,4 +292,95 @@ export class ManageFormComponent implements OnInit {
     return 'text-black'
   }
 
+
+
+  rep(data: any) {
+    data = data.map((d: any) => {
+      let day = moment(d.replyDate).diff(moment(), "days")
+      if (day == 0) {
+        day = "Today"
+      }
+      if (day < 0) {
+        day = "Over Due Date"
+      }
+
+
+      let report = d?.result?.[0]?.finishAnalyzeDate ? moment(d?.result?.[0]?.finishAnalyzeDate).add(10, "days").diff(moment(), "days") : "Under Analysis"
+
+      if (report == 0) {
+        report = "Today"
+      }
+      if (report < 0) {
+        report = "Over Due Date"
+      }
+
+
+      return {
+        ...d,
+        remain: d.status == 2 || (d.status == 3 && d.result.length == 0) ? day : "Finished",
+        remain_report: d.status == 2 || (d.status == 3) ? report : "Finished"
+      }
+    })
+
+
+    return data
+  }
+
+
+  setStyle(data, type) {
+    let position = this.permission.filter((d: any) => type?.includes(d));
+    if (position.length != 0) {
+      if (data == 2) {
+        return "background-color:#F6FDC3"
+      }
+      if (data == 1) {
+        return "background-color:#FFCF96"
+      }
+      if (data == "Today" || data == "Over Due Date") {
+        return "background-color:#FF8080"
+      }
+    }
+
+    return ""
+  }
+
+  setStyleOverDue(data, type) {
+    let position = this.permission.filter((d: any) => type?.includes(d));
+    if (position.length != 0) {
+      if (data.remain == "Over Due Date") {
+        return "background-color:#FF8080"
+      }
+      if (data.remain_report == "Over Due Date") {
+        return "background-color:#FF8080"
+      }
+    }
+    return ""
+  }
+
+
+  check_permission(type: any) {
+    let data = this.permission.filter((d: any) => type?.includes(d));
+    if (data.length != 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+
+
+  //F6FDC3
+  //FFCF96
+  //FF8080
+
 }
+
+
+// * Permission Requester && Analysis
+// * 0 : Admin
+// * 1 : Requestor
+// * 2 : Requestor Approve
+// * c : Analysis AE window
+// * 4 : Analysis ENG
+// * 5 : Analysis Reviewer
+// * 6 : Analysis Approve

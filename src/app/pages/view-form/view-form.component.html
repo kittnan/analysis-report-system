@@ -1,7 +1,7 @@
 <div class="row head-tool">
   <span *ngIf="toggleLabel" class="icon-make" (click)="pdfLabel();"><i class="bi bi-file-earmark-pdf"
       style="font-size: 2rem;"></i>label</span>
-  <a *ngIf="toggleReportFile&&this.result" class="icon-make" [download]="ReportName" [href]="this.result.file"><i
+  <a *ngIf="(toggleReportFile&&this.result) && this.status" class="icon-make" [download]="ReportName" [href]="this.result.file"><i
       class="bi bi-file-earmark-pdf" style="font-size: 2rem;"></i>report</a>
 </div>
 <div id="print" class="col-lg-12 main">
@@ -380,6 +380,21 @@
           <div class="form-group">
             <label class="head-label">Related to ESD</label>
             <p class="subtext-color" *ngIf="result">{{result.relatedToESD}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="head-label">Judgement Defect</label>
+            <p class="subtext-color" *ngIf="result">{{form.judgementDefect}}</p>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label class="head-label">Remark</label>
+            <p class="subtext-color" *ngIf="result">{{form.remark}}</p>
           </div>
         </div>
       </div>

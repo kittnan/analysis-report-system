@@ -6,6 +6,7 @@ import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'environments/environment';
 
+
 @Component({
   selector: 'app-progress-form4',
   templateUrl: './progress-form4.component.html',
@@ -35,6 +36,7 @@ export class ProgressForm4Component implements OnInit {
   NoteReject = new FormControl(null);
   Approve = new FormControl(null, Validators.required);
 
+
   // ? Email
   SendEmailApproved: any;
   SendEmailUser: any;
@@ -63,8 +65,11 @@ export class ProgressForm4Component implements OnInit {
     canAnalysis: new FormControl('', Validators.required),
     relatedToESD: new FormControl('', Validators.required),
     result: new FormControl('', Validators.required),
-  })
+    judgementDefect: new FormControl('', Validators.required),
+    remark: new FormControl(''),
 
+  })
+  // get ResultDate() { return this.ResultForm.get('ResultDate') }
 
   get AnalysisFormControl() {
     return this.AnalysisForm.controls
@@ -75,7 +80,7 @@ export class ProgressForm4Component implements OnInit {
   AnalysisLevelList: any
   CauseList: any
   TreatmentList: any
-
+  JudgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
 
   constructor(
     private api: HttpService,
@@ -137,6 +142,8 @@ export class ProgressForm4Component implements OnInit {
     this.api.FindFormById(d).subscribe((data: any) => {
       if (data) {
         this.form = data;
+        console.log(this.form );
+
         this.FileList = data.files;
         // this.SetPathFile();
         let str = this.form.issuedDate.split("T");
@@ -152,7 +159,6 @@ export class ProgressForm4Component implements OnInit {
     let d = this.formId
     this.api.FindResultByFormIdMain(d).subscribe((data: any) => {
       if (data) {
-        console.log(data);
         this.Result = data[0];
         let str = this.Result.startAnalyzeDate.split("T");
         let str2 = this.Result.finishAnalyzeDate.split("T");
@@ -172,7 +178,9 @@ export class ProgressForm4Component implements OnInit {
           sourceOfDefect: this.Result.sourceOfDefect || '',
           analysisLevel: this.Result.analysisLevel || '',
           canAnalysis: this.Result.canAnalysis || '',
-          relatedToESD: this.Result.relatedToESD || ''
+          relatedToESD: this.Result.relatedToESD || '',
+          judgementDefect: this.form.judgementDefect || '',
+          remark: this.form.remark || ''
         })
 
 
@@ -240,8 +248,12 @@ export class ProgressForm4Component implements OnInit {
         userApprove: this.Approve.value,
         userApproveName: this.ApproveName,
         noteApprove5: this.NoteApprove.value,
-        noteNow: this.NoteApprove.value
+        noteNow: this.NoteApprove.value,
+        judgementDefect: this.AnalysisForm.value.judgementDefect,
+        remark: this.AnalysisForm.value.remark
       }
+      console.log(d);
+
       let Fname = localStorage.getItem('AR_UserFirstName')
       let Lname = localStorage.getItem('AR_UserLastName')
 
@@ -262,12 +274,12 @@ export class ProgressForm4Component implements OnInit {
               Subject: "Please approve analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                 this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
             }
-            this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-              this.alertSuccess();
-              // location.href = "#/manageForm";
-              this.route.navigate(['/manageForm'])
+            // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+            //   this.alertSuccess();
+            //   // location.href = "#/manageForm";
+            //   this.route.navigate(['/manageForm'])
 
-            })
+            // })
           } catch (error) {
 
           }
@@ -311,6 +323,8 @@ export class ProgressForm4Component implements OnInit {
             noteReject4: this.NoteReject.value,
             userApprove: this.form.userApprove3,
             userApproveName: sum,
+            judgementDefect: this.AnalysisForm.value.judgementDefect,
+            remark: this.AnalysisForm.value.remark
           }
           // console.log("reject data", d);
           let id = this.formId
@@ -333,12 +347,12 @@ export class ProgressForm4Component implements OnInit {
                     Subject: "AE Reviewer not approve report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    this.alertSuccess();
-                    // location.href = "#/manageForm";
-                    this.route.navigate(['/manageForm'])
+                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                  //   this.alertSuccess();
+                  //   // location.href = "#/manageForm";
+                  //   this.route.navigate(['/manageForm'])
 
-                  })
+                  // })
                 }
               })
 

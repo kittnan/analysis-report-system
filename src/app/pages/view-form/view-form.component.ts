@@ -36,6 +36,7 @@ export class ViewFormComponent implements OnInit {
 
   // ? comment
   CommentLists: any = [];
+  status :any = true
 
   constructor(
     private api: HttpService,
@@ -53,7 +54,7 @@ export class ViewFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    const form = await this.getForm(this.formId);
+    const form :any = await this.getForm(this.formId);
 
     form ? this.form = form : this.form = []
     // console.log(form);
@@ -61,7 +62,15 @@ export class ViewFormComponent implements OnInit {
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
+    console.log(result);
+    console.log(form);
 
+    form.userApprove5Name ? this.status = true : this.status = false
+    console.log(this.status);
+
+    // if (form?.userApprove5Name) {
+
+    // }
     // this.captureScreen();
 
   }

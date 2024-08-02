@@ -195,6 +195,11 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "Category Cause"
     },
     {
+      field: 'judgementDefect',
+      headerName: "Judgement defect",
+      headerTooltip: "Judgement defect"
+    },
+    {
       field: 'claimNo',
       headerName: "Claim No",
       headerTooltip: "Claim No"

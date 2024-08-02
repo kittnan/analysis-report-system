@@ -396,6 +396,25 @@
             </div>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 ">
+            <div class="form-group">
+              <label class="head-label">Judgement defect</label>
+              <select class="custom-select subtext-color" formControlName="judgementDefect">
+                <option [value]="null"></option>
+                <option *ngFor="let item of judgementDefects;" [value]="item">{{item}}
+              </select>
+            </div>
+          </div>
+
+          <div class="col-lg-9 col-md-9 col-sm-12 ">
+            <div class="form-group">
+              <label class="head-label">Remark</label>
+              <input type="search" formControlName="remark" class="form-control subtext-color">
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="row mt-2">

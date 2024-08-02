@@ -65,9 +65,7 @@ export class ProgressForm3Component implements OnInit {
     TempCause: new FormControl(null),
     htmlReport: new FormControl(null),
     JudgementDefect: new FormControl(null, Validators.required),
-    Remark: new FormControl(null, Validators.required),
-
-
+    Remark: new FormControl(null),
   })
 
   TreatmentOfNg = new FormControl(null, Validators.required);
@@ -125,6 +123,8 @@ export class ProgressForm3Component implements OnInit {
   imageBase64_1: any;
   imageBase64_2: any;
 
+  JudgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
+
   wordAZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
   ReportList: any = [];
 
@@ -175,7 +175,10 @@ export class ProgressForm3Component implements OnInit {
   getForm() {
 
     this.api.FindFormById(this.formId).subscribe((data: any) => {
+      console.log(data);
       if (data) {
+        data.judgementDefect ? this.JudgementDefect.setValue(data.judgementDefect) : null
+        data.remark ? this.Remark.setValue(data.remark) : null
         this.form = data;
         this.FileList = data.files;
         // this.SetPathFile();
@@ -189,8 +192,11 @@ export class ProgressForm3Component implements OnInit {
         // ! find result from formId
         this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
           // todo have result
+          console.log(data);
           if (data.length > 0) {
             const result = data[0]
+            console.log(result);
+
             this.ResultAPi = result
             const dateResultStart = result.startAnalyzeDate ? (result.startAnalyzeDate.split("T"))[0] : null
             const dateResultEnd = result.finishAnalyzeDate ? (result.finishAnalyzeDate.split("T"))[0] : null
@@ -223,6 +229,7 @@ export class ProgressForm3Component implements OnInit {
             result.files.forEach(element => {
               this.tempFileENGTotal += Number(element.size)
             });
+
             // * set min date of finish analysis date
             var today = new Date();
             var before2Day: any = new Date();
@@ -256,6 +263,8 @@ export class ProgressForm3Component implements OnInit {
 
   GetListAll() {
     this.api.GetListAll().subscribe((data: any) => {
+      console.log(data);
+
       if (data.length > 0) {
         this.SourceList = data.filter((i: any) => i.nameMaster == environment.Source);
         this.AnalysisLevelList = data.filter((i: any) => i.nameMaster == environment.AnalysisLevel);
@@ -491,19 +500,21 @@ export class ProgressForm3Component implements OnInit {
 
 
   async onSubmit() {
-    try {
-      if (this.toggleAttFileEng == false) {
-        await this.loopUploadFiles();
-      }
-      if (this.toggleAttReportEng == false) {
-        await this.uploadReport();
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      await this.ResultSubmit();
-      console.log("Request completed");
-    }
+    console.log(this.ResultForm);
+
+    // try {
+    //   if (this.toggleAttFileEng == false) {
+    //     await this.loopUploadFiles();
+    //   }
+    //   if (this.toggleAttReportEng == false) {
+    //     await this.uploadReport();
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    await this.ResultSubmit();
+    //   console.log("Request completed");
+    // }
   }
 
   async loopUploadFiles() {
@@ -538,7 +549,24 @@ export class ProgressForm3Component implements OnInit {
 
     })
   }
-
+  // ResultForm = new FormGroup({
+  //   AnalyzeDate: new FormControl(null, Validators.required),
+  //   ResultDate: new FormControl(null, Validators.required),
+  //   ReportDate: new FormControl(null, Validators.required),
+  //   Result: new FormControl(null, Validators.required),
+  //   SourceOfDefect: new FormControl(null, Validators.required),
+  //   CategoryCause: new FormControl(null, Validators.required),
+  //   AnalysisLevel: new FormControl(null, Validators.required),
+  //   CanAnalysis: new FormControl(null, Validators.required),
+  //   RelatedToESD: new FormControl(null, Validators.required),
+  //   ReportNo: new FormControl(null, Validators.required),
+  //   Approve: new FormControl(null, Validators.required),
+  //   File: new FormControl(null),
+  //   TempCause: new FormControl(null),
+  //   htmlReport: new FormControl(null),
+  //   JudgementDefect: new FormControl(null, Validators.required),
+  //   Remark: new FormControl(null),
+  // })
 
   async ResultSubmit() {
     this.FileReportPath ? false : this.FileReportPath = this.File.value
@@ -566,10 +594,11 @@ export class ProgressForm3Component implements OnInit {
         requestItemName: this.form.requestItem,
         treatMent: this.TreatmentOfNg.value,
         file: this.FileReportPath,
-        files: this.tempEngFile
+        files: this.tempEngFile,
+        judgementDefect: this.JudgementDefect.value,
+        remark: this.Remark.value,
       }
 
-      // console.log(ResultData);
       // console.log(this.SendEmailUser.FirstName);
 
 
@@ -592,7 +621,9 @@ export class ProgressForm3Component implements OnInit {
                 userApprove: this.Approve.value,
                 userApproveName: this.ApproveName,
                 noteNow: this.NoteApprove.value,
-                noteApprove4: this.NoteApprove.value
+                noteApprove4: this.NoteApprove.value,
+                judgementDefect: this.JudgementDefect.value,
+                remark: this.Remark.value,
               }
               this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
                 let Fname = localStorage.getItem('AR_UserFirstName')
@@ -608,14 +639,12 @@ export class ProgressForm3Component implements OnInit {
                     Subject: "Please review analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    this.alertSuccess();
-                    // location.href = "#/manageForm";
-                    // this.route.navigate(['/manageForm'])
-                    setTimeout(() => {
-                      window.self.close();
-                    }, 2000);
-                  })
+                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                  //   this.alertSuccess();
+                  //   setTimeout(() => {
+                  //     window.self.close();
+                  //   }, 2000);
+                  // })
 
                 }
 
@@ -639,7 +668,9 @@ export class ProgressForm3Component implements OnInit {
                 userApprove: this.Approve.value,
                 userApproveName: this.ApproveName,
                 noteNow: this.NoteApprove.value,
-                noteApprove4: this.NoteApprove.value
+                noteApprove4: this.NoteApprove.value,
+                judgementDefect: this.JudgementDefect.value,
+                remark: this.Remark.value,
               }
               // console.log("form",d);
 
@@ -657,15 +688,12 @@ export class ProgressForm3Component implements OnInit {
                     Subject: "Please review analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    this.alertSuccess();
-                    // this.route.navigate(['/manageForm'])
-
-                    // location.href = "#/manageForm";
-                    setTimeout(() => {
-                      window.self.close();
-                    }, 2000);
-                  })
+                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                  //   this.alertSuccess();
+                  //   setTimeout(() => {
+                  //     window.self.close();
+                  //   }, 2000);
+                  // })
 
                 }
 
@@ -701,6 +729,8 @@ export class ProgressForm3Component implements OnInit {
             noteReject3: this.NoteReject.value,
             userApprove: this.form.userApprove2,
             userApproveName: this.form.userApprove2Name,
+            judgementDefect: this.JudgementDefect.value,
+            remark: this.Remark.value,
           }
           // console.log("reject data", d);
           this.api.UpadateRequestForm(this.formId, d).subscribe((data: any) => {
@@ -721,15 +751,12 @@ export class ProgressForm3Component implements OnInit {
                     Subject: "Analysis request not approve  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    this.alertSuccess();
-                    // this.route.navigate(['/manageForm'])
-
-                    // location.href = "#/manageForm";
-                    setTimeout(() => {
-                      window.self.close();
-                    }, 2000);
-                  })
+                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                  //   this.alertSuccess();
+                  //   setTimeout(() => {
+                  //     window.self.close();
+                  //   }, 2000);
+                  // })
                 }
               })
 
