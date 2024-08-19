@@ -70,8 +70,12 @@ export class ManageFormComponent implements OnInit {
     this.CountPage = this.numPage(count[0].count, this.CountNum.value)
     this.DataFilter = result
     this.DataFilter = this.rep(this.DataFilter)
-    console.log(this.remain.value);
-    console.log(this.status.value);
+
+
+
+
+    // console.log(this.remain.value);
+    // console.log(this.status.value);
 
   }
 
@@ -109,7 +113,8 @@ export class ManageFormComponent implements OnInit {
         this.route.navigate(['/dashboard'])
       }
 
-      if (LevelList.find(i => i == '1') ||
+      if (
+        LevelList.find(i => i == '1') ||
         LevelList.find(i => i == '2') ||
         LevelList.find(i => i == '3') ||
         LevelList.find(i => i == '4') ||
@@ -296,7 +301,8 @@ export class ManageFormComponent implements OnInit {
 
   rep(data: any) {
     data = data.map((d: any) => {
-      let day = moment(d.replyDate).diff(moment(), "days")
+      let day = moment(d.replyDate).startOf('day').diff(moment().startOf('day'), "day")
+
       if (day == 0) {
         day = "Today"
       }
@@ -305,8 +311,7 @@ export class ManageFormComponent implements OnInit {
       }
 
 
-      let report = d?.result?.[0]?.finishAnalyzeDate ? moment(d?.result?.[0]?.finishAnalyzeDate).add(10, "days").diff(moment(), "days") : "Under Analysis"
-
+      let report = d?.result?.[0]?.finishAnalyzeDate ? moment(d?.result?.[0]?.finishAnalyzeDate).startOf('day').add(10, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
       if (report == 0) {
         report = "Today"
       }
@@ -317,9 +322,30 @@ export class ManageFormComponent implements OnInit {
 
       return {
         ...d,
-        remain: d.status == 2 || (d.status == 3 && d.result.length == 0) ? day : "Finished",
-        remain_report: d.status == 2 || (d.status == 3) ? report : "Finished"
+        remain: (
+          // result.finishAnalyzeDate && result.result
+          (d.status == 3 && (d.result?.[0]?.finishAnalyzeDate && d.result?.[0]?.result ) ) ||
+          d.status == 4 ||
+          d.status == 5 ||
+          d.status == 2.1 ||
+          d.status == 3.1 ||
+          d.status == 4.3 ||
+          d.status == 5.4 ||
+          d.status == 6.4
+        )
+          ? "Finished" : day,
+        remain_report: (
+          d.status == 4 ||
+          d.status == 5 ||
+          d.status == 2.1 ||
+          d.status == 3.1 ||
+          d.status == 4.3 ||
+          d.status == 5.4 ||
+          d.status == 6.4
+        )
+          ? "Finished" : report
       }
+
     })
 
 

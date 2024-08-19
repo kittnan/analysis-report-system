@@ -644,13 +644,13 @@ export class ProgressForm1Component implements OnInit {
                   Subject: "Please analysis the defect  : " + this.RequestNumber.value + " / Model  " + this.ModelNumber.value + " " + this.Size.value + " " +
                     this.Customer.value + " Lot no. " + this.LotNumber.value + "from " + this.OccurAName + " " + this.OccurB.value + " = " + this.NGQ.value + "pcs."
                 }
-                this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  // console.log("Send mail ", data);
-                  this.alertSuccess();
-                  this.route.navigate(['/manageForm'])
+                // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                //   // console.log("Send mail ", data);
+                //   this.alertSuccess();
+                //   this.route.navigate(['/manageForm'])
 
-                  // location.href = "#/manageForm";
-                })
+                //   // location.href = "#/manageForm";
+                // })
 
               }
 
@@ -705,12 +705,12 @@ export class ProgressForm1Component implements OnInit {
                   Subject: "Analysis request not approve  : " + this.RequestNumber.value + " / Model  " + this.ModelNumber.value + " " + this.Size.value + " " +
                     this.Customer.value + " Lot no. " + this.LotNumber.value + "from " + this.OccurAName + " " + this.OccurB.value + " = " + this.NGQ.value + "pcs."
                 }
-                this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  this.alertSuccess();
-                  this.route.navigate(['/manageForm'])
+                // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                //   this.alertSuccess();
+                //   this.route.navigate(['/manageForm'])
 
-                  // location.href = "#/manageForm";
-                })
+                //   // location.href = "#/manageForm";
+                // })
               }
             })
 

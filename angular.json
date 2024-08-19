@@ -57,7 +57,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "baseHref": "/Analysis-Report/",
+              "baseHref": "/Analysis-Report-Test/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
