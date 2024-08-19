@@ -294,13 +294,13 @@ export class ProgressForm5Component implements OnInit {
                       Subject: "Analysis request was closed: " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                         this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                     }
-                    // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                    //   this.Spinner = false;
-                    //   this.alertSuccess();
-                    //   // location.href = "#/manageForm";
-                    //   this.route.navigate(['/manageForm'])
+                    this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                      this.Spinner = false;
+                      this.alertSuccess();
+                      // location.href = "#/manageForm";
+                      this.route.navigate(['/manageForm'])
 
-                    // })
+                    })
                   }
                 })
               }
@@ -374,12 +374,12 @@ export class ProgressForm5Component implements OnInit {
                     Subject: "AE Approval not approve report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  //   this.alertSuccess();
-                  //   // location.href = "#/manageForm";
-                  //   this.route.navigate(['/manageForm'])
+                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    this.alertSuccess();
+                    // location.href = "#/manageForm";
+                    this.route.navigate(['/manageForm'])
 
-                  // })
+                  })
                 }
               })
             }

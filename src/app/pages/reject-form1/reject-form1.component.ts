@@ -643,13 +643,13 @@ export class RejectForm1Component implements OnInit {
                       this.Customer.value + " Lot no. " + this.LotNumber.value + "from " + this.OccurAName + " " + this.OccurB.value + " = " + this.NGQ.value + "pcs."
                   }
                   // console.log("sendMail", sendMail);
-                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  //   // console.log("Send mail ", data);
-                  //   this.alertSuccess();
-                  //   // location.href = "#/manageForm";
-                  //   this.route.navigate(['/manageForm'])
+                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    // console.log("Send mail ", data);
+                    this.alertSuccess();
+                    // location.href = "#/manageForm";
+                    this.route.navigate(['/manageForm'])
 
-                  // })
+                  })
                 }
               })
             }

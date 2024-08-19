@@ -501,20 +501,19 @@ export class ProgressForm3Component implements OnInit {
 
   async onSubmit() {
     console.log(this.ResultForm);
-
-    // try {
-    //   if (this.toggleAttFileEng == false) {
-    //     await this.loopUploadFiles();
-    //   }
-    //   if (this.toggleAttReportEng == false) {
-    //     await this.uploadReport();
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
+    try {
+      if (this.toggleAttFileEng == false) {
+        await this.loopUploadFiles();
+      }
+      if (this.toggleAttReportEng == false) {
+        await this.uploadReport();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
     await this.ResultSubmit();
-    //   console.log("Request completed");
-    // }
+      console.log("Request completed");
+    }
   }
 
   async loopUploadFiles() {
@@ -639,12 +638,12 @@ export class ProgressForm3Component implements OnInit {
                     Subject: "Please review analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  //   this.alertSuccess();
-                  //   setTimeout(() => {
-                  //     window.self.close();
-                  //   }, 2000);
-                  // })
+                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    this.alertSuccess();
+                    setTimeout(() => {
+                      window.self.close();
+                    }, 2000);
+                  })
 
                 }
 
@@ -688,12 +687,12 @@ export class ProgressForm3Component implements OnInit {
                     Subject: "Please review analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  //   this.alertSuccess();
-                  //   setTimeout(() => {
-                  //     window.self.close();
-                  //   }, 2000);
-                  // })
+                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    this.alertSuccess();
+                    setTimeout(() => {
+                      window.self.close();
+                    }, 2000);
+                  })
 
                 }
 
@@ -751,12 +750,12 @@ export class ProgressForm3Component implements OnInit {
                     Subject: "Analysis request not approve  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  //   this.alertSuccess();
-                  //   setTimeout(() => {
-                  //     window.self.close();
-                  //   }, 2000);
-                  // })
+                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    this.alertSuccess();
+                    setTimeout(() => {
+                      window.self.close();
+                    }, 2000);
+                  })
                 }
               })
 

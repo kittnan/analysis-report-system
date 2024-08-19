@@ -523,12 +523,12 @@ export class RejectForm3Component implements OnInit {
                 Subject: "Please review analysis report  : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                   this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
               }
-              // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-              //   this.alertSuccess();
-              //   // location.href = "#/manageForm";
-              //   this.route.navigate(['/manageForm'])
+              this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                this.alertSuccess();
+                // location.href = "#/manageForm";
+                this.route.navigate(['/manageForm'])
 
-              // })
+              })
 
             }
 
@@ -585,12 +585,12 @@ export class RejectForm3Component implements OnInit {
                     Subject: "Analysis result not approve : " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
                       this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
                   }
-                  // this.api.SendEmailTo(sendMail).subscribe((data: any) => {
-                  //   this.alertSuccess();
-                  //   this.route.navigate(['/manageForm'])
+                  this.api.SendEmailTo(sendMail).subscribe((data: any) => {
+                    this.alertSuccess();
+                    this.route.navigate(['/manageForm'])
 
-                  //   // location.href = "#/manageForm";
-                  // })
+                    // location.href = "#/manageForm";
+                  })
                 }
               })
 
