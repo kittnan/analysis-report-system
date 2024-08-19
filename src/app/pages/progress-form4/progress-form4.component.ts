@@ -65,8 +65,8 @@ export class ProgressForm4Component implements OnInit {
     canAnalysis: new FormControl('', Validators.required),
     relatedToESD: new FormControl('', Validators.required),
     result: new FormControl('', Validators.required),
-    judgementDefect: new FormControl('', Validators.required),
-    remark: new FormControl(''),
+    JudgementDefect: new FormControl('', Validators.required),
+    Remark: new FormControl(''),
 
   })
   // get ResultDate() { return this.ResultForm.get('ResultDate') }
@@ -178,8 +178,8 @@ export class ProgressForm4Component implements OnInit {
           analysisLevel: this.Result.analysisLevel || '',
           canAnalysis: this.Result.canAnalysis || '',
           relatedToESD: this.Result.relatedToESD || '',
-          judgementDefect: this.form.judgementDefect || '',
-          remark: this.form.remark || ''
+          JudgementDefect: this.form.JudgementDefect || '',
+          Remark: this.form.Remark || ''
         })
 
 
@@ -248,8 +248,8 @@ export class ProgressForm4Component implements OnInit {
         userApproveName: this.ApproveName,
         noteApprove5: this.NoteApprove.value,
         noteNow: this.NoteApprove.value,
-        judgementDefect: this.AnalysisForm.value.judgementDefect,
-        remark: this.AnalysisForm.value.remark
+        JudgementDefect: this.AnalysisForm.value.JudgementDefect,
+        Remark: this.AnalysisForm.value.Remark
       }
       console.log(d);
 
@@ -322,8 +322,8 @@ export class ProgressForm4Component implements OnInit {
             noteReject4: this.NoteReject.value,
             userApprove: this.form.userApprove3,
             userApproveName: sum,
-            judgementDefect: this.AnalysisForm.value.judgementDefect,
-            remark: this.AnalysisForm.value.remark
+            JudgementDefect: this.AnalysisForm.value.JudgementDefect,
+            Remark: this.AnalysisForm.value.Remark
           }
           // console.log("reject data", d);
           let id = this.formId

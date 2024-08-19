@@ -63,8 +63,8 @@ export class RejectForm3Component implements OnInit {
     ReportNo: new FormControl(null),
     Approve: new FormControl(null, Validators.required),
     TempCause: new FormControl(null),
-    judgementDefect: new FormControl('', Validators.required),
-    remark: new FormControl(''),
+    JudgementDefect: new FormControl('', Validators.required),
+    Remark: new FormControl(''),
   })
 
   IssueDate = new FormControl(null);
@@ -117,7 +117,7 @@ export class RejectForm3Component implements OnInit {
   imageBase64_1: any;
   imageBase64_2: any;
 
-  judgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
+  JudgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
 
   wordAZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
   ReportList: any = [];
@@ -232,8 +232,8 @@ export class RejectForm3Component implements OnInit {
         this.CanAnalysis.setValue(data2[0].canAnalysis);
         this.relatedToESD.setValue(data2[0].relatedToESD);
         this.ReportNo.setValue(data2[0].analysisReportNo);
-        this.judgementDefect.setValue(this.form.judgementDefect)
-        this.remark.setValue(this.form.remark)
+        this.JudgementDefect.setValue(this.form.JudgementDefect)
+        this.Remark.setValue(this.form.Remark)
         this.TreatmentOfNg.setValue(data2[0].treatMent)
         let st = data2[0].startAnalyzeDate ? data2[0].startAnalyzeDate.split("T") : null;
         let st2 = data2[0].finishAnalyzeDate ? data2[0].finishAnalyzeDate.split("T") : null;
@@ -500,8 +500,8 @@ export class RejectForm3Component implements OnInit {
             userApproveName: this.ApproveName,
             noteNow: this.NoteApprove.value,
             noteApprove4: this.NoteApprove.value,
-            judgementDefect: this.judgementDefect.value,
-            remark: this.remark.value
+            JudgementDefect: this.JudgementDefect.value,
+            Remark: this.Remark.value
           }
           // console.log(d1);
 
@@ -560,8 +560,8 @@ export class RejectForm3Component implements OnInit {
             noteReject3: this.NoteReject.value,
             userApprove: this.form.userApprove2,
             userApproveName: this.form.userApprove2Name,
-            judgementDefect: this.judgementDefect.value,
-            remark: this.remark.value
+            JudgementDefect: this.JudgementDefect.value,
+            Remark: this.Remark.value
           }
           // console.log("reject data", d);
           let id = this.formId
@@ -828,8 +828,8 @@ export class RejectForm3Component implements OnInit {
   get ReportNo() { return this.ResultForm.get('ReportNo') }
   get Approve() { return this.ResultForm.get('Approve') }
   get TempCause() { return this.ResultForm.get('TempCause') }
-  get judgementDefect() { return this.ResultForm.get('judgementDefect') }
-  get remark() { return this.ResultForm.get('remark') }
+  get JudgementDefect() { return this.ResultForm.get('JudgementDefect') }
+  get Remark() { return this.ResultForm.get('Remark') }
 
 
   alertSuccess() {

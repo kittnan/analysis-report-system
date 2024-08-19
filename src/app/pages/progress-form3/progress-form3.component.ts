@@ -176,8 +176,7 @@ export class ProgressForm3Component implements OnInit {
 
     this.api.FindFormById(this.formId).subscribe((data: any) => {
       if (data) {
-        data.judgementDefect ? this.JudgementDefect.setValue(data.judgementDefect) : null
-        data.remark ? this.Remark.setValue(data.remark) : null
+
         this.form = data;
         this.FileList = data.files;
         // this.SetPathFile();
@@ -193,6 +192,7 @@ export class ProgressForm3Component implements OnInit {
           // todo have result
           if (data.length > 0) {
             const result = data[0]
+            console.log("🚀 ~ ProgressForm3Component ~ this.api.FindResultByFormIdMain ~ result:", result)
 
             this.ResultAPi = result
             const dateResultStart = result.startAnalyzeDate ? (result.startAnalyzeDate.split("T"))[0] : null
@@ -226,7 +226,8 @@ export class ProgressForm3Component implements OnInit {
             result.files.forEach(element => {
               this.tempFileENGTotal += Number(element.size)
             });
-
+            result.JudgementDefect ? this.JudgementDefect.setValue(result.JudgementDefect) : null
+            result.Remark ? this.Remark.setValue(result.Remark) : null
             // * set min date of finish analysis date
             var today = new Date();
             var before2Day: any = new Date();
@@ -473,7 +474,7 @@ export class ProgressForm3Component implements OnInit {
       })
     })
   }
-
+  //TODO
   updateResultWhenDraft(resultId: string) {
     return new Promise(resolve => {
       const ResultData = {
@@ -487,6 +488,8 @@ export class ProgressForm3Component implements OnInit {
         finishAnalyzeDate: this.ResultDate.value || null,
         finishReportDate: this.ReportDate.value || null,
         treatMent: this.TreatmentOfNg.value || null,
+        JudgementDefect: this.JudgementDefect.value || null,
+        Remark: this.Remark.value || null,
       }
       this.api.UpdateResult(resultId, ResultData).subscribe((data: any) => {
         resolve(data)
@@ -507,7 +510,7 @@ export class ProgressForm3Component implements OnInit {
     } catch (error) {
       console.error(error);
     } finally {
-    await this.ResultSubmit();
+      await this.ResultSubmit();
     }
   }
 
@@ -589,8 +592,8 @@ export class ProgressForm3Component implements OnInit {
         treatMent: this.TreatmentOfNg.value,
         file: this.FileReportPath,
         files: this.tempEngFile,
-        judgementDefect: this.JudgementDefect.value,
-        remark: this.Remark.value,
+        JudgementDefect: this.JudgementDefect.value,
+        Remark: this.Remark.value,
       }
 
       // console.log(this.SendEmailUser.FirstName);
@@ -616,8 +619,8 @@ export class ProgressForm3Component implements OnInit {
                 userApproveName: this.ApproveName,
                 noteNow: this.NoteApprove.value,
                 noteApprove4: this.NoteApprove.value,
-                judgementDefect: this.JudgementDefect.value,
-                remark: this.Remark.value,
+                JudgementDefect: this.JudgementDefect.value,
+                Remark: this.Remark.value,
               }
               this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
                 let Fname = localStorage.getItem('AR_UserFirstName')
@@ -663,8 +666,8 @@ export class ProgressForm3Component implements OnInit {
                 userApproveName: this.ApproveName,
                 noteNow: this.NoteApprove.value,
                 noteApprove4: this.NoteApprove.value,
-                judgementDefect: this.JudgementDefect.value,
-                remark: this.Remark.value,
+                JudgementDefect: this.JudgementDefect.value,
+                Remark: this.Remark.value,
               }
               // console.log("form",d);
 
@@ -723,8 +726,8 @@ export class ProgressForm3Component implements OnInit {
             noteReject3: this.NoteReject.value,
             userApprove: this.form.userApprove2,
             userApproveName: this.form.userApprove2Name,
-            judgementDefect: this.JudgementDefect.value,
-            remark: this.Remark.value,
+            JudgementDefect: this.JudgementDefect.value,
+            Remark: this.Remark.value,
           }
           // console.log("reject data", d);
           this.api.UpadateRequestForm(this.formId, d).subscribe((data: any) => {

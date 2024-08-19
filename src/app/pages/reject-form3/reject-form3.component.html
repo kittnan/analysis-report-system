@@ -438,13 +438,13 @@
       <div class="row mt-2">
         <div class="col-lg-2 col-md-2 col-sm-12">
           <div class="form-group ">
-            <label [ngClass]="{'text-danger': judgementDefect.invalid}" class="head-label">Judgement Defect
-              <i *ngIf="judgementDefect.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': JudgementDefect.invalid}" class="head-label">Judgement Defect
+              <i *ngIf="JudgementDefect.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div class="input-group mb-3 ">
-              <select class="custom-select subtext-color" formControlName="judgementDefect">
+              <select class="custom-select subtext-color" formControlName="JudgementDefect">
                 <option [value]="null"></option>
-                <option *ngFor="let item of judgementDefects;" [value]="item">{{item}}
+                <option *ngFor="let item of JudgementDefects;" [value]="item">{{item}}
                 <!-- <option  value="1">Latent</option> -->
               </select>
             </div>
@@ -452,10 +452,10 @@
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': remark.invalid}" class="head-label">Remark
-              <i *ngIf="remark.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': Remark.invalid}" class="head-label">Remark
+              <i *ngIf="Remark.invalid" class="bi bi-x-square-fill"></i>
             </label>
-            <input type="search" formControlName="remark" class="form-control subtext-color">
+            <input type="search" formControlName="Remark" class="form-control subtext-color">
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
