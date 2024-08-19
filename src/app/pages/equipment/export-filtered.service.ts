@@ -74,7 +74,6 @@ export class ExportFilteredService {
         country.lists.map(l => h2.push(l.name))
         temp1[0] = temp1[0].concat(h1)
         temp1[1] = temp1[1].concat(h2)
-        console.log(temp1);
       })
       workSheet.insertRow(5, temp1[0]);
       workSheet.insertRow(6, temp1[1]);
@@ -287,7 +286,6 @@ export class ExportFilteredService {
       const index = refCountry.findIndex(object => {
         return object.list === resultFind.list;
       });
-      console.log(index);
 
       Cell.style = {
         fill: {

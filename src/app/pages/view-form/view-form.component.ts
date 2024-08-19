@@ -62,11 +62,8 @@ export class ViewFormComponent implements OnInit {
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
-    console.log(result);
-    console.log(form);
 
     form.userApprove5Name ? this.status = true : this.status = false
-    console.log(this.status);
 
     // if (form?.userApprove5Name) {
 

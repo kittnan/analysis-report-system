@@ -142,7 +142,6 @@ export class ProgressForm4Component implements OnInit {
     this.api.FindFormById(d).subscribe((data: any) => {
       if (data) {
         this.form = data;
-        console.log(this.form );
 
         this.FileList = data.files;
         // this.SetPathFile();

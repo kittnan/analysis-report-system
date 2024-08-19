@@ -691,7 +691,6 @@ export class ProgressForm1Component implements OnInit {
             this.api.GetUser(d.userApprove).subscribe((data: any) => {
               if (data.length > 0) {
                 this.SendRejectUser = data[0];
-                console.log(this.SendRejectUser);
                 let Fname = localStorage.getItem('AR_UserFirstName')
                 let Lname = localStorage.getItem('AR_UserLastName')
                 const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(Issuer)</p><br>" +

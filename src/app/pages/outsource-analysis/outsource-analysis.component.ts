@@ -588,7 +588,6 @@ export class OutsourceAnalysisComponent implements OnInit {
       this.tempUpload = [];
       this.temp = [];
       this.EmSize = "";
-      console.log(this.tempUpload);
       this.CheckEmpty()
 
     } else {

@@ -315,7 +315,6 @@ export class ProgressForm2Component implements OnInit {
     const model = this.form.ktcModelNumber
     const defect1 = this.form.defectiveName.substring(0, 95)
     const defect = defect1
-    console.log(defect.length);
 
     const lot = this.form.pcLotNumber
     const sendNg = this.form.sendNgAnalysis

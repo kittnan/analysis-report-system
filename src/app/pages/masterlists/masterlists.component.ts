@@ -284,7 +284,6 @@ export class MasterlistsComponent implements OnInit {
         this.api.GetOccurB(this.SelectOccurAId.value).subscribe((data: any) => {
             if (data.length > 0) {
                 this.List = data;
-                console.log(data);
 
                 this.DataTableStart();
 
@@ -662,7 +661,6 @@ export class MasterlistsComponent implements OnInit {
                 name: this.ModalListName.value
             }
             this.api.UpdateList(this.ModalListId.value, tempData).subscribe((data) => {
-                console.log("UPDATE LOG", data);
                 if (data != null) {
                     this.OnSetToggleTable();
                     this.alertSuccess();
@@ -899,7 +897,6 @@ export class MasterlistsComponent implements OnInit {
         this.DataTempDownload = this.DataExcelList.filter(item => item.nameMaster == this.ModalExcelMaster.value)
         // this.DataTempDownload = this.DataExcelList.filter(item => item.nameMaster == this.ModelNumberMasterFix)
         // console.log("this.DataTempDownload", this.DataTempDownload);
-        console.log(this.DataTempDownload);
 
 
         this.api.GetDefectAll().subscribe((dataRes) => { this.DataExcelDefect = dataRes })

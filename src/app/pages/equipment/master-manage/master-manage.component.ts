@@ -567,7 +567,6 @@ export class MasterManageComponent implements OnInit {
           formData.append('File', list.files[0].src, filename)
           this.api.UploadQuotation(formData).toPromise().then(res => {
             if (res) {
-              console.log(res);
               c1 += 1;
               const newFile = {
                 url: res,
@@ -628,7 +627,7 @@ export class MasterManageComponent implements OnInit {
   // ? --------------------------------- option
 
 
-  // ? --------------------------------------- update Country 
+  // ? --------------------------------------- update Country
   // todo update country
   async onUpdateCountry() {
     try {
@@ -656,7 +655,6 @@ export class MasterManageComponent implements OnInit {
             formData.append('File', list.files[0].src, filename)
             this.api.UploadQuotation(formData).toPromise().then(res => {
               if (res) {
-                console.log(res);
                 c1 += 1;
                 const newFile = {
                   url: res,
@@ -777,7 +775,7 @@ export class MasterManageComponent implements OnInit {
       const { value: formValues } = await Swal.fire({
         title: 'Multiple inputs',
         html:
-          `<input type="number" id="swal-input1" class="swal2-input" placeholder="analysisFee" > 
+          `<input type="number" id="swal-input1" class="swal2-input" placeholder="analysisFee" >
           <select id="swal-input2" autocapitalize="off" class="swal2-select" >
                    ${option}
                 </select> `,
@@ -801,7 +799,7 @@ export class MasterManageComponent implements OnInit {
 
 
   }
-  // ? --------------------------------------- update Country 
+  // ? --------------------------------------- update Country
 
   async checkCountryUsing() {
     // const master = this.Select_Master.master

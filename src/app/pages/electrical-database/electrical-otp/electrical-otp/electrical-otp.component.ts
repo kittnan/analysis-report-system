@@ -245,7 +245,6 @@ export class ElectricalOtpComponent implements OnInit {
     if (e.value != row.good && e.value != null) {
       e.status = false
     }
-    console.log(e, row);
   }
 
 

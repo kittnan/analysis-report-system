@@ -166,8 +166,6 @@ export class DashboardComponent implements OnInit {
   SetDefectRank(arr: any) {
     const arrayUniqueByKey = [...new Map(arr.map(item =>
       [item['defectiveName'], item])).values()];
-    console.log('arrayUniqueByKey', arrayUniqueByKey);
-    console.log('&&&&&&&&&&&&&&&&&&&&&&*****************', arr);
     const resultMap: any = arrayUniqueByKey.map((ar: any) => {
       const resultFilter: any = arr.filter((ar2: any) => ar.defectiveName == ar2.defectiveName)
       ar['countDefect'] = resultFilter.length
@@ -181,7 +179,6 @@ export class DashboardComponent implements OnInit {
     if (resultMap.length > 5) {
       resultMap.splice(5)
     }
-    console.log('resultMap', resultMap);
     return ['data', 'labels']
 
   }

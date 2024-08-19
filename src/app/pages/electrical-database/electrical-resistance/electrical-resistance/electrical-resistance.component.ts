@@ -304,7 +304,6 @@ export class ElectricalResistanceComponent implements OnInit {
             urlAssignment: urlAll,
             delete: this.listDelete
           }
-          console.log(urlAll);
 
           const sandDataForm = await this.api.putDataResis(CheckHave._id, sendData).toPromise()
           this.tempUpload = []
@@ -789,7 +788,6 @@ export class ElectricalResistanceComponent implements OnInit {
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
-      console.log(wsname);
       if (wsname == "Resistance") {
         const colExcel = 5
         let data = readData(ws)

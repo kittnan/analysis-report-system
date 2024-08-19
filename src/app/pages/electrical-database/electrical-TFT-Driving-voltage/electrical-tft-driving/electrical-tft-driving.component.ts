@@ -88,7 +88,6 @@ export class ElectricalTftDrivingComponent implements OnInit {
   }
 
   onLoad() {
-    console.log("assdasd");
   }
 
   async showEdit(e: boolean) {

@@ -175,7 +175,6 @@ export class ProgressForm3Component implements OnInit {
   getForm() {
 
     this.api.FindFormById(this.formId).subscribe((data: any) => {
-      console.log(data);
       if (data) {
         data.judgementDefect ? this.JudgementDefect.setValue(data.judgementDefect) : null
         data.remark ? this.Remark.setValue(data.remark) : null
@@ -192,10 +191,8 @@ export class ProgressForm3Component implements OnInit {
         // ! find result from formId
         this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
           // todo have result
-          console.log(data);
           if (data.length > 0) {
             const result = data[0]
-            console.log(result);
 
             this.ResultAPi = result
             const dateResultStart = result.startAnalyzeDate ? (result.startAnalyzeDate.split("T"))[0] : null
@@ -263,7 +260,6 @@ export class ProgressForm3Component implements OnInit {
 
   GetListAll() {
     this.api.GetListAll().subscribe((data: any) => {
-      console.log(data);
 
       if (data.length > 0) {
         this.SourceList = data.filter((i: any) => i.nameMaster == environment.Source);
@@ -500,7 +496,6 @@ export class ProgressForm3Component implements OnInit {
 
 
   async onSubmit() {
-    console.log(this.ResultForm);
     try {
       if (this.toggleAttFileEng == false) {
         await this.loopUploadFiles();
@@ -512,7 +507,6 @@ export class ProgressForm3Component implements OnInit {
       console.error(error);
     } finally {
     await this.ResultSubmit();
-      console.log("Request completed");
     }
   }
 
@@ -935,7 +929,6 @@ export class ProgressForm3Component implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileENGTotal -= this.tempEngFile[indexToRemove].size;
           this.tempEngFile.splice(indexToRemove, 1)
-          console.log(event.name);
           const data = {
             name: event.name
           }
@@ -1016,7 +1009,6 @@ export class ProgressForm3Component implements OnInit {
             })
 
           } else {
-            console.log(this.tempFileENGTotal);
 
             Swal.fire({
               title: 'Error',

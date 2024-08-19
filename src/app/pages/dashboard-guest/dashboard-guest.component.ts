@@ -166,7 +166,6 @@ export class DashboardGuestComponent implements OnInit {
         m.length == 1 ? m = '0' + m : m
         const d = new Date(this.SELECTED_DATE_START).getDate()
         const minDate = `${y}-${m}-${d}`
-        console.log(minDate);
 
         this.MIN_DATE_START = minDate
       }

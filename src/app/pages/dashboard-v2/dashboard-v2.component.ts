@@ -173,7 +173,6 @@ export class DashboardV2Component implements OnInit {
         m.length == 1 ? m = '0' + m : m
         const d = new Date(this.SELECTED_DATE_START).getDate()
         const minDate = `${y}-${m}-${d}`
-        console.log(minDate);
 
         this.MIN_DATE_START = minDate
       }
@@ -1446,8 +1445,6 @@ export class DashboardV2Component implements OnInit {
       const newDATA: any = tempData.reduce((prev: any, now: any) => {
         return prev.concat(now)
       }, [])
-      console.log(tempData);
-      console.log(newDATA);
 
       let Eng: any = {
         receive: [],
@@ -1463,17 +1460,9 @@ export class DashboardV2Component implements OnInit {
 
 
       engineers.map(async engineer => {
-        // console.log("name", engineer.FirstName);
         const requests = newDATA.filter((request: any) => request.userApprove3 == engineer._id)
-
-
-        // console.log(requests);
         if (requests.length > 0) {
-          console.log(1);
-
           const requestCounted: any = await this.countRequestEngineer(requests, engineer)
-
-          // console.log(requestCounted);
           if (requestCounted.receive != 0) {
             Eng.receive.push(requestCounted.receive)
             Eng.remain.push(requestCounted.remain)
@@ -1484,7 +1473,6 @@ export class DashboardV2Component implements OnInit {
           }
         }
       })
-      // console.log('Eng', Eng);
       const label: any = Eng.engineerName
       const finish: any = {
         label: 'Finish',
@@ -1524,7 +1512,6 @@ export class DashboardV2Component implements OnInit {
         data: [finish, underApprove, underReview, remain]
       }
       // this.EngineerUpdateTime = this.SetUpdateTime(DATA)
-      console.log(newENG);
 
       resolve(newENG)
 
@@ -1548,8 +1535,6 @@ export class DashboardV2Component implements OnInit {
       count.receive = requests.length
 
       const remain = requests.filter(request => request.userApprove == engineer._id)
-      console.log(requests.length);
-      console.log(remain);
 
       // console.log("remain", remain);
       count.remain = remain.length

@@ -372,7 +372,6 @@ export class RejectForm3Component implements OnInit {
 
         if (resultCheck.length === 0) {
           const res: any = await this.insertResultWhenFinish(formId)
-          console.log(res);
           if (res.length != 0) {
             this.alertSuccess()
           } else {
@@ -426,7 +425,6 @@ export class RejectForm3Component implements OnInit {
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
       }
-      console.log(ResultData);
       this.api.PostResult(ResultData).subscribe((data: any) => {
         resolve(data)
       })
@@ -779,7 +777,6 @@ export class RejectForm3Component implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileTotal -= this.tempFile[indexToRemove].size;
           this.tempFile.splice(indexToRemove, 1)
-          console.log(event.name);
           const data = {
             name: event.name
           }

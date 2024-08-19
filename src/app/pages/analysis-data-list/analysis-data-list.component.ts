@@ -477,7 +477,6 @@ export class AnalysisDataListComponent implements OnInit {
         d.statusShow.toLowerCase() != 'done with delay' &&
         d.statusShow.toLowerCase() != 'cancel'
       )
-      console.log(data);
 
       resolve(result)
     })

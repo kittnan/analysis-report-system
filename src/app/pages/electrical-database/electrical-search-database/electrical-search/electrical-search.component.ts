@@ -138,7 +138,6 @@ export class ElectricalSearchComponent implements OnInit {
       // this.http.get('http://127.0.0.1:80/mastereletrical/report product electrical space.xlsx', { responseType: "arraybuffer" })
       .subscribe(
         data => {
-          console.log(data);
 
           const workbook = new Workbook();
           const arryBuffer = new Response(data).arrayBuffer();
