@@ -207,6 +207,7 @@ export class ProgressForm4Component implements OnInit {
         this.AnalysisLevelList = data.filter((i: any) => i.nameMaster == environment.AnalysisLevel);
         this.CauseList = data.filter((i: any) => i.nameMaster == environment.Cause);
         this.TreatmentList = data.filter((i: any) => i.nameMaster == environment.TreatmentNG);
+        this.JudgementDefects = data.filter((i:any)=> i.nameMaster == environment.JudgementDefect)
       }
     })
   }

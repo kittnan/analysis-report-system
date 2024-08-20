@@ -28,6 +28,8 @@ export const environment = {
   Source: "Source Of Defect",
   TreatmentNG: "Treatment of NG",
   AnalysisLevel: "Analysis Level",
+  JudgementDefect: "Judgement Defect",
+
 
   appVersion: require('../../package.json').version,
 

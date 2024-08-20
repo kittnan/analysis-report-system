@@ -1,8 +1,14 @@
 <div class="row head-tool">
   <span *ngIf="toggleLabel" class="icon-make" (click)="pdfLabel();"><i class="bi bi-file-earmark-pdf"
       style="font-size: 2rem;"></i>label</span>
-  <a *ngIf="(toggleReportFile&&this.result) && this.status" class="icon-make" [download]="ReportName" [href]="this.result.file"><i
-      class="bi bi-file-earmark-pdf" style="font-size: 2rem;"></i>report</a>
+  <ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
+    <a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+        style="font-size: 2rem;"></i>Report</a>
+  </ng-container>
+  <ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
+    <a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+        style="font-size: 2rem;"></i>Report</a>
+  </ng-container>
 </div>
 <div id="print" class="col-lg-12 main">
   <div class="row">

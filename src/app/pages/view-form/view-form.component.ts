@@ -31,12 +31,13 @@ export class ViewFormComponent implements OnInit {
   // ? toggle
   toggleReportFile = false;
   toggleLabel = false;
+  toggleReportUserAE = false;
 
   ReportName: any;
 
   // ? comment
   CommentLists: any = [];
-  status :any = true
+  status: any = true
 
   constructor(
     private api: HttpService,
@@ -54,7 +55,7 @@ export class ViewFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    const form :any = await this.getForm(this.formId);
+    const form: any = await this.getForm(this.formId);
 
     form ? this.form = form : this.form = []
     // console.log(form);
@@ -71,6 +72,8 @@ export class ViewFormComponent implements OnInit {
     // this.captureScreen();
 
   }
+
+
 
 
   pdfLabel() {
@@ -218,13 +221,19 @@ export class ViewFormComponent implements OnInit {
     LevelList.push(localStorage.getItem('AR_UserLevel4'))
     LevelList.push(localStorage.getItem('AR_UserLevel5'))
     LevelList.push(localStorage.getItem('AR_UserLevel6'))
-    const Level = LevelList.filter(lvl => lvl == '6');
     const checkAEWindow = LevelList.filter(lvl => lvl == '3');
     checkAEWindow.length > 0 ? this.toggleLabel = true : this.toggleLabel = false;
-
+    if (
+      LevelList.some((level: any) => level == '3') ||
+      LevelList.some((level: any) => level == '4') ||
+      LevelList.some((level: any) => level == '5') ||
+      LevelList.some((level: any) => level == '6')
+    ) {
+      this.toggleReportUserAE = true
+    }
   }
 
-  getForm(FormId) {
+  getForm(FormId: any) {
     // console.log(FormId);
 
     return new Promise((resolve) => {
@@ -243,7 +252,7 @@ export class ViewFormComponent implements OnInit {
     })
   }
 
-  getResult(FormId) {
+  getResult(FormId: any) {
     return new Promise((resolve) => {
       this.api.FindResultByFormIdMain(FormId).subscribe((data: any) => {
         let result: any = data[0]

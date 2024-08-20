@@ -444,7 +444,7 @@
             <div class="input-group mb-3 ">
               <select class="custom-select subtext-color" formControlName="JudgementDefect">
                 <option [value]="null"></option>
-                <option *ngFor="let item of JudgementDefects;" [value]="item">{{item}}
+                <option *ngFor="let item of JudgementDefects;" [value]="item.name">{{item.name}}
                 <!-- <option  value="1">Latent</option> -->
               </select>
             </div>

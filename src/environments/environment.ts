@@ -8,7 +8,7 @@ export const environment = {
   // UrlApi: "http://localhost:8787",
   // UrlApi: "http://10.200.90.152:8787",
 
-  // UrlApi: "http://localhost:4026",
+  UrlApi: "http://localhost:4026",
   // UrlApi: "http://10.200.90.152:4026",
   master: 'equipment/master',
   country: 'equipment/country',

@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-md-12 ">
       <div class="row">
-        <h6>Analysis Request Formssss</h6>
+        <h6>Analysis Request Form</h6>
       </div>
     </div>
 
@@ -409,7 +409,7 @@
               <label class="head-label">Judgement defect</label>
               <select class="custom-select subtext-color" formControlName="JudgementDefect">
                 <option [value]="null"></option>
-                <option *ngFor="let item of JudgementDefects;" [value]="item">{{item}}
+                <option *ngFor="let item of JudgementDefects;" [value]="item.name">{{item.name}}
               </select>
             </div>
           </div>
