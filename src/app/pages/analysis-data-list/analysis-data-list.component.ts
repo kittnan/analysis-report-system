@@ -827,6 +827,7 @@ export class AnalysisDataListComponent implements OnInit {
           Can_Analysis: data.canAnalysis,
           Analysis_Level: data.analysisLevel,
           Category_Cause: data.defectCatagory,
+          JudgementDefect: data.JudgementDefect,
           Claim_No: data.claimNo,
           TBN: data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal',
           Issue_Date: data.issuedDate,

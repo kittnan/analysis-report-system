@@ -627,6 +627,7 @@ export class LibrarySearchComponent implements OnInit {
           Input_Quantity: data.inputQuantity,
           NG_Quantity: data.ngQuantity,
           NG_Ratio: data.ratio,
+          JudgementDefect: data.JudgementDefect,
           Sent_NG_To_Analysis: data.sendNgAnalysis,
           Production_Phase: data.productionPhase,
           Defect_Category: data.defectCatagory,
