@@ -148,7 +148,7 @@ export class LibrarySearchComponent implements OnInit {
       headerTooltip: "Ng Ratio(%)"
     },
     {
-      field: 'judgementDefect',
+      field: 'JudgementDefect',
       filter: 'agNumberColumnFilter',
       headerName: "Judgement defect",
       headerTooltip: "Judgement defect"
