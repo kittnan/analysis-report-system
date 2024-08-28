@@ -178,8 +178,8 @@ export class ProgressForm4Component implements OnInit {
           analysisLevel: this.Result.analysisLevel || '',
           canAnalysis: this.Result.canAnalysis || '',
           relatedToESD: this.Result.relatedToESD || '',
-          JudgementDefect: this.form.JudgementDefect || '',
-          Remark: this.form.Remark || ''
+          JudgementDefect: this.Result.JudgementDefect || '',
+          Remark: this.Result.Remark || ''
         })
 
 
