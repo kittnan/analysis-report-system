@@ -311,7 +311,7 @@ export class ManageFormComponent implements OnInit {
       }
 
 
-      let report = d?.result?.[0]?.finishAnalyzeDate ? moment(d?.result?.[0]?.finishAnalyzeDate).startOf('day').add(10, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
+      let report = d?.result?.[0]?.finishAnalyzeDate ? moment(d?.result?.[0]?.finishAnalyzeDate).startOf('day').add(7, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
       if (report == 0) {
         report = "Today"
       }
