@@ -49,6 +49,7 @@ export class RequestFormComponent implements OnInit {
     Customer: new FormControl(null, Validators.required),
     TBN: new FormControl(null, Validators.required),
     TBNNumber: new FormControl(null),
+    Treatment: new FormControl(null, Validators.required),
 
   })
 
@@ -563,6 +564,7 @@ export class RequestFormComponent implements OnInit {
             sendNgAnalysis: this.SendNG.value,
             productionPhase: this.ProductPhase.value,
             defectCatagory: this.DefectCategory.value,
+            treatment: this.Treatment.value,
             claimNo: this.ClaimNo.value,
             occurAId: this.OccurA.value,
             occurAName: this.OccurAName,
@@ -576,7 +578,7 @@ export class RequestFormComponent implements OnInit {
             files: this.fileToUp,
             status: 1,
             noteApprove1: this.NoteApprove.value,
-            noteNow: this.NoteApprove.value
+            noteNow: this.NoteApprove.value,
 
           }
 
@@ -957,6 +959,7 @@ export class RequestFormComponent implements OnInit {
   get Customer() { return this.RequestForm.get('Customer') }
   get TBN() { return this.RequestForm.get('TBN') }
   get TBNNumber() { return this.RequestForm.get('TBNNumber') }
+  get Treatment() { return this.RequestForm.get('Treatment') }
 
 
   pageLoadStart() {

@@ -76,6 +76,11 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "Register Number"
     },
     {
+      field: 'treatment',
+      headerName: "Treatment",
+      headerTooltip: "Treatment"
+    },
+    {
       field: 'ktcModelNumber',
       headerName: "KTC Model Number",
       headerTooltip: "KTC Model Number",
@@ -806,6 +811,7 @@ export class AnalysisDataListComponent implements OnInit {
         const newData = {
           Register_No: data.requestNumber,
           KTC_Model_Number: data.ktcModelNumber,
+          Treatment: data.treatment,
           Project_Name: (data.size) + "/" + (data.customer),
           Defect_Name: data.defectiveName,
           Lot_Number: data.pcLotNumber,

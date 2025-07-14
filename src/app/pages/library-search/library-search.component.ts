@@ -110,6 +110,11 @@ export class LibrarySearchComponent implements OnInit {
       headerTooltip: "KTC Model Number",
     },
     {
+      field: 'treatment',
+      headerName: "Treatment",
+      headerTooltip: "Treatment"
+    },
+    {
       field: 'projectName',
       headerName: "Pro Name",
       headerTooltip: "Project Name"
@@ -621,6 +626,7 @@ export class LibrarySearchComponent implements OnInit {
         const newData = {
           Register_No: data.requestNumber,
           KTC_Model_Number: data.ktcModelNumber,
+          Treatment: data.treatment,
           ProjectName: data.projectName,
           Defect_Name: data.defectiveName,
           Lot_Number: data.pcLotNumber,

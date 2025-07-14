@@ -238,7 +238,7 @@
           <!-- * -------------------------------------------------Defective Name -->
 
           <!-- * -------------------------------------------------Defective Code -->
-          <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="col-lg-3 col-md-3 col-sm-12">
             <div class="form-group">
 
               <label class="head-label">Defective Code</label>
@@ -246,6 +246,30 @@
             </div>
           </div>
           <!-- * -------------------------------------------------Defective Code -->
+
+          <!-- * -------------------------------------------------Treatment -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="form-group">
+
+              <label class="head-label" [ngClass]="{'text-danger': Treatment.invalid}">
+                Treatment
+                <i *ngIf="Treatment.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+
+              <div class="input-group mb-3">
+                <select class="custom-select subtext-color" formControlName="Treatment" style="cursor: pointer;">
+                  <option [value]="'urgent'">
+                    Urgent
+                  </option>
+                  <option [value]="'normal'">
+                    Normal
+                  </option>
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Treatment -->
 
 
 

@@ -61,6 +61,7 @@ export class RejectForm1Component implements OnInit {
     TempModelNumber: new FormControl(null),
     TBN: new FormControl(null, Validators.required),
     TBNNumber: new FormControl(null),
+    Treatment: new FormControl(null, Validators.required),
   })
 
   NoteApprove = new FormControl(null);
@@ -1125,6 +1126,7 @@ export class RejectForm1Component implements OnInit {
   get TempModelNumber() { return this.RequestForm.get('TempModelNumber') }
   get TBN() { return this.RequestForm.get('TBN') }
   get TBNNumber() { return this.RequestForm.get('TBNNumber') }
+  get Treatment() { return this.RequestForm.get('Treatment') }
   alertSuccess() {
     Swal.fire({
       title: 'SUCCESS',

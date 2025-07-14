@@ -58,6 +58,7 @@ export class ProgressForm1Component implements OnInit {
     Customer: new FormControl(null, Validators.required),
     TBN: new FormControl(null, Validators.required),
     TBNNumber: new FormControl(null),
+    Treatment: new FormControl(null, Validators.required),
   })
 
   NoteApprove = new FormControl(null);
@@ -948,6 +949,7 @@ export class ProgressForm1Component implements OnInit {
   get Customer() { return this.RequestForm.get('Customer') }
   get TBN() { return this.RequestForm.get('TBN') }
   get TBNNumber() { return this.RequestForm.get('TBNNumber') }
+  get Treatment() { return this.RequestForm.get('Treatment') }
 
   alertSuccess() {
     Swal.fire({
