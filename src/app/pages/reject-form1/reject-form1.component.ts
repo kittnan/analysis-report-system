@@ -320,6 +320,7 @@ export class RejectForm1Component implements OnInit {
         this.OccurB.setValue(data.occurBName);
         this.Abnormal.setValue(data.abnormalLotLevel);
         this.Issuer.setValue(data.issuer);
+        this.Treatment.setValue(data.treatment);
         this.GetOccurAList(data.requestItem);
         this.GetOccurBList();
         this.FileList = data.files;
