@@ -57,7 +57,10 @@ export class AnalysisDataListComponent implements OnInit {
 
   columnDefs: ColDef[] = [
     {
-      field: 'statusShow', filter: true, resizable: true, cellStyle: (params: any) => {
+      field: 'statusShow',
+      filter: true,
+      resizable: true,
+      cellStyle: (params: any) => {
         let color
         params.value == "Ongoing" ? color = "lightyellow" : false
         params.value == "Ongoing with delay" ? color = "orange" : false
@@ -78,7 +81,13 @@ export class AnalysisDataListComponent implements OnInit {
     {
       field: 'treatment',
       headerName: "Treatment",
-      headerTooltip: "Treatment"
+      headerTooltip: "Treatment",
+      cellStyle: (params: any) => {
+        let color = ''
+        params.value == "Urgent" ? color = "red" : false
+        params.value == "Normal" ? color = "blue" : false
+        return { color: color }
+      },
     },
     {
       field: 'ktcModelNumber',

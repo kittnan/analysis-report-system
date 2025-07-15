@@ -112,7 +112,13 @@ export class LibrarySearchComponent implements OnInit {
     {
       field: 'treatment',
       headerName: "Treatment",
-      headerTooltip: "Treatment"
+      headerTooltip: "Treatment",
+      cellStyle: (params: any) => {
+        let color = ''
+        params.value == "Urgent" ? color = "red" : false
+        params.value == "Normal" ? color = "blue" : false
+        return { color: color }
+      },
     },
     {
       field: 'projectName',
