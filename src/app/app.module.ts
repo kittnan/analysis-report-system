@@ -22,6 +22,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { LoginComponent } from "./pages/login/login.component";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { BookingEquipmentNewComponent } from './pages/booking-equipments/booking-equipment-new/booking-equipment-new.component';
+import { BookingEquipmentEditComponent } from './pages/booking-equipments/booking-equipment-edit/booking-equipment-edit.component';
+import { BookingEquipmentDeleteComponent } from './pages/booking-equipments/booking-equipment-delete/booking-equipment-delete.component';
+import { BookingEquipmentTableComponent } from './pages/booking-equipments/booking-equipment-table/booking-equipment-table.component';
+import { BookingEquipmentHomeComponent } from './pages/booking-equipments/booking-equipment-home/booking-equipment-home.component';
 
 
 
@@ -31,6 +36,11 @@ import { environment } from '../environments/environment';
     AppComponent,
     AdminLayoutComponent,
     LoginComponent,
+    BookingEquipmentNewComponent,
+    BookingEquipmentEditComponent,
+    BookingEquipmentDeleteComponent,
+    BookingEquipmentTableComponent,
+    BookingEquipmentHomeComponent,
 
 
 

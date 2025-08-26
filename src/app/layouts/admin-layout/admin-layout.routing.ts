@@ -42,6 +42,7 @@ import { ElectricalMasterComponent } from 'app/pages/electrical-database/electri
 import { ElectricalTftDrivingComponent } from 'app/pages/electrical-database/electrical-TFT-Driving-voltage/electrical-tft-driving/electrical-tft-driving.component';
 import { ElectricalResistanceComponent } from 'app/pages/electrical-database/electrical-resistance/electrical-resistance/electrical-resistance.component';
 import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical-otp/electrical-otp/electrical-otp.component';
+import { BookingEquipmentNewComponent } from 'app/pages/booking-equipments/booking-equipment-new/booking-equipment-new.component';
 
 // import { LoginComponent } from 'app/pages/login/login.component';
 
@@ -105,6 +106,9 @@ export const AdminLayoutRoutes: Routes = [
 
   //OTP
   { path: "electricalOtp", component: ElectricalOtpComponent },
+
+  // booking
+  { path: "booking-equipment-new", component: BookingEquipmentNewComponent },
 
 
 ];
