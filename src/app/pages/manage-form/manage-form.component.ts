@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
+import Swal from 'sweetalert2';
 var moment = require('moment')
 
 @Component({
@@ -59,19 +60,35 @@ export class ManageFormComponent implements OnInit {
   }
 
   async get() {
-    this.PageNow = 1;
-    const userLevelStr = JSON.stringify(this.UserLevel)
-    const result = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
-    const count = await this.getCount(this.SelectStatus.value, this.UserId, userLevelStr, 1, null, null);
-
-
-    this.Count = count[0].count;
-
-    this.CountPage = this.numPage(count[0].count, this.CountNum.value)
-    this.DataFilter = result
-    this.DataFilter = this.rep(this.DataFilter)
-
-
+    try {
+      Swal.fire({
+        title: 'Loading...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading(null)
+        }
+      })
+      this.PageNow = 1;
+      const userLevelStr = JSON.stringify(this.UserLevel)
+      const result = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
+      const count = await this.getCount(this.SelectStatus.value, this.UserId, userLevelStr, 1, null, null);
+  
+  
+      this.Count = count[0].count;
+  
+      this.CountPage = this.numPage(count[0].count, this.CountNum.value)
+      this.DataFilter = result
+      this.DataFilter = this.rep(this.DataFilter)
+  
+      setTimeout(() => {
+        Swal.close()
+      }, 300);
+      
+    } catch (error) {
+          setTimeout(() => {
+      Swal.close()
+    }, 300);
+    }
 
 
     // console.log(this.remain.value);
@@ -248,20 +265,40 @@ export class ManageFormComponent implements OnInit {
 
 
   async next() {
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading(null)
+      }
+    })
     const userLevelStr = JSON.stringify(this.UserLevel)
     this.PageNow += 1
     this.PageNow > this.CountPage ? this.PageNow = this.CountPage : this.PageNow
     this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
     this.DataFilter = this.rep(this.DataFilter)
+    setTimeout(() => {
+      Swal.close()
+    }, 300);
   }
 
 
   async back() {
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading(null)
+      }
+    })
     const userLevelStr = JSON.stringify(this.UserLevel)
     this.PageNow -= 1
     this.PageNow <= 1 ? this.PageNow = 1 : this.PageNow
     this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
     this.DataFilter = this.rep(this.DataFilter)
+    setTimeout(() => {
+      Swal.close()
+    }, 300);
   }
   onSelectCountNum() {
     this.get()
@@ -324,7 +361,7 @@ export class ManageFormComponent implements OnInit {
         ...d,
         remain: (
           // result.finishAnalyzeDate && result.result
-          (d.status == 3 && (d.result?.[0]?.finishAnalyzeDate && d.result?.[0]?.result ) ) ||
+          (d.status == 3 && (d.result?.[0]?.finishAnalyzeDate && d.result?.[0]?.result)) ||
           d.status == 4 ||
           d.status == 5 ||
           d.status == 2.1 ||

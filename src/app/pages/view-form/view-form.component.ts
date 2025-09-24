@@ -64,6 +64,14 @@ export class ViewFormComponent implements OnInit {
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
 
+    if (
+      !this.isAEUser() ||
+      parseInt(this.form.status) == 6
+    ) {
+      this.result.result = ''
+    }
+  
+
     form.userApprove5Name ? this.status = true : this.status = false
 
     // if (form?.userApprove5Name) {
@@ -73,7 +81,27 @@ export class ViewFormComponent implements OnInit {
 
   }
 
+  isAEUser(): boolean {
+    let level1: any = localStorage.getItem('AR_UserLevel1')
+    let level2: any = localStorage.getItem('AR_UserLevel2')
+    let level3: any = localStorage.getItem('AR_UserLevel3')
+    let level4: any = localStorage.getItem('AR_UserLevel4')
+    let level5: any = localStorage.getItem('AR_UserLevel5')
+    let level6: any = localStorage.getItem('AR_UserLevel6')
 
+    level1 = level1 ? parseInt(level1) : 0
+    level2 = level2 ? parseInt(level2) : 0
+    level3 = level3 ? parseInt(level3) : 0
+    level4 = level4 ? parseInt(level4) : 0
+    level5 = level5 ? parseInt(level5) : 0
+    level6 = level6 ? parseInt(level6) : 0
+
+    let levelArr = [level1, level2, level3, level4, level5, level6]
+
+    if (levelArr.some((lv: any) => lv >= 3)) return true
+    return false
+
+  }
 
 
   pdfLabel() {

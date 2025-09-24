@@ -382,23 +382,17 @@ export class LibrarySearchComponent implements OnInit {
         const status = this.setStatusForm(merge.status);
 
         let ratio: any = Number(merge.ngRatio).toFixed(2)
-        // const map = {
-        //   Req_No: merge.requestNumber,
-        //   Model: merge.ktcModelNumber,
-        //   Project_Name: `${merge.size} / ${merge.customer}`,
-        //   Defect_Name: merge.defectiveName,
-        //   Occur_Place: merge.occurBName,
-        //   Lot_Number: merge.pcLotNumber,
-        //   Input_Qty: Number(merge.inputQuantity),
-        //   Ng_Qty: Number(merge.ngQuantity),
-        //   Ng_Ratio: Number(ratio),
-        //   Result: merge.result,
-        //   relatedToESD: merge.relatedToESD,
-        //   REQ_From: merge.requestFormSectionName,
-        //   REQ_Name: merge.issuer,
-        //   UserNow: merge.userApproveName,
-        //   Status: status,
-        // }
+        let result = ''
+        
+        if (this.isAEUser()) {
+          result = merge.result
+        } else if (
+          status == "Finished"
+        ) {
+          result = merge.result
+        }
+
+
         merge['projectName'] = `${merge.size} / ${merge.customer}`
         merge['statusShow'] = status
         merge.inputQuantity = Number(merge.inputQuantity)
@@ -409,11 +403,33 @@ export class LibrarySearchComponent implements OnInit {
         merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
         merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
         merge.TBNShow = merge.TBN && merge.TBN != 'normal' ? merge.TBNNumber : 'Normal'
-
+        merge.result = result
         return merge
       })
       resolve(result_map)
     })
+  }
+
+  isAEUser(): boolean {
+    let level1: any = localStorage.getItem('AR_UserLevel1')
+    let level2: any = localStorage.getItem('AR_UserLevel2')
+    let level3: any = localStorage.getItem('AR_UserLevel3')
+    let level4: any = localStorage.getItem('AR_UserLevel4')
+    let level5: any = localStorage.getItem('AR_UserLevel5')
+    let level6: any = localStorage.getItem('AR_UserLevel6')
+
+    level1 = level1 ? parseInt(level1) : 0
+    level2 = level2 ? parseInt(level2) : 0
+    level3 = level3 ? parseInt(level3) : 0
+    level4 = level4 ? parseInt(level4) : 0
+    level5 = level5 ? parseInt(level5) : 0
+    level6 = level6 ? parseInt(level6) : 0
+
+    let levelArr = [level1, level2, level3, level4, level5, level6]
+
+    if (levelArr.some((lv: any) => lv >= 3)) return true
+    return false
+
   }
 
   setStatusForm(oldStatus) {
