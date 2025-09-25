@@ -63,14 +63,16 @@ export class ViewFormComponent implements OnInit {
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
-
+    
     if (
-      !this.isAEUser() ||
-      parseInt(this.form.status) == 6
+      this.isAEUser() ||
+      this.form.status == 6
     ) {
+      this.result.result = this.result.result
+    }else{
       this.result.result = ''
     }
-  
+
 
     form.userApprove5Name ? this.status = true : this.status = false
 
@@ -83,11 +85,23 @@ export class ViewFormComponent implements OnInit {
 
   isAEUser(): boolean {
     let level1: any = localStorage.getItem('AR_UserLevel1')
+
+
     let level2: any = localStorage.getItem('AR_UserLevel2')
+
+
     let level3: any = localStorage.getItem('AR_UserLevel3')
+
+
     let level4: any = localStorage.getItem('AR_UserLevel4')
+
+
     let level5: any = localStorage.getItem('AR_UserLevel5')
+
+
     let level6: any = localStorage.getItem('AR_UserLevel6')
+
+
 
     level1 = level1 ? parseInt(level1) : 0
     level2 = level2 ? parseInt(level2) : 0
