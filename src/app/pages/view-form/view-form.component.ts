@@ -62,15 +62,16 @@ export class ViewFormComponent implements OnInit {
 
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
-    this.CheckStatusUser();
-    
+    this.CheckStatusUser();    
     if (
       this.isAEUser() ||
       this.form.status == 6
     ) {
       this.result.result = this.result.result
+      this.result.causeOfDefect = this.result.causeOfDefect
     }else{
       this.result.result = ''
+      this.result.causeOfDefect = ''
     }
 
 
