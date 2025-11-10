@@ -342,18 +342,14 @@ export class ManageFormComponent implements OnInit {
         if (result.finishAnalyzeDate && result.result) return 'text-blue'
     }
     return 'text-black'
-
-    if (item && item.result.length > 0) {
-      const result = item.result[0]
-      if (result.finishAnalyzeDate && result.result) return 'text-blue'
-    }
-    return 'text-black'
   }
 
 
 
   rep(data: any) {
     data = data.map((d: any) => {
+
+      let result = d.result?.[0] || {}
       let day = moment(d.replyDate).startOf('day').diff(moment().startOf('day'), "day")
 
       if (day == 0) {
@@ -364,7 +360,7 @@ export class ManageFormComponent implements OnInit {
       }
 
 
-      let report = d?.result?.[0]?.finishAnalyzeDate ? moment(d?.result?.[0]?.finishAnalyzeDate).startOf('day').add(7, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
+      let report = result?.finishAnalyzeDate ? moment(result?.finishAnalyzeDate).startOf('day').add(7, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
       if (report == 0) {
         report = "Today"
       }
@@ -377,7 +373,8 @@ export class ManageFormComponent implements OnInit {
         ...d,
         remain: (
           // result.finishAnalyzeDate && result.result
-          (d.status == 3 && (d.result?.[0]?.finishAnalyzeDate && d.result?.[0]?.result)) ||
+          (d.status == 3 && (result?.finishAnalyzeDate && result?.result)) ||
+          (d.status == 3 && (result?.finishAnalyzeDate && result?.result2 && result?.result2.length > 0)) ||
           d.status == 4 ||
           d.status == 5 ||
           d.status == 2.1 ||
@@ -387,6 +384,8 @@ export class ManageFormComponent implements OnInit {
           d.status == 6.4
         )
           ? "Finished" : day,
+
+
         remain_report: (
           d.status == 4 ||
           d.status == 5 ||
@@ -400,6 +399,9 @@ export class ManageFormComponent implements OnInit {
       }
 
     })
+
+
+
 
 
     return data
