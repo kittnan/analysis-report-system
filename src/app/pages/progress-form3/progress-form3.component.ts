@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment'
 import Swal from 'sweetalert2'
 
@@ -10,6 +10,7 @@ import { Workbook } from 'exceljs'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-progress-form3',
@@ -54,6 +55,14 @@ export class ProgressForm3Component implements OnInit {
     ResultDate: new FormControl(null, Validators.required),
     ReportDate: new FormControl(null, Validators.required),
     Result: new FormControl(null, Validators.required),
+    Result2: new FormArray([
+      new FormGroup({
+        qty: new FormControl(0, Validators.required),
+        item: new FormControl(null, Validators.required),
+        tempItem: new FormControl(null),
+        dropdown: new FormControl(false),
+      })
+    ]),
     SourceOfDefect: new FormControl(null, Validators.required),
     CategoryCause: new FormControl(null, Validators.required),
     AnalysisLevel: new FormControl(null, Validators.required),
@@ -143,6 +152,8 @@ export class ProgressForm3Component implements OnInit {
   // ? comment
   CommentLists: any = [];
 
+  ResultFMMasterOption: any = []
+  // ? filter dropdown
   async ngOnInit(): Promise<void> {
     this.CheckStatusUser();
     this.getForm();
@@ -192,8 +203,6 @@ export class ProgressForm3Component implements OnInit {
           // todo have result
           if (data.length > 0) {
             const result = data[0]
-            console.log("🚀 ~ ProgressForm3Component ~ this.api.FindResultByFormIdMain ~ result:", result)
-
             this.ResultAPi = result
             const dateResultStart = result.startAnalyzeDate ? (result.startAnalyzeDate.split("T"))[0] : null
             const dateResultEnd = result.finishAnalyzeDate ? (result.finishAnalyzeDate.split("T"))[0] : null
@@ -204,6 +213,19 @@ export class ProgressForm3Component implements OnInit {
 
 
             result.result ? this.Result.setValue(result.result) : null
+            if (result.result2) {
+              const result2Array = this.Result2 as FormArray;
+              result2Array.clear();
+              result.result2.forEach((res: any) => {
+                const formGroup = new FormGroup({
+                  item: new FormControl(res.item || '', Validators.required),
+                  qty: new FormControl(res.qty || '', Validators.required),
+                  tempItem: new FormControl(res.item || ''),
+                  dropdown: new FormControl(res.dropdown || ''),
+                });
+                result2Array.push(formGroup);
+              });
+            }
             result.sourceOfDefect ? this.SourceOfDefect.setValue(result.sourceOfDefect) : null
 
             result.causeOfDefect ? this.CategoryCause.setValue(result.causeOfDefect) : null
@@ -238,7 +260,7 @@ export class ProgressForm3Component implements OnInit {
             this.minDateFinishAnalysisDate = dateString
             this.GetApproveList();
             this.GetCause();
-
+            this.GetResultFMMaster()
 
           }
           // todo no result
@@ -246,7 +268,7 @@ export class ProgressForm3Component implements OnInit {
             this.SetAnalysisNo();
             this.GetApproveList();
             this.GetCause();
-
+            this.GetResultFMMaster()
           }
         })
 
@@ -266,7 +288,7 @@ export class ProgressForm3Component implements OnInit {
         this.AnalysisLevelList = data.filter((i: any) => i.nameMaster == environment.AnalysisLevel);
         this.CauseList = data.filter((i: any) => i.nameMaster == environment.Cause);
         this.TreatmentList = data.filter((i: any) => i.nameMaster == environment.TreatmentNG);
-        this.JudgementDefects = data.filter((i:any)=> i.nameMaster == environment.JudgementDefect)
+        this.JudgementDefects = data.filter((i: any) => i.nameMaster == environment.JudgementDefect)
       }
     })
   }
@@ -314,6 +336,21 @@ export class ProgressForm3Component implements OnInit {
 
       } else {
         this.Report = null;
+      }
+    })
+  }
+
+  GetResultFMMaster() {
+    let type = this.form.requestItem.includes('DST') ? 'DST' : 'AMT'
+    this.api.getResultFMMaster(new HttpParams().set('type', type)).subscribe((res: any) => {
+
+
+      if (res.data.length > 0) {
+        this.ResultFMMasterOption = res.data
+
+
+      } else {
+        this.ResultFMMasterOption = []
       }
     })
   }
@@ -384,6 +421,33 @@ export class ProgressForm3Component implements OnInit {
   }
 
 
+  getDropdown(control: any): Boolean {
+    let result = control.get('dropdown').value;
+    return result ?? false;
+  }
+  ToggleResultFMFilter(control: any) {
+    let result = control.get('dropdown').value;
+    control.get('dropdown').setValue(!result);
+  }
+  getResultFMFilter(control: any) {
+    let value = control.get('item').value;
+
+    if (value) {
+      return this.ResultFMMasterOption.filter(
+        item => item.item.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      return this.ResultFMMasterOption;
+    }
+  }
+
+  SetResultFM(control: any) {
+    let tempIte = control.get('tempItem').value;
+    control.get('item').setValue(tempIte);
+    control.get('tempItem').reset()
+  }
+
+
   // ? EVENT
 
   OnApproveChange() {
@@ -400,6 +464,8 @@ export class ProgressForm3Component implements OnInit {
   }
 
   onSaveResult() {
+    console.log(this.Result2.value);
+
     Swal.fire({
       title: 'Do you want to save ?',
       icon: 'question',
@@ -454,6 +520,7 @@ export class ProgressForm3Component implements OnInit {
         engineerId: localStorage.getItem('AR_UserId'),
         engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value || null,
+        result2: this.Result2.value || null,
         causeOfDefect: this.CategoryCause.value || null,
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
@@ -476,6 +543,7 @@ export class ProgressForm3Component implements OnInit {
     return new Promise(resolve => {
       const ResultData = {
         result: this.Result.value || null,
+        result2: this.Result2.value || null,
         causeOfDefect: this.CategoryCause.value || null,
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
@@ -576,6 +644,7 @@ export class ProgressForm3Component implements OnInit {
         engineerId: localStorage.getItem('AR_UserId'),
         engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value,
+        result2: this.Result2.value,
         causeOfDefect: this.CategoryCause.value,
         sourceOfDefect: this.SourceOfDefect.value,
         analysisLevel: this.AnalysisLevel.value,
@@ -1090,6 +1159,12 @@ export class ProgressForm3Component implements OnInit {
       daysDifference === 0 ? daysDifference = 1 : false
       resolve(daysDifference)
     })
+  }
+
+  isFM() {
+    if (this.form?.requestItem)
+      return (this.form.requestItem).includes('FM')
+    return false
   }
   async genReportPNL() {
     const model = this.Report.filter(i => i.modelName == this.form.requestItem);
@@ -2694,6 +2769,24 @@ export class ProgressForm3Component implements OnInit {
     this.modalService.open(content, { size: 'lg' });
   }
 
+  newResultFM() {
+    const result2Array = this.Result2 as FormArray;
+    const newItem = new FormGroup({
+      item: new FormControl('', Validators.required),
+      qty: new FormControl(0, Validators.required),
+      tempItem: new FormControl(''),
+      dropdown: new FormControl(false)
+    });
+    result2Array.push(newItem);
+  }
+
+  removeResultFM(index: number) {
+    const result2Array = this.Result2 as FormArray;
+    if (result2Array.length > 1) {
+      result2Array.removeAt(index);
+    }
+  }
+
   get AnalyzeDate() { return this.ResultForm.get('AnalyzeDate') }
   get ResultDate() { return this.ResultForm.get('ResultDate') }
   get ReportDate() { return this.ResultForm.get('ReportDate') }
@@ -2710,6 +2803,7 @@ export class ProgressForm3Component implements OnInit {
   get htmlReport() { return this.ResultForm.get('htmlReport') }
   get JudgementDefect() { return this.ResultForm.get('JudgementDefect') }
   get Remark() { return this.ResultForm.get('Remark') }
+  get Result2() { return this.ResultForm.get('Result2') }
 
   alertSuccess() {
     Swal.fire({

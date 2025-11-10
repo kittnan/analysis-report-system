@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment.prod'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
@@ -8,7 +8,7 @@ import { Workbook } from 'exceljs'
 // import { RequestServiceService } from '../request-form/request-service.service';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-reject-form3',
@@ -55,6 +55,14 @@ export class RejectForm3Component implements OnInit {
     ResultDate: new FormControl(null, Validators.required),
     ReportDate: new FormControl(null, Validators.required),
     Result: new FormControl(null, Validators.required),
+    Result2: new FormArray([
+      new FormGroup({
+        qty: new FormControl(0, Validators.required),
+        item: new FormControl(null, Validators.required),
+        tempItem: new FormControl(null),
+        dropdown: new FormControl(false),
+      })
+    ]),
     SourceOfDefect: new FormControl(null, Validators.required),
     CategoryCause: new FormControl(null, Validators.required),
     AnalysisLevel: new FormControl(null, Validators.required),
@@ -65,6 +73,7 @@ export class RejectForm3Component implements OnInit {
     TempCause: new FormControl(null),
     JudgementDefect: new FormControl('', Validators.required),
     Remark: new FormControl(''),
+
   })
 
   IssueDate = new FormControl(null);
@@ -140,10 +149,12 @@ export class RejectForm3Component implements OnInit {
   // ? comment
   CommentLists: any = [];
 
+  ResultFMMasterOption: any = []
+
+
   ngOnInit(): void {
     this.CheckStatusUser();
     this.getForm();
-    this.getResult();
     // this.GetList(this.SourceId);
     // this.GetList(this.AnalysisLevelId);
     this.getReportList();
@@ -174,7 +185,7 @@ export class RejectForm3Component implements OnInit {
         this.AnalysisLevelList = data.filter((i: any) => i.nameMaster == environment.AnalysisLevel);
         this.CauseList = data.filter((i: any) => i.nameMaster == environment.Cause);
         this.TreatmentList = data.filter((i: any) => i.nameMaster == environment.TreatmentNG);
-        this.JudgementDefects = data.filter((i:any)=> i.nameMaster == environment.JudgementDefect)
+        this.JudgementDefects = data.filter((i: any) => i.nameMaster == environment.JudgementDefect)
       }
     })
   }
@@ -190,6 +201,19 @@ export class RejectForm3Component implements OnInit {
   //     });
   //   }
   // }
+
+  GetResultFMMaster() {
+    let type = this.form.requestItem.includes('DST') ? 'DST' : 'AMT'
+    this.api.getResultFMMaster(new HttpParams().set('type', type)).subscribe((res: any) => {
+
+
+      if (res.data.length > 0) {
+        this.ResultFMMasterOption = res.data
+      } else {
+        this.ResultFMMasterOption = []
+      }
+    })
+  }
 
 
   // ? API
@@ -214,6 +238,8 @@ export class RejectForm3Component implements OnInit {
 
 
         this.GetApproveList();
+        this.GetResultFMMaster()
+        this.getResult();
       } else this.form = null;
     })
   }
@@ -222,6 +248,19 @@ export class RejectForm3Component implements OnInit {
     let id = this.formId
     this.api.FindResultByFormIdMain(id).subscribe((data2: any) => {
       if (data2.length > 0) {
+        if (data2[0].result2) {
+          const result2Array = this.Result2 as FormArray;
+          result2Array.clear();
+          data2[0].result2.forEach((res: any) => {
+            const formGroup = new FormGroup({
+              item: new FormControl(res.item || '', Validators.required),
+              qty: new FormControl(res.qty || '', Validators.required),
+              tempItem: new FormControl(res.item || ''),
+              dropdown: new FormControl(res.dropdown || ''),
+            });
+            result2Array.push(formGroup);
+          });
+        }
         this.result = data2[0];
         this.ResultId = data2[0]._id;
         this.Result.setValue(data2[0].result);
@@ -248,7 +287,9 @@ export class RejectForm3Component implements OnInit {
 
         this.tempFile = this.result.files;
 
-        this.FileReportName = (this.result.file.split('/'))[5];
+
+
+        this.FileReportName = this.result && this.result.length > 0 ? (this.result.file?.split('/'))[5] : ''
         // this.FileReportName = (this.result.file.split('/'))[6];
 
         this.tempFile.forEach(i => {
@@ -412,6 +453,7 @@ export class RejectForm3Component implements OnInit {
         engineerId: localStorage.getItem('AR_UserId'),
         engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value || null,
+        result2: this.Result2.value || null,
         causeOfDefect: this.CategoryCause.value || null,
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
@@ -434,6 +476,7 @@ export class RejectForm3Component implements OnInit {
     return new Promise(resolve => {
       const ResultData = {
         result: this.Result.value || null,
+        result2: this.Result2.value || null,
         causeOfDefect: this.CategoryCause.value || null,
         sourceOfDefect: this.SourceOfDefect.value || null,
         analysisLevel: this.AnalysisLevel.value || null,
@@ -469,6 +512,7 @@ export class RejectForm3Component implements OnInit {
         engineerId: localStorage.getItem('AR_UserId'),
         engineerName: (localStorage.getItem('AR_UserFirstName') + "-" + localStorage.getItem('AR_UserLastName')),
         result: this.Result.value,
+        result2: this.Result2.value,
         causeOfDefect: this.CategoryCause.value,
         sourceOfDefect: this.SourceOfDefect.value,
         analysisLevel: this.AnalysisLevel.value,
@@ -691,7 +735,31 @@ export class RejectForm3Component implements OnInit {
     this.CategoryCause.setValue(this.TempCause.value);
   }
 
+  getDropdown(control: any): Boolean {
+    let result = control.get('dropdown').value;
+    return result ?? false;
+  }
+  ToggleResultFMFilter(control: any) {
+    let result = control.get('dropdown').value;
+    control.get('dropdown').setValue(!result);
+  }
+  getResultFMFilter(control: any) {
+    let value = control.get('item').value;
 
+    if (value) {
+      return this.ResultFMMasterOption.filter(
+        item => item.item.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      return this.ResultFMMasterOption;
+    }
+  }
+
+  SetResultFM(control: any) {
+    let tempIte = control.get('tempItem').value;
+    control.get('item').setValue(tempIte);
+    control.get('tempItem').reset()
+  }
 
   uploadFile(event: any) {
     Swal.fire({
@@ -819,6 +887,7 @@ export class RejectForm3Component implements OnInit {
   get ResultDate() { return this.ResultForm.get('ResultDate') }
   get ReportDate() { return this.ResultForm.get('ReportDate') }
   get Result() { return this.ResultForm.get('Result') }
+  get Result2() { return this.ResultForm.get('Result2') as FormArray }
   get SourceOfDefect() { return this.ResultForm.get('SourceOfDefect') }
   get CategoryCause() { return this.ResultForm.get('CategoryCause') }
   get AnalysisLevel() { return this.ResultForm.get('AnalysisLevel') }
@@ -928,6 +997,28 @@ export class RejectForm3Component implements OnInit {
       daysDifference === 0 ? daysDifference = 1 : false
       resolve(daysDifference)
     })
+  }
+
+  isFM() {
+    if (this.form?.requestItem)
+      return (this.form.requestItem).includes('FM')
+    return false
+  }
+
+  newResultFM() {
+    const result2Array = this.Result2 as FormArray;
+    const newItem = new FormGroup({
+      item: new FormControl('', Validators.required),
+      qty: new FormControl(0, Validators.required)
+    });
+    result2Array.push(newItem);
+  }
+
+  removeResultFM(index: number) {
+    const result2Array = this.Result2 as FormArray;
+    if (result2Array.length > 1) {
+      result2Array.removeAt(index);
+    }
   }
 
   async genReportPNL() {

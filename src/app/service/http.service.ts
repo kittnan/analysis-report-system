@@ -675,6 +675,22 @@ export class HttpService {
   }
 
 
+  // todo result master
+  getResultFMMaster(params: HttpParams): Observable<any> {
+    return this.http.get(this.Url + "/result-fm-master", { params: params });
+  }
+  updateResultFM(params: HttpParams, data: any): Observable<any> {
+    return this.http.put(this.Url + "/result-fm-master/update", data, { params: params });
+  }
+  createResultFM(data: any): Observable<any> {
+    return this.http.post(this.Url + "/result-fm-master/create", data);
+  }
+  deleteResultFM(params: HttpParams): Observable<any> {
+    return this.http.delete(this.Url + "/result-fm-master/delete", { params: params });
+  }
+  importResultFM(data: any): Observable<any> {
+    return this.http.post(this.Url + "/result-fm-master/import", data);
+  }
 
 
 

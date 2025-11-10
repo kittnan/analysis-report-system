@@ -72,22 +72,22 @@ export class ManageFormComponent implements OnInit {
       const userLevelStr = JSON.stringify(this.UserLevel)
       const result = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
       const count = await this.getCount(this.SelectStatus.value, this.UserId, userLevelStr, 1, null, null);
-  
-  
+
+
       this.Count = count[0].count;
-  
+
       this.CountPage = this.numPage(count[0].count, this.CountNum.value)
       this.DataFilter = result
       this.DataFilter = this.rep(this.DataFilter)
-  
+
       setTimeout(() => {
         Swal.close()
       }, 300);
-      
+
     } catch (error) {
-          setTimeout(() => {
-      Swal.close()
-    }, 300);
+      setTimeout(() => {
+        Swal.close()
+      }, 300);
     }
 
 
@@ -320,13 +320,29 @@ export class ManageFormComponent implements OnInit {
 
   // ? html function
   htmlEng(item: any) {
+
     if (item && item.result.length > 0) {
       const result = item.result[0]
-      if (result.finishAnalyzeDate && result.result) return 'Making Report'
+      if (item.requestItem && item.requestItem.includes('_FM')) {
+        if (result.finishAnalyzeDate && result.result2 && result.result2.length > 0) return 'Making Report'
+      } else
+        if (result.finishAnalyzeDate && result.result) return 'Making Report'
     }
     return 'Under Analysis'
+
   }
+
   cssEng(item: any) {
+
+    if (item && item.result.length > 0) {
+      const result = item.result[0]
+      if (item.requestItem && item.requestItem.includes('_FM')) {
+        if (result.finishAnalyzeDate && result.result2 && result.result2.length > 0) return 'text-blue'
+      } else
+        if (result.finishAnalyzeDate && result.result) return 'text-blue'
+    }
+    return 'text-black'
+
     if (item && item.result.length > 0) {
       const result = item.result[0]
       if (result.finishAnalyzeDate && result.result) return 'text-blue'
@@ -408,15 +424,15 @@ export class ManageFormComponent implements OnInit {
   }
 
   setStyleOverDue(data, type) {
-    let position = this.permission.filter((d: any) => type?.includes(d));
-    if (position.length != 0) {
-      if (data.remain == "Over Due Date") {
-        return "background-color:#FF8080"
-      }
-      if (data.remain_report == "Over Due Date") {
-        return "background-color:#FF8080"
-      }
-    }
+    // let position = this.permission.filter((d: any) => type?.includes(d));
+    // if (position.length != 0) {
+    //   if (data.remain == "Over Due Date") {
+    //     return "background-color:#FF8080"
+    //   }
+    //   if (data.remain_report == "Over Due Date") {
+    //     return "background-color:#FF8080"
+    //   }
+    // }
     return ""
   }
 

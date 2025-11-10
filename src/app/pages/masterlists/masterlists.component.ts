@@ -7,6 +7,7 @@ import Swal from 'sweetalert2'
 import * as XLSX from 'xlsx'
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
     selector: 'app-masterlists',
@@ -21,7 +22,7 @@ export class MasterlistsComponent implements OnInit {
     constructor(
         private md: NgbModal,
         private api: HttpService,
-        private route: Router
+        private route: Router,
     ) { }
 
 
@@ -125,6 +126,7 @@ export class MasterlistsComponent implements OnInit {
     ToggleDefect: boolean = false
     ToggleOccur: boolean = false
     ToggleCause: boolean = false
+    ToggleResultFM: boolean = false
 
     // ? new Toggle Func
     ToggleNormalTable: boolean = false
@@ -132,6 +134,7 @@ export class MasterlistsComponent implements OnInit {
     ToggleDefectTable: boolean = false
     ToggleOccurTable: boolean = false
     ToggleCauseTable: boolean = false
+    ToggleResultFMTable: boolean = false
 
     // ? excel
     arrayBuffer: any;
@@ -156,6 +159,7 @@ export class MasterlistsComponent implements OnInit {
     DataExcelDefect: any;
     DataExcelOccur: any;
     DataExcelCause: any;
+    DataExcelResultFM: any;
 
     // ? Form control to modal Model NUmber
     ModelNumbers = new FormGroup({
@@ -184,6 +188,12 @@ export class MasterlistsComponent implements OnInit {
         occurAId: new FormControl(null, Validators.required),
         name: new FormControl(null, Validators.required),
     })
+    // ? Form control to modal ResultFM
+    ResultFM = new FormGroup({
+        _id: new FormControl(null),
+        item: new FormControl(null, Validators.required),
+        type: new FormControl(null, Validators.required),
+    })
     occurAId: any;
     ModalMasterId: any;
     SelectMasterId: any;
@@ -207,6 +217,10 @@ export class MasterlistsComponent implements OnInit {
     ResultFilter: any;
     NoData: any = 1;
 
+    resultMasterOption: any = []
+    resultMasterFMSelect: any = 'DST'
+    // resultFMEditId = new FormControl(null, Validators.required)
+    // resultFMEdit = new FormControl(null, Validators.required)
 
     ngOnInit(): void {
         this.CheckStatusUser();
@@ -323,7 +337,22 @@ export class MasterlistsComponent implements OnInit {
             }
         })
     }
+    GetResultFMMaster() {
+        let param: HttpParams = new HttpParams()
+        if (this.resultMasterFMSelect) {
+            param = param.set('type', this.resultMasterFMSelect)
+        }
+        this.api.getResultFMMaster(param).subscribe((res: any) => {
 
+
+            if (res.data.length > 0) {
+                this.List = res.data
+                this.DataTableStart()
+            } else {
+                this.List
+            }
+        })
+    }
 
 
 
@@ -439,6 +468,18 @@ export class MasterlistsComponent implements OnInit {
         })
 
     }
+    PostResultFM() {
+        let d = {
+            item: this.ResultFM.get('item').value,
+            type: this.ResultFM.get('type').value,
+        }
+        this.api.createResultFM(d).subscribe((res: any) => {
+            if (res.data.length > 0) {
+                this.alertSuccess();
+                this.OnSetToggleTable();
+            }
+        })
+    }
 
 
     // ? Event
@@ -466,6 +507,8 @@ export class MasterlistsComponent implements OnInit {
             this.PostCause();
         } else if (this.ToggleDefect) {
             this.PostDefect();
+        } else if (this.ToggleResultFM) {
+            this.PostResultFM();
         }
     }
 
@@ -503,6 +546,11 @@ export class MasterlistsComponent implements OnInit {
             this.GetOccurA();
             this.ToggleNormal = false;
         }
+        if (nameToggle == 'Result FM Master') {
+            this.ToggleNormal = false;
+            this.ToggleResultFM = true
+            console.log(`⚡ ~ :537 ~ MasterlistsComponent ~ this.ToggleResultFM:`, this.ToggleResultFM);
+        }
     }
     // ? ********************************************************TOGGLE IN MODAL ADD LIST
 
@@ -526,6 +574,8 @@ export class MasterlistsComponent implements OnInit {
     }
 
     OnOffToggleSelect(nameToggle: any) {
+
+
         this.ToggleNormalSelect = true;
         if (nameToggle.toLowerCase().includes(this.ModelNumberMasterFix.toLowerCase())) {
             this.ToggleModelNumberSelect = !this.ToggleModelNumberSelect;
@@ -546,9 +596,15 @@ export class MasterlistsComponent implements OnInit {
             this.ToggleCauseSelect = !this.ToggleCauseSelect;
             this.ToggleNormalSelect = false;
         }
+        if (nameToggle == 'Result FM Master') {
+            this.ToggleResultFM = !this.ToggleResultFM
+            this.ToggleNormalSelect = false;
+            this.OnSetToggleTable();
+        }
         if (this.ToggleNormalSelect) {
             this.OnSetToggleTable();
         }
+
         // this.OnSetToggleTable();
     }
     // ? ********************************************************TOGGLE MASTER
@@ -579,11 +635,15 @@ export class MasterlistsComponent implements OnInit {
         if (this.ToggleCauseSelect == true) {
             this.ToggleCauseTable = true
         }
+        if (this.ToggleResultFM == true) {
+            this.ToggleResultFMTable = true
+        }
         this.ToggleNormalTable ? this.GetListById(this.SelectMasterId) : false
         this.ToggleModelNumberTable ? this.GetListById(this.SelectMasterId) : false
         this.ToggleDefectTable ? this.GetDefect() : false
         this.ToggleOccurTable ? this.GetOccurB() : false
         this.ToggleCauseTable ? this.GetCause() : false
+        this.ToggleResultFMTable ? this.GetResultFMMaster() : false
 
     }
 
@@ -627,6 +687,7 @@ export class MasterlistsComponent implements OnInit {
         this.ToggleDefectSelect = false
         this.ToggleOccurSelect = false
         this.ToggleCauseSelect = false
+        this.ToggleResultFM = false
     }
     CleanToggleTable() {
         this.ToggleNormalTable = false;
@@ -634,6 +695,7 @@ export class MasterlistsComponent implements OnInit {
         this.ToggleDefectTable = false;
         this.ToggleOccurTable = false;
         this.ToggleCauseTable = false;
+        this.ToggleResultFMTable = false;
     }
 
 
@@ -735,6 +797,24 @@ export class MasterlistsComponent implements OnInit {
             if (result.isConfirmed) {
                 this.api.DeleteList(this.ModalListId.value).subscribe((data: any) => {
                     if (data != null) {
+                        Swal.fire('Deleted!', '', 'success')
+                        this.OnSetToggleTable();
+                        this.alertSuccess();
+                    }
+                })
+            }
+        })
+    }
+    onDeleteResultFM(item) {
+        Swal.fire({
+            title: 'Do you want to Delete ?',
+            showCancelButton: true,
+            icon: 'error',
+            confirmButtonText: 'Delete',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.api.deleteResultFM(new HttpParams().set('id', item._id)).subscribe((res: any) => {
+                    if (res.data != null) {
                         Swal.fire('Deleted!', '', 'success')
                         this.OnSetToggleTable();
                         this.alertSuccess();
@@ -895,6 +975,7 @@ export class MasterlistsComponent implements OnInit {
             element.name == this.ModalExcelMaster.value ? this.ModalExcelMasterId = element._id : false
         });
         this.DataTempDownload = this.DataExcelList.filter(item => item.nameMaster == this.ModalExcelMaster.value)
+
         // this.DataTempDownload = this.DataExcelList.filter(item => item.nameMaster == this.ModelNumberMasterFix)
         // console.log("this.DataTempDownload", this.DataTempDownload);
 
@@ -920,6 +1001,8 @@ export class MasterlistsComponent implements OnInit {
                 this.setDataExportExcelForDefect();
             } else if (this.ModalExcelMaster.value == this.OccurMasterFix) {
                 this.setDataExportExcelForOccur();
+            } else if (this.ModalExcelMaster.value == 'Result FM Master') {
+                this.setDataExportExcelForResultFM();
             }
 
 
@@ -1037,6 +1120,25 @@ export class MasterlistsComponent implements OnInit {
     }
 
 
+    setDataExportExcelForResultFM() {
+        let tempData = {
+            item: ' ( FILL COLUM )',
+            type: ' ( FILL DST, AMT )'
+        }
+        this.jsonToExcelData.push(tempData)
+        const workSheet = XLSX.utils.json_to_sheet(this.jsonToExcelData);
+        // const workSheet = XLSX.utils.json_to_sheet(this.DataExcelDefect);
+        const workBook = {
+            Sheets: {
+                'data': workSheet
+            },
+            SheetNames: ['data']
+        };
+        const fileName = this.ModalExcelMaster.value + '.xlsx';
+        XLSX.writeFile(workBook, fileName);
+    }
+
+
 
 
     UploadExcel(evt: any) {
@@ -1068,6 +1170,8 @@ export class MasterlistsComponent implements OnInit {
                             this.insertExcelDefect();
                         } else if (this.ModalExcelMaster.value == this.OccurMasterFix) {
                             this.insertExcelOccur();
+                        } else if (this.ModalExcelMaster.value == 'Result FM Master') {
+                            this.insertExcelResultFM();
                         }
 
 
@@ -1108,6 +1212,15 @@ export class MasterlistsComponent implements OnInit {
     insertExcelOccur() {
         this.api.PostOccur(this.ExcelDataJson).subscribe((data: any) => {
             if (data.length > 0) {
+                this.alertSuccess();
+            } else {
+                this.alertError();
+            }
+        })
+    }
+    insertExcelResultFM() {
+        this.api.importResultFM(this.ExcelDataJson).subscribe((res: any) => {
+            if (res?.statusCode == 200) {
                 this.alertSuccess();
             } else {
                 this.alertError();
@@ -1182,6 +1295,8 @@ export class MasterlistsComponent implements OnInit {
         let result: any = this.paginate(arr, DataNum, this.PageNow)
         this.ResultFilter = result
 
+
+
         // console.log(result);
     }
     sort(arr, pageNow, dataNum,) {
@@ -1228,6 +1343,28 @@ export class MasterlistsComponent implements OnInit {
         }
     }
 
+    ModalResultFM(content, item) {
+        this.ResultFM.get('_id').setValue(item._id)
+        this.ResultFM.get('item').setValue(item.item)
+        this.md.open(content, { size: 'lg' });
+    }
+    onEditResultFM() {
+        const ans = confirm("Update ?")
+        if (ans == true) {
+            const tempData = {
+                item: this.ResultFM.get('item').value,
+                type: this.resultMasterFMSelect
+            }
+            // console.log(tempData);
+            this.api.updateResultFM(new HttpParams().set('id', this.ResultFM.get('_id').value), tempData).subscribe((res) => {
+                if (res.data) {
+                    this.OnSetToggleTable();
+                    this.alertSuccess();
+                    this.ResultFM.reset();
+                }
+            })
+        }
+    }
     // onFilter() {
     //     let temp = this.ResultFilter
     //     if (this.WordFilter.valid) {

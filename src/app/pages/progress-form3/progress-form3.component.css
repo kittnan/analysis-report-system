@@ -7,6 +7,11 @@
     z-index: 999;
     width: 100%;
 }
+.show-select-2 {
+    position: absolute;
+    z-index: 999;
+    width: 91%;
+}
 
 .comment-text {
     color: red;

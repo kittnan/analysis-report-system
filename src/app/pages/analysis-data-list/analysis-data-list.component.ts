@@ -1,12 +1,12 @@
-import { interval, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import Swal, { SweetAlertResult } from 'sweetalert2'
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
-import { ColDef, GridApi, GridReadyEvent, RowNode, ValueGetterParams } from 'ag-grid-community';
-import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
+import { ColDef, GridApi, GridReadyEvent, RowNode } from 'ag-grid-community';
+import { HttpService } from 'app/service/http.service';
+import * as ExcelJS from 'exceljs';
+import * as FileSaver from 'file-saver';
+import { interval, Subscription } from 'rxjs';
+import Swal, { SweetAlertResult } from 'sweetalert2';
 
 
 @Component({
@@ -464,6 +464,8 @@ export class AnalysisDataListComponent implements OnInit {
           this.rowData = tempMap.filter(d => !(d.requestNumber.toLowerCase()).includes('amt'))
         } else {
           this.rowData = tempMap
+
+
         }
         this.setSessionConditionFilter()
       }
@@ -554,44 +556,14 @@ export class AnalysisDataListComponent implements OnInit {
     return new Promise(resolve => {
       // console.log(merges);
       const result_map = merges.map(merge => {
+
+
         // console.log(merge);
         let ratio: any = Number(merge.ngRatio).toFixed(2)
 
-        // const map = {
-        //   Status: merge.statusShow,
-        //   Reg_No: merge.requestNumber,
-        //   Model: merge.ktcModelNumber,
-        //   Project_Name: `${merge.size} / ${merge.customer}`,
-        //   Defect_Name: merge.defectiveName,
-        //   Lot_Number: merge.pcLotNumber,
-        //   Input_Qty: Number(merge.inputQuantity),
-        //   NG_Qty: Number(merge.ngQuantity),
-        //   NG_Ratio: Number(ratio),
-        //   Sent_NG_Analysis: Number(merge.sendNgAnalysis),
-        //   Production_Phase: merge.productionPhase,
-        //   Defect_Category: merge.defectCatagory,
-        //   Claim_No: merge.claimNo,
-        //   Abnormal_Lot_Level: merge.abnormalLotLevel,
-        //   Occur_Place: `${merge.occurBName}, ${merge.occurB}`,
-        //   Issuer: merge.issuer,
-        //   Req_From: merge.requestFormSectionName,
-        //   Cause_Of_Defect: merge.causeOfDefect,
-        //   Analysis_Result: merge.result,
-        //   Can_Analysis: merge.canAnalysis,
-        //   Source_Of_Defect: merge.sourceOfDefect,
-        //   Category_Cause: merge.defectCatagory,
-        //   Analysis_Level: merge.analysisLevel,
-        //   Issue_Date: new Date(merge.issuedDate).toLocaleDateString("en-US"),
-        //   Reply_Date: new Date(merge.replyDate).toLocaleDateString("en-US"),
-        //   Start_Analyze_Date: merge.startAnalyzeDate ? new Date(merge.startAnalyzeDate).toLocaleDateString("en-US") : "",
-        //   Finish_Analysis_Date: merge.finishAnalyzeDate ? new Date(merge.finishAnalyzeDate).toLocaleDateString("en-US") : "",
-        //   Finish_Analysis_Report_Date: merge.finishReportDate ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : "",
-        //   Total_Analysis_Date: merge.diffReport,
-        //   Technician_PIC: merge.userApprove2Name,
-        //   Engineer_PIC: merge.userApprove3Name,
-        //   User_Now: merge.userApproveName,
-        //   FormId: merge.FormId
-        // }
+        if (merge.requestItem.includes('_FM') && merge.result2) {
+          merge.result = merge.result2.map((r: any) => `${r.item} : ${r.qty}`).join(',\n')
+        }
 
         merge['projectName'] = `${merge.size} / ${merge.customer}`
         merge.inputQuantity = Number(merge.inputQuantity)
@@ -776,6 +748,8 @@ export class AnalysisDataListComponent implements OnInit {
         const filtered: any = await this.eachNode()
         // console.log('filtered', filtered);
         const result_build_data = await this.setDataBeforeExcel(filtered)
+
+
         await this.onLoadingExcel(result_build_data)
 
       } else {
@@ -816,77 +790,204 @@ export class AnalysisDataListComponent implements OnInit {
   setDataBeforeExcel(datas: any) {
 
     return new Promise(async resolve => {
-      const temp = datas.map((data: any) => {
-        const newData = {
-          Register_No: data.requestNumber,
-          KTC_Model_Number: data.ktcModelNumber,
-          Treatment: data.treatment,
-          Project_Name: (data.size) + "/" + (data.customer),
-          Defect_Name: data.defectiveName,
-          Lot_Number: data.pcLotNumber,
-          Input_Quantity: data.inputQuantity,
-          NG_Quantity: data.ngQuantity,
-          // NG_Ratio: data.ngRatio? data.ngRatio + '%': '',
-          NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
-          RelatedToESD: data.relatedToESD,
-          Sent_NG_To_Analysis: data.sendNgAnalysis,
-          Defect_Category: data.defectCatagory,
-          Abnormal_Lot_Level: data.abnormalLotLevel,
-          Occur_Place: data.occurBName,
-          Issuer: data.issuer,
-          Production_Phase: data.productionPhase,
-          Request_From_Department: data.requestFormSectionName,
-          Source_Of_Defect: data.sourceOfDefect,
-          CauseOfDefect: data.causeOfDefect,
-          Analysis_Result: data.result,
-          Can_Analysis: data.canAnalysis,
-          Analysis_Level: data.analysisLevel,
-          Category_Cause: data.defectCatagory,
-          JudgementDefect: data.JudgementDefect,
-          Claim_No: data.claimNo,
-          TBN: data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal',
-          Issue_Date: data.issuedDate,
-          Reply_Date: data.replyDate,
-          Start_Analysis_Date: data.startAnalyzeDate,
-          Finish_Analysis_Date: data.finishAnalyzeDate,
-          Finish_Analysis_Report_Date: data.finishReportDate,
-          Total_Analysis_Date: data.diffReport,
-          On_Time_Result: data.onTimeResult,
-          On_Time_Report: data.onTimeReport,
-          Technical_PIC: data.userApprove2Name,
-          Engineer_PIC: data.userApprove3Name,
-          Responsible_Person: data.userApproveName,
-          Status: data.statusShow,
+      const temp: any[] = [];
 
+      datas.forEach((data: any) => {
+
+        if (data.requestItem.includes('_FM') && data.result2?.length > 0) {
+          // สร้าง row แยกสำหรับแต่ละ item ใน result2
+          data.result2.forEach((item: any) => {
+            const newData = {
+              Register_No: data.requestNumber,
+              KTC_Model_Number: data.ktcModelNumber,
+              Treatment: data.treatment,
+              Project_Name: (data.size) + "/" + (data.customer),
+              Defect_Name: data.defectiveName,
+              Lot_Number: data.pcLotNumber,
+              Input_Quantity: data.inputQuantity,
+              NG_Quantity: data.ngQuantity,
+              NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
+              RelatedToESD: data.relatedToESD,
+              Sent_NG_To_Analysis: data.sendNgAnalysis,
+              Defect_Category: data.defectCatagory,
+              Abnormal_Lot_Level: data.abnormalLotLevel,
+              Occur_Place: data.occurBName,
+              Issuer: data.issuer,
+              Production_Phase: data.productionPhase,
+              Request_From_Department: data.requestFormSectionName,
+              Source_Of_Defect: data.sourceOfDefect,
+              CauseOfDefect: data.causeOfDefect,
+              Analysis_Result: item.item, // ข้อมูลเฉพาะของแต่ละ item
+              FM_Qty: item.qty, // ข้อมูลเฉพาะของแต่ละ item
+              Can_Analysis: data.canAnalysis,
+              Analysis_Level: data.analysisLevel,
+              Category_Cause: data.defectCatagory,
+              JudgementDefect: data.JudgementDefect,
+              Claim_No: data.claimNo,
+              TBN: data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal',
+              Issue_Date: data.issuedDate,
+              Reply_Date: data.replyDate,
+              Start_Analysis_Date: data.startAnalyzeDate,
+              Finish_Analysis_Date: data.finishAnalyzeDate,
+              Finish_Analysis_Report_Date: data.finishReportDate,
+              Total_Analysis_Date: data.diffReport,
+              On_Time_Result: data.onTimeResult,
+              On_Time_Report: data.onTimeReport,
+              Technical_PIC: data.userApprove2Name,
+              Engineer_PIC: data.userApprove3Name,
+              Responsible_Person: data.userApproveName,
+              Status: data.statusShow,
+            };
+            temp.push(newData);
+          });
+        } else {
+          const newData = {
+            Register_No: data.requestNumber,
+            KTC_Model_Number: data.ktcModelNumber,
+            Treatment: data.treatment,
+            Project_Name: (data.size) + "/" + (data.customer),
+            Defect_Name: data.defectiveName,
+            Lot_Number: data.pcLotNumber,
+            Input_Quantity: data.inputQuantity,
+            NG_Quantity: data.ngQuantity,
+            NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
+            RelatedToESD: data.relatedToESD,
+            Sent_NG_To_Analysis: data.sendNgAnalysis,
+            Defect_Category: data.defectCatagory,
+            Abnormal_Lot_Level: data.abnormalLotLevel,
+            Occur_Place: data.occurBName,
+            Issuer: data.issuer,
+            Production_Phase: data.productionPhase,
+            Request_From_Department: data.requestFormSectionName,
+            Source_Of_Defect: data.sourceOfDefect,
+            CauseOfDefect: data.causeOfDefect,
+            Analysis_Result: data.result,
+            Can_Analysis: data.canAnalysis,
+            Analysis_Level: data.analysisLevel,
+            Category_Cause: data.defectCatagory,
+            JudgementDefect: data.JudgementDefect,
+            Claim_No: data.claimNo,
+            TBN: data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal',
+            Issue_Date: data.issuedDate,
+            Reply_Date: data.replyDate,
+            Start_Analysis_Date: data.startAnalyzeDate,
+            Finish_Analysis_Date: data.finishAnalyzeDate,
+            Finish_Analysis_Report_Date: data.finishReportDate,
+            Total_Analysis_Date: data.diffReport,
+            On_Time_Result: data.onTimeResult,
+            On_Time_Report: data.onTimeReport,
+            Technical_PIC: data.userApprove2Name,
+            Engineer_PIC: data.userApprove3Name,
+            Responsible_Person: data.userApproveName,
+            Status: data.statusShow,
+          };
+          temp.push(newData);
         }
-        return newData
-      })
-      resolve(temp)
 
+        resolve(temp)
+
+      })
     })
   }
 
   onLoadingExcel(datas: any) {
     return new Promise(async resolve => {
-      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datas);
-      const workbook: XLSX.WorkBook = {
-        Sheets: { Sheet1: worksheet },
-        SheetNames: ['Sheet1'],
-      };
+      // สร้าง workbook ใหม่ด้วย ExcelJS
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet1');
 
-      const excelBuffer: any = XLSX.write(workbook, {
-        bookType: 'xlsx',
-        type: 'array',
+      // กำหนดลำดับ header columns ที่ต้องการ
+      const headerOrder = [
+        'Register_No',
+        'Status',
+        'Treatment',
+        'KTC_Model_Number',
+        'Project_Name',
+        'Defect_Name',
+        'Lot_Number',
+        'Input_Quantity',
+        'NG_Quantity',
+        'NG_Ratio',
+        'RelatedToESD',
+        'Sent_NG_To_Analysis',
+        'Production_Phase',
+        'Defect_Category',
+        'Abnormal_Lot_Level',
+        'Occur_Place',
+        'Issuer',
+        'Request_From_Department',
+        'Source_Of_Defect',
+        'CauseOfDefect',
+        'Analysis_Result',
+        'FM_Qty',
+        'Can_Analysis',
+        'Analysis_Level',
+        'Category_Cause',
+        'JudgementDefect',
+        'Claim_No',
+        'TBN',
+        'Issue_Date',
+        'Reply_Date',
+        'Start_Analysis_Date',
+        'Finish_Analysis_Date',
+        'Finish_Analysis_Report_Date',
+        'Total_Analysis_Date',
+        'On_Time_Result',
+        'On_Time_Report',
+        'Technical_PIC',
+        'Engineer_PIC',
+        'Responsible_Person'
+      ];
+
+      // เพิ่ม header row
+      worksheet.addRow(headerOrder);
+
+      // เพิ่มข้อมูลแต่ละ row
+      datas.forEach((data: any) => {
+        const rowData = headerOrder.map(header => data[header] || '');
+        worksheet.addRow(rowData);
       });
 
-      const data: Blob = new Blob([excelBuffer], { type: 'EXCEL_TYPE' });
-      const date = new Date();
+      // ตั้งค่า column width และ wrap text
+      const analysisResultColIndex = headerOrder.indexOf('Analysis_Result') + 1; // +1 เพราะ ExcelJS เริ่มนับจาก 1
+      const fmQtyColIndex = headerOrder.indexOf('FM_Qty') + 1;
+
+      // ตั้งค่า width สำหรับทุก column
+      headerOrder.forEach((header, index) => {
+        const column = worksheet.getColumn(index + 1);
+        if (header === 'Analysis_Result') {
+          column.width = 50;
+        } else if (header === 'FM_Qty') {
+          column.width = 30;
+        } else {
+          column.width = 20;
+        }
+      });
+
+      // ตั้งค่า wrap text สำหรับ columns ที่มีข้อมูลหลายบรรทัด
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) { // ข้าม header row
+          // Analysis_Result cell
+          if (analysisResultColIndex > 0) {
+            const cell = row.getCell(analysisResultColIndex);
+            cell.alignment = { wrapText: true, vertical: 'top' };
+          }
+          // FM_Qty cell
+          if (fmQtyColIndex > 0) {
+            const cell = row.getCell(fmQtyColIndex);
+            cell.alignment = { wrapText: true, vertical: 'top' };
+          }
+        }
+      });
+
+      // สร้างไฟล์ Excel
+      const buffer = await workbook.xlsx.writeBuffer();
+      const data = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
       const ModalName = await this.setModelName()
-      // const fileName = 'example.xlsx';
       let fileName = ''
       const dateStart = this.DateStart.valid ? this.DateStart.value : "Previous"
       const dateEnd = this.DateEnd.valid ? this.DateEnd.value : "Now"
-      // console.log(this.Month.value);
 
       if (this.Month.valid) {
         fileName = `${ModalName}_${this.Month.value}.xlsx`;

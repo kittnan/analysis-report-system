@@ -1,4 +1,5 @@
-<div class="col-12" style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+<div class="col-12"
+    style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
 
 
     <div class="row">
@@ -11,7 +12,8 @@
                             <div class="form-group">
                                 <label for="">Master Name</label>
                                 <div class="input-group mb-3">
-                                    <select class="custom-select" [formControl]="SelectMaster" (change)="OnSetToggleSelect()">
+                                    <select class="custom-select" [formControl]="SelectMaster"
+                                        (change)="OnSetToggleSelect()">
                                         <option *ngFor="let i  of Master" [value]="i.name">{{i.name}}
                                         </option>
                                     </select>
@@ -23,7 +25,8 @@
                             <div class="form-group">
                                 <label for="">Sort</label>
                                 <div class="input-group mb-3">
-                                    <select disabled class="custom-select " (change)="onChangeDataNum()" [formControl]="DataNum">
+                                    <select disabled class="custom-select " (change)="onChangeDataNum()"
+                                        [formControl]="DataNum">
                                         <option *ngFor="let item of NumList" [value]="item">{{item}}</option>
                                     </select>
                                 </div>
@@ -160,9 +163,11 @@
                             <td>{{item.name}}
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditList(EditList,item)" style="cursor: pointer;"><i
+                                <button class="btn btn-sm btn-outline-warning mr-2"
+                                    (click)="ModalEditList(EditList,item)" style="cursor: pointer;"><i
                                         class="bi bi-gear" style="font-size: 1rem;"></i></button>
-                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteList(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteList(item)"
+                                    style="cursor: pointer;"><i class="bi bi-trash"
                                         style="font-size: 1rem;"></i></button>
                             </td>
 
@@ -199,9 +204,11 @@
                             <td>{{item.size}}</td>
                             <td>{{item.customer}}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditModelNumber(EditModelNumber,item)" style="cursor: pointer;"><i
+                                <button class="btn btn-sm btn-outline-warning mr-2"
+                                    (click)="ModalEditModelNumber(EditModelNumber,item)" style="cursor: pointer;"><i
                                         class="bi bi-gear" style="font-size: 1rem;"></i></button>
-                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteList(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteList(item)"
+                                    style="cursor: pointer;"><i class="bi bi-trash"
                                         style="font-size: 1rem;"></i></button>
                             </td>
 
@@ -234,9 +241,11 @@
                             <td>{{item.defectName}}</td>
                             <td>{{item.defectCode}}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditDefect(EditDefect,item)" style="cursor: pointer;"><i
+                                <button class="btn btn-sm btn-outline-warning mr-2"
+                                    (click)="ModalEditDefect(EditDefect,item)" style="cursor: pointer;"><i
                                         class="bi bi-gear" style="font-size: 1rem;"></i></button>
-                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteDefect(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteDefect(item)"
+                                    style="cursor: pointer;"><i class="bi bi-trash"
                                         style="font-size: 1rem;"></i></button>
                             </td>
 
@@ -270,7 +279,8 @@
                             <td>{{item.nameOccurA}}</td>
                             <td>{{item.name}}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditOccur(EditOccur,item)"><i class="bi bi-gear"
+                                <button class="btn btn-sm btn-outline-warning mr-2"
+                                    (click)="ModalEditOccur(EditOccur,item)"><i class="bi bi-gear"
                                         style="font-size: 1rem;"></i></button>
                                 <button class="btn btn-sm btn-outline-danger mr-2" (click)="onDeleteOccur(item)"><i
                                         class="bi bi-trash" style="font-size: 1rem;"></i></button>
@@ -305,9 +315,59 @@
                             <td>{{item.name}}
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-warning mr-2" (click)="ModalEditCause(EditCause,item)" style="cursor: pointer;"><i
+                                <button class="btn btn-sm btn-outline-warning mr-2"
+                                    (click)="ModalEditCause(EditCause,item)" style="cursor: pointer;"><i
                                         class="bi bi-gear" style="font-size: 1rem;"></i></button>
-                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteCause(item)" style="cursor: pointer;"><i class="bi bi-trash"
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteCause(item)"
+                                    style="cursor: pointer;"><i class="bi bi-trash"
+                                        style="font-size: 1rem;"></i></button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ? RESULT FM MASTER  table  -->
+    <div class="row" *ngIf="ToggleResultFMTable">
+        <div class="col-lg-12">
+            <select class="custom-select" style="width: 150px;" [(ngModel)]="resultMasterFMSelect"
+                (change)="GetResultFMMaster()">
+                <option [value]="'DST'">
+                    DST
+                </option>
+                <option [value]="'AMT'">
+                    AMT
+                </option>
+            </select>
+        </div>
+        <div class="col-lg-12">
+            <div class="tableFixHead">
+                <table class="table text-center table-striped" *ngIf="ResultFilter">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="5%" scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th width="20%" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item  of ResultFilter; let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{item.item}}
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning mr-2"
+                                    (click)="ModalResultFM(EditResultFM,item)" style="cursor: pointer;"><i
+                                        class="bi bi-gear" style="font-size: 1rem;"></i></button>
+                                <button class="btn btn-sm btn-outline-danger mr-0" (click)="onDeleteResultFM(item)"
+                                    style="cursor: pointer;"><i class="bi bi-trash"
                                         style="font-size: 1rem;"></i></button>
                             </td>
 
@@ -433,23 +493,44 @@
             </div>
             <!-- ? CategoryCauseToggle -->
 
+            <!-- ? Result FM -->
+            <div class="form-group" *ngIf="ToggleResultFM" [formGroup]="ResultFM">
+                <label for="">Item</label>
+                <input class="form-control" type="text" formControlName="item">
+                <label for="">Type</label>
+                <select class="custom-select" formControlName="type">
+                    <option [value]="'DST'">DST</option>
+                    <option [value]="'AMT'">AMT</option>
+                </select>
+            </div>
+            <!-- ? Result FM -->
 
 
         </div>
         <div class="modal-footer">
-            <button *ngIf="ToggleModelNumber" [disabled]="ModelNumbers.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+            {{ToggleNormal}} / {{ToggleResultFM}}
+            <button *ngIf="ToggleModelNumber" [disabled]="ModelNumbers.invalid" type="button" class="btn btn-success"
+                (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
                     style="font-size: 1rem;"></i>
                 ADD</button>
-            <button *ngIf="ToggleNormal" [disabled]="Normals.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+            <button *ngIf="ToggleNormal" [disabled]="Normals.invalid" type="button" class="btn btn-success"
+                (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
                     style="font-size: 1rem;"></i>
                 ADD</button>
-            <button *ngIf="ToggleDefect" [disabled]="Defects.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+            <button *ngIf="ToggleDefect" [disabled]="Defects.invalid" type="button" class="btn btn-success"
+                (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
                     style="font-size: 1rem;"></i>
                 ADD</button>
-            <button *ngIf="ToggleCause" [disabled]="Causes.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+            <button *ngIf="ToggleCause" [disabled]="Causes.invalid" type="button" class="btn btn-success"
+                (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
                     style="font-size: 1rem;"></i>
                 ADD</button>
-            <button *ngIf="ToggleOccur" [disabled]="Occurs.invalid" type="button" class="btn btn-success" (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+            <button *ngIf="ToggleOccur" [disabled]="Occurs.invalid" type="button" class="btn btn-success"
+                (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
+                    style="font-size: 1rem;"></i>
+                ADD</button>
+            <button *ngIf="ToggleResultFM" [disabled]="ResultFM.invalid" type="button" class="btn btn-success"
+                (click)="modal.close('Close click'); ModalAddList() "><i class="bi bi-plus"
                     style="font-size: 1rem;"></i>
                 ADD</button>
 
@@ -461,7 +542,8 @@
     <ng-template #EditList let-modal>
         <div class="modal-header">
             <h4 class="modal-title">Edit</h4>
-            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');  ClearValue()">
+            <button type="button" class="close" aria-label="Close"
+                (click)="modal.dismiss('Cross click');  ClearValue()">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -469,11 +551,13 @@
 
             <div class="form-group">
                 <label for="">Name</label>
-                <input type="text" class="form-control" [formControl]="ModalListName" (keyup.enter)="modal.close('Close click'); onEditList();">
+                <input type="text" class="form-control" [formControl]="ModalListName"
+                    (keyup.enter)="modal.close('Close click'); onEditList();">
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-warning" [disabled]="!ModalListName.touched" (click)="modal.close('Close click'); onEditList();"><i class="bi bi-check" style="font-size: 1rem;"></i>
+            <button type="button" class="btn btn-warning" [disabled]="!ModalListName.touched"
+                (click)="modal.close('Close click'); onEditList();"><i class="bi bi-check" style="font-size: 1rem;"></i>
                 EDIT</button>
         </div>
     </ng-template>
@@ -483,7 +567,8 @@
     <ng-template #EditModelNumber let-modal>
         <div class="modal-header">
             <h4 class="modal-title">Edit</h4>
-            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');  ClearValue()">
+            <button type="button" class="close" aria-label="Close"
+                (click)="modal.dismiss('Cross click');  ClearValue()">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -511,7 +596,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-warning" [disabled]="!Modal_ModelNumbers.touched" (click)="modal.close('Close click'); onEditModelNumber();"><i class="bi bi-check"
+            <button type="button" class="btn btn-warning" [disabled]="!Modal_ModelNumbers.touched"
+                (click)="modal.close('Close click'); onEditModelNumber();"><i class="bi bi-check"
                     style="font-size: 1rem;"></i>
                 EDIT</button>
         </div>
@@ -523,7 +609,8 @@
     <ng-template #EditDefect let-modal>
         <div class="modal-header">
             <h4 class="modal-title">Edit</h4>
-            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ClearValue();">
+            <button type="button" class="close" aria-label="Close"
+                (click)="modal.dismiss('Cross click'); ClearValue();">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -558,7 +645,8 @@
 
         </div>
         <div class="modal-footer">
-            <button type="button" [disabled]="!Modal_CBModel.touched && !Modal_Defects.touched" class="btn btn-warning" (click)="modal.close('Close click'); onEditDefect();"><i class="bi bi-check"
+            <button type="button" [disabled]="!Modal_CBModel.touched && !Modal_Defects.touched" class="btn btn-warning"
+                (click)="modal.close('Close click'); onEditDefect();"><i class="bi bi-check"
                     style="font-size: 1rem;"></i> EDIT</button>
         </div>
     </ng-template>
@@ -590,7 +678,8 @@
 
         </div>
         <div class="modal-footer">
-            <button type="button" [disabled]="!Modal_Occurs.touched" class="btn btn-warning" (click)="modal.close('Close click'); onEditOccur();"><i class="bi bi-check"
+            <button type="button" [disabled]="!Modal_Occurs.touched" class="btn btn-warning"
+                (click)="modal.close('Close click'); onEditOccur();"><i class="bi bi-check"
                     style="font-size: 1rem;"></i>
                 EDIT</button>
         </div>
@@ -619,14 +708,41 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" [disabled]="!Modal_Causes.touched" class="btn btn-warning" (click)="modal.close('Close click'); onEditCause();"><i class="bi bi-check"
+                <button type="button" [disabled]="!Modal_Causes.touched" class="btn btn-warning"
+                    (click)="modal.close('Close click'); onEditCause();"><i class="bi bi-check"
                         style="font-size: 1rem;"></i>
                     EDIT</button>
             </div>
         </div>
     </ng-template>
 
-    <!-- ?                                                    Edit Cause -->
+    <!-- ?            
+                                             Edit Cause -->
+    <!-- ?                                                    Edit ResultFM -->
+    <ng-template #EditResultFM let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Edit Result FM {{resultMasterFMSelect}}</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="">Item </label>
+                <input type="text" class="form-control" [formControl]="resultFMEdit">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" [disabled]="!resultFMEdit.touched" class="btn btn-warning"
+                    (click)="modal.close('Close click'); onEditResultFM();"><i class="bi bi-check"
+                        style="font-size: 1rem;"></i>
+                    EDIT</button>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- ?                                                    Edit ResultFM -->
 
 
     <!-- ?                                                    Excel -->
@@ -645,7 +761,8 @@
                         <div class="col-lg-8">
                             <div class="form-group">
                                 <label for="">Master</label>
-                                <select [formControl]="ModalExcelMaster" class="custom-select" (change)="onSelectModalExcelMaster()">
+                                <select [formControl]="ModalExcelMaster" class="custom-select"
+                                    (change)="onSelectModalExcelMaster()">
                                     <option [value]="item.name" *ngFor="let item of Master; let i=index">
                                         {{item.name}}
                                     </option>
@@ -659,7 +776,8 @@
                                         class="bi bi-box-arrow-in-down" style="font-size: 1.5em;"></i> Import</button>
                                 <button class="btn btn-info" (click)="downloadExcel();"><i class="bi bi-box-arrow-in-up"
                                         style="font-size: 1.5em;"></i> Export</button>
-                                <input type="file" #excelImport style="display: none;" accept=".xlsx" (change)="UploadExcel($event)">
+                                <input type="file" #excelImport style="display: none;" accept=".xlsx"
+                                    (change)="UploadExcel($event)">
                             </div>
                         </div>
                     </div>

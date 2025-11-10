@@ -375,11 +375,62 @@
 
       </div>
 
-      <div class="row">
-        <div class="col-12 mt-5">
+      <div *ngIf="isFM()" class="row">
+        <div class="col-12 mt-2">
           <div class="form-group">
+            <label [ngClass]="{'text-danger': Result2.invalid}" class="head-label">Analysis Result
+              <i *ngIf="Result2.invalid" class="bi bi-x-square-fill"></i>
+            </label>
+            <div class="row">
+              <ng-container *ngFor="let control of Result2.controls; let i=index" [formGroup]="control">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-1 content-center text-right">
+                      {{i+1}}.
+                    </div>
+                    <div class="col-5">
+                      <input type="search" formControlName="item" (click)="ToggleResultFMFilter(control);"
+                        class="form-control subtext-color">
+                      <div class="show-select-2">
+                        <select *ngIf="getDropdown(control)" class="custom-select subtext-color" size="5"
+                          formControlName="tempItem" (change)="ToggleResultFMFilter(control); SetResultFM(control);">
+                          <option [value]="null"></option>
+                          <option *ngFor="let result of getResultFMFilter(control);" [value]="result.item"
+                            [title]="result.item">{{result.item}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <input type="number" class="form-control subtext-color" formControlName="qty" min="0">
+                    </div>
+                    <div class="col-2">
+                      <button type="button" class="btn btn-sm btn-danger" (click)="removeResultFM(i)"
+                        [disabled]="Result2.controls.length <= 1">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
 
-            <label class="head-label" [ngClass]="{'text-danger': Result.invalid}">Analysis Result
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-12 text-center">
+                    <button class="btn btn-primary btn-sm" type="button" (click)="newResultFM();">
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isFM()" class="row">
+        <div class="col-12 mt-2">
+          <div class="form-group">
+            <label [ngClass]="{'text-danger': Result.invalid}" class="head-label">Analysis Result
               <i *ngIf="Result.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <textarea class="form-control subtext-color" formControlName="Result" cols="30" rows="10"
@@ -451,7 +502,7 @@
               <select class="custom-select subtext-color" formControlName="JudgementDefect">
                 <option [value]="null"></option>
                 <option *ngFor="let item of JudgementDefects;" [value]="item.name">{{item.name}}
-                <!-- <option  value="1">Latent</option> -->
+                  <!-- <option  value="1">Latent</option> -->
               </select>
             </div>
           </div>
