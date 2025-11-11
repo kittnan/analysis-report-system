@@ -62,15 +62,17 @@ export class ViewFormComponent implements OnInit {
 
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
-    this.CheckStatusUser();    
+    this.CheckStatusUser();
     if (
       this.isAEUser() ||
       this.form.status == 6
     ) {
       this.result.result = this.result.result
+      this.result.result2 = this.result.result2
       this.result.causeOfDefect = this.result.causeOfDefect
-    }else{
+    } else {
       this.result.result = ''
+      this.result.result2 = []
       this.result.causeOfDefect = ''
     }
 
@@ -439,7 +441,11 @@ export class ViewFormComponent implements OnInit {
 
   }
 
-
+  isFM() {
+    if (this.form?.requestItem)
+      return (this.form.requestItem).includes('FM')
+    return false
+  }
 
 
 

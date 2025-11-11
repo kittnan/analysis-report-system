@@ -358,7 +358,32 @@
 
       </div>
 
-      <div class="row">
+      <div *ngIf="isFM()" class="row">
+        <div class="col-12 mt-2">
+          <div class="form-group">
+            <label class="head-label">Analysis Result </label>
+            <div class="row">
+              <ng-container *ngFor="let result2 of result.result2; let i=index">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-1 content-center text-right">
+                      {{i+1}}.
+                    </div>
+                    <div class="col-5">
+                      <p class="subtext-color">{{result2.item}}</p>
+                    </div>
+                    <div class=" col-4">
+                      <p class="subtext-color">{{result2.qty}}</p>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!isFM()" class="row">
         <div class="col-lg-12">
           <div class="form-group">
             <label class="head-label">Analysis Result</label>
@@ -407,6 +432,51 @@
           <div class="form-group">
             <label class="head-label">Remark</label>
             <p class="subtext-color" *ngIf="result">{{result.Remark}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="row">
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label class="head-label">Operator Name </label>
+                <div class="input-group mb-3 ">
+                  <p class="subtext-color">{{result.operatorName}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label class="head-label">Difficulty of Work</label>
+                <div class="input-group mb-3 ">
+                  <div class="input-group mb-3 ">
+                    <p class="subtext-color">{{result.difficultyOfWork}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label class="head-label">Correct of Work</label>
+                <div class="input-group mb-3 ">
+                  <div class="input-group mb-3 ">
+                    <p class="subtext-color">{{result.correctOfWork}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label class="head-label">Analysis Time</label>
+                <div class="input-group mb-3 ">
+                  <div class="input-group mb-3 ">
+                    <p class="subtext-color">{{result.analysisTime}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -312,6 +312,28 @@ export class AnalysisDataListComponent implements OnInit {
       headerTooltip: "Responsible Person"
     },
 
+
+    {
+      field: 'operatorName',
+      headerName: "Operator Name",
+      headerTooltip: "Operator Name"
+    },
+    {
+      field: 'difficultyOfWork',
+      headerName: "Difficulty of Work",
+      headerTooltip: "Difficulty of Work"
+    },
+    {
+      field: 'correctOfWork',
+      headerName: "Correct of Work",
+      headerTooltip: "Correct of Work"
+    },
+    {
+      field: 'analysisTime',
+      headerName: "Analysis Time",
+      headerTooltip: "Analysis Time"
+    },
+
   ];
 
   // ? interval
@@ -791,7 +813,7 @@ export class AnalysisDataListComponent implements OnInit {
   setDataBeforeExcel(datas: any) {
     return new Promise(async resolve => {
       const temp: any[] = [];
-      
+
       datas.forEach((data: any) => {
         if (data.requestItem.includes('_FM') && data.result2?.length > 0) {
           // สำหรับ _FM ที่มี result2 - สร้างหลาย rows
@@ -835,6 +857,10 @@ export class AnalysisDataListComponent implements OnInit {
               Technical_PIC: index === 0 ? data.userApprove2Name : '',
               Engineer_PIC: index === 0 ? data.userApprove3Name : '',
               Responsible_Person: index === 0 ? data.userApproveName : '',
+              Operator_Name: index === 0 ? data.operatorName : '',
+              Difficulty_Of_Work: index === 0 ? data.difficultyOfWork : '',
+              Correct_Of_Work: index === 0 ? data.correctOfWork : '',
+              Analysis_Time: index === 0 ? data.analysisTime : '',
               Status: index === 0 ? data.statusShow : '',
               _isFirstRow: index === 0,
               _totalRows: data.result2.length,
@@ -883,6 +909,10 @@ export class AnalysisDataListComponent implements OnInit {
             Technical_PIC: data.userApprove2Name,
             Engineer_PIC: data.userApprove3Name,
             Responsible_Person: data.userApproveName,
+            Operator_Name: data.operatorName,
+            Difficulty_Of_Work: data.difficultyOfWork,
+            Correct_Of_Work: data.correctOfWork,
+            Analysis_Time: data.analysisTime,
             Status: data.statusShow,
             _isFirstRow: true,
             _totalRows: 1,
@@ -891,7 +921,7 @@ export class AnalysisDataListComponent implements OnInit {
           temp.push(newData);
         }
       });
-      
+
       resolve(temp);
     });
   }
@@ -910,7 +940,8 @@ export class AnalysisDataListComponent implements OnInit {
         'Can_Analysis', 'Analysis_Level', 'Category_Cause', 'JudgementDefect',
         'Claim_No', 'TBN', 'Issue_Date', 'Reply_Date', 'Start_Analysis_Date',
         'Finish_Analysis_Date', 'Finish_Analysis_Report_Date', 'Total_Analysis_Date',
-        'On_Time_Result', 'On_Time_Report', 'Technical_PIC', 'Engineer_PIC', 'Responsible_Person'
+        'On_Time_Result', 'On_Time_Report', 'Technical_PIC', 'Engineer_PIC', 'Responsible_Person',
+        'Operator_Name', 'Difficulty_Of_Work', 'Correct_Of_Work', 'Analysis_Time'
       ];
 
       // เพิ่ม header row
@@ -925,10 +956,10 @@ export class AnalysisDataListComponent implements OnInit {
       // หา groups ที่ต้อง merge
       const mergeGroups: any[] = [];
       let currentRowIndex = 0;
-      
+
       while (currentRowIndex < datas.length) {
         const data = datas[currentRowIndex];
-        
+
         if (data._isFirstRow && data._totalRows > 1) {
           // นี่คือกลุ่มที่ต้อง merge
           mergeGroups.push({
