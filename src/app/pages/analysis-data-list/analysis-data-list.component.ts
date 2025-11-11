@@ -1,12 +1,13 @@
+import { interval, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ColDef, GridApi, GridReadyEvent, RowNode } from 'ag-grid-community';
-import { HttpService } from 'app/service/http.service';
-import * as ExcelJS from 'exceljs';
+import Swal, { SweetAlertResult } from 'sweetalert2'
 import * as FileSaver from 'file-saver';
-import { interval, Subscription } from 'rxjs';
-import Swal, { SweetAlertResult } from 'sweetalert2';
+import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
+import { ColDef, GridApi, GridReadyEvent, RowNode, ValueGetterParams } from 'ag-grid-community';
+import { HttpService } from 'app/service/http.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -788,59 +789,61 @@ export class AnalysisDataListComponent implements OnInit {
 
 
   setDataBeforeExcel(datas: any) {
-
     return new Promise(async resolve => {
       const temp: any[] = [];
-
+      
       datas.forEach((data: any) => {
-
         if (data.requestItem.includes('_FM') && data.result2?.length > 0) {
-          // สร้าง row แยกสำหรับแต่ละ item ใน result2
-          data.result2.forEach((item: any) => {
+          // สำหรับ _FM ที่มี result2 - สร้างหลาย rows
+          data.result2.forEach((item: any, index: number) => {
             const newData = {
-              Register_No: data.requestNumber,
-              KTC_Model_Number: data.ktcModelNumber,
-              Treatment: data.treatment,
-              Project_Name: (data.size) + "/" + (data.customer),
-              Defect_Name: data.defectiveName,
-              Lot_Number: data.pcLotNumber,
-              Input_Quantity: data.inputQuantity,
-              NG_Quantity: data.ngQuantity,
-              NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
-              RelatedToESD: data.relatedToESD,
-              Sent_NG_To_Analysis: data.sendNgAnalysis,
-              Defect_Category: data.defectCatagory,
-              Abnormal_Lot_Level: data.abnormalLotLevel,
-              Occur_Place: data.occurBName,
-              Issuer: data.issuer,
-              Production_Phase: data.productionPhase,
-              Request_From_Department: data.requestFormSectionName,
-              Source_Of_Defect: data.sourceOfDefect,
-              CauseOfDefect: data.causeOfDefect,
-              Analysis_Result: item.item, // ข้อมูลเฉพาะของแต่ละ item
-              FM_Qty: item.qty, // ข้อมูลเฉพาะของแต่ละ item
-              Can_Analysis: data.canAnalysis,
-              Analysis_Level: data.analysisLevel,
-              Category_Cause: data.defectCatagory,
-              JudgementDefect: data.JudgementDefect,
-              Claim_No: data.claimNo,
-              TBN: data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal',
-              Issue_Date: data.issuedDate,
-              Reply_Date: data.replyDate,
-              Start_Analysis_Date: data.startAnalyzeDate,
-              Finish_Analysis_Date: data.finishAnalyzeDate,
-              Finish_Analysis_Report_Date: data.finishReportDate,
-              Total_Analysis_Date: data.diffReport,
-              On_Time_Result: data.onTimeResult,
-              On_Time_Report: data.onTimeReport,
-              Technical_PIC: data.userApprove2Name,
-              Engineer_PIC: data.userApprove3Name,
-              Responsible_Person: data.userApproveName,
-              Status: data.statusShow,
+              Register_No: index === 0 ? data.requestNumber : '', // แสดงเฉพาะ row แรก
+              KTC_Model_Number: index === 0 ? data.ktcModelNumber : '',
+              Treatment: index === 0 ? data.treatment : '',
+              Project_Name: index === 0 ? (data.size) + "/" + (data.customer) : '',
+              Defect_Name: index === 0 ? data.defectiveName : '',
+              Lot_Number: index === 0 ? data.pcLotNumber : '',
+              Input_Quantity: index === 0 ? data.inputQuantity : '',
+              NG_Quantity: index === 0 ? data.ngQuantity : '',
+              NG_Ratio: index === 0 ? (data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '') : '',
+              RelatedToESD: index === 0 ? data.relatedToESD : '',
+              Sent_NG_To_Analysis: index === 0 ? data.sendNgAnalysis : '',
+              Production_Phase: index === 0 ? data.productionPhase : '',
+              Defect_Category: index === 0 ? data.defectCatagory : '',
+              Abnormal_Lot_Level: index === 0 ? data.abnormalLotLevel : '',
+              Occur_Place: index === 0 ? data.occurBName : '',
+              Issuer: index === 0 ? data.issuer : '',
+              Request_From_Department: index === 0 ? data.requestFormSectionName : '',
+              Source_Of_Defect: index === 0 ? data.sourceOfDefect : '',
+              CauseOfDefect: index === 0 ? data.causeOfDefect : '',
+              Analysis_Result: `${index + 1}. ${item.item}`, // แต่ละ row มี item ของตัวเอง
+              FM_Qty: item.qty, // แต่ละ row มี qty ของตัวเอง
+              Can_Analysis: index === 0 ? data.canAnalysis : '',
+              Analysis_Level: index === 0 ? data.analysisLevel : '',
+              Category_Cause: index === 0 ? data.defectCatagory : '',
+              JudgementDefect: index === 0 ? data.JudgementDefect : '',
+              Claim_No: index === 0 ? data.claimNo : '',
+              TBN: index === 0 ? (data.TBN && data.TBN != 'normal' ? data.TBNNumber : 'Normal') : '',
+              Issue_Date: index === 0 ? data.issuedDate : '',
+              Reply_Date: index === 0 ? data.replyDate : '',
+              Start_Analysis_Date: index === 0 ? data.startAnalyzeDate : '',
+              Finish_Analysis_Date: index === 0 ? data.finishAnalyzeDate : '',
+              Finish_Analysis_Report_Date: index === 0 ? data.finishReportDate : '',
+              Total_Analysis_Date: index === 0 ? data.diffReport : '',
+              On_Time_Result: index === 0 ? data.onTimeResult : '',
+              On_Time_Report: index === 0 ? data.onTimeReport : '',
+              Technical_PIC: index === 0 ? data.userApprove2Name : '',
+              Engineer_PIC: index === 0 ? data.userApprove3Name : '',
+              Responsible_Person: index === 0 ? data.userApproveName : '',
+              Status: index === 0 ? data.statusShow : '',
+              _isFirstRow: index === 0,
+              _totalRows: data.result2.length,
+              _currentRow: index
             };
             temp.push(newData);
           });
         } else {
+          // สำหรับข้อมูลปกติ - สร้าง 1 row
           const newData = {
             Register_No: data.requestNumber,
             KTC_Model_Number: data.ktcModelNumber,
@@ -853,15 +856,16 @@ export class AnalysisDataListComponent implements OnInit {
             NG_Ratio: data.ngRatio ? (Number(data.ngRatio).toFixed(2) + '%') : '',
             RelatedToESD: data.relatedToESD,
             Sent_NG_To_Analysis: data.sendNgAnalysis,
+            Production_Phase: data.productionPhase,
             Defect_Category: data.defectCatagory,
             Abnormal_Lot_Level: data.abnormalLotLevel,
             Occur_Place: data.occurBName,
             Issuer: data.issuer,
-            Production_Phase: data.productionPhase,
             Request_From_Department: data.requestFormSectionName,
             Source_Of_Defect: data.sourceOfDefect,
             CauseOfDefect: data.causeOfDefect,
             Analysis_Result: data.result,
+            FM_Qty: '',
             Can_Analysis: data.canAnalysis,
             Analysis_Level: data.analysisLevel,
             Category_Cause: data.defectCatagory,
@@ -880,103 +884,121 @@ export class AnalysisDataListComponent implements OnInit {
             Engineer_PIC: data.userApprove3Name,
             Responsible_Person: data.userApproveName,
             Status: data.statusShow,
+            _isFirstRow: true,
+            _totalRows: 1,
+            _currentRow: 0
           };
           temp.push(newData);
         }
-
-        resolve(temp)
-
-      })
-    })
+      });
+      
+      resolve(temp);
+    });
   }
 
   onLoadingExcel(datas: any) {
     return new Promise(async resolve => {
-      // สร้าง workbook ใหม่ด้วย ExcelJS
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Sheet1');
 
-      // กำหนดลำดับ header columns ที่ต้องการ
       const headerOrder = [
-        'Register_No',
-        'Status',
-        'Treatment',
-        'KTC_Model_Number',
-        'Project_Name',
-        'Defect_Name',
-        'Lot_Number',
-        'Input_Quantity',
-        'NG_Quantity',
-        'NG_Ratio',
-        'RelatedToESD',
-        'Sent_NG_To_Analysis',
-        'Production_Phase',
-        'Defect_Category',
-        'Abnormal_Lot_Level',
-        'Occur_Place',
-        'Issuer',
-        'Request_From_Department',
-        'Source_Of_Defect',
-        'CauseOfDefect',
-        'Analysis_Result',
-        'FM_Qty',
-        'Can_Analysis',
-        'Analysis_Level',
-        'Category_Cause',
-        'JudgementDefect',
-        'Claim_No',
-        'TBN',
-        'Issue_Date',
-        'Reply_Date',
-        'Start_Analysis_Date',
-        'Finish_Analysis_Date',
-        'Finish_Analysis_Report_Date',
-        'Total_Analysis_Date',
-        'On_Time_Result',
-        'On_Time_Report',
-        'Technical_PIC',
-        'Engineer_PIC',
-        'Responsible_Person'
+        'Register_No', 'Status', 'Treatment', 'KTC_Model_Number', 'Project_Name',
+        'Defect_Name', 'Lot_Number', 'Input_Quantity', 'NG_Quantity', 'NG_Ratio',
+        'RelatedToESD', 'Sent_NG_To_Analysis', 'Production_Phase', 'Defect_Category',
+        'Abnormal_Lot_Level', 'Occur_Place', 'Issuer', 'Request_From_Department',
+        'Source_Of_Defect', 'CauseOfDefect', 'Analysis_Result', 'FM_Qty',
+        'Can_Analysis', 'Analysis_Level', 'Category_Cause', 'JudgementDefect',
+        'Claim_No', 'TBN', 'Issue_Date', 'Reply_Date', 'Start_Analysis_Date',
+        'Finish_Analysis_Date', 'Finish_Analysis_Report_Date', 'Total_Analysis_Date',
+        'On_Time_Result', 'On_Time_Report', 'Technical_PIC', 'Engineer_PIC', 'Responsible_Person'
       ];
 
       // เพิ่ม header row
       worksheet.addRow(headerOrder);
 
-      // เพิ่มข้อมูลแต่ละ row
+      // เพิ่มข้อมูลทั้งหมดก่อน
       datas.forEach((data: any) => {
         const rowData = headerOrder.map(header => data[header] || '');
         worksheet.addRow(rowData);
       });
 
-      // ตั้งค่า column width และ wrap text
-      const analysisResultColIndex = headerOrder.indexOf('Analysis_Result') + 1; // +1 เพราะ ExcelJS เริ่มนับจาก 1
+      // หา groups ที่ต้อง merge
+      const mergeGroups: any[] = [];
+      let currentRowIndex = 0;
+      
+      while (currentRowIndex < datas.length) {
+        const data = datas[currentRowIndex];
+        
+        if (data._isFirstRow && data._totalRows > 1) {
+          // นี่คือกลุ่มที่ต้อง merge
+          mergeGroups.push({
+            startRow: currentRowIndex + 2, // +2 เพราะ Excel เริ่มจาก 1 และมี header
+            endRow: currentRowIndex + 2 + data._totalRows - 1,
+            totalRows: data._totalRows
+          });
+          currentRowIndex += data._totalRows;
+        } else {
+          currentRowIndex++;
+        }
+      }
+
+      // ทำการ merge แต่ละกลุ่ม
+      mergeGroups.forEach(group => {
+        headerOrder.forEach((header, colIndex) => {
+          if (header !== 'Analysis_Result' && header !== 'FM_Qty') {
+            try {
+              worksheet.mergeCells(group.startRow, colIndex + 1, group.endRow, colIndex + 1);
+              console.log(`Merged column ${header} from row ${group.startRow} to ${group.endRow}`);
+            } catch (error) {
+              console.log(`Error merging cells for column ${header} (rows ${group.startRow}-${group.endRow}):`, error);
+            }
+          }
+        });
+      });
+
+      // ตั้งค่า column width
+      const analysisResultColIndex = headerOrder.indexOf('Analysis_Result') + 1;
       const fmQtyColIndex = headerOrder.indexOf('FM_Qty') + 1;
 
-      // ตั้งค่า width สำหรับทุก column
       headerOrder.forEach((header, index) => {
         const column = worksheet.getColumn(index + 1);
         if (header === 'Analysis_Result') {
           column.width = 50;
         } else if (header === 'FM_Qty') {
-          column.width = 30;
+          column.width = 20;
         } else {
           column.width = 20;
         }
       });
 
-      // ตั้งค่า wrap text สำหรับ columns ที่มีข้อมูลหลายบรรทัด
+      // ตั้งค่า cell formatting
       worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) { // ข้าม header row
+        if (rowNumber > 1) {
           // Analysis_Result cell
           if (analysisResultColIndex > 0) {
             const cell = row.getCell(analysisResultColIndex);
-            cell.alignment = { wrapText: true, vertical: 'top' };
+            cell.alignment = { wrapText: true, vertical: 'middle', horizontal: 'left' };
+            // เพิ่มเส้นใต้ที่ cell แทนที่จะเป็น text
+            cell.border = {
+              ...cell.border,
+              bottom: { style: 'thin', color: { argb: '000000' } }
+            };
           }
           // FM_Qty cell
           if (fmQtyColIndex > 0) {
             const cell = row.getCell(fmQtyColIndex);
-            cell.alignment = { wrapText: true, vertical: 'top' };
+            cell.alignment = { wrapText: true, vertical: 'middle', horizontal: 'right' };
+            // เพิ่มเส้นใต้ที่ cell แทนที่จะเป็น text
+            cell.border = {
+              ...cell.border,
+              bottom: { style: 'thin', color: { argb: '000000' } }
+            };
           }
+          // ตั้งค่า vertical alignment สำหรับ merged cells
+          row.eachCell((cell) => {
+            if (!cell.alignment) cell.alignment = {};
+            cell.alignment.vertical = 'middle';
+          });
         }
       });
 
@@ -984,10 +1006,10 @@ export class AnalysisDataListComponent implements OnInit {
       const buffer = await workbook.xlsx.writeBuffer();
       const data = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-      const ModalName = await this.setModelName()
-      let fileName = ''
-      const dateStart = this.DateStart.valid ? this.DateStart.value : "Previous"
-      const dateEnd = this.DateEnd.valid ? this.DateEnd.value : "Now"
+      const ModalName = await this.setModelName();
+      let fileName = '';
+      const dateStart = this.DateStart.valid ? this.DateStart.value : "Previous";
+      const dateEnd = this.DateEnd.valid ? this.DateEnd.value : "Now";
 
       if (this.Month.valid) {
         fileName = `${ModalName}_${this.Month.value}.xlsx`;
@@ -996,8 +1018,8 @@ export class AnalysisDataListComponent implements OnInit {
       }
 
       FileSaver.saveAs(data, fileName);
-      resolve(workbook)
-    })
+      resolve(workbook);
+    });
   }
 
   setModelName() {
