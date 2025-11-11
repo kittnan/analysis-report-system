@@ -29,7 +29,10 @@ export const environment = {
   TreatmentNG: "Treatment of NG",
   AnalysisLevel: "Analysis Level",
   JudgementDefect: "Judgement Defect",
-
+  OperatorName: "Operator Name",
+  DifficultyOfWork: "Difficulty of Work",
+  CorrectOfWork: "Correct of Work",
+  AnalysisTime: "Analysis Time",
 
   appVersion: require('../../package.json').version,
 

@@ -73,7 +73,10 @@ export class RejectForm3Component implements OnInit {
     TempCause: new FormControl(null),
     JudgementDefect: new FormControl('', Validators.required),
     Remark: new FormControl(''),
-
+    OperatorName: new FormControl(null, Validators.required),
+    DifficultyOfWork: new FormControl(null, Validators.required),
+    CorrectOfWork: new FormControl(null, Validators.required),
+    AnalysisTime: new FormControl(null, Validators.required),
   })
 
   IssueDate = new FormControl(null);
@@ -151,6 +154,11 @@ export class RejectForm3Component implements OnInit {
 
   ResultFMMasterOption: any = []
 
+  OperatorNameOption: any = []
+  DifficultyOfWorkOption: any = []
+  CorrectOfWorkOption: any = []
+  AnalysisTimeOption: any = []
+
 
   ngOnInit(): void {
     this.CheckStatusUser();
@@ -186,6 +194,12 @@ export class RejectForm3Component implements OnInit {
         this.CauseList = data.filter((i: any) => i.nameMaster == environment.Cause);
         this.TreatmentList = data.filter((i: any) => i.nameMaster == environment.TreatmentNG);
         this.JudgementDefects = data.filter((i: any) => i.nameMaster == environment.JudgementDefect)
+
+        this.OperatorNameOption = data.filter((i: any) => i.nameMaster == environment.OperatorName)
+        this.DifficultyOfWorkOption = data.filter((i: any) => i.nameMaster == environment.DifficultyOfWork)
+        this.CorrectOfWorkOption = data.filter((i: any) => i.nameMaster == environment.CorrectOfWork)
+        this.AnalysisTimeOption = data.filter((i: any) => i.nameMaster == environment.AnalysisTime)
+
       }
     })
   }
@@ -248,10 +262,11 @@ export class RejectForm3Component implements OnInit {
     let id = this.formId
     this.api.FindResultByFormIdMain(id).subscribe((data2: any) => {
       if (data2.length > 0) {
-        if (data2[0].result2) {
+        let result = data2[0];
+        if (result.result2) {
           const result2Array = this.Result2 as FormArray;
           result2Array.clear();
-          data2[0].result2.forEach((res: any) => {
+          result.result2.forEach((res: any) => {
             const formGroup = new FormGroup({
               item: new FormControl(res.item || '', Validators.required),
               qty: new FormControl(res.qty || '', Validators.required),
@@ -261,21 +276,28 @@ export class RejectForm3Component implements OnInit {
             result2Array.push(formGroup);
           });
         }
-        this.result = data2[0];
-        this.ResultId = data2[0]._id;
-        this.Result.setValue(data2[0].result);
-        this.CategoryCause.setValue(data2[0].causeOfDefect);
-        this.SourceOfDefect.setValue(data2[0].sourceOfDefect);
-        this.AnalysisLevel.setValue(data2[0].analysisLevel);
-        this.CanAnalysis.setValue(data2[0].canAnalysis);
-        this.relatedToESD.setValue(data2[0].relatedToESD);
-        this.ReportNo.setValue(data2[0].analysisReportNo);
+        this.result = result;
+        this.ResultId = result._id;
+        this.Result.setValue(result.result);
+        this.CategoryCause.setValue(result.causeOfDefect);
+        this.SourceOfDefect.setValue(result.sourceOfDefect);
+        this.AnalysisLevel.setValue(result.analysisLevel);
+        this.CanAnalysis.setValue(result.canAnalysis);
+        this.relatedToESD.setValue(result.relatedToESD);
+        this.ReportNo.setValue(result.analysisReportNo);
         this.JudgementDefect.setValue(this.form.JudgementDefect)
         this.Remark.setValue(this.form.Remark)
-        this.TreatmentOfNg.setValue(data2[0].treatMent)
-        let st = data2[0].startAnalyzeDate ? data2[0].startAnalyzeDate.split("T") : null;
-        let st2 = data2[0].finishAnalyzeDate ? data2[0].finishAnalyzeDate.split("T") : null;
-        let st3 = data2[0].finishReportDate ? data2[0].finishReportDate.split("T") : null;
+        this.TreatmentOfNg.setValue(result.treatMent)
+
+        this.OperatorName.setValue(result.operatorName);
+        this.DifficultyOfWork.setValue(result.difficultyOfWork);
+        this.CorrectOfWork.setValue(result.correctOfWork);
+        this.AnalysisTime.setValue(result.analysisTime);
+
+
+        let st = result.startAnalyzeDate ? result.startAnalyzeDate.split("T") : null;
+        let st2 = result.finishAnalyzeDate ? result.finishAnalyzeDate.split("T") : null;
+        let st3 = result.finishReportDate ? result.finishReportDate.split("T") : null;
         let temp1 = st[0];
         let temp2 = st2[0];
         let temp3 = st3[0];
@@ -489,7 +511,11 @@ export class RejectForm3Component implements OnInit {
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
         file: this.FileReportPath,
-        files: this.tempFile
+        files: this.tempFile,
+        operatorName: this.OperatorName.value || null,
+        difficultyOfWork: this.DifficultyOfWork.value || null,
+        correctOfWork: this.CorrectOfWork.value || null,
+        analysisTime: this.AnalysisTime.value || null,
       }
       this.api.UpdateResult(resultId, ResultData).subscribe((data: any) => {
         resolve(data)
@@ -525,7 +551,11 @@ export class RejectForm3Component implements OnInit {
         requestItemName: this.form.requestItem,
         treatMent: this.TreatmentOfNg.value,
         file: this.FileReportPath,
-        files: this.tempFile
+        files: this.tempFile,
+        operatorName: this.OperatorName.value || null,
+        difficultyOfWork: this.DifficultyOfWork.value || null,
+        correctOfWork: this.CorrectOfWork.value || null,
+        analysisTime: this.AnalysisTime.value || null,
       }
 
       // console.log("before", d);
@@ -898,7 +928,10 @@ export class RejectForm3Component implements OnInit {
   get TempCause() { return this.ResultForm.get('TempCause') }
   get JudgementDefect() { return this.ResultForm.get('JudgementDefect') }
   get Remark() { return this.ResultForm.get('Remark') }
-
+  get OperatorName() { return this.ResultForm.get('OperatorName') }
+  get DifficultyOfWork() { return this.ResultForm.get('DifficultyOfWork') }
+  get CorrectOfWork() { return this.ResultForm.get('CorrectOfWork') }
+  get AnalysisTime() { return this.ResultForm.get('AnalysisTime') }
 
   alertSuccess() {
     Swal.fire({

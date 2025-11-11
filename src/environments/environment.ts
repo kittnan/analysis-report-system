@@ -8,8 +8,8 @@ export const environment = {
   // UrlApi: "http://localhost:8787",
   // UrlApi: "http://10.200.90.152:8787",
 
-  // UrlApi: "http://localhost:4026",
-  UrlApi: "http://10.200.90.152:4026",
+  UrlApi: "http://localhost:4026",
+  // UrlApi: "http://10.200.90.152:4026",
   master: 'equipment/master',
   country: 'equipment/country',
   equipment: 'equipment',
@@ -36,5 +36,9 @@ export const environment = {
   TreatmentNG: "Treatment of NG",
   AnalysisLevel: "Analysis Level",
   JudgementDefect: "Judgement Defect",
+  OperatorName: "Operator Name",
+  DifficultyOfWork: "Difficulty of Work",
+  CorrectOfWork: "Correct of Work",
+  AnalysisTime: "Analysis Time",
   appVersion: require('../../package.json').version + '-dev',
 };

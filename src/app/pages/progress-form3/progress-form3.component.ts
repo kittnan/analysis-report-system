@@ -75,6 +75,11 @@ export class ProgressForm3Component implements OnInit {
     htmlReport: new FormControl(null),
     JudgementDefect: new FormControl(null, Validators.required),
     Remark: new FormControl(null),
+    OperatorName: new FormControl(null, Validators.required),
+    DifficultyOfWork: new FormControl(null, Validators.required),
+    CorrectOfWork: new FormControl(null, Validators.required),
+    AnalysisTime: new FormControl(null, Validators.required),
+
   })
 
   TreatmentOfNg = new FormControl(null, Validators.required);
@@ -153,6 +158,12 @@ export class ProgressForm3Component implements OnInit {
   CommentLists: any = [];
 
   ResultFMMasterOption: any = []
+
+  OperatorNameOption: any = []
+  DifficultyOfWorkOption: any = []
+  CorrectOfWorkOption: any = []
+  AnalysisTimeOption: any = []
+
   // ? filter dropdown
   async ngOnInit(): Promise<void> {
     this.CheckStatusUser();
@@ -250,6 +261,10 @@ export class ProgressForm3Component implements OnInit {
             });
             result.JudgementDefect ? this.JudgementDefect.setValue(result.JudgementDefect) : null
             result.Remark ? this.Remark.setValue(result.Remark) : null
+            result.operatorName ? this.OperatorName.setValue(result.operatorName) : null
+            result.difficultyOfWork ? this.DifficultyOfWork.setValue(result.difficultyOfWork) : null
+            result.correctOfWork ? this.CorrectOfWork.setValue(result.correctOfWork) : null
+            result.analysisTime ? this.AnalysisTime.setValue(result.analysisTime) : null
             // * set min date of finish analysis date
             var today = new Date();
             var before2Day: any = new Date();
@@ -289,6 +304,11 @@ export class ProgressForm3Component implements OnInit {
         this.CauseList = data.filter((i: any) => i.nameMaster == environment.Cause);
         this.TreatmentList = data.filter((i: any) => i.nameMaster == environment.TreatmentNG);
         this.JudgementDefects = data.filter((i: any) => i.nameMaster == environment.JudgementDefect)
+
+        this.OperatorNameOption = data.filter((i: any) => i.nameMaster == environment.OperatorName)
+        this.DifficultyOfWorkOption = data.filter((i: any) => i.nameMaster == environment.DifficultyOfWork)
+        this.CorrectOfWorkOption = data.filter((i: any) => i.nameMaster == environment.CorrectOfWork)
+        this.AnalysisTimeOption = data.filter((i: any) => i.nameMaster == environment.AnalysisTime)
       }
     })
   }
@@ -464,8 +484,8 @@ export class ProgressForm3Component implements OnInit {
   }
 
   onSaveResult() {
-    console.log(this.Result2.value);
-
+    console.log(this.ResultForm.value);
+    
     Swal.fire({
       title: 'Do you want to save ?',
       icon: 'question',
@@ -532,6 +552,10 @@ export class ProgressForm3Component implements OnInit {
         requestItemId: this.form.requestItemId || null,
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
+        operatorName: this.OperatorName.value || null,
+        difficultyOfWork: this.DifficultyOfWork.value || null,
+        correctOfWork: this.CorrectOfWork.value || null,
+        analysisTime: this.AnalysisTime.value || null,
       }
       this.api.PostResult(ResultData).subscribe((data: any) => {
         resolve(data)
@@ -555,6 +579,10 @@ export class ProgressForm3Component implements OnInit {
         treatMent: this.TreatmentOfNg.value || null,
         JudgementDefect: this.JudgementDefect.value || null,
         Remark: this.Remark.value || null,
+        operatorName: this.OperatorName.value || null,
+        difficultyOfWork: this.DifficultyOfWork.value || null,
+        correctOfWork: this.CorrectOfWork.value || null,
+        analysisTime: this.AnalysisTime.value || null,
       }
       this.api.UpdateResult(resultId, ResultData).subscribe((data: any) => {
         resolve(data)
@@ -660,6 +688,11 @@ export class ProgressForm3Component implements OnInit {
         files: this.tempEngFile,
         JudgementDefect: this.JudgementDefect.value,
         Remark: this.Remark.value,
+
+        operatorName: this.OperatorName.value || null,
+        difficultyOfWork: this.DifficultyOfWork.value || null,
+        correctOfWork: this.CorrectOfWork.value || null,
+        analysisTime: this.AnalysisTime.value || null,
       }
 
       // console.log(this.SendEmailUser.FirstName);
@@ -2804,6 +2837,10 @@ export class ProgressForm3Component implements OnInit {
   get JudgementDefect() { return this.ResultForm.get('JudgementDefect') }
   get Remark() { return this.ResultForm.get('Remark') }
   get Result2() { return this.ResultForm.get('Result2') }
+  get OperatorName() { return this.ResultForm.get('OperatorName') }
+  get DifficultyOfWork() { return this.ResultForm.get('DifficultyOfWork') }
+  get CorrectOfWork() { return this.ResultForm.get('CorrectOfWork') }
+  get AnalysisTime() { return this.ResultForm.get('AnalysisTime') }
 
   alertSuccess() {
     Swal.fire({

@@ -550,6 +550,66 @@
         </div>
       </div>
 
+      <div class="row mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="row">
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label [ngClass]="{'text-danger': OperatorName.invalid}" class="head-label">Operator Name
+                  <i *ngIf="OperatorName.invalid" class="bi bi-x-square-fill"></i>
+                </label>
+                <div class="input-group mb-3 ">
+                  <select class="custom-select subtext-color" formControlName="OperatorName">
+                    <option [value]="null"></option>
+                    <option *ngFor="let item of OperatorNameOption;" [value]="item.name">{{item.name}}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label [ngClass]="{'text-danger': DifficultyOfWork.invalid}" class="head-label">Difficulty of Work
+                  <i *ngIf="DifficultyOfWork.invalid" class="bi bi-x-square-fill"></i>
+                </label>
+                <div class="input-group mb-3 ">
+                  <select class="custom-select subtext-color" formControlName="DifficultyOfWork">
+                    <option [value]="null"></option>
+                    <option *ngFor="let item of DifficultyOfWorkOption;" [value]="item.name">{{item.name}}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label [ngClass]="{'text-danger': CorrectOfWork.invalid}" class="head-label">Correct of Work
+                  <i *ngIf="CorrectOfWork.invalid" class="bi bi-x-square-fill"></i>
+                </label>
+                <div class="input-group mb-3 ">
+                  <select class="custom-select subtext-color" formControlName="CorrectOfWork">
+                    <option [value]="null"></option>
+                    <option *ngFor="let item of CorrectOfWorkOption;" [value]="item.name">{{item.name}}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="form-group ">
+                <label [ngClass]="{'text-danger': AnalysisTime.invalid}" class="head-label">Analysis Time
+                  <i *ngIf="AnalysisTime.invalid" class="bi bi-x-square-fill"></i>
+                </label>
+                <div class="input-group mb-3 ">
+                  <select class="custom-select subtext-color" formControlName="AnalysisTime">
+                    <option [value]="null"></option>
+                    <option *ngFor="let item of AnalysisTimeOption;" [value]="item.name">{{item.name}}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
       <div class="row mt-2">
         <div class="col-lg-12 col-md-12 col-sm-12">
