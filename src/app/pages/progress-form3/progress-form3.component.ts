@@ -172,7 +172,10 @@ export class ProgressForm3Component implements OnInit {
     this.getReportList();
   }
 
+  check() {
+    console.log(this.ResultForm);
 
+  }
 
   CheckStatusUser() {
     let LevelList = [];
@@ -485,7 +488,7 @@ export class ProgressForm3Component implements OnInit {
 
   onSaveResult() {
     console.log(this.ResultForm.value);
-    
+
     Swal.fire({
       title: 'Do you want to save ?',
       icon: 'question',

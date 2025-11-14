@@ -54,11 +54,11 @@ export class RejectForm3Component implements OnInit {
     AnalyzeDate: new FormControl(null, Validators.required),
     ResultDate: new FormControl(null, Validators.required),
     ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null, Validators.required),
+    Result: new FormControl(null),
     Result2: new FormArray([
       new FormGroup({
-        qty: new FormControl(0, Validators.required),
-        item: new FormControl(null, Validators.required),
+        qty: new FormControl(0),
+        item: new FormControl(null),
         tempItem: new FormControl(null),
         dropdown: new FormControl(false),
       })
@@ -261,6 +261,17 @@ export class RejectForm3Component implements OnInit {
   getResult() {
     let id = this.formId
     this.api.FindResultByFormIdMain(id).subscribe((data2: any) => {
+
+      if (this.isFM()) {
+        this.Result.clearValidators();
+        this.Result2.setValidators(Validators.required);
+
+      } else {
+        this.Result.setValidators(Validators.required);
+        this.Result2.clearValidators();
+      }
+
+
       if (data2.length > 0) {
         let result = data2[0];
         if (result.result2) {
