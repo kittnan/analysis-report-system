@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 // import { ProgressForm5Service } from './progress-form5.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // import { ProgressForm1Service } from '../progress-form1/progress-form1.service';
 import Swal from 'sweetalert2'
@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-progress-form5',
@@ -71,8 +72,22 @@ export class ProgressForm5Component implements OnInit {
     canAnalysis: new FormControl('', Validators.required),
     relatedToESD: new FormControl('', Validators.required),
     result: new FormControl('', Validators.required),
-    JudgementDefect : new FormControl('', Validators.required),
-    Remark : new FormControl(''),
+    JudgementDefect: new FormControl('', Validators.required),
+    Remark: new FormControl(''),
+
+    OperatorName: new FormControl(null, Validators.required),
+    DifficultyOfWork: new FormControl(null, Validators.required),
+    CorrectOfWork: new FormControl(null, Validators.required),
+    AnalysisTime: new FormControl(null, Validators.required),
+
+    Result2: new FormArray([
+      new FormGroup({
+        qty: new FormControl(0, Validators.required),
+        item: new FormControl(null, Validators.required),
+        tempItem: new FormControl(null),
+        dropdown: new FormControl(false),
+      })
+    ]),
   })
 
 
@@ -86,6 +101,13 @@ export class ProgressForm5Component implements OnInit {
   AnalysisLevelList: any
   CauseList: any
   TreatmentList: any
+
+
+  ResultFMMasterOption: any = []
+  OperatorNameOption: any = []
+  DifficultyOfWorkOption: any = []
+  CorrectOfWorkOption: any = []
+  AnalysisTimeOption: any = []
 
   constructor(
     // private api: ProgressForm5Service,
@@ -154,7 +176,23 @@ export class ProgressForm5Component implements OnInit {
         this.form.issuedDate = str[0];
         this.form.replyDate = str2[0];
         this.GetUser();
+        this.GetResultFMMaster()
       } else this.form = null;
+    })
+  }
+
+  GetResultFMMaster() {
+    let type = this.form.requestItem.includes('DST') ? 'DST' : 'AMT'
+    this.api.getResultFMMaster(new HttpParams().set('type', type)).subscribe((res: any) => {
+
+
+      if (res.data.length > 0) {
+        this.ResultFMMasterOption = res.data
+
+
+      } else {
+        this.ResultFMMasterOption = []
+      }
     })
   }
 
@@ -170,7 +208,24 @@ export class ProgressForm5Component implements OnInit {
         this.result.finishAnalyzeDate = str2[0];
         this.result.finishReportDate = str3[0];
 
-        this.AnalysisForm.setValue({
+        console.log(`⚡ ~ :210 ~ ProgressForm5Component ~ this.result:`, this.result);
+
+        if (this.result.requestItemName.includes("_FM")) {
+          const result2Array = this.Result2 as FormArray;
+          result2Array.clear();
+          this.result.result2.forEach((res: any) => {
+            const formGroup = new FormGroup({
+              item: new FormControl(res.item || '', Validators.required),
+              qty: new FormControl(res.qty || '', Validators.required),
+              tempItem: new FormControl(res.item || ''),
+              dropdown: new FormControl(res.dropdown || ''),
+            });
+            result2Array.push(formGroup);
+          });
+        }
+
+
+        this.AnalysisForm.patchValue({
           _id: this.result._id,
           causeOfDefect: this.result.causeOfDefect || '',
           result: this.result.result || '',
@@ -179,7 +234,12 @@ export class ProgressForm5Component implements OnInit {
           canAnalysis: this.result.canAnalysis || '',
           relatedToESD: this.result.relatedToESD || '',
           JudgementDefect: this.result.JudgementDefect || '',
-          Remark: this.result.Remark || ''
+          Remark: this.result.Remark || '',
+
+          OperatorName: this.result.operatorName || '',
+          DifficultyOfWork: this.result.difficultyOfWork || '',
+          CorrectOfWork: this.result.correctOfWork || '',
+          AnalysisTime: this.result.analysisTime || '',
         })
 
 
@@ -202,6 +262,11 @@ export class ProgressForm5Component implements OnInit {
       }
     })
   }
+  isFM() {
+    if (this.form?.requestItem)
+      return (this.form.requestItem).includes('FM')
+    return false
+  }
   GetListAll() {
     this.api.GetListAll().subscribe((data: any) => {
       if (data.length > 0) {
@@ -209,7 +274,13 @@ export class ProgressForm5Component implements OnInit {
         this.AnalysisLevelList = data.filter((i: any) => i.nameMaster == environment.AnalysisLevel);
         this.CauseList = data.filter((i: any) => i.nameMaster == environment.Cause);
         this.TreatmentList = data.filter((i: any) => i.nameMaster == environment.TreatmentNG);
-        this.JudgementDefects = data.filter((i:any)=> i.nameMaster == environment.JudgementDefect)
+        this.JudgementDefects = data.filter((i: any) => i.nameMaster == environment.JudgementDefect)
+
+
+        this.OperatorNameOption = data.filter((i: any) => i.nameMaster == environment.OperatorName)
+        this.DifficultyOfWorkOption = data.filter((i: any) => i.nameMaster == environment.DifficultyOfWork)
+        this.CorrectOfWorkOption = data.filter((i: any) => i.nameMaster == environment.CorrectOfWork)
+        this.AnalysisTimeOption = data.filter((i: any) => i.nameMaster == environment.AnalysisTime)
       }
     })
   }
@@ -565,4 +636,52 @@ export class ProgressForm5Component implements OnInit {
 
   }
 
+  newResultFM() {
+    const result2Array = this.Result2 as FormArray;
+    const newItem = new FormGroup({
+      item: new FormControl('', Validators.required),
+      qty: new FormControl(0, Validators.required),
+      tempItem: new FormControl(''),
+      dropdown: new FormControl(false)
+    });
+    result2Array.push(newItem);
+  }
+
+  removeResultFM(index: number) {
+    const result2Array = this.Result2 as FormArray;
+    if (result2Array.length > 1) {
+      result2Array.removeAt(index);
+    }
+  }
+  getDropdown(control: any): Boolean {
+    let result = control.get('dropdown').value;
+    return result ?? false;
+  }
+  ToggleResultFMFilter(control: any) {
+    let result = control.get('dropdown').value;
+    control.get('dropdown').setValue(!result);
+  }
+  getResultFMFilter(control: any) {
+    let value = control.get('item').value;
+
+    if (value) {
+      return this.ResultFMMasterOption.filter(
+        item => item.item.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      return this.ResultFMMasterOption;
+    }
+  }
+
+  SetResultFM(control: any) {
+    let tempIte = control.get('tempItem').value;
+    control.get('item').setValue(tempIte);
+    control.get('tempItem').reset()
+  }
+
+  get OperatorName() { return this.AnalysisForm.get('OperatorName') }
+  get DifficultyOfWork() { return this.AnalysisForm.get('DifficultyOfWork') }
+  get CorrectOfWork() { return this.AnalysisForm.get('CorrectOfWork') }
+  get AnalysisTime() { return this.AnalysisForm.get('AnalysisTime') }
+  get Result2() { return this.AnalysisForm.get('Result2') }
 }

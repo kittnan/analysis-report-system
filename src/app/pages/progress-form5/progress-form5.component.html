@@ -281,7 +281,7 @@
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             <label class="head-label">Request Number</label>
-            <p class="subtext-color" *ngIf="result">{{form.requestNumber}}</p>
+            <p class="subtext-color" *ngIf="result && form">{{form.requestNumber}}</p>
           </div>
 
         </div>
@@ -321,7 +321,7 @@
           <div class="col-lg-6">
             <div class="form-group">
               <label [ngClass]="{'text-danger': AnalysisFormControl.causeOfDefect.invalid}" class="head-label">Category
-                Root Cause
+                Root Cause 
                 <i *ngIf="AnalysisFormControl.causeOfDefect.invalid" class="bi bi-x-square-fill"></i>
               </label>
               <input type="search" formControlName="causeOfDefect" class="form-control subtext-color"
@@ -337,11 +337,66 @@
         </div>
 
 
-        <div class="row">
-          <div class="col-12">
+        <div *ngIf="isFM()" class="row">
+          <div class="col-12 mt-2">
             <div class="form-group">
-              <label class="head-label">Analysis Result</label>
-              <textarea cols="30" rows="10" class="form-control subtext-color" formControlName="result"></textarea>
+              <label [ngClass]="{'text-danger': Result2.invalid}" class="head-label">Analysis Result
+                <i *ngIf="Result2.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <div class="row">
+                <ng-container *ngFor="let control of Result2.controls; let i=index" [formGroup]="control">
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col-1 content-center text-right">
+                        {{i+1}}.
+                      </div>
+                      <div class="col-5">
+                        <input type="search" formControlName="item" (click)="ToggleResultFMFilter(control);"
+                          class="form-control subtext-color">
+                        <div class="show-select-2">
+                          <select *ngIf="getDropdown(control)" class="custom-select subtext-color" size="5"
+                            formControlName="tempItem" (change)="ToggleResultFMFilter(control); SetResultFM(control);">
+                            <option [value]="null"></option>
+                            <option *ngFor="let result of getResultFMFilter(control);" [value]="result.item"
+                              [title]="result.item">{{result.item}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control subtext-color" formControlName="qty" min="0">
+                      </div>
+                      <div class="col-2">
+                        <button type="button" class="btn btn-sm btn-danger" (click)="removeResultFM(i)"
+                          [disabled]="Result2.controls.length <= 1">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <button class="btn btn-primary btn-sm" type="button" (click)="newResultFM();">
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!isFM()" class="row">
+          <div class="col-12 mt-2">
+            <div class="form-group">
+              <label [ngClass]="{'text-danger': AnalysisFormControl.result.invalid}" class="head-label">Analysis Result
+                <i *ngIf="AnalysisFormControl.result.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <textarea class="form-control subtext-color" formControlName="result" cols="30" rows="10"
+                style="height: 300px;"></textarea>
             </div>
           </div>
         </div>
@@ -421,6 +476,67 @@
             </div>
           </div>
         </div>
+
+                <div class="row mt-2">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="form-group ">
+                  <label [ngClass]="{'text-danger': OperatorName.invalid}" class="head-label">Operator Name
+                    <i *ngIf="OperatorName.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <div class="input-group mb-3 ">
+                    <select class="custom-select subtext-color" formControlName="OperatorName">
+                      <option [value]=""></option>
+                      <option *ngFor="let item of OperatorNameOption;" [value]="item.name">{{item.name}}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group ">
+                  <label [ngClass]="{'text-danger': DifficultyOfWork.invalid}" class="head-label">Difficulty of Work
+                    <i *ngIf="DifficultyOfWork.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <div class="input-group mb-3 ">
+                    <select class="custom-select subtext-color" formControlName="DifficultyOfWork">
+                      <option [value]=""></option>
+                      <option *ngFor="let item of DifficultyOfWorkOption;" [value]="item.name">{{item.name}}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group ">
+                  <label [ngClass]="{'text-danger': CorrectOfWork.invalid}" class="head-label">Correct of Work
+                    <i *ngIf="CorrectOfWork.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <div class="input-group mb-3 ">
+                    <select class="custom-select subtext-color" formControlName="CorrectOfWork">
+                      <option [value]=""></option>
+                      <option *ngFor="let item of CorrectOfWorkOption;" [value]="item.name">{{item.name}}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group ">
+                  <label [ngClass]="{'text-danger': AnalysisTime.invalid}" class="head-label">Analysis Time
+                    <i *ngIf="AnalysisTime.invalid" class="bi bi-x-square-fill"></i>
+                  </label>
+                  <div class="input-group mb-3 ">
+                    <select class="custom-select subtext-color" formControlName="AnalysisTime">
+                      <option [value]=""></option>
+                      <option *ngFor="let item of AnalysisTimeOption;" [value]="item.name">{{item.name}}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
       <div class="row mt-2">

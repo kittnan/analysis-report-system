@@ -680,7 +680,7 @@ export class AnalysisDataListComponent implements OnInit {
           // }
           break;
         case 2:
-          if (item.result != undefined) {
+          if (item.result != undefined || item.result2 != undefined) {
             item['statusShow'] = 'Making report'
             item['color'] = 'MakingReport'
           } else if (dateNow <= replyDate) {
