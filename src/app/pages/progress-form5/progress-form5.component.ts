@@ -208,7 +208,6 @@ export class ProgressForm5Component implements OnInit {
         this.result.finishAnalyzeDate = str2[0];
         this.result.finishReportDate = str3[0];
 
-        console.log(`⚡ ~ :210 ~ ProgressForm5Component ~ this.result:`, this.result);
 
         if (this.result.requestItemName.includes("_FM")) {
           const result2Array = this.Result2 as FormArray;
@@ -256,9 +255,8 @@ export class ProgressForm5Component implements OnInit {
   GetUser() {
     this.api.GetUserAll().subscribe((data: any) => {
       if (data.length > 0) {
-        const user = data.filter(d => d._id == this.form.requesterId);
-        this.Approve = user[0];
-
+        const user1 = data.find(d => d._id == this.form.userApprove1);
+        this.Approve = user1
       }
     })
   }
@@ -303,8 +301,12 @@ export class ProgressForm5Component implements OnInit {
 
         // ? find mail in section
         const SectionEmail = this.form.requestFormSectionName;
+
+
         let UserEmailList = [];
         this.api.GetUserBySectionName(SectionEmail).subscribe((data: any) => {
+
+
           if (data.length > 0) {
             const filterData = data.filter((item) => {
               if (item.Level1 == 1 || item.Level2 == 1 || item.Level3 == 1 || item.Level4 == 1 || item.Level5 == 1 || item.Level6 == 1) {
@@ -322,6 +324,8 @@ export class ProgressForm5Component implements OnInit {
 
 
           this.api.GetSectionByName(this.form.requestFormSectionName).subscribe((data: any) => {
+
+
             if (data.length > 0) {
               const temp1 = data.filter(item => item.view == 1)
               // console.log(temp1);
@@ -335,6 +339,10 @@ export class ProgressForm5Component implements OnInit {
               // console.log(uniqEmail);
 
               let ccNew = uniqEmail.filter(item => item != this.Approve.Email)
+
+
+
+
               // console.log(ccNew);
               // CCnew = ccNew;
 
