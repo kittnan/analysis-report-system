@@ -63,18 +63,36 @@ export class ViewFormComponent implements OnInit {
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
-    if (
-      this.isAEUser() ||
-      this.form.status == 6
-    ) {
-      this.result.result = this.result.result
-      this.result.result2 = this.result.result2
-      this.result.causeOfDefect = this.result.causeOfDefect
-    } else {
+    // if (
+    //   this.isAEUser() ||
+    //   this.form.status == 6
+    // ) {
+    //   this.result.result = this.result.result
+    //   this.result.result2 = this.result.result2
+    //   this.result.causeOfDefect = this.result.causeOfDefect
+    //   this.result.causeOfDefect = this.result.causeOfDefect
+    // } else {
+    //   this.result.result = ''
+    //   this.result.result2 = []
+    //   this.result.causeOfDefect = ''
+    // }
+
+    if (!this.isAEUser() && this.form.status != 6) {
       this.result.result = ''
       this.result.result2 = []
       this.result.causeOfDefect = ''
+      this.result.sourceOfDefect = ''
+      this.result.analysisLevel = ''
+      this.result.canAnalysis = ''
+      this.result.relatedToESD = ''
+      this.result.JudgementDefect = ''
+      this.result.Remark = ''
+      this.result.operatorName = ''
+      this.result.difficultyOfWork = ''
+      this.result.correctOfWork = ''
+      this.result.analysisTime = ''
     }
+
 
 
     form.userApprove5Name ? this.status = true : this.status = false
@@ -446,7 +464,12 @@ export class ViewFormComponent implements OnInit {
       return (this.form.requestItem).includes('FM')
     return false
   }
-
+  isResult2() {
+    if (this.result?.result2?.filter(i => i.item).length > 0) {
+      return true
+    }
+    return false
+  }
 
 
 

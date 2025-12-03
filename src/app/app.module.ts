@@ -22,7 +22,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { LoginComponent } from "./pages/login/login.component";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ProgressForm3FmComponent } from './pages/progress-form3-fm/progress-form3-fm.component';
 
 
 
@@ -32,7 +31,6 @@ import { ProgressForm3FmComponent } from './pages/progress-form3-fm/progress-for
     AppComponent,
     AdminLayoutComponent,
     LoginComponent,
-    ProgressForm3FmComponent,
 
 
 

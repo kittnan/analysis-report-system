@@ -174,6 +174,11 @@ export class ProgressForm4Component implements OnInit {
         this.form.replyDate = str2[0];
         this.GetApproveList();
         this.GetResultFMMaster()
+
+        // Update Result2 validators after form is loaded
+        setTimeout(() => {
+          this.updateResult2Validators();
+        }, 100);
       } else this.form = null;
     })
   }
@@ -240,6 +245,8 @@ export class ProgressForm4Component implements OnInit {
           AnalysisTime: this.Result.analysisTime || '',
         })
 
+        // Update Result2 validators after loading data
+        this.updateResult2Validators();
 
       } else this.Result = null;
     })
@@ -248,6 +255,91 @@ export class ProgressForm4Component implements OnInit {
     if (this.form?.requestItem)
       return (this.form.requestItem).includes('FM')
     return false
+  }
+
+  // Update Result2 FormArray validators based on FM status
+  updateResult2Validators() {
+    const result2Array = this.AnalysisForm.get('Result2') as FormArray;
+    const isFM = this.isFM();
+
+    if (this.isFM()) {
+      // For FM requests, ensure Result2 has at least one item and fields are required
+      if (result2Array.length === 0) {
+        const newItem = new FormGroup({
+          qty: new FormControl(0, Validators.required),
+          item: new FormControl(null, Validators.required),
+          tempItem: new FormControl(null),
+          dropdown: new FormControl(false),
+        });
+        result2Array.push(newItem);
+      } else {
+        // Update existing controls to be required
+        result2Array.controls.forEach(control => {
+          const group = control as FormGroup;
+          const qtyControl = group.get('qty');
+          const itemControl = group.get('item');
+          qtyControl?.setValidators([Validators.required]);
+          itemControl?.setValidators([Validators.required]);
+          qtyControl?.updateValueAndValidity();
+          itemControl?.updateValueAndValidity();
+        });
+      }
+    } else {
+      // For non-FM requests, clear Result2 completely
+      result2Array.clear();
+      result2Array.clearValidators();
+    }
+
+
+    // Update the FormArray validation status
+    result2Array.updateValueAndValidity();
+
+    // Toggle main Result vs Result2 validators according to FM
+    const resultControl = this.AnalysisForm.get('result');
+    if (isFM) {
+      // When FM, Result text is not required, Result2 is required
+      resultControl?.clearValidators();
+      resultControl?.updateValueAndValidity();
+      result2Array.setValidators([Validators.required]);
+    } else {
+      // When not FM, require Result text and not require Result2
+      resultControl?.setValidators([Validators.required]);
+      resultControl?.updateValueAndValidity();
+      result2Array.clearValidators();
+    }
+    result2Array.updateValueAndValidity();
+  }
+
+  debugFormValidation() {
+    console.log('=== Progress Form 4 Validation Debug ===');
+    console.log('isFM():', this.isFM());
+    console.log('AnalysisForm valid:', this.AnalysisForm.valid);
+    console.log('AnalysisForm errors:', this.getFormValidationErrors(this.AnalysisForm));
+    console.log('Result2 FormArray valid:', this.AnalysisForm.get('Result2')?.valid);
+    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.AnalysisForm.get('Result2') as FormArray));
+  }
+
+  getFormValidationErrors(form: FormGroup) {
+    const errors: any = {};
+    Object.keys(form.controls).forEach(key => {
+      const control = form.get(key);
+      if (control?.errors) {
+        errors[key] = control.errors;
+      }
+    });
+    return errors;
+  }
+
+  getFormArrayValidationErrors(formArray: FormArray) {
+    return formArray.controls.map((control, index) => {
+      if (control instanceof FormGroup) {
+        return {
+          index,
+          errors: this.getFormValidationErrors(control)
+        };
+      }
+      return null;
+    }).filter(item => item && Object.keys(item.errors).length > 0);
   }
 
   GetApproveList() {
@@ -610,7 +702,7 @@ export class ProgressForm4Component implements OnInit {
     }
 
   }
-  
+
   newResultFM() {
     const result2Array = this.Result2 as FormArray;
     const newItem = new FormGroup({

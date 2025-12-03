@@ -374,6 +374,26 @@ export class LibrarySearchComponent implements OnInit {
     })
   }
 
+  isShowResult(merge) {
+    if (this.isAEUser()) {
+      return true
+    }
+    if (this.setStatusForm(merge.status) == "Finished") {
+      return true
+    }
+    return false
+  }
+
+  judgeResult(merge) {
+    let result = ''
+    let result2Filtered = merge.result2?.filter(i => i.item)
+    if (result2Filtered && result2Filtered.length > 0) {
+      result = result2Filtered.flatMap(i => i.item).join(', ')
+    } else {
+      result = merge.result
+    }
+    return result
+  }
 
   mapToDataTable(merges) {
     return new Promise(resolve => {
@@ -382,15 +402,15 @@ export class LibrarySearchComponent implements OnInit {
         const status = this.setStatusForm(merge.status);
 
         let ratio: any = Number(merge.ngRatio).toFixed(2)
-        let result = ''
-        
-        if (this.isAEUser()) {
-          result = merge.result
-        } else if (
-          status == "Finished"
-        ) {
-          result = merge.result
-        }
+        // let result = ''
+
+        // if (this.isAEUser()) {
+        //   result = merge.result
+        // } else if (status == "Finished") {
+        //   result = merge.result
+        // }
+
+        merge.result = this.judgeResult(merge)
 
 
         merge['projectName'] = `${merge.size} / ${merge.customer}`
@@ -403,7 +423,22 @@ export class LibrarySearchComponent implements OnInit {
         merge.issueDate = new Date(merge.issuedDate).toLocaleDateString("en-US")
         merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
         merge.TBNShow = merge.TBN && merge.TBN != 'normal' ? merge.TBNNumber : 'Normal'
-        merge.result = result
+        if (!this.isShowResult(merge)) {
+          merge.result = ''
+          merge.result2 = []
+          merge.causeOfDefect = ''
+          merge.sourceOfDefect = ''
+          merge.analysisLevel = ''
+          merge.canAnalysis = ''
+          merge.relatedToESD = ''
+          merge.JudgementDefect = ''
+          merge.Remark = ''
+          merge.operatorName = ''
+          merge.difficultyOfWork = ''
+          merge.correctOfWork = ''
+          merge.analysisTime = ''
+        }
+
         return merge
       })
       resolve(result_map)
