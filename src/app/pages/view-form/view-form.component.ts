@@ -63,6 +63,9 @@ export class ViewFormComponent implements OnInit {
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []
     this.CheckStatusUser();
+    form.userApprove5Name ? this.status = true : this.status = false
+
+    console.log('isAE', this.isAEUser())
     // if (
     //   this.isAEUser() ||
     //   this.form.status == 6
@@ -77,63 +80,122 @@ export class ViewFormComponent implements OnInit {
     //   this.result.causeOfDefect = ''
     // }
 
-    if (!this.isAEUser() && this.form.status != 6) {
-      this.result.result = ''
-      this.result.result2 = []
-      this.result.causeOfDefect = ''
-      this.result.sourceOfDefect = ''
-      this.result.analysisLevel = ''
-      this.result.canAnalysis = ''
-      this.result.relatedToESD = ''
-      this.result.JudgementDefect = ''
-      this.result.Remark = ''
-      this.result.operatorName = ''
-      this.result.difficultyOfWork = ''
-      this.result.correctOfWork = ''
-      this.result.analysisTime = ''
-    }
+    // if (this.isAEUser()) {
+
+    // } else {
+    //   if (this.isFM_DST()) {
+
+    //   } else {
+    //     if (this.form.status != 6) {
+    //       this.setEmptyResult()
+    //     }
+    //   }
+    // }
+
+    // if (!this.isFM_DST()) {
+    //   this.setEmptyResult()
+    // } else
+    //   if (!this.isFM_DST() && !this.isAEUser() && this.form.status != 6) {
+    //     this.setEmptyResult()
+    //   }
+
+    // if (!this.isAEUser() && this.form.status != 6) {
+    //   this.result.result = ''
+    //   this.result.result2 = []
+    //   this.result.causeOfDefect = ''
+    //   this.result.sourceOfDefect = ''
+    //   this.result.analysisLevel = ''
+    //   this.result.canAnalysis = ''
+    //   this.result.relatedToESD = ''
+    //   this.result.JudgementDefect = ''
+    //   this.result.Remark = ''
+    //   this.result.operatorName = ''
+    //   this.result.difficultyOfWork = ''
+    //   this.result.correctOfWork = ''
+    //   this.result.analysisTime = ''
+    // }
 
 
-
-    form.userApprove5Name ? this.status = true : this.status = false
+    // this.result.result2 = [
+    //   {
+    //     item:'xxx',
+    //     qty:99
+    //   }
+    // ]
 
     // if (form?.userApprove5Name) {
 
     // }
     // this.captureScreen();
+    // console.log(this.result.result);
+    // console.log(this.result.result2);
+
+    if (this.form.status == 6) return
+    if (this.isAEUser()) return;
+    if (this.isFM_DST()) {
+      this.setEmptyOtherResult()
+      return
+    }
+
+    if (this.form.status !== 6) {
+      this.setEmptyResultFull();
+    }
+
 
   }
 
+  setEmptyResultFull() {
+    this.result.result = ''
+    this.result.result2 = []
+    this.result.causeOfDefect = ''
+    this.result.sourceOfDefect = ''
+    this.result.analysisLevel = ''
+    this.result.canAnalysis = ''
+    this.result.relatedToESD = ''
+    this.result.JudgementDefect = ''
+    this.result.Remark = ''
+    this.result.operatorName = ''
+    this.result.difficultyOfWork = ''
+    this.result.correctOfWork = ''
+    this.result.analysisTime = ''
+  }
+  setEmptyOtherResult() {
+    this.result.causeOfDefect = ''
+    this.result.sourceOfDefect = ''
+    this.result.analysisLevel = ''
+    this.result.canAnalysis = ''
+    this.result.relatedToESD = ''
+    this.result.JudgementDefect = ''
+    this.result.Remark = ''
+    this.result.operatorName = ''
+    this.result.difficultyOfWork = ''
+    this.result.correctOfWork = ''
+    this.result.analysisTime = ''
+  }
+
   isAEUser(): boolean {
-    let level1: any = localStorage.getItem('AR_UserLevel1')
+    let level1: any = localStorage.getItem('AR_UserSection1Name')
 
 
-    let level2: any = localStorage.getItem('AR_UserLevel2')
+    let level2: any = localStorage.getItem('AR_UserSection2Name')
 
 
-    let level3: any = localStorage.getItem('AR_UserLevel3')
+    let level3: any = localStorage.getItem('AR_UserSection3Name')
 
 
-    let level4: any = localStorage.getItem('AR_UserLevel4')
+    let level4: any = localStorage.getItem('AR_UserSection4Name')
 
 
-    let level5: any = localStorage.getItem('AR_UserLevel5')
+    let level5: any = localStorage.getItem('AR_UserSection5Name')
 
 
-    let level6: any = localStorage.getItem('AR_UserLevel6')
+    let level6: any = localStorage.getItem('AR_UserSection6Name')
 
-
-
-    level1 = level1 ? parseInt(level1) : 0
-    level2 = level2 ? parseInt(level2) : 0
-    level3 = level3 ? parseInt(level3) : 0
-    level4 = level4 ? parseInt(level4) : 0
-    level5 = level5 ? parseInt(level5) : 0
-    level6 = level6 ? parseInt(level6) : 0
 
     let levelArr = [level1, level2, level3, level4, level5, level6]
 
-    if (levelArr.some((lv: any) => lv >= 3)) return true
+
+    if (levelArr.some((lv: any) => lv == 'AE')) return true
     return false
 
   }
@@ -462,6 +524,11 @@ export class ViewFormComponent implements OnInit {
   isFM() {
     if (this.form?.requestItem)
       return (this.form.requestItem).includes('FM')
+    return false
+  }
+  isFM_DST() {
+    if (this.form?.requestItem)
+      return (this.form.requestItem).includes('DST_FM')
     return false
   }
   isResult2() {
