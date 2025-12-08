@@ -95,10 +95,20 @@ export class AnalysisDataListComponent implements OnInit {
       headerName: "KTC Model Number",
       headerTooltip: "KTC Model Number",
     },
+    // {
+    //   field: 'projectName',
+    //   headerName: "Pro Name",
+    //   headerTooltip: "Project Name"
+    // },
     {
-      field: 'projectName',
-      headerName: "Pro Name",
-      headerTooltip: "Project Name"
+      field: 'size',
+      headerName: "Size",
+      headerTooltip: "Size"
+    },
+    {
+      field: 'customer',
+      headerName: "Customer",
+      headerTooltip: "Customer"
     },
     {
       field: 'defectiveName',
@@ -822,7 +832,9 @@ export class AnalysisDataListComponent implements OnInit {
               Register_No: index === 0 ? data.requestNumber : '', // แสดงเฉพาะ row แรก
               KTC_Model_Number: index === 0 ? data.ktcModelNumber : '',
               Treatment: index === 0 ? data.treatment : '',
-              Project_Name: index === 0 ? (data.size) + "/" + (data.customer) : '',
+              // Project_Name: index === 0 ? (data.size) + "/" + (data.customer) : '',
+              Size: index === 0 ? (data.size) : '',
+              Customer: index === 0 ? (data.customer) : '',
               Defect_Name: index === 0 ? data.defectiveName : '',
               Lot_Number: index === 0 ? data.pcLotNumber : '',
               Input_Quantity: index === 0 ? data.inputQuantity : '',
@@ -838,7 +850,7 @@ export class AnalysisDataListComponent implements OnInit {
               Request_From_Department: index === 0 ? data.requestFormSectionName : '',
               Source_Of_Defect: index === 0 ? data.sourceOfDefect : '',
               CauseOfDefect: index === 0 ? data.causeOfDefect : '',
-              Analysis_Result: `${index + 1}. ${item.item}`, // แต่ละ row มี item ของตัวเอง
+              Analysis_Result: `${item.item}`, // แต่ละ row มี item ของตัวเอง
               FM_Qty: item.qty, // แต่ละ row มี qty ของตัวเอง
               Can_Analysis: index === 0 ? data.canAnalysis : '',
               Analysis_Level: index === 0 ? data.analysisLevel : '',
@@ -874,7 +886,8 @@ export class AnalysisDataListComponent implements OnInit {
             Register_No: data.requestNumber,
             KTC_Model_Number: data.ktcModelNumber,
             Treatment: data.treatment,
-            Project_Name: (data.size) + "/" + (data.customer),
+            Size: data.size,
+            Customer: data.customer,
             Defect_Name: data.defectiveName,
             Lot_Number: data.pcLotNumber,
             Input_Quantity: data.inputQuantity,
@@ -932,7 +945,7 @@ export class AnalysisDataListComponent implements OnInit {
       const worksheet = workbook.addWorksheet('Sheet1');
 
       const headerOrder = [
-        'Register_No', 'Status', 'Treatment', 'KTC_Model_Number', 'Project_Name',
+        'Register_No', 'Status', 'Treatment', 'KTC_Model_Number', 'Size', 'Customer',
         'Defect_Name', 'Lot_Number', 'Input_Quantity', 'NG_Quantity', 'NG_Ratio',
         'RelatedToESD', 'Sent_NG_To_Analysis', 'Production_Phase', 'Defect_Category',
         'Abnormal_Lot_Level', 'Occur_Place', 'Issuer', 'Request_From_Department',

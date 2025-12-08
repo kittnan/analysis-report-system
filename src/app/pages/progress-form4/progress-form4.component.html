@@ -349,10 +349,7 @@
                 <ng-container *ngFor="let control of Result2.controls; let i=index" [formGroup]="control">
                   <div class="col-6">
                     <div class="row">
-                      <div class="col-1 content-center text-right">
-                        {{i+1}}.
-                      </div>
-                      <div class="col-5">
+                      <div class="col-6">
                         <input type="search" formControlName="item" (click)="ToggleResultFMFilter(control);"
                           class="form-control subtext-color">
                         <div class="show-select-2">
