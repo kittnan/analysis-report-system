@@ -1346,6 +1346,7 @@ export class MasterlistsComponent implements OnInit {
     ModalResultFM(content, item) {
         this.ResultFM.get('_id').setValue(item._id)
         this.ResultFM.get('item').setValue(item.item)
+        this.ResultFM.get('type').setValue(item.type)
         this.md.open(content, { size: 'lg' });
     }
     onEditResultFM() {

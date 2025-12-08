@@ -729,11 +729,17 @@
 
             <div class="form-group">
                 <label for="">Item </label>
-                <input type="text" class="form-control" [formControl]="resultFMEdit">
-
+                <input type="text" class="form-control" [formControl]="ResultFM.get('item')">
+            </div>
+            <div class="form-group">
+                <label for="">Type </label>
+                <select [formControl]="ResultFM.get('type')" class="custom-select">
+                    <option [value]="'DST'">DST</option>
+                    <option [value]="'AMT'">AMT</option>
+                </select>
             </div>
             <div class="modal-footer">
-                <button type="button" [disabled]="!resultFMEdit.touched" class="btn btn-warning"
+                <button type="button" [disabled]="!ResultFM.get('item').touched" class="btn btn-warning"
                     (click)="modal.close('Close click'); onEditResultFM();"><i class="bi bi-check"
                         style="font-size: 1rem;"></i>
                     EDIT</button>
