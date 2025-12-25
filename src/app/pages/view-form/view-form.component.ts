@@ -66,71 +66,17 @@ export class ViewFormComponent implements OnInit {
     form.userApprove5Name ? this.status = true : this.status = false
 
     console.log('isAE', this.isAEUser())
-    // if (
-    //   this.isAEUser() ||
-    //   this.form.status == 6
-    // ) {
-    //   this.result.result = this.result.result
-    //   this.result.result2 = this.result.result2
-    //   this.result.causeOfDefect = this.result.causeOfDefect
-    //   this.result.causeOfDefect = this.result.causeOfDefect
-    // } else {
-    //   this.result.result = ''
-    //   this.result.result2 = []
-    //   this.result.causeOfDefect = ''
-    // }
+    console.log(this.form.status);
 
-    // if (this.isAEUser()) {
+    if (this.form.status == 6) {
+      // todo is AE
+      if (!this.isAEUser()) {
+        this.setEmptyOperator()
+        return;
+      }
+      if (this.isAEUser()) return;
+    }
 
-    // } else {
-    //   if (this.isFM_DST()) {
-
-    //   } else {
-    //     if (this.form.status != 6) {
-    //       this.setEmptyResult()
-    //     }
-    //   }
-    // }
-
-    // if (!this.isFM_DST()) {
-    //   this.setEmptyResult()
-    // } else
-    //   if (!this.isFM_DST() && !this.isAEUser() && this.form.status != 6) {
-    //     this.setEmptyResult()
-    //   }
-
-    // if (!this.isAEUser() && this.form.status != 6) {
-    //   this.result.result = ''
-    //   this.result.result2 = []
-    //   this.result.causeOfDefect = ''
-    //   this.result.sourceOfDefect = ''
-    //   this.result.analysisLevel = ''
-    //   this.result.canAnalysis = ''
-    //   this.result.relatedToESD = ''
-    //   this.result.JudgementDefect = ''
-    //   this.result.Remark = ''
-    //   this.result.operatorName = ''
-    //   this.result.difficultyOfWork = ''
-    //   this.result.correctOfWork = ''
-    //   this.result.analysisTime = ''
-    // }
-
-
-    // this.result.result2 = [
-    //   {
-    //     item:'xxx',
-    //     qty:99
-    //   }
-    // ]
-
-    // if (form?.userApprove5Name) {
-
-    // }
-    // this.captureScreen();
-    // console.log(this.result.result);
-    // console.log(this.result.result2);
-
-    if (this.form.status == 6) return
     if (this.isAEUser()) return;
     if (this.isFM_DST()) {
       this.setEmptyOtherResult()
@@ -145,6 +91,7 @@ export class ViewFormComponent implements OnInit {
   }
 
   setEmptyResultFull() {
+    console.log('setEmptyResultFull');
     this.result.result = ''
     this.result.result2 = []
     this.result.causeOfDefect = ''
@@ -160,6 +107,8 @@ export class ViewFormComponent implements OnInit {
     this.result.analysisTime = ''
   }
   setEmptyOtherResult() {
+    console.log('setEmptyOtherResult');
+
     this.result.causeOfDefect = ''
     this.result.sourceOfDefect = ''
     this.result.analysisLevel = ''
@@ -167,6 +116,14 @@ export class ViewFormComponent implements OnInit {
     this.result.relatedToESD = ''
     this.result.JudgementDefect = ''
     this.result.Remark = ''
+    this.result.operatorName = ''
+    this.result.difficultyOfWork = ''
+    this.result.correctOfWork = ''
+    this.result.analysisTime = ''
+  }
+  setEmptyOperator() {
+    console.log('setEmptyOperator');
+
     this.result.operatorName = ''
     this.result.difficultyOfWork = ''
     this.result.correctOfWork = ''
