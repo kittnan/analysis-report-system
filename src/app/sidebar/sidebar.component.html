@@ -11,12 +11,16 @@
     <ul class="nav">
         <li *ngFor="let menuItem of menuItems" routerLinkActive="active" class="{{menuItem.class}}">
             <a *ngIf="menuItem.type == 'internal'" [routerLink]="[menuItem.path]">
-                <i class="nc-icon {{menuItem.icon}}"></i>
-                <p>{{menuItem.title}}</p>
+                <div style="display: flex; align-items: center;">
+                    <i class="nc-icon {{menuItem.icon}}" style="position: relative; top: -2px;"></i>
+                    <p>{{menuItem.title}}</p>
+                </div>
             </a>
             <a *ngIf="menuItem.type == 'external'" [href]="menuItem.path" target="_self">
-                <i class="nc-icon {{menuItem.icon}}"></i>
-                <p>{{menuItem.title}}</p>
+                <div style="display: flex; align-items: center;">
+                    <i class="nc-icon {{menuItem.icon}}" style="position: relative; top: -2px;"></i>
+                    <p>{{menuItem.title}}</p>
+                </div>
             </a>
 
         </li>

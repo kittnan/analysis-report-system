@@ -67,7 +67,8 @@
             >a {
                 margin: 10px 15px 0;
                 color: $white-color;
-                display: block;
+                display: flex;
+                align-items: center;
                 text-decoration: none;
                 position: relative;
                 text-transform: uppercase;
@@ -91,9 +92,8 @@
         }
         i {
             font-size: 24px;
-            float: left;
             margin-right: 12px;
-            line-height: 30px;
+            line-height: 1;
             width: 34px;
             text-align: center;
             color: $opacity-5;

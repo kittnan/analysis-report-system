@@ -240,7 +240,7 @@ export class SidebarComponent implements OnInit {
       path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '', type: 'internal'
     }
     const backToPortal = {
-      path: 'http://10.200.90.152:8081/an-portal', title: 'Back to Portal', icon: 'bi bi-reply', class: '', type: 'external'
+      path: 'http://10.200.90.152:8081/an-portal', title: 'Home', icon: 'bi bi-house', class: '', type: 'external'
     }
     this.menuItems.push(equipment)
     this.menuItems.push(backToPortal)
