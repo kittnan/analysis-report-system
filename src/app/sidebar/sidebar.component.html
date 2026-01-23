@@ -10,10 +10,15 @@
     </div>
     <ul class="nav">
         <li *ngFor="let menuItem of menuItems" routerLinkActive="active" class="{{menuItem.class}}">
-            <a [routerLink]="[menuItem.path]">
+            <a *ngIf="menuItem.type == 'internal'" [routerLink]="[menuItem.path]">
                 <i class="nc-icon {{menuItem.icon}}"></i>
                 <p>{{menuItem.title}}</p>
             </a>
+            <a *ngIf="menuItem.type == 'external'" [href]="menuItem.path" target="_self">
+                <i class="nc-icon {{menuItem.icon}}"></i>
+                <p>{{menuItem.title}}</p>
+            </a>
+
         </li>
     </ul>
 </div>
