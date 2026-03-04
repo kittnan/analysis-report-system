@@ -625,7 +625,8 @@ export class RejectForm1Component implements OnInit {
                 userApprove1Name: this.ApproveName,
                 status: 1,
                 noteApprove1: this.NoteApprove.value,
-                noteNow: this.NoteApprove.value
+                noteNow: this.NoteApprove.value,
+                treatment: this.Treatment.value
 
               }
               // console.log(da);

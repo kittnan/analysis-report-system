@@ -624,6 +624,7 @@ export class ProgressForm1Component implements OnInit {
               userApprove2Name: this.ApproveName,
               noteNow: this.NoteApprove.value,
               noteApprove2: this.NoteApprove.value,
+              treatment: this.Treatment.value,
               status: 2
 
             }
