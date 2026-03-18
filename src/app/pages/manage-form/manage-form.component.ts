@@ -186,6 +186,18 @@ export class ManageFormComponent implements OnInit {
 
   OnClickForm(item: any) {
 
+    console.log(`⚡ ~ :189 ~ ManageFormComponent ~ item:`, item);
+    let isFM = item.requestItem && item.requestItem.includes('_FM')
+    if (!isFM) {
+      this.handlePageChange(item)
+    } else {
+      this.handlePageChangeIsFM(item)
+    }
+
+
+  }
+
+  handlePageChange(item: any) {
     const Reject1 = [2.1, 3.1, 4.3, 5.4, 6.4]
     // const Reject2 = 3.1
     const Inprocess = [1, 2, 3, 4, 5]
@@ -245,10 +257,67 @@ export class ManageFormComponent implements OnInit {
       // this.route.navigate(['/viewForm'])
       // location.href = "#/viewForm";
     }
+  }
+  handlePageChangeIsFM(item: any) {
+    const Reject1 = [2.1, 3.1, 4.3, 5.4, 6.4]
+    // const Reject2 = 3.1
+    const Inprocess = [1, 2, 3, 4, 5]
+    const View1 = [1, 2, 2.1]
+    const View2 = [3, 4, 5, 6, 3.1, 4.3, 5.4, 6.4]
+    let StatusForm = item.status;
+    localStorage.setItem('AR_FormId', item._id)
+    if (this.UserId == item.userApprove) {
+      let temp1 = Inprocess.find(ar => ar == StatusForm);
+      if (temp1) {
+        // this.route.navigate(["/progressForm" + StatusForm])
+        // location.href = "#/progressForm" + StatusForm
+        const url = `#/progressForm${StatusForm}-fm?formId=${item._id}`
+        window.open(url, '_blank');
+      } else if (StatusForm == Reject1[0] || StatusForm == Reject1[1]) {
+        // this.route.navigate(["/rejectForm1"])
+        const url = `#/rejectForm1?formId=${item._id}`
+        window.open(url, '_blank');
+        // location.href = "#/rejectForm1";
+      } else if (StatusForm == Reject1[2]) {
+        const url = `#/rejectForm2?formId=${item._id}`
+        window.open(url, '_blank');
+        // this.route.navigate(["/rejectForm2"])
+        // location.href = "#/rejectForm2";
+      } else if (StatusForm == Reject1[3]) {
+        const url = `#/rejectForm3-fm?formId=${item._id}`
+        window.open(url, '_blank');
+        // this.route.navigate(["/rejectForm3"])
+        // location.href = "#/rejectForm3";
+      } else if (StatusForm == Reject1[4]) {
+        const url = `#/rejectForm3-fm?formId=${item._id}`
+        window.open(url, '_blank');
+        // this.route.navigate(["/rejectForm3"])
+        // location.href = "#/rejectForm3";
+      }
 
-
-
-
+    } else {
+      const result1 = View1.find(arr => arr == StatusForm)
+      const result2 = View2.find(arr => arr == StatusForm)
+      let formView: string = "0"
+      if (result1) {
+        formView = '1'
+        // sessionStorage.setItem('FormView', '1');
+      } else if (result2) {
+        formView = '2'
+        // sessionStorage.setItem('FormView', '2');
+      }
+      const url = `#/viewForm?formId=${item._id}&formView=${formView}`
+      window.open(url, '_blank');
+      // this.route.navigate(['/viewForm'], {
+      //   queryParams: {
+      //     a: '1',
+      //     b: '2'
+      //   }
+      // })
+      // alert()
+      // this.route.navigate(['/viewForm'])
+      // location.href = "#/viewForm";
+    }
   }
 
   // ? Search filter

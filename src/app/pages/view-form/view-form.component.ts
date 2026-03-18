@@ -6,7 +6,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -43,7 +43,8 @@ export class ViewFormComponent implements OnInit {
     private api: HttpService,
     // private progressForm1: ProgressForm1Service,
     private modal: NgbModal,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private router: Router
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
       if (param) {
@@ -58,7 +59,13 @@ export class ViewFormComponent implements OnInit {
     const form: any = await this.getForm(this.formId);
 
     form ? this.form = form : this.form = []
-    // console.log(form);
+    console.log(form);
+    if (form?.requestItem.includes('_FM')) {
+      // this.router.navigate(['/manageForm'])
+      // `#/viewForm-fm?formId=${item._id}`
+      // this.router.navigate(['viewForm'])
+      window.open(`#/viewForm-fm?formId=${this.formId}`, '_self');
+    }
 
     const result = await this.getResult(this.formId);
     result ? this.result = result : this.result = []

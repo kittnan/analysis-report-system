@@ -1,0 +1,592 @@
+<div class="col-12"
+    style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="row">
+                <h6>{{ config.formTitle }}</h6>
+            </div>
+        </div>
+
+        <div class="col-md-12 border-bottom">
+            <!-- Form Header Information -->
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Item</label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestItem}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Number</label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestNumber}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Issued Date</label>
+                        <p class="subtext-color" *ngIf="form">{{form.issuedDate}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Reply Date</label>
+                        <p class="subtext-color" *ngIf="form">{{form.replyDate}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue with other form fields... -->
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request By</label>
+                        <p class="subtext-color" *ngIf="Users">{{Users.FirstName}} {{Users.LastName}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Department</label>
+                        <p class="subtext-color" *ngIf="Users">{{Users.Department}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="head-label" for="">Request Analysis</label>
+                        <p class="subtext-color" *ngIf="form">{{form.requestAnalysis}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Form Section -->
+        <div class="col-md-12" [formGroup]="ResultForm">
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <h6>Analysis Results</h6>
+                </div>
+            </div>
+
+            <!-- Date Fields -->
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Start Analysis Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" formControlName="AnalyzeDate"
+                            [class.is-invalid]="AnalyzeDate?.invalid && AnalyzeDate?.touched">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Finish Analysis Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" formControlName="ResultDate"
+                            [min]="minDateFinishAnalysisDate"
+                            [class.is-invalid]="ResultDate?.invalid && ResultDate?.touched">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Report Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" formControlName="ReportDate"
+                            [class.is-invalid]="ReportDate?.invalid && ReportDate?.touched">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Fields -->
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Result <span class="text-danger">*</span></label>
+                        <textarea class="form-control" rows="3" formControlName="Result"
+                            [class.is-invalid]="Result?.invalid && Result?.touched"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result2 Array (Dynamic FM Results) -->
+            <div formArrayName="Result2">
+                <div class="row" *ngFor="let res of Result2.controls; let i = index" [formGroupName]="i">
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" for="">Qty</label>
+                            <input type="number" class="form-control" formControlName="qty">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" for="">Item</label>
+                            <input type="text" class="form-control" formControlName="tempItem"
+                                (input)="res.get('dropdown')?.setValue(true)"
+                                [class.is-invalid]="res.get('item')?.invalid && res.get('item')?.touched">
+                            <!-- Dropdown for filtered results -->
+                            <div class="dropdown-menu show" *ngIf="res.get('dropdown')?.value" 
+                                style="position: absolute; width: 100%; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                                <a class="dropdown-item" *ngFor="let option of filterResult2(res)" 
+                                    (click)="SetResultFM(res); res.get('dropdown')?.setValue(false)">
+                                    {{option.item}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="button" class="btn btn-outline-danger btn-sm d-block" 
+                                (click)="removeResult2Item(i)" *ngIf="Result2.controls.length > 1">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResult2Item()">
+                        Add Item
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analysis Details -->
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Source of Defect <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="SourceOfDefect"
+                            [class.is-invalid]="SourceOfDefect?.invalid && SourceOfDefect?.touched">
+                            <option value="">Select Source</option>
+                            <option *ngFor="let source of SourceList" [value]="source.nameList">
+                                {{source.nameList}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Category Cause <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="CategoryCause"
+                            [class.is-invalid]="CategoryCause?.invalid && CategoryCause?.touched">
+                            <option value="">Select Cause</option>
+                            <option *ngFor="let cause of CauseList" [value]="cause.nameList">
+                                {{cause.nameList}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Analysis Level <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="AnalysisLevel"
+                            [class.is-invalid]="AnalysisLevel?.invalid && AnalysisLevel?.touched">
+                            <option value="">Select Level</option>
+                            <option *ngFor="let level of AnalysisLevelList" [value]="level.nameList">
+                                {{level.nameList}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Can Analysis <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="CanAnalysis"
+                            [class.is-invalid]="CanAnalysis?.invalid && CanAnalysis?.touched">
+                            <option value="">Select Option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Related to ESD <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="RelatedToESD"
+                            [class.is-invalid]="RelatedToESD?.invalid && RelatedToESD?.touched">
+                            <option value="">Select Option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Report No <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" formControlName="ReportNo"
+                            [class.is-invalid]="ReportNo?.invalid && ReportNo?.touched">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment of NG - Conditional based on config -->
+            <div class="row" *ngIf="config.enableTreatmentOfNg">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Treatment of NG <span class="text-danger">*</span></label>
+                        <select class="form-control" [formControl]="TreatmentOfNg"
+                            [class.is-invalid]="TreatmentOfNg?.invalid && TreatmentOfNg?.touched">
+                            <option value="">Select Treatment</option>
+                            <option *ngFor="let treatment of TreatmentList" [value]="treatment.nameList">
+                                {{treatment.nameList}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Judgement Defect - Conditional based on config -->
+            <div class="row" *ngIf="config.enableJudgementDefect">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Judgement Defect <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="JudgementDefect"
+                            [class.is-invalid]="JudgementDefect?.invalid && JudgementDefect?.touched">
+                            <option value="">Select Judgement</option>
+                            <option *ngFor="let judgement of JudgementDefects" [value]="judgement.nameList || judgement">
+                                {{judgement.nameList || judgement}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Remark</label>
+                        <textarea class="form-control" rows="2" formControlName="Remark"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operator Analysis Section - Conditional based on config -->
+            <div *ngIf="config.enableOperatorAnalysis">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6>Operator Analysis</h6>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" for="">Operator Name <span class="text-danger">*</span></label>
+                            <select class="form-control" formControlName="OperatorName"
+                                [class.is-invalid]="OperatorName?.invalid && OperatorName?.touched">
+                                <option value="">Select Operator</option>
+                                <option *ngFor="let operator of OperatorNameOption" [value]="operator.nameList">
+                                    {{operator.nameList}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" for="">Difficulty of Work <span class="text-danger">*</span></label>
+                            <select class="form-control" formControlName="DifficultyOfWork"
+                                [class.is-invalid]="DifficultyOfWork?.invalid && DifficultyOfWork?.touched">
+                                <option value="">Select Difficulty</option>
+                                <option *ngFor="let difficulty of DifficultyOfWorkOption" [value]="difficulty.nameList">
+                                    {{difficulty.nameList}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" for="">Correct of Work <span class="text-danger">*</span></label>
+                            <select class="form-control" formControlName="CorrectOfWork"
+                                [class.is-invalid]="CorrectOfWork?.invalid && CorrectOfWork?.touched">
+                                <option value="">Select Correctness</option>
+                                <option *ngFor="let correct of CorrectOfWorkOption" [value]="correct.nameList">
+                                    {{correct.nameList}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group">
+                            <label class="form-label" for="">Analysis Time <span class="text-danger">*</span></label>
+                            <select class="form-control" formControlName="AnalysisTime"
+                                [class.is-invalid]="AnalysisTime?.invalid && AnalysisTime?.touched">
+                                <option value="">Select Time</option>
+                                <option *ngFor="let time of AnalysisTimeOption" [value]="time.nameList">
+                                    {{time.nameList}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approval Section -->
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Approve <span class="text-danger">*</span></label>
+                        <select class="form-control" formControlName="Approve" (change)="OnApproveChange()"
+                            [class.is-invalid]="Approve?.invalid && Approve?.touched">
+                            <option value="">Select Approver</option>
+                            <option *ngFor="let approver of ApproveList" [value]="approver._id">
+                                {{approver.FirstName}} {{approver.LastName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Approver Name</label>
+                        <p class="form-control-plaintext">{{ApproveName || 'Not selected'}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Section - Conditional based on form type -->
+            <div class="row" *ngIf="config.formType === 'reject'">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Reject Note <span class="text-danger">*</span></label>
+                        <textarea class="form-control" rows="3" formControlName="NoteReject"
+                            placeholder="Please provide a reason for rejection..."
+                            [class.is-invalid]="NoteReject?.invalid && NoteReject?.touched"></textarea>
+                        <small class="text-muted">This note will be sent to the requester explaining the rejection.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" *ngIf="config.formType === 'progress'">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="form-label" for="">Approval Note</label>
+                        <textarea class="form-control" rows="2" formControlName="NoteApprove"
+                            placeholder="Optional approval comments..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Form Section - Conditional based on config -->
+        <div class="col-md-12" *ngIf="config.enableAnalysisForm" [formGroup]="analysisForm">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h6>Analysis Details Form</h6>
+                </div>
+            </div>
+
+            <!-- Mapping Position Images -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">Mapping Position Images</label>
+                        <input type="file" class="form-control" multiple accept="image/*" 
+                            (change)="onMappingPositionSelect($event)">
+                        <small class="text-muted">Maximum {{MAX_MAPPING_POSITION_IMAGES}} images</small>
+                        
+                        <!-- Image previews -->
+                        <div class="row mt-2" *ngIf="mappingPositionPreviews.length > 0">
+                            <div class="col-md-3 col-sm-6 mb-2" *ngFor="let preview of mappingPositionPreviews; let i = index">
+                                <div class="position-relative">
+                                    <img [src]="preview" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                    <button type="button" class="btn btn-danger btn-sm position-absolute" 
+                                        style="top: 5px; right: 5px;" (click)="removeMappingPositionImage(i)">×</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Items Array -->
+            <div formArrayName="analysis">
+                <div class="card mb-3" *ngFor="let analysisItem of analysisFormArray.controls; let i = index" [formGroupName]="i">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            Analysis Item #{{i + 1}}
+                            <button type="button" class="btn btn-outline-danger btn-sm float-right" 
+                                (click)="removeAnalysisItem(i)" *ngIf="analysisFormArray.controls.length > 1">
+                                Remove Item
+                            </button>
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">FM Position <span class="text-danger">*</span></label>
+                                    <select class="form-control" formControlName="fmPosition">
+                                        <option value="">Select Position</option>
+                                        <option *ngFor="let position of FM_PositionOption" [value]="position.name">
+                                            {{position.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Size Length <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" formControlName="sizeLength" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Size Width <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" formControlName="sizeWidth" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Material <span class="text-danger">*</span></label>
+                                    <select class="form-control" formControlName="material">
+                                        <option value="">Select Material</option>
+                                        <option *ngFor="let material of MaterialOption" [value]="material.name">
+                                            {{material.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Estimate Result Process <span class="text-danger">*</span></label>
+                                    <select class="form-control" formControlName="estimateResultProcess">
+                                        <option value="">Select Process</option>
+                                        <option *ngFor="let process of EstimateResultProcessOption" [value]="process.name">
+                                            {{process.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Data Code <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" formControlName="dataCode">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Color <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" formControlName="color">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label">Character <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" formControlName="character">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Microscope Images -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Microscope Images</label>
+                                    <input type="file" class="form-control" multiple accept="image/*" 
+                                        (change)="onMicroscopeImageSelect($event, i)">
+                                    <small class="text-muted">Maximum {{MAX_MICROSCOPE_IMAGES_PER_ITEM}} images per item</small>
+                                    
+                                    <!-- Microscope Image previews -->
+                                    <div class="row mt-2" *ngIf="microscopeImagePreviews[i] && microscopeImagePreviews[i].length > 0">
+                                        <div class="col-md-3 col-sm-6 mb-2" *ngFor="let preview of microscopeImagePreviews[i]; let j = index">
+                                            <div class="position-relative">
+                                                <img [src]="preview" class="img-thumbnail" style="width: 100%; height: 120px; object-fit: cover;">
+                                                <button type="button" class="btn btn-danger btn-sm position-absolute" 
+                                                    style="top: 5px; right: 5px;" (click)="removeMicroscopeImage(i, j)">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FT-IR Spectrum Images -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">FT-IR Spectrum Images</label>
+                                    <input type="file" class="form-control" multiple accept="image/*" 
+                                        (change)="onFtirSpectrumImageSelect($event, i)">
+                                    <small class="text-muted">Maximum {{MAX_FTIR_IMAGES_PER_ITEM}} images per item</small>
+                                    
+                                    <!-- FT-IR Spectrum Image previews -->
+                                    <div class="row mt-2" *ngIf="ftirSpectrumImagePreviews[i] && ftirSpectrumImagePreviews[i].length > 0">
+                                        <div class="col-12 mb-2" *ngFor="let preview of ftirSpectrumImagePreviews[i]; let j = index">
+                                            <div class="position-relative">
+                                                <img [src]="preview" class="img-thumbnail" style="width: 100%; height: 100px; object-fit: cover;">
+                                                <button type="button" class="btn btn-danger btn-sm position-absolute" 
+                                                    style="top: 5px; right: 5px;" (click)="removeFtirSpectrumImage(i, j)">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">FT-IR Spectrum Graph Images</label>
+                                    <input type="file" class="form-control" multiple accept="image/*" 
+                                        (change)="onFtirSpectrumGraphImageSelect($event, i)">
+                                    <small class="text-muted">Maximum {{MAX_FTIR_IMAGES_PER_ITEM_GRAPH}} images per item</small>
+                                    
+                                    <!-- FT-IR Spectrum Graph Image previews -->
+                                    <div class="row mt-2" *ngIf="ftirSpectrumImagesGraphPreviews[i] && ftirSpectrumImagesGraphPreviews[i].length > 0">
+                                        <div class="col-12 mb-2" *ngFor="let preview of ftirSpectrumImagesGraphPreviews[i]; let j = index">
+                                            <div class="position-relative">
+                                                <img [src]="preview" class="img-thumbnail" style="width: 100%; height: 100px; object-fit: cover;">
+                                                <button type="button" class="btn btn-danger btn-sm position-absolute" 
+                                                    style="top: 5px; right: 5px;" (click)="removeFtirSpectrumGraphImage(i, j)">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="button" class="btn btn-outline-primary" (click)="addAnalysisItem()">
+                        Add Analysis Item
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-md-12 mt-4">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="button" class="btn btn-success me-2" (click)="onSaveResult()" 
+                        [disabled]="!isFormValid()">
+                        Save {{ config.formType === 'progress' ? 'Progress' : 'Reject' }} Form
+                    </button>
+                    <button type="button" class="btn btn-secondary me-2" (click)="showDebug()" *ngIf="false">
+                        Debug
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" 
+                        [routerLink]="config.redirectRoute">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

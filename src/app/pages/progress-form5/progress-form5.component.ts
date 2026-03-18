@@ -537,7 +537,6 @@ export class ProgressForm5Component implements OnInit {
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
                     "AE Approval not approve report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
-
                   const sendMail = {
                     Content: Content,
                     To: this.SendRejectUser.Email,

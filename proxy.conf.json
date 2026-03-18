@@ -1,0 +1,9 @@
+{
+  "/file-proxy": {
+    "target": "http://10.200.90.152:4501",
+    "secure": false,
+    "pathRewrite": { "^/file-proxy": "" },
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

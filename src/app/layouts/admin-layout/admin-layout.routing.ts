@@ -42,6 +42,12 @@ import { ElectricalMasterComponent } from 'app/pages/electrical-database/electri
 import { ElectricalTftDrivingComponent } from 'app/pages/electrical-database/electrical-TFT-Driving-voltage/electrical-tft-driving/electrical-tft-driving.component';
 import { ElectricalResistanceComponent } from 'app/pages/electrical-database/electrical-resistance/electrical-resistance/electrical-resistance.component';
 import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical-otp/electrical-otp/electrical-otp.component';
+import { ProgressForm3FmComponent } from 'app/pages/progress-form3-fm/progress-form3-fm.component';
+import { ProgressForm4FmComponent } from 'app/pages/progress-form4-fm/progress-form4-fm.component';
+import { RejectForm3FmComponent } from 'app/pages/reject-form3-fm/reject-form3-fm.component';
+import { ProgressForm5FmComponent } from 'app/pages/progress-form5-fm/progress-form5-fm.component';
+import { ViewFormFmComponent } from 'app/pages/view-form-fm/view-form-fm.component';
+import { ProgressForm4FmWrapperComponent } from 'app/pages/progress-form4-fm/progress-form4-fm-wrapper.component';
 
 // import { LoginComponent } from 'app/pages/login/login.component';
 
@@ -105,6 +111,14 @@ export const AdminLayoutRoutes: Routes = [
 
   //OTP
   { path: "electricalOtp", component: ElectricalOtpComponent },
+
+  // FOR request FM
+  { path: 'progressForm3-fm', component: ProgressForm3FmComponent },
+  { path: 'progressForm4-fm', component: ProgressForm4FmComponent },
+  { path: 'progressForm5-fm', component: ProgressForm5FmComponent },
+  { path: 'rejectForm3-fm', component: RejectForm3FmComponent },
+  { path: 'viewForm-fm', component: ViewFormFmComponent },
+
 
 
 ];

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http'
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment'
 @Injectable({
@@ -691,8 +691,27 @@ export class HttpService {
   importResultFM(data: any): Observable<any> {
     return this.http.post(this.Url + "/result-fm-master/import", data);
   }
+  generateReportFM(id: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(this.Url + "/generate-report-fm/ReportFM/" + id, {
+      observe: 'response',
+      responseType: 'blob'
+    });
+  }
 
+  // todo FM position
+  getFMPosition(params: HttpParams): Observable<any> {
+    return this.http.get(this.Url + "/fm-position", { params: params });
+  }
 
+  // todo Material
+  getMaterial(params: HttpParams): Observable<any> {
+    return this.http.get(this.Url + "/material", { params: params });
+  }
+
+  // todo Estimate result process 
+  getEstimateResultProcess(params: HttpParams): Observable<any> {
+    return this.http.get(this.Url + "/estimate-result-process", { params: params });
+  }
 
 }
 // getDataView

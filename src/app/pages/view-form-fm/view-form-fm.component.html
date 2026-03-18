@@ -1,0 +1,640 @@
+<div class="row head-tool">
+	<span *ngIf="toggleLabel" class="icon-make" (click)="pdfLabel();"><i class="bi bi-file-earmark-pdf"
+			style="font-size: 2rem;"></i>label</span>
+	<ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
+		<a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+				style="font-size: 2rem;"></i>Report</a>
+	</ng-container>
+	<ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
+		<a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+				style="font-size: 2rem;"></i>Report</a>
+	</ng-container>
+</div>
+
+<div id="print" class="col-lg-12 main">
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="row">
+				<h6>Analysis Request Form</h6>
+			</div>
+		</div>
+
+		<div class="col-md-12 border-bottom">
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Request Item</label>
+						<p class="subtext-color" *ngIf="form">{{form.requestItem}}</p>
+					</div>
+
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Request Number</label>
+						<p class="subtext-color" *ngIf="form">{{form.requestNumber}}</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Issued Date</label>
+						<p class="subtext-color" *ngIf="form">{{form.issuedDate}}</p>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Reply Date</label>
+						<p class="subtext-color" *ngIf="form">{{form.replyDate}}</p>
+					</div>
+
+				</div>
+			</div>
+
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Request from (Department-Section) </label>
+						<p class="subtext-color" *ngIf="form">{{form.requestFormSectionName}}</p>
+					</div>
+				</div>
+
+			</div>
+
+
+		</div>
+
+		<div class="col-md-12" style="margin-top: 50px;">
+			<div class="row">
+				<h6>Detail of NG Product</h6>
+			</div>
+		</div>
+
+		<div class="col-md-12 border-bottom">
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<div class="row">
+							<div class="col-lg-4">
+								<label class="head-label" for="">Model Number</label>
+								<p class="subtext-color" *ngIf="form">{{form.ktcModelNumber}}</p>
+							</div>
+							<div class="col-lg-3">
+								<label class="head-label" for="">Size (inch)</label>
+								<p class="subtext-color" *ngIf="form">{{form.size}}</p>
+							</div>
+							<div class="col-lg-5">
+								<label class="head-label" for="">Customer</label>
+								<p class="subtext-color" *ngIf="form">{{form.customer}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="row">
+						<div class="col-lg-5 col-md-5 col-sm-12">
+							<div class="form-group">
+
+								<label class="head-label">CPR Lot Number/CRR
+									Lot Number
+								</label>
+								<p class="subtext-color" *ngIf="form">{{form.pcLotNumber}}</p>
+							</div>
+						</div>
+
+						<div class="col-lg-4 col-md-4 col-sm-12">
+							<div class="form-group">
+
+								<label class="head-label">Normal/TBN. Lot
+								</label>
+								<p class="subtext-color" *ngIf="form">{{form.TBN}}</p>
+							</div>
+						</div>
+
+						<div class="col-lg-3 col-md-3 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">TBN.
+									Number
+								</label>
+								<p class="subtext-color" *ngIf="form">{{form.TBNNumber}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Defective Code</label>
+						<p class="subtext-color" *ngIf="form">{{form.defectiveCode}}</p>
+					</div>
+				</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Defective Name</label>
+						<p class="subtext-color" *ngIf="form">{{form.defectiveName}}</p>
+					</div>
+				</div>
+
+				<div class="col-lg-3 col-md-3 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Treatment</label>
+						<p class="subtext-color" *ngIf="form">{{form.treatment}}</p>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Input Quantity (Pcs)</label>
+						<p class="subtext-color" *ngIf="form">{{form.inputQuantity}}</p>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">NG Quantity (Pcs)</label>
+						<p class="subtext-color" *ngIf="form">{{form.ngQuantity}}</p>
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">NG Ratio (%)</label>
+						<p class="subtext-color" *ngIf="form">{{form.ngRatio | number : '.1-2'}}</p>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Send NG To Analysis (Pcs)</label>
+						<p class="subtext-color" *ngIf="form">{{form.sendNgAnalysis}}</p>
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Production Phase</label>
+						<p class="subtext-color" *ngIf="form">{{form.productionPhase}}</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Defect Catagory</label>
+						<p class="subtext-color" *ngIf="form">{{form.defectCatagory}}</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-12" *ngIf="form.claimNo">
+					<div class="form-group">
+						<label class="head-label" for="">Claim no.</label>
+						<p class="subtext-color" *ngIf="form">{{form.claimNo}}</p>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Occur Place </label>
+						<p class="subtext-color" *ngIf="form">{{form.occurBName}}</p>
+
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label" for="">Abnormal Lot Level</label>
+						<p class="subtext-color" *ngIf="form">{{form.abnormalLotLevel}} </p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12 mt-2">
+					<div class="form-group">
+						<label class="head-label">Issue Data</label>
+						<p class="subtext-color" *ngIf="form">{{form.issuer}}</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" *ngIf="form.files">
+				<div class="col-lg-12 mt-2">
+
+					<table class="table">
+						<thead>
+							<th width="80%">Files</th>
+							<th class="text-center" width="20%">Download</th>
+						</thead>
+						<tbody *ngIf="form.files.length == 0" class="subtext-color">
+							<tr>
+								<td>
+									No files.
+
+								</td>
+								<td>
+
+								</td>
+							</tr>
+
+
+						</tbody>
+
+						<tbody *ngIf="form.files.length != 0 || form.files != null">
+							<tr *ngFor="let item of form.files; let i=index">
+								<td>
+									{{item.name}}
+								</td>
+								<td class="text-center">
+									<a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
+										style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-6">
+					<label class="head-label" for="">Comment</label>
+					<button class="btn btn-block" (click)="showComment(comment)">Show Comment</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="shouldShowResultSection()" class="col-lg-12 mt-5"
+	style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="row">
+				<h6>Engineer Input Analysis Result</h6>
+			</div>
+		</div>
+
+		<div class="col-md-12 border-bottom">
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label">Request Number</label>
+						<p class="subtext-color" *ngIf="result&&form">{{form.requestNumber}}</p>
+					</div>
+
+				</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label">Start analyze date </label>
+						<p class="subtext-color" *ngIf="result">{{result.startAnalyzeDate}} </p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<div class="form-group">
+						<label class="head-label">Finished analysis result date </label>
+						<p class="subtext-color" *ngIf="result">{{result.finishAnalyzeDate}} </p>
+					</div>
+				</div>
+
+				<div class="col-lg-6">
+					<div class="form-group">
+						<label class="head-label">Finish analysis report date</label>
+						<p class="subtext-color" *ngIf="result">{{result.finishReportDate}}</p>
+					</div>
+				</div>
+
+			</div>
+
+
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="form-group">
+						<label class="head-label">Category Root Cause</label>
+						<p class="subtext-color" *ngIf="result">{{result.causeOfDefect}}</p>
+					</div>
+				</div>
+
+			</div>
+
+			<div *ngIf="isFM() && isResult2()" class="row">
+				<div class="col-12 mt-2">
+					<div class="form-group">
+						<label class="head-label">Analysis Result</label>
+						<div class="table-responsive">
+							<table class="table table-bordered mb-0">
+								<thead>
+									<tr>
+										<th width="42%">Example of material in process</th>
+										<th width="12%" class="text-center">Q'ty</th>
+										<th width="18%">Source</th>
+										<th width="28%">Material</th>
+									</tr>
+								</thead>
+								<tbody class="subtext-color">
+									<tr *ngFor="let result2 of result.result2; let i=index">
+										<td>{{result2.item}}</td>
+										<td class="text-center">{{result2.qty}}</td>
+										<td>{{result2.rootCase}}</td>
+										<td>{{result2.material}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div *ngIf="!isFM() || !isResult2()" class="row">
+				<div class="col-lg-12">
+					<div class="form-group">
+						<label class="head-label">Analysis Result</label>
+						<textarea *ngIf="result" disabled cols="30" rows="10"
+							class="form-control subtext-color">{{result.result}}</textarea>
+					</div>
+				</div>
+			</div>
+
+			<ng-container *ngIf="hasAnalysisForm()">
+				<div class="row mt-4">
+					<div class="col-12">
+						<h6>FM Analysis Form</h6>
+					</div>
+				</div>
+
+				<div class="row mb-3" *ngIf="mappingPositionImages.length > 0">
+					<div class="col-12">
+						<label class="head-label">Mapping Position</label>
+						<div class="analysis-image-list large-image-list">
+							<a class="analysis-image-card" target="_blank" *ngFor="let image of mappingPositionImages"
+								[href]="getFilePath(image)">
+								<img [src]="getFilePath(image)" [alt]="image.name">
+								<span>{{image.name}}</span>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="analysis-item-wrapper" *ngFor="let item of analysisItems; let i = index">
+					<div class="row">
+						<div class="col-12">
+							<h6 class="analysis-item-title">Analysis Item #{{item.no || i + 1}}</h6>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-4 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">FM Position</label>
+								<p class="subtext-color">{{item.fmPosition}}</p>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">Material</label>
+								<p class="subtext-color">{{item.material}}</p>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">Size (Length x Width)</label>
+								<p class="subtext-color">{{item.sizeLength}} x {{item.sizeWidth}} mm</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-4 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">Estimate Result in Process</label>
+								<p class="subtext-color">{{item.estimateResultProcess}}</p>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">Data Code</label>
+								<p class="subtext-color">{{item.dataCode}}</p>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">Color</label>
+								<p class="subtext-color">{{item.color}}</p>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-6 col-sm-12">
+							<div class="form-group">
+								<label class="head-label">Character (Hardness)</label>
+								<p class="subtext-color">{{item.character}}</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-4 col-md-12" *ngIf="item.microscopeImages?.length">
+							<label class="head-label">Microscope Image</label>
+							<div class="analysis-image-list">
+								<a class="analysis-image-card" target="_blank" *ngFor="let image of item.microscopeImages"
+									[href]="getFilePath(image)">
+									<img [src]="getFilePath(image)" [alt]="image.name">
+									<span>{{image.name}}</span>
+								</a>
+							</div>
+						</div>
+
+						<div class="col-lg-4 col-md-12" *ngIf="item.ftirSpectrumImages?.length">
+							<label class="head-label">FT-IR Spectrum Image</label>
+							<div class="analysis-image-list">
+								<a class="analysis-image-card" target="_blank" *ngFor="let image of item.ftirSpectrumImages"
+									[href]="getFilePath(image)">
+									<img [src]="getFilePath(image)" [alt]="image.name">
+									<span>{{image.name}}</span>
+								</a>
+							</div>
+						</div>
+
+						<div class="col-lg-4 col-md-12" *ngIf="item.ftirSpectrumImagesGraph?.length">
+							<label class="head-label">FT-IR Spectrum Graph Image</label>
+							<div class="analysis-image-list">
+								<a class="analysis-image-card" target="_blank" *ngFor="let image of item.ftirSpectrumImagesGraph"
+									[href]="getFilePath(image)">
+									<img [src]="getFilePath(image)" [alt]="image.name">
+									<span>{{image.name}}</span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ng-container>
+
+			<div class="row">
+				<div class="col-lg-3">
+					<div class="form-group">
+						<label class="head-label">Source Of Defect</label>
+						<p class="subtext-color" *ngIf="result">{{result.sourceOfDefect}}</p>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="form-group">
+						<label class="head-label">Analysis Level</label>
+						<p class="subtext-color" *ngIf="result">{{result.analysisLevel}}</p>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="form-group">
+						<label class="head-label">Can/Can't Analysis</label>
+						<p class="subtext-color" *ngIf="result">{{result.canAnalysis}}</p>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="form-group">
+						<label class="head-label">Related to ESD</label>
+						<p class="subtext-color" *ngIf="result">{{result.relatedToESD}}</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-3">
+					<div class="form-group">
+						<label class="head-label">Judgement Defect</label>
+						<p class="subtext-color" *ngIf="result">{{result.JudgementDefect}}</p>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="form-group">
+						<label class="head-label">Remark</label>
+						<p class="subtext-color" *ngIf="result">{{result.Remark}}</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row mt-2">
+				<div class="col-lg-12 col-md-12 col-sm-12">
+					<div class="row">
+						<div class="col-lg-3">
+							<div class="form-group ">
+								<label class="head-label">Operator Name </label>
+								<div class="input-group mb-3 ">
+									<p class="subtext-color">{{result.operatorName}}</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<div class="form-group ">
+								<label class="head-label">Difficulty of Work</label>
+								<div class="input-group mb-3 ">
+									<div class="input-group mb-3 ">
+										<p class="subtext-color">{{result.difficultyOfWork}}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<div class="form-group ">
+								<label class="head-label">Correct of Work</label>
+								<div class="input-group mb-3 ">
+									<div class="input-group mb-3 ">
+										<p class="subtext-color">{{result.correctOfWork}}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<div class="form-group ">
+								<label class="head-label">Analysis Time</label>
+								<div class="input-group mb-3 ">
+									<div class="input-group mb-3 ">
+										<p class="subtext-color">{{result.analysisTime}}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row mt-2">
+				<div class="col-lg-12 col-md-12 col-sm-12">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Files</th>
+								<th width="15%" class="text-center">
+									Download
+								</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="result" class="subtext-color">
+							<tr *ngFor="let item of result.files; let i=index">
+								<td>{{item.name}} </td>
+								<td class="text-center">
+									<a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
+										style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+			<div class="row ">
+
+				<div class="col-lg-6 col-md-6 col-sm-12 ">
+					<div class="form-group">
+						<label class="head-label">Source Of Defect</label>
+						<p class="subtext-color" *ngIf="result">{{result.sourceOfDefect}}</p>
+					</div>
+				</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-12 ">
+					<div class="form-group">
+						<label class="head-label">Analysis Level</label>
+						<p class="subtext-color" *ngIf="result">{{result.analysisLevel}}</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<ng-template #comment let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">Comment</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click'); ">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+
+		<div class="row" *ngFor="let item of CommentLists">
+			<div class="col-12">
+				<div class="form-group">
+					<label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short" style="font-size: 1.3rem;"></i>
+						{{item.to}}</label>
+					<p class="box-comment" [ngClass]="item.class">{{item.note}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
