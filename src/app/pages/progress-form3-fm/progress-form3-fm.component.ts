@@ -73,7 +73,7 @@ export class ProgressForm3FmComponent implements OnInit {
     RelatedToESD: new FormControl(null, Validators.required),
     ReportNo: new FormControl(null, Validators.required),
     Approve: new FormControl(null, Validators.required),
-    File: new FormControl(null),
+    File: new FormControl(null, Validators.required),
     TempCause: new FormControl(null),
     htmlReport: new FormControl(null),
     JudgementDefect: new FormControl(null, Validators.required),
@@ -82,7 +82,8 @@ export class ProgressForm3FmComponent implements OnInit {
     DifficultyOfWork: new FormControl(null, Validators.required),
     CorrectOfWork: new FormControl(null, Validators.required),
     AnalysisTime: new FormControl(null, Validators.required),
-
+    resultItemRequire: new FormControl(true),
+    resultAnalysisRequire: new FormControl(true)
   })
 
   TreatmentOfNg = new FormControl(null, Validators.required);
@@ -97,13 +98,16 @@ export class ProgressForm3FmComponent implements OnInit {
       new FormGroup({
         no: new FormControl(1, Validators.required),
         fmPosition: new FormControl(null, Validators.required),
+        tempFmPosition: new FormControl(null),
         microscopeImages: new FormControl([], Validators.required),
         sizeLength: new FormControl(null, Validators.required),
         sizeWidth: new FormControl(null, Validators.required),
         ftirSpectrumImages: new FormControl([], Validators.required),
         ftirSpectrumImagesGraph: new FormControl([], Validators.required),
         material: new FormControl(null, Validators.required),
+        tempMaterial: new FormControl(null),
         estimateResultProcess: new FormControl(null, Validators.required),
+        tempEstimateResultProcess: new FormControl(null),
         dataCode: new FormControl(null, Validators.required),
         color: new FormControl(null, Validators.required),
         character: new FormControl(null, Validators.required),
@@ -136,6 +140,13 @@ export class ProgressForm3FmComponent implements OnInit {
   // ? filter dropdown
   CauseToggle = false;
   CauseFilter = [];
+  FmPositionToggle: boolean[] = [];
+  FmPositionFilter = [];
+  MaterialToggle: boolean[] = [];
+  MaterialFilter = [];
+  EstimateResultProcessToggle: boolean[] = [];
+  EstimateResultProcessFilter = [];
+  currentAnalysisIndex = 0; // Track which analysis item is being edited
 
   // ? Email
   SendEmailApproved: any;
@@ -197,6 +208,8 @@ export class ProgressForm3FmComponent implements OnInit {
   MaterialOption: any = []
   EstimateResultProcessOption: any = []
 
+  VisibleMappingPosition = false;
+
   // ? filter dropdown
   async ngOnInit(): Promise<void> {
     this.CheckStatusUser();
@@ -207,6 +220,9 @@ export class ProgressForm3FmComponent implements OnInit {
     // อัปเดต validators หลังจากโหลดข้อมูล
     setTimeout(() => {
       this.updateResult2Validators();
+      this.initializeToggleArrays();
+      this.controlResultItemRequire()
+      this.controlResultAnalysisRequire()
     }, 1000);
   }
 
@@ -236,6 +252,8 @@ export class ProgressForm3FmComponent implements OnInit {
       if (data) {
 
         this.form = data;
+        this.VisibleMappingPosition = !!this.form.requestItem?.includes('AMT');
+        this.updateMappingPositionValidator();
         this.FileList = data.files;
         // this.SetPathFile();
         let str = this.form.issuedDate.split("T");
@@ -250,6 +268,7 @@ export class ProgressForm3FmComponent implements OnInit {
           // todo have result
           if (data.length > 0) {
             const result = data[0]
+
             this.ResultAPi = result
             const dateResultStart = result.startAnalyzeDate ? (result.startAnalyzeDate.split("T"))[0] : null
             const dateResultEnd = result.finishAnalyzeDate ? (result.finishAnalyzeDate.split("T"))[0] : null
@@ -261,9 +280,9 @@ export class ProgressForm3FmComponent implements OnInit {
 
             result.result ? this.Result.setValue(result.result) : null
 
-            console.log(`⚡ ~ :232 ~ ProgressForm3Component ~ result.result2`, result.result2);
 
             if (result.result2 && result.result2.length > 0 && result.result2[0].item) {
+
               const result2Array = this.Result2 as FormArray;
               result2Array.clear();
               result.result2.forEach((res: any) => {
@@ -277,18 +296,17 @@ export class ProgressForm3FmComponent implements OnInit {
                 });
                 result2Array.push(formGroup);
               });
-              console.log(1);
               // อัปเดต validators หลังจากโหลด result2
               this.updateResult2Validators();
 
               // this.ResultForm.get('Result').clearValidators();
               // this.ResultForm.get('Result').updateValueAndValidity();
             } else {
-              console.log(2);
 
               // this.ResultForm.get('Result2').clearValidators();
               // this.ResultForm.get('Result2').updateValueAndValidity();
             }
+
             result.sourceOfDefect ? this.SourceOfDefect.setValue(result.sourceOfDefect) : null
 
             result.causeOfDefect ? this.CategoryCause.setValue(result.causeOfDefect) : null
@@ -317,6 +335,11 @@ export class ProgressForm3FmComponent implements OnInit {
             result.difficultyOfWork ? this.DifficultyOfWork.setValue(result.difficultyOfWork) : null
             result.correctOfWork ? this.CorrectOfWork.setValue(result.correctOfWork) : null
             result.analysisTime ? this.AnalysisTime.setValue(result.analysisTime) : null
+
+            result.resultItemRequire ? this.ResultItemRequire.setValue(result.resultItemRequire) : this.ResultItemRequire.setValue(false)
+            result.resultAnalysisRequire ? this.ResultAnalysisRequire.setValue(result.resultAnalysisRequire) : this.ResultAnalysisRequire.setValue(false)
+
+
 
             // * Bind analysisForm data from result
             if (result.analysisForm) {
@@ -347,6 +370,7 @@ export class ProgressForm3FmComponent implements OnInit {
 
               // Bind analysis items
               if (result.analysisForm.analysis && result.analysisForm.analysis.length > 0) {
+                result.analysisForm.analysis = result.analysisForm.analysis.sort((a: any, b: any) => a.no - b.no); // Sort by 'no' field
                 const analysisArray = this.analysisFormArray;
                 analysisArray.clear();
 
@@ -364,13 +388,16 @@ export class ProgressForm3FmComponent implements OnInit {
                   const formGroup = new FormGroup({
                     no: new FormControl(item.no || index + 1, Validators.required),
                     fmPosition: new FormControl(item.fmPosition, Validators.required),
+                    tempFmPosition: new FormControl(null),
                     microscopeImages: new FormControl(microscopeImages, Validators.required),
                     sizeLength: new FormControl(item.sizeLength, Validators.required),
                     sizeWidth: new FormControl(item.sizeWidth, Validators.required),
                     ftirSpectrumImages: new FormControl(ftirSpectrumImages, Validators.required),
                     ftirSpectrumImagesGraph: new FormControl(ftirSpectrumImagesGraph, Validators.required),
                     material: new FormControl(item.material, Validators.required),
+                    tempMaterial: new FormControl(null),
                     estimateResultProcess: new FormControl(item.estimateResultProcess, Validators.required),
+                    tempEstimateResultProcess: new FormControl(null),
                     dataCode: new FormControl(item.dataCode, Validators.required),
                     color: new FormControl(item.color, Validators.required),
                     character: new FormControl(item.character, Validators.required),
@@ -393,8 +420,12 @@ export class ProgressForm3FmComponent implements OnInit {
                     this.ftirSpectrumImagesGraphPreviews[index] = ftirSpectrumImagesGraph.map(img => img.path);
                   }
                 });
+
+                // Initialize toggle arrays after loading data
+                this.initializeToggleArrays();
               }
             }
+
 
             // * set min date of finish analysis date
             var today = new Date();
@@ -415,6 +446,7 @@ export class ProgressForm3FmComponent implements OnInit {
             this.GetApproveList();
             this.GetCause();
             this.GetResultFMMaster()
+
           }
         })
 
@@ -482,9 +514,11 @@ export class ProgressForm3FmComponent implements OnInit {
   async GetMasterFM() {
     let master = await this.masterFM.getMaster()
     this.FM_PositionOption = master.fmPositions
+    this.FmPositionFilter = master.fmPositions
     this.MaterialOption = master.materials
+    this.MaterialFilter = master.materials
     this.EstimateResultProcessOption = master.estimateResultProcess
-    console.log(`⚡ ~ :374 ~ ProgressForm3FmComponent ~ master:`, master);
+    this.EstimateResultProcessFilter = master.estimateResultProcess
 
   }
 
@@ -574,6 +608,88 @@ export class ProgressForm3FmComponent implements OnInit {
     this.CategoryCause.setValue(this.TempCause.value);
   }
 
+  ToggleFmPositionFilter() {
+    this.FmPositionToggle[this.currentAnalysisIndex] = !this.FmPositionToggle[this.currentAnalysisIndex];
+  }
+
+  FilterFmPosition() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const currentControl = analysisArray.at(this.currentAnalysisIndex);
+    const searchValue = currentControl.get('fmPosition').value;
+
+    if (searchValue) {
+      this.FmPositionFilter = this.FM_PositionOption.filter(
+        item => item.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    } else {
+      this.FmPositionFilter = this.FM_PositionOption;
+    }
+  }
+
+  SetFmPosition() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const currentControl = analysisArray.at(this.currentAnalysisIndex);
+    currentControl.get('fmPosition').setValue(currentControl.get('tempFmPosition').value);
+  }
+
+  ToggleMaterialFilter() {
+    this.MaterialToggle[this.currentAnalysisIndex] = !this.MaterialToggle[this.currentAnalysisIndex];
+  }
+
+  FilterMaterial() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const currentControl = analysisArray.at(this.currentAnalysisIndex);
+    const searchValue = currentControl.get('material').value;
+
+    if (searchValue) {
+      this.MaterialFilter = this.MaterialOption.filter(
+        item => item.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    } else {
+      this.MaterialFilter = this.MaterialOption;
+    }
+  }
+
+  SetMaterial() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const currentControl = analysisArray.at(this.currentAnalysisIndex);
+    currentControl.get('material').setValue(currentControl.get('tempMaterial').value);
+  }
+
+  ToggleEstimateResultProcessFilter() {
+    this.EstimateResultProcessToggle[this.currentAnalysisIndex] = !this.EstimateResultProcessToggle[this.currentAnalysisIndex];
+  }
+
+  FilterEstimateResultProcess() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const currentControl = analysisArray.at(this.currentAnalysisIndex);
+    const searchValue = currentControl.get('estimateResultProcess').value;
+
+    if (searchValue) {
+      this.EstimateResultProcessFilter = this.EstimateResultProcessOption.filter(
+        item => item.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    } else {
+      this.EstimateResultProcessFilter = this.EstimateResultProcessOption;
+    }
+  }
+
+  SetEstimateResultProcess() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const currentControl = analysisArray.at(this.currentAnalysisIndex);
+    currentControl.get('estimateResultProcess').setValue(currentControl.get('tempEstimateResultProcess').value);
+  }
+
+  initializeToggleArrays() {
+    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const arrayLength = analysisArray.length;
+
+    // Initialize or extend arrays to match the form array length
+    this.FmPositionToggle = Array(arrayLength).fill(false);
+    this.MaterialToggle = Array(arrayLength).fill(false);
+    this.EstimateResultProcessToggle = Array(arrayLength).fill(false);
+  }
+
   SetApproveEmail() {
     this.ApproveList.forEach(item => {
       this.Approve.value == item._id ? this.SendEmailUser = item : false
@@ -623,7 +739,6 @@ export class ProgressForm3FmComponent implements OnInit {
   }
 
   async onSaveResult() {
-    console.log(this.ResultForm.value);
 
     Swal.fire({
       title: 'Do you want to save ?',
@@ -898,11 +1013,14 @@ export class ProgressForm3FmComponent implements OnInit {
         correctOfWork: this.CorrectOfWork.value || null,
         analysisTime: this.AnalysisTime.value || null,
 
+        resultItemRequire: this.ResultItemRequire.value,
+        resultAnalysisRequire: this.ResultAnalysisRequire.value,
+
         // Analysis form data with uploaded image paths (formatted according to Schema)
         analysisForm: {
           mappingPositionUrl: this.uploadedMappingPositionPaths,
           analysis: this.analysisForm.value.analysis ? this.analysisForm.value.analysis.map((item: any, index: number) => ({
-            no: index + 1,
+            no: item.no,
             fmPosition: item.fmPosition,
             microscopeImages: this.uploadedMicroscopeImagePaths[index] || [],
             sizeLength: item.sizeLength,
@@ -926,9 +1044,7 @@ export class ProgressForm3FmComponent implements OnInit {
   updateResultWhenDraft(resultId: string) {
     return new Promise(resolve => {
       let analysisFormValue = this.analysisForm.value
-
-      console.log(`⚡ ~ :620 ~ ProgressForm3FmComponent ~ analysisFormValue:`, analysisFormValue);
-      console.log(`⚡ ~ :620 ~ ProgressForm3FmComponent ~ this.Result2.value:`, this.Result2.value);
+      console.log(this.ResultItemRequire.value);
 
       const ResultData = {
         result: this.Result.value || null,
@@ -949,11 +1065,14 @@ export class ProgressForm3FmComponent implements OnInit {
         correctOfWork: this.CorrectOfWork.value || null,
         analysisTime: this.AnalysisTime.value || null,
 
+        resultItemRequire: this.ResultItemRequire.value,
+        resultAnalysisRequire: this.ResultAnalysisRequire.value,
+
         // Analysis form data with uploaded image paths (formatted according to Schema)
         analysisForm: {
           mappingPositionUrl: this.uploadedMappingPositionPaths,
           analysis: analysisFormValue.analysis ? analysisFormValue.analysis.map((item: any, index: number) => ({
-            no: index + 1,
+            no: item.no,
             fmPosition: item.fmPosition,
             microscopeImages: this.uploadedMicroscopeImagePaths[index] || [],
             sizeLength: item.sizeLength,
@@ -968,6 +1087,7 @@ export class ProgressForm3FmComponent implements OnInit {
           })) : []
         },
       }
+
       this.api.UpdateResult(resultId, ResultData).subscribe((data: any) => {
         resolve(data)
       })
@@ -1080,11 +1200,14 @@ export class ProgressForm3FmComponent implements OnInit {
         correctOfWork: this.CorrectOfWork.value || null,
         analysisTime: this.AnalysisTime.value || null,
 
+        resultItemRequire: this.ResultItemRequire.value,
+        resultAnalysisRequire: this.ResultAnalysisRequire.value,
+
         // Analysis form data with uploaded image paths (formatted according to Schema)
         analysisForm: {
           mappingPositionUrl: this.uploadedMappingPositionPaths,
           analysis: this.analysisForm.value.analysis ? this.analysisForm.value.analysis.map((item: any, index: number) => ({
-            no: index + 1,
+            no: item.no,
             fmPosition: item.fmPosition,
             microscopeImages: this.uploadedMicroscopeImagePaths[index] || [],
             sizeLength: item.sizeLength,
@@ -1101,11 +1224,6 @@ export class ProgressForm3FmComponent implements OnInit {
       }
 
       // console.log(this.SendEmailUser.FirstName);
-
-
-
-
-
 
       this.api.FindResultByFormIdMain(this.form._id).subscribe((data: any) => {
         if (data.length > 0) {
@@ -1269,22 +1387,6 @@ export class ProgressForm3FmComponent implements OnInit {
 
   }
 
-  foo() {
-    console.log(this.ResultForm);
-
-    // for (const key in this.ResultForm.controls) {
-    //   if(this.ResultForm.get(key).validator &&this.ResultForm.get(key).invalid){
-    //     console.log(key);
-    //     console.log(this.ResultForm.get(key).valid, this.ResultForm.get(key).invalid);
-    //   }
-    // }
-    for (const key in this.ResultForm.controls) {
-      const control = this.ResultForm.get(key);
-      if (control && control.hasValidator(Validators.required) && control.invalid) {
-        console.log(key);
-      }
-    }
-  }
 
   attFilesENG(event: any) {
     Swal.fire({
@@ -1564,55 +1666,67 @@ export class ProgressForm3FmComponent implements OnInit {
   }
 
   onClickGenExcel() {
-    if (!(this.AnalyzeDate.valid && this.ResultDate.valid && this.ReportDate.valid)) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Please fill : start analyze date , finished analysis result date , finished analysis report date',
-        icon: 'error'
-      });
-      return;
-    }
 
-    if (!this.formId) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Form id is missing.',
-        icon: 'error'
-      });
-      return;
-    }
+    Swal.fire({
+      title: 'Do you want to generate report file ?',
+      showCancelButton: true,
+      icon: 'question',
+      confirmButtonText: 'Generate',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (!(this.AnalyzeDate.valid && this.ResultDate.valid && this.ReportDate.valid)) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Please fill : start analyze date , finished analysis result date , finished analysis report date',
+            icon: 'error'
+          });
+          return;
+        }
 
-    const fallbackFileName = `${this.form?.requestNumber || 'ReportFM'}.xlsx`;
+        if (!this.formId) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Form id is missing.',
+            icon: 'error'
+          });
+          return;
+        }
 
-    this.api.generateReportFM(this.formId).subscribe({
-      next: (response) => {
-        const fileName = this.getDownloadFileName(
-          response.headers.get('Content-Disposition'),
-          fallbackFileName
-        );
-        const blob = response.body || new Blob([], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        });
+        const fallbackFileName = `${this.form?.requestNumber || 'ReportFM'}.xlsx`;
 
-        fs.saveAs(blob, fileName);
-        // todo patch result from api
-        this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
-          if (data.length > 0) {
-            const result = data[0]
-            this.toggleAttReportEng = true;
-            this.File.setValue(result.file);
-            this.tempFileReportName = result.file ? result.file.replace('http://10.200.90.152:4501/ENG/Report/', '') : '';
+        this.api.generateReportFM(this.formId).subscribe({
+          next: (response) => {
+            const fileName = this.getDownloadFileName(
+              response.headers.get('Content-Disposition'),
+              fallbackFileName
+            );
+            const blob = response.body || new Blob([], {
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+
+            fs.saveAs(blob, fileName);
+            // todo patch result from api
+            this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
+              if (data.length > 0) {
+                const result = data[0]
+                this.toggleAttReportEng = true;
+                this.File.setValue(result.file);
+                this.tempFileReportName = result.file ? result.file.replace('http://10.200.90.152:4501/ENG/Report/', '') : '';
+              }
+            });
+          },
+          error: () => {
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to generate report file.',
+              icon: 'error'
+            });
           }
         });
-      },
-      error: () => {
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to generate report file.',
-          icon: 'error'
-        });
       }
-    });
+    })
+
+
 
   }
 
@@ -1814,19 +1928,27 @@ export class ProgressForm3FmComponent implements OnInit {
     const newItem = new FormGroup({
       no: new FormControl(analysisArray.length + 1, Validators.required),
       fmPosition: new FormControl(null, Validators.required),
+      tempFmPosition: new FormControl(null),
       microscopeImages: new FormControl([], Validators.required),
       sizeLength: new FormControl(null, Validators.required),
       sizeWidth: new FormControl(null, Validators.required),
       ftirSpectrumImages: new FormControl([], Validators.required),
       ftirSpectrumImagesGraph: new FormControl([], Validators.required),
       material: new FormControl(null, Validators.required),
+      tempMaterial: new FormControl(null),
       estimateResultProcess: new FormControl(null, Validators.required),
+      tempEstimateResultProcess: new FormControl(null),
       dataCode: new FormControl(null, Validators.required),
       color: new FormControl(null, Validators.required),
       character: new FormControl(null, Validators.required),
       result: new FormControl(null, Validators.required),
     });
     analysisArray.push(newItem);
+
+    // Add new toggle states for the new item
+    this.FmPositionToggle.push(false);
+    this.MaterialToggle.push(false);
+    this.EstimateResultProcessToggle.push(false);
   }
 
   removeAnalysisItem(index: number) {
@@ -1843,6 +1965,11 @@ export class ProgressForm3FmComponent implements OnInit {
       this.ftirSpectrumImagesGraphFiles.splice(index, 1);
       this.ftirSpectrumImagesGraphPreviews.splice(index, 1);
       this.uploadedFtirSpectrumImagesGraphPaths.splice(index, 1);
+
+      // Remove toggle states at this index
+      this.FmPositionToggle.splice(index, 1);
+      this.MaterialToggle.splice(index, 1);
+      this.EstimateResultProcessToggle.splice(index, 1);
       // Update the 'no' field for remaining items
       analysisArray.controls.forEach((control, i) => {
         control.get('no')?.setValue(i + 1);
@@ -1980,13 +2107,8 @@ export class ProgressForm3FmComponent implements OnInit {
       }
     }
 
-    // Check if any images left
-    if (this.mappingPositionPreviews.length === 0) {
-      this.mappingPositionUrl?.setErrors({ required: true });
-    } else {
-      this.mappingPositionUrl?.setValue(this.mappingPositionPreviews);
-      this.mappingPositionUrl?.setErrors(null);
-    }
+    this.mappingPositionUrl?.setValue(this.mappingPositionPreviews);
+    this.mappingPositionUrl?.updateValueAndValidity();
     this.mappingPositionUrl?.markAsTouched();
   }
 
@@ -2269,6 +2391,8 @@ export class ProgressForm3FmComponent implements OnInit {
   get DifficultyOfWork() { return this.ResultForm.get('DifficultyOfWork') }
   get CorrectOfWork() { return this.ResultForm.get('CorrectOfWork') }
   get AnalysisTime() { return this.ResultForm.get('AnalysisTime') }
+  get ResultItemRequire() { return this.ResultForm.get('resultItemRequire') }
+  get ResultAnalysisRequire() { return this.ResultForm.get('resultAnalysisRequire') }
 
   // Analysis Form getters
   get mappingPositionUrl() { return this.analysisForm.get('mappingPositionUrl') }
@@ -2336,6 +2460,22 @@ export class ProgressForm3FmComponent implements OnInit {
     result2Array.updateValueAndValidity();
   }
 
+  updateMappingPositionValidator() {
+    const control = this.mappingPositionUrl;
+    if (!control) {
+      return;
+    }
+
+    if (this.VisibleMappingPosition) {
+      control.clearValidators();
+      control.setErrors(null);
+    } else {
+      control.setValidators([Validators.required]);
+    }
+
+    control.updateValueAndValidity();
+  }
+
   // ฟังก์ชันสำหรับดีบักฟอร์ม เพื่อหาฟิลด์ที่ invalid
   debugFormValidation() {
     // อัปเดต validators ก่อนตรวจสอบ
@@ -2389,6 +2529,83 @@ export class ProgressForm3FmComponent implements OnInit {
     console.log('Invalid controls:', invalidControls.length > 0 ? invalidControls : 'None');
     console.log('Overall form can submit:', this.ResultForm.valid && this.TreatmentOfNg.valid);
     console.log('=== END DEBUG ===');
+  }
+
+  toggleItemRequire() {
+    let value = this.ResultForm.get('resultItemRequire')?.value
+    value = !value;
+    this.ResultItemRequire.setValue(value);
+    this.controlResultItemRequire()
+  }
+
+  toggleAnalysisRequire() {
+    let value = this.ResultForm.get('resultAnalysisRequire')?.value
+    value = !value;
+    this.ResultAnalysisRequire.setValue(value);
+    this.controlResultAnalysisRequire()
+  }
+
+  controlResultItemRequire() {
+    const value = this.ResultItemRequire.value;
+
+    if (!value) {
+      const result2Array = this.Result2 as FormArray;
+      result2Array.clearValidators();
+      result2Array.setErrors(null);
+      result2Array.controls.forEach((control: any) => {
+        const qtyControl = control.get('qty');
+        const itemControl = control.get('item');
+
+        qtyControl?.clearValidators();
+        qtyControl?.setErrors(null);
+        itemControl?.clearValidators();
+        itemControl?.setErrors(null);
+        qtyControl?.updateValueAndValidity();
+        itemControl?.updateValueAndValidity();
+      });
+      result2Array.updateValueAndValidity();
+
+    } else {
+      this.updateResult2Validators();
+
+    }
+  }
+  controlResultAnalysisRequire() {
+    const value = this.ResultAnalysisRequire.value;
+    if (!value) {
+      this.analysisForm.clearValidators();
+      this.analysisForm.setErrors(null);
+      this.analysisFormArray.controls.forEach((control: any) => {
+        Object.keys(control.controls).forEach(key => {
+          const formControl = control.get(key);
+          formControl?.clearValidators();
+          formControl?.setErrors(null);
+          formControl?.updateValueAndValidity();
+        });
+      });
+      this.VisibleMappingPosition = true
+      this.updateMappingPositionValidator();
+    } else {
+      // this.ResultForm.get('resultAnalysisRequire')?.patchValue(value);
+      this.analysisFormArray.controls.forEach((control: any) => {
+        control.get('fmPosition')?.setValidators([Validators.required]);
+        control.get('material')?.setValidators([Validators.required]);
+        control.get('estimateResultProcess')?.setValidators([Validators.required]);
+        control.get('dataCode')?.setValidators([Validators.required]);
+        control.get('color')?.setValidators([Validators.required]);
+        control.get('character')?.setValidators([Validators.required]);
+        control.get('result')?.setValidators([Validators.required]);
+        Object.keys(control.controls).forEach(key => {
+          const formControl = control.get(key);
+          formControl?.updateValueAndValidity();
+        });
+      });
+      if(!this.form.requestItem?.includes('AMT')) {
+        this.VisibleMappingPosition = false;
+      }
+      this.updateMappingPositionValidator();
+      this.analysisForm.updateValueAndValidity();
+    }
   }
 
 }

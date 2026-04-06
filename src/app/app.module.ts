@@ -34,6 +34,9 @@ import { ProgressForm3FmWrapperComponent } from './pages/progress-form3-fm/progr
 import { ProgressForm4FmWrapperComponent } from './pages/progress-form4-fm/progress-form4-fm-wrapper.component';
 import { ProgressForm5FmWrapperComponent } from './pages/progress-form5-fm/progress-form5-fm-wrapper.component';
 import { RejectForm3FmWrapperComponent } from './pages/reject-form3-fm/reject-form3-fm-wrapper.component';
+import { MasterFmPositionComponent } from './pages/master-fm-position/master-fm-position.component';
+import { MasterMaterialComponent } from './pages/master-material/master-material.component';
+import { MasterEstimateResultProcessComponent } from './pages/master-estimate-result-process/master-estimate-result-process.component';
 
 
 
@@ -55,6 +58,9 @@ import { RejectForm3FmWrapperComponent } from './pages/reject-form3-fm/reject-fo
     ProgressForm4FmWrapperComponent,
     ProgressForm5FmWrapperComponent,
     RejectForm3FmWrapperComponent,
+    MasterFmPositionComponent,
+    MasterMaterialComponent,
+    MasterEstimateResultProcessComponent,
 
 
 

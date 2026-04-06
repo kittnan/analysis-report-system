@@ -135,6 +135,8 @@ export class MasterlistsComponent implements OnInit {
     ToggleOccurTable: boolean = false
     ToggleCauseTable: boolean = false
     ToggleResultFMTable: boolean = false
+    ToggleFMPosition: boolean = false
+
 
     // ? excel
     arrayBuffer: any;
@@ -569,6 +571,7 @@ export class MasterlistsComponent implements OnInit {
         this.Master.forEach((item, index) => {
             this.SelectMaster.value == item.name ? this.SelectMasterId = item._id : false
         });
+
         this.OnOffToggleSelect(this.SelectMaster.value)
 
     }
@@ -600,6 +603,15 @@ export class MasterlistsComponent implements OnInit {
             this.ToggleResultFM = !this.ToggleResultFM
             this.ToggleNormalSelect = false;
             this.OnSetToggleTable();
+        }
+        if (nameToggle == 'FM_POSITION') {
+            this.route.navigate(['/master-fm-position'])
+        }
+        if (nameToggle == 'MATERIAL') {
+            this.route.navigate(['/master-material'])
+        }
+        if (nameToggle == 'ESTIMATE_RESULT_PROCESS') {
+            this.route.navigate(['/master-estimate-result-process'])
         }
         if (this.ToggleNormalSelect) {
             this.OnSetToggleTable();

@@ -394,6 +394,9 @@
                 <th width="10%" class="text-center">
                   Upload
                 </th>
+                <th width="10%" class="text-center">
+                  View
+                </th>
               </tr>
             </thead>
             <tbody class="subtext-color">
@@ -417,6 +420,12 @@
                     #reportUpload style="display: none;">
                   <button class="btn btn-primary btn-sm" (click)="reportUpload.click()"> <i class="bi bi-upload"
                       style="font-size: 1rem;"></i></button>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="result.file" [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file"
+                    target="_blank">
+                    <button class="btn btn-primary btn-sm"> <i class="bi bi-eye" style="font-size: 1rem;"></i></button>
+                  </a>
                 </td>
               </tr>
             </tbody>

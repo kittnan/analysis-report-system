@@ -267,33 +267,41 @@ export class ManageFormComponent implements OnInit {
     let StatusForm = item.status;
     localStorage.setItem('AR_FormId', item._id)
     if (this.UserId == item.userApprove) {
-      let temp1 = Inprocess.find(ar => ar == StatusForm);
-      if (temp1) {
-        // this.route.navigate(["/progressForm" + StatusForm])
-        // location.href = "#/progressForm" + StatusForm
-        const url = `#/progressForm${StatusForm}-fm?formId=${item._id}`
+
+      if (StatusForm <= 2) {
+        const url = `#/progressForm${StatusForm}?formId=${item._id}`
         window.open(url, '_blank');
-      } else if (StatusForm == Reject1[0] || StatusForm == Reject1[1]) {
-        // this.route.navigate(["/rejectForm1"])
-        const url = `#/rejectForm1?formId=${item._id}`
-        window.open(url, '_blank');
-        // location.href = "#/rejectForm1";
-      } else if (StatusForm == Reject1[2]) {
-        const url = `#/rejectForm2?formId=${item._id}`
-        window.open(url, '_blank');
-        // this.route.navigate(["/rejectForm2"])
-        // location.href = "#/rejectForm2";
-      } else if (StatusForm == Reject1[3]) {
-        const url = `#/rejectForm3-fm?formId=${item._id}`
-        window.open(url, '_blank');
-        // this.route.navigate(["/rejectForm3"])
-        // location.href = "#/rejectForm3";
-      } else if (StatusForm == Reject1[4]) {
-        const url = `#/rejectForm3-fm?formId=${item._id}`
-        window.open(url, '_blank');
-        // this.route.navigate(["/rejectForm3"])
-        // location.href = "#/rejectForm3";
+      } else {
+        let temp1 = Inprocess.find(ar => ar == StatusForm);
+        if (temp1) {
+          // this.route.navigate(["/progressForm" + StatusForm])
+          // location.href = "#/progressForm" + StatusForm
+          const url = `#/progressForm${StatusForm}-fm?formId=${item._id}`
+          window.open(url, '_blank');
+        } else if (StatusForm == Reject1[0] || StatusForm == Reject1[1]) {
+          // this.route.navigate(["/rejectForm1"])
+          const url = `#/rejectForm1?formId=${item._id}`
+          window.open(url, '_blank');
+          // location.href = "#/rejectForm1";
+        } else if (StatusForm == Reject1[2]) {
+          const url = `#/rejectForm2?formId=${item._id}`
+          window.open(url, '_blank');
+          // this.route.navigate(["/rejectForm2"])
+          // location.href = "#/rejectForm2";
+        } else if (StatusForm == Reject1[3]) {
+          const url = `#/rejectForm3-fm?formId=${item._id}`
+          window.open(url, '_blank');
+          // this.route.navigate(["/rejectForm3"])
+          // location.href = "#/rejectForm3";
+        } else if (StatusForm == Reject1[4]) {
+          const url = `#/rejectForm3-fm?formId=${item._id}`
+          window.open(url, '_blank');
+          // this.route.navigate(["/rejectForm3"])
+          // location.href = "#/rejectForm3";
+        }
       }
+
+
 
     } else {
       const result1 = View1.find(arr => arr == StatusForm)
@@ -429,7 +437,7 @@ export class ManageFormComponent implements OnInit {
       }
 
 
-      let report = result?.finishAnalyzeDate ? moment(result?.finishAnalyzeDate).startOf('day').add(7, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
+      let report = result?.finishAnalyzeDate ? moment(result?.finishAnalyzeDate).startOf('day').add(5, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
       if (report == 0) {
         report = "Today"
       }

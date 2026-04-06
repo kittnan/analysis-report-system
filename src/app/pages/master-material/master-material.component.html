@@ -1,0 +1,88 @@
+<div class="col-12"
+    style="background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 10px -4px rgb(0 0 0 / 15%);">
+    <div class="row mb-3">
+        <div class="col-lg-6">
+            <h5 class="head-label">Master Material Management</h5>
+        </div>
+        <div class="col-lg-6 text-right">
+            <button class="btn btn-secondary btn-sm mr-2" (click)="goBackToMasterlists()">
+                <i class="bi bi-arrow-left"></i> Back to Masterlists
+            </button>
+            <button class="btn btn-success btn-sm" (click)="addNewItem()">
+                <i class="bi bi-plus-circle"></i> Add New
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="tableFixHead">
+                <table class="table table-striped text-center">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="8%" scope="col">No.</th>
+                            <th scope="col">Name</th>
+                            <th width="25%" scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of dataList; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>
+                                <!-- Edit mode input -->
+                                <input *ngIf="item.isEditing" type="text" class="form-control form-control-sm"
+                                    [(ngModel)]="item.name" (keyup.enter)="saveItem(item, i)" #editInput
+                                    style="text-align: center;">
+                                <!-- Display mode -->
+                                <span *ngIf="!item.isEditing">{{ item.name }}</span>
+                            </td>
+                            <td>
+                                <!-- Edit mode buttons -->
+                                <div *ngIf="item.isEditing" class="btn-group btn-group-sm" style="gap: 10px;"
+                                    role="group">
+                                    <button class="btn btn-success btn-sm" (click)="saveItem(item, i)" title="Save">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" (click)="cancelEdit(item, i)"
+                                        title="Cancel">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                                <!-- Normal mode buttons -->
+                                <div *ngIf="!item.isEditing" class="btn-group btn-group-sm" style="gap: 10px;"
+                                    role="group">
+                                    <button class="btn btn-outline-primary btn-sm" (click)="editItem(item, i)"
+                                        title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm" (click)="duplicateItem(item)"
+                                        title="Duplicate">
+                                        <i class="bi bi-files"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" (click)="deleteItem(i)"
+                                        title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Empty state -->
+                        <tr *ngIf="dataList.length === 0">
+                            <td colspan="3" class="text-muted py-4">
+                                <i class="bi bi-inbox"></i>
+                                <br>
+                                No data available. Click "Add New" to create your first item.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="dataList.length > 0">
+        <div class="col-12">
+            <small class="text-muted">Total items: {{ dataList.length }}</small>
+        </div>
+    </div>
+</div>

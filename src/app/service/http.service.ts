@@ -702,16 +702,45 @@ export class HttpService {
   getFMPosition(params: HttpParams): Observable<any> {
     return this.http.get(this.Url + "/fm-position", { params: params });
   }
+  updateFMPosition(params: HttpParams, data: any): Observable<any> {
+    return this.http.put(this.Url + "/fm-position/update", data, { params: params });
+  }
+  createFMPosition(data: any): Observable<any> {
+    return this.http.post(this.Url + "/fm-position/create", data);
+  }
+  deleteFMPosition(params: HttpParams): Observable<any> {
+    return this.http.delete(this.Url + "/fm-position/delete", { params: params });
+  }
 
   // todo Material
   getMaterial(params: HttpParams): Observable<any> {
     return this.http.get(this.Url + "/material", { params: params });
   }
+  updateMaterial(params: HttpParams, data: any): Observable<any> {
+    return this.http.put(this.Url + "/material/update", data, { params: params });
+  }
+  createMaterial(data: any): Observable<any> {
+    return this.http.post(this.Url + "/material/create", data);
+  }
+  deleteMaterial(params: HttpParams): Observable<any> {
+    return this.http.delete(this.Url + "/material/delete", { params: params });
+  }
+
 
   // todo Estimate result process 
   getEstimateResultProcess(params: HttpParams): Observable<any> {
     return this.http.get(this.Url + "/estimate-result-process", { params: params });
   }
+  updateEstimateResultProcess(params: HttpParams, data: any): Observable<any> {
+    return this.http.put(this.Url + "/estimate-result-process/update", data, { params: params });
+  }
+  createEstimateResultProcess(data: any): Observable<any> {
+    return this.http.post(this.Url + "/estimate-result-process/create", data);
+  }
+  deleteEstimateResultProcess(params: HttpParams): Observable<any> {
+    return this.http.delete(this.Url + "/estimate-result-process/delete", { params: params });
+  }
+
 
 }
 // getDataView

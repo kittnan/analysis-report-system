@@ -48,6 +48,9 @@ import { RejectForm3FmComponent } from 'app/pages/reject-form3-fm/reject-form3-f
 import { ProgressForm5FmComponent } from 'app/pages/progress-form5-fm/progress-form5-fm.component';
 import { ViewFormFmComponent } from 'app/pages/view-form-fm/view-form-fm.component';
 import { ProgressForm4FmWrapperComponent } from 'app/pages/progress-form4-fm/progress-form4-fm-wrapper.component';
+import { MasterFmPositionComponent } from 'app/pages/master-fm-position/master-fm-position.component';
+import { MasterMaterialComponent } from 'app/pages/master-material/master-material.component';
+import { MasterEstimateResultProcessComponent } from 'app/pages/master-estimate-result-process/master-estimate-result-process.component';
 
 // import { LoginComponent } from 'app/pages/login/login.component';
 
@@ -118,6 +121,11 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'progressForm5-fm', component: ProgressForm5FmComponent },
   { path: 'rejectForm3-fm', component: RejectForm3FmComponent },
   { path: 'viewForm-fm', component: ViewFormFmComponent },
+
+  { path: 'master-fm-position', component: MasterFmPositionComponent },
+  { path: 'master-material', component: MasterMaterialComponent },
+  { path: 'master-estimate-result-process', component: MasterEstimateResultProcessComponent },
+
 
 
 

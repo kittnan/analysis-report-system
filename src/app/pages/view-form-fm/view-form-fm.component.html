@@ -9,6 +9,19 @@
 		<a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
 				style="font-size: 2rem;"></i>Report</a>
 	</ng-container>
+
+	<ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
+		<a class="icon-make" [download]="ReportName"
+			[href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file" target="_blank"><i
+				class="bi bi-search" style="font-size: 2rem;"></i>View</a>
+	</ng-container>
+	<ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
+		<a class="icon-make" [download]="ReportName"
+			[href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file" target="_blank"><i
+				class="bi bi-search" style="font-size: 2rem;"></i>View</a>
+	</ng-container>
+
+	
 </div>
 
 <div id="print" class="col-lg-12 main">
@@ -258,8 +271,9 @@
 									{{item.name}}
 								</td>
 								<td class="text-center">
-									<a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
-										style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
+									<a target="_blank" [download]="item.name" [href]="item.path"
+										class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i
+											class="bi bi-download" style="font-size: 1rem;"></i></a>
 								</td>
 							</tr>
 						</tbody>
@@ -451,8 +465,8 @@
 						<div class="col-lg-4 col-md-12" *ngIf="item.microscopeImages?.length">
 							<label class="head-label">Microscope Image</label>
 							<div class="analysis-image-list">
-								<a class="analysis-image-card" target="_blank" *ngFor="let image of item.microscopeImages"
-									[href]="getFilePath(image)">
+								<a class="analysis-image-card" target="_blank"
+									*ngFor="let image of item.microscopeImages" [href]="getFilePath(image)">
 									<img [src]="getFilePath(image)" [alt]="image.name">
 									<span>{{image.name}}</span>
 								</a>
@@ -462,8 +476,8 @@
 						<div class="col-lg-4 col-md-12" *ngIf="item.ftirSpectrumImages?.length">
 							<label class="head-label">FT-IR Spectrum Image</label>
 							<div class="analysis-image-list">
-								<a class="analysis-image-card" target="_blank" *ngFor="let image of item.ftirSpectrumImages"
-									[href]="getFilePath(image)">
+								<a class="analysis-image-card" target="_blank"
+									*ngFor="let image of item.ftirSpectrumImages" [href]="getFilePath(image)">
 									<img [src]="getFilePath(image)" [alt]="image.name">
 									<span>{{image.name}}</span>
 								</a>
@@ -473,8 +487,8 @@
 						<div class="col-lg-4 col-md-12" *ngIf="item.ftirSpectrumImagesGraph?.length">
 							<label class="head-label">FT-IR Spectrum Graph Image</label>
 							<div class="analysis-image-list">
-								<a class="analysis-image-card" target="_blank" *ngFor="let image of item.ftirSpectrumImagesGraph"
-									[href]="getFilePath(image)">
+								<a class="analysis-image-card" target="_blank"
+									*ngFor="let image of item.ftirSpectrumImagesGraph" [href]="getFilePath(image)">
 									<img [src]="getFilePath(image)" [alt]="image.name">
 									<span>{{image.name}}</span>
 								</a>
@@ -587,8 +601,9 @@
 							<tr *ngFor="let item of result.files; let i=index">
 								<td>{{item.name}} </td>
 								<td class="text-center">
-									<a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
-										style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
+									<a target="_blank" [download]="item.name" [href]="item.path"
+										class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i
+											class="bi bi-download" style="font-size: 1rem;"></i></a>
 								</td>
 							</tr>
 						</tbody>
@@ -630,7 +645,8 @@
 		<div class="row" *ngFor="let item of CommentLists">
 			<div class="col-12">
 				<div class="form-group">
-					<label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short" style="font-size: 1.3rem;"></i>
+					<label class="label-comment">{{item.from}} <i class="bi bi-arrow-right-short"
+							style="font-size: 1.3rem;"></i>
 						{{item.to}}</label>
 					<p class="box-comment" [ngClass]="item.class">{{item.note}}</p>
 				</div>
