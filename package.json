@@ -1,6 +1,6 @@
 {
   "name": "Analysis-Report",
-  "version": "2.2.76",
+  "version": "2.2.79",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

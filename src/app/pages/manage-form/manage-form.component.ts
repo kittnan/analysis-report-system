@@ -50,6 +50,8 @@ export class ManageFormComponent implements OnInit {
   // ? search
   KeySearch: any
 
+  holidays: any = []
+
   async ngOnInit(): Promise<void> {
     this.pageLoadStart();
     await this.CheckStatusUser()
@@ -77,8 +79,9 @@ export class ManageFormComponent implements OnInit {
       this.Count = count[0].count;
 
       this.CountPage = this.numPage(count[0].count, this.CountNum.value)
-      this.DataFilter = result
-      this.DataFilter = this.rep(this.DataFilter)
+      this.holidays = await this.getHoliday()
+
+      this.DataFilter = this.mappingDataTable(result)
 
       setTimeout(() => {
         Swal.close()
@@ -353,7 +356,7 @@ export class ManageFormComponent implements OnInit {
     this.PageNow += 1
     this.PageNow > this.CountPage ? this.PageNow = this.CountPage : this.PageNow
     this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
-    this.DataFilter = this.rep(this.DataFilter)
+    this.DataFilter = this.mappingDataTable(this.DataFilter)
     setTimeout(() => {
       Swal.close()
     }, 300);
@@ -372,7 +375,7 @@ export class ManageFormComponent implements OnInit {
     this.PageNow -= 1
     this.PageNow <= 1 ? this.PageNow = 1 : this.PageNow
     this.DataFilter = await this.getRequest(this.SelectStatus.value, this.UserId, this.CountNum.value, this.PageNow, this.Sort.value, userLevelStr, 0, this.remain.value, this.status.value)
-    this.DataFilter = this.rep(this.DataFilter)
+    this.DataFilter = this.mappingDataTable(this.DataFilter)
     setTimeout(() => {
       Swal.close()
     }, 300);
@@ -421,7 +424,35 @@ export class ManageFormComponent implements OnInit {
     return 'text-black'
   }
 
+  async getHoliday() {
+    return await this.api.getWorkingDay({}).toPromise()
+  }
+  calWorkingDay(workingDayCount: any, startDate: any) {
 
+    if (!startDate) return null
+    // Calculate working days
+    const start = moment(startDate)
+    const workingDays = parseInt(workingDayCount) || 0;
+    let currentDate = start.clone();
+    let workingDaysFound = 0;
+
+    while (workingDaysFound < workingDays) {
+      // Check if current date is a working day (Monday=1 to Friday=5, not a holiday)
+      const dayOfWeek = currentDate.day(); // Sunday=0, Monday=1, ..., Saturday=6
+      const dateStr = currentDate.format('YYYY-MM-DD');
+      
+      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a:any)=>a == dateStr) : false;
+      
+      if (dayOfWeek >= 1 && dayOfWeek <= 5 && !isHoliday) {
+        workingDaysFound++;
+        if (workingDaysFound === workingDays) {
+          break;
+        }
+      }
+      currentDate.add(1, 'day');
+    }
+    return currentDate.diff(start, 'days')
+  }
 
   rep(data: any) {
     data = data.map((d: any) => {
@@ -436,6 +467,11 @@ export class ManageFormComponent implements OnInit {
         day = "Over Due Date"
       }
 
+      // if(result){
+      //   console.log('@');
+
+      //   const totalDaysSpanned = this.calWorkingDay(5, result?.finishAnalyzeDate)
+      // }
 
       let report = result?.finishAnalyzeDate ? moment(result?.finishAnalyzeDate).startOf('day').add(5, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
       if (report == 0) {
@@ -484,6 +520,61 @@ export class ManageFormComponent implements OnInit {
     return data
   }
 
+  mappingDataTable(data: any) {
+    return data.map((d: any) => {
+      let result = d.result?.[0] || {}
+      let day = moment(d.replyDate).startOf('day').diff(moment().startOf('day'), "day")
+
+      if (day == 0) {
+        day = "Today"
+      }
+      if (day < 0) {
+        day = "Over Due Date"
+      }
+
+
+      let totalDaysSpanned = this.calWorkingDay(4, result?.finishAnalyzeDate)
+      console.log(result?.finishAnalyzeDate, totalDaysSpanned);
+
+
+      let report = result?.finishAnalyzeDate && totalDaysSpanned !== null
+        ? moment(result?.finishAnalyzeDate).startOf('day').add(totalDaysSpanned, "days").diff(moment().startOf('day'), "days")
+        : "Under Analysis"
+      if (report == 0) {
+        report = "Today"
+      }
+      if (report < 0) {
+        report = "Over Due Date"
+      }
+
+      return {
+        ...d,
+        remain: (
+          (d.status == 3 && (result?.finishAnalyzeDate && result?.result)) ||
+          (d.status == 3 && (result?.finishAnalyzeDate && result?.result2 && result?.result2.length > 0)) ||
+          d.status == 4 ||
+          d.status == 5 ||
+          d.status == 2.1 ||
+          d.status == 3.1 ||
+          d.status == 4.3 ||
+          d.status == 5.4 ||
+          d.status == 6.4
+        )
+          ? "Finished" : day,
+
+        remain_report: (
+          d.status == 4 ||
+          d.status == 5 ||
+          d.status == 2.1 ||
+          d.status == 3.1 ||
+          d.status == 4.3 ||
+          d.status == 5.4 ||
+          d.status == 6.4
+        )
+          ? "Finished" : report
+      }
+    })
+  }
 
   setStyle(data, type) {
     let position = this.permission.filter((d: any) => type?.includes(d));

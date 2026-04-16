@@ -741,6 +741,17 @@ export class HttpService {
     return this.http.delete(this.Url + "/estimate-result-process/delete", { params: params });
   }
 
+  // todo utility
+  getWorkingDay(data: any): Observable<any> {
+    let params = new HttpParams()
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        params = params.set(key, data[key]);
+      }
+    }
+    return this.http.get(this.Url + "/utility/working-day", { params: params });
+  }
+
 
 }
 // getDataView
