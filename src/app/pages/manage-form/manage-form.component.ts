@@ -427,6 +427,29 @@ export class ManageFormComponent implements OnInit {
   async getHoliday() {
     return await this.api.getWorkingDay({}).toPromise()
   }
+
+  findRemainDay(workingDayCount: any, startDate: any) {
+    if (!startDate) return null
+    // Calculate working days
+    const start = moment(startDate).startOf('day')
+    const workingDays = parseInt(workingDayCount) || 0;
+    let currentDate = start.clone();
+    let workingDaysFound = 0;
+    while (workingDaysFound < workingDays) {
+      const dayOfWeek = currentDate.day(); // Sunday=0, Monday=1, ..., Saturday=6
+      const dateStr = currentDate.format('YYYY-MM-DD');
+      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a: any) => a == dateStr) : false;
+      if (dayOfWeek >= 1 && dayOfWeek <= 5 && !isHoliday) {
+        workingDaysFound++;
+        if (workingDaysFound === workingDays) {
+          break;
+        }
+      }
+      currentDate.add(1, 'day');
+    }
+    return currentDate.diff(moment().startOf('day'), 'days') + 1
+  }
+
   calWorkingDay(workingDayCount: any, startDate: any) {
 
     if (!startDate) return null
@@ -440,9 +463,9 @@ export class ManageFormComponent implements OnInit {
       // Check if current date is a working day (Monday=1 to Friday=5, not a holiday)
       const dayOfWeek = currentDate.day(); // Sunday=0, Monday=1, ..., Saturday=6
       const dateStr = currentDate.format('YYYY-MM-DD');
-      
-      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a:any)=>a == dateStr) : false;
-      
+
+      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a: any) => a == dateStr) : false;
+
       if (dayOfWeek >= 1 && dayOfWeek <= 5 && !isHoliday) {
         workingDaysFound++;
         if (workingDaysFound === workingDays) {
@@ -533,17 +556,17 @@ export class ManageFormComponent implements OnInit {
       }
 
 
-      let totalDaysSpanned = this.calWorkingDay(4, result?.finishAnalyzeDate)
-      console.log(result?.finishAnalyzeDate, totalDaysSpanned);
-
+      let totalDaysSpanned = this.findRemainDay(4, result?.finishAnalyzeDate)
+      // console.log(result?.finishAnalyzeDate, totalDaysSpanned);
+      d.totalDaysSpanned = totalDaysSpanned
 
       let report = result?.finishAnalyzeDate && totalDaysSpanned !== null
-        ? moment(result?.finishAnalyzeDate).startOf('day').add(totalDaysSpanned, "days").diff(moment().startOf('day'), "days")
+        ? moment().startOf('day').add(totalDaysSpanned, "days").diff(moment().startOf('day'), "days")
         : "Under Analysis"
-      if (report == 0) {
+      if (report == 1) {
         report = "Today"
       }
-      if (report < 0) {
+      if (report <= 0) {
         report = "Over Due Date"
       }
 

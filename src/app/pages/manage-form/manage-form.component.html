@@ -120,6 +120,7 @@
               <td>{{item.issuedDate |date:'M/d/y'}}</td>
               <td>{{item.replyDate |date:'M/d/y'}}</td>
               <td [style]="setStyle(item.remain,['0','3','4'])" *ngIf="check_permission(['0','3','4'])">{{item.remain}} 
+                <!-- -> {{item.result[0]?.finishAnalyzeDate |date:'d/MM/yyyy'}} {{item.totalDaysSpanned}} -->
              </td>
               <td [style]="setStyle(item.remain_report,['0','3','4'])" *ngIf="check_permission(['0','4'])">{{item.remain_report}}</td>
               <td [ngClass]="{'primary-status': item.userApprove == UserId}">{{item.userApproveName}}</td>
