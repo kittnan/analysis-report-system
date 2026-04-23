@@ -431,7 +431,7 @@ export class ManageFormComponent implements OnInit {
   findRemainDay(workingDayCount: any, startDate: any) {
     if (!startDate) return null
     // Calculate working days
-    const start = moment(startDate).startOf('day')
+    const start = moment(startDate).startOf('day').add(1, 'day') // เริ่มนับจากวันถัดไป
     const workingDays = parseInt(workingDayCount) || 0;
     let currentDate = start.clone();
     let workingDaysFound = 0;
