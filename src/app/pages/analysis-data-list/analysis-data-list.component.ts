@@ -68,7 +68,7 @@ export class AnalysisDataListComponent implements OnInit {
         params.value == "Making report" ? color = "yellow" : false
         params.value == "Done" ? color = "lightgreen" : false
         params.value == "Done with delay" ? color = "green" : false
-        params.value == "Cancel" ? color = "red" : false
+        params.value == "Cancel" ? color = "lightgray" : false
         return { backgroundColor: color }
       },
       headerName: "Status",
