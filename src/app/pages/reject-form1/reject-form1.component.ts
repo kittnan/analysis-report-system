@@ -62,6 +62,7 @@ export class RejectForm1Component implements OnInit {
     TBN: new FormControl(null, Validators.required),
     TBNNumber: new FormControl(null),
     Treatment: new FormControl(null, Validators.required),
+    NeedReport: new FormControl(null, Validators.required),
   })
 
   NoteApprove = new FormControl(null);
@@ -326,7 +327,7 @@ export class RejectForm1Component implements OnInit {
         this.FileList = data.files;
         // this.SetPathFile();
         this.NoteReject.setValue(data.noteNow);
-
+        this.NeedReport.setValue(data.needReport);
         let str = data.issuedDate.split("T");
         let str2 = data.replyDate.split("T");
         data.issuedDate = str[0];
@@ -626,7 +627,8 @@ export class RejectForm1Component implements OnInit {
                 status: 1,
                 noteApprove1: this.NoteApprove.value,
                 noteNow: this.NoteApprove.value,
-                treatment: this.Treatment.value
+                treatment: this.Treatment.value,
+                needReport: this.NeedReport.value
 
               }
               // console.log(da);
@@ -1129,6 +1131,7 @@ export class RejectForm1Component implements OnInit {
   get TBN() { return this.RequestForm.get('TBN') }
   get TBNNumber() { return this.RequestForm.get('TBNNumber') }
   get Treatment() { return this.RequestForm.get('Treatment') }
+  get NeedReport() { return this.RequestForm.get('NeedReport') }
   alertSuccess() {
     Swal.fire({
       title: 'SUCCESS',
