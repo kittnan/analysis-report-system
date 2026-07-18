@@ -50,7 +50,7 @@ export class RequestFormComponent implements OnInit {
     TBN: new FormControl(null, Validators.required),
     TBNNumber: new FormControl(null),
     Treatment: new FormControl(null, Validators.required),
-
+    NeedReport: new FormControl(null, Validators.required),
   })
 
   NoteApprove = new FormControl(null)
@@ -149,6 +149,24 @@ export class RequestFormComponent implements OnInit {
     this.pageLoadEnd();
     this.ClaimNo.disable()
 
+    this.buildFormEvent()
+
+  }
+
+  buildFormEvent() {
+    this.Abnormal.valueChanges.subscribe(value => {
+      if (
+        value[0] == 'C' ||
+        value[0] == 'B' ||
+        value[0] == 'A' ||
+        value[0] == 'S'
+      ) {
+        this.NeedReport.setValue('Need')
+        this.NeedReport.disable()
+      }else{
+        this.NeedReport.enable()
+      }
+    })
   }
 
   // ? check status ก่อน  เข้า page
@@ -579,6 +597,7 @@ export class RequestFormComponent implements OnInit {
             status: 1,
             noteApprove1: this.NoteApprove.value,
             noteNow: this.NoteApprove.value,
+            needReport: this.NeedReport.value
 
           }
 
@@ -960,7 +979,7 @@ export class RequestFormComponent implements OnInit {
   get TBN() { return this.RequestForm.get('TBN') }
   get TBNNumber() { return this.RequestForm.get('TBNNumber') }
   get Treatment() { return this.RequestForm.get('Treatment') }
-
+  get NeedReport() { return this.RequestForm.get('NeedReport') }
 
   pageLoadStart() {
     this.LoadingPage = true;

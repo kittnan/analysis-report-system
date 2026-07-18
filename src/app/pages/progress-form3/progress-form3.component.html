@@ -216,13 +216,20 @@
 
 
       <div class="row">
-        <div class="col-12 mt-2">
+        <div class="col-lg-6 mt-2">
           <div class="form-group">
             <label class="head-label">Issue Data</label>
             <p class="subtext-color" *ngIf="form">{{form.issuer}}</p>
           </div>
         </div>
+        <div class="col-lg-6 mt-2">
+          <div class="form-group">
+            <label class="head-label">Need Report Or Only Analysis</label>
+            <p class="subtext-color" *ngIf="form">{{form.needReport}}</p>
+          </div>
+        </div>
       </div>
+
 
       <div class="row">
         <div class="col-12 mt-2">
@@ -305,8 +312,8 @@
                 </div> -->
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': AnalyzeDate.invalid}" class="head-label">Start analyze date
-              <i *ngIf="AnalyzeDate.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': AnalyzeDate?.invalid}" class="head-label">Start analyze date
+              <i *ngIf="AnalyzeDate?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="AnalyzeDate"
               [min]="form.issuedDate" [max]="form.replyDate">
@@ -318,9 +325,9 @@
 
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': ResultDate.invalid}" class="head-label">Finished analysis
+            <label [ngClass]="{'text-danger': ResultDate?.invalid}" class="head-label">Finished analysis
               result date
-              <i *ngIf="ResultDate.invalid" class="bi bi-x-square-fill"></i>
+              <i *ngIf="ResultDate?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="ResultDate"
               [min]="minDateFinishAnalysisDate">
@@ -332,9 +339,9 @@
         <div class="col-6 mt-2">
           <div class="form-group">
 
-            <label [ngClass]="{'text-danger': ReportDate.invalid}" class="head-label">Finish analysis report
+            <label [ngClass]="{'text-danger': ReportDate?.invalid}" class="head-label">Finish analysis report
               date
-              <i *ngIf="ReportDate.invalid" class="bi bi-x-square-fill"></i>
+              <i *ngIf="ReportDate?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <input *ngIf="form" type="date" class="form-control subtext-color" formControlName="ReportDate"
               [min]="form.issuedDate">
@@ -347,8 +354,8 @@
         <div class="col-6 mt-2">
           <div class="form-group">
 
-            <label [ngClass]="{'text-danger': CategoryCause.invalid}" class="head-label">Category Root Cause
-              <i *ngIf="CategoryCause.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': CategoryCause?.invalid}" class="head-label">Category Root Cause
+              <i *ngIf="CategoryCause?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div style="position: relative;">
               <input type="search" formControlName="CategoryCause" (click)="ToggleCauseFilter();"
@@ -366,8 +373,8 @@
         <div class="col-6 mt-2">
           <div class="form-group">
 
-            <label [ngClass]="{'text-danger': TreatmentOfNg.invalid}" class="head-label">Treatment of NG
-              <i *ngIf="TreatmentOfNg.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': TreatmentOfNg?.invalid}" class="head-label">Treatment of NG
+              <i *ngIf="TreatmentOfNg?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <select class="custom-select subtext-color" [formControl]="TreatmentOfNg">
               <option [value]="null"></option>
@@ -381,8 +388,8 @@
       <div *ngIf="isFM()" class="row">
         <div class="col-12 mt-2">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': Result2.invalid}" class="head-label">Analysis Result
-              <i *ngIf="Result2.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': Result2?.invalid}" class="head-label">Analysis Result
+              <i *ngIf="Result2?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div class="row">
               <ng-container *ngFor="let control of Result2.controls; let i=index" [formGroup]="control">
@@ -430,8 +437,8 @@
       <div *ngIf="!isFM()" class="row">
         <div class="col-12 mt-2">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': Result.invalid}" class="head-label">Analysis Result
-              <i *ngIf="Result.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': Result?.invalid}" class="head-label">Analysis Result
+              <i *ngIf="Result?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <textarea class="form-control subtext-color" formControlName="Result" cols="30" rows="10"
               style="height: 300px;"></textarea>
@@ -443,8 +450,8 @@
 
         <div class="col-lg-3 col-md-3 col-sm-12 ">
           <div class="form-group ">
-            <label [ngClass]="{'text-danger': SourceOfDefect.invalid}" class="head-label">Source Of Defect
-              <i *ngIf="SourceOfDefect.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': SourceOfDefect?.invalid}" class="head-label">Source Of Defect
+              <i *ngIf="SourceOfDefect?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div class="input-group mb-3 ">
               <select class="custom-select subtext-color" formControlName="SourceOfDefect">
@@ -458,8 +465,8 @@
 
         <div class="col-lg-3 col-md-3 col-sm-12 ">
           <div class="form-group ">
-            <label [ngClass]="{'text-danger': AnalysisLevel.invalid}" class="head-label">AnalysisLevel
-              <i *ngIf="AnalysisLevel.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': AnalysisLevel?.invalid}" class="head-label">AnalysisLevel
+              <i *ngIf="AnalysisLevel?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div class="input-group mb-3 ">
               <select class="custom-select subtext-color" formControlName="AnalysisLevel">
@@ -472,7 +479,7 @@
         </div>
         <div class="col-lg-3 col-md-3 col-sm-12 ">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': CanAnalysis.invalid}" class="head-label">Can/Can't
+            <label [ngClass]="{'text-danger': CanAnalysis?.invalid}" class="head-label">Can/Can't
               Analysis</label>
             <select class="subtext-color form-control" formControlName="CanAnalysis" type="text">
               <option disabled value="">Select</option>
@@ -483,7 +490,7 @@
         </div>
         <div class="col-lg-3 col-md-3 col-sm-12 ">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': RelatedToESD.invalid}" class="head-label">Related to ESD</label>
+            <label [ngClass]="{'text-danger': RelatedToESD?.invalid}" class="head-label">Related to ESD</label>
             <select class="subtext-color form-control" formControlName="RelatedToESD" type="text">
               <option disabled value="">Select</option>
               <option value="No">No</option>
@@ -496,8 +503,8 @@
       <div class="row mt-2">
         <div class="col-lg-2 col-md-2 col-sm-12">
           <div class="form-group ">
-            <label [ngClass]="{'text-danger': JudgementDefect.invalid}" class="head-label">Judgement Defect
-              <i *ngIf="JudgementDefect.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': JudgementDefect?.invalid}" class="head-label">Judgement Defect
+              <i *ngIf="JudgementDefect?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div class="input-group mb-3 ">
               <select class="custom-select subtext-color" formControlName="JudgementDefect">
@@ -510,8 +517,8 @@
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12">
           <div class="form-group">
-            <label [ngClass]="{'text-danger': Remark.invalid}" class="head-label">Remark
-              <i *ngIf="Remark.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': Remark?.invalid}" class="head-label">Remark
+              <i *ngIf="Remark?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <input type="search" formControlName="Remark" class="form-control subtext-color">
           </div>
@@ -593,8 +600,8 @@
           <div class="row">
             <div class="col-lg-3">
               <div class="form-group ">
-                <label [ngClass]="{'text-danger': OperatorName.invalid}" class="head-label">Operator Name
-                  <i *ngIf="OperatorName.invalid" class="bi bi-x-square-fill"></i>
+                <label [ngClass]="{'text-danger': OperatorName?.invalid}" class="head-label">Operator Name
+                  <i *ngIf="OperatorName?.invalid" class="bi bi-x-square-fill"></i>
                 </label>
                 <div class="input-group mb-3 ">
                   <select class="custom-select subtext-color" formControlName="OperatorName">
@@ -606,8 +613,8 @@
             </div>
             <div class="col-lg-3">
               <div class="form-group ">
-                <label [ngClass]="{'text-danger': DifficultyOfWork.invalid}" class="head-label">Difficulty of Work
-                  <i *ngIf="DifficultyOfWork.invalid" class="bi bi-x-square-fill"></i>
+                <label [ngClass]="{'text-danger': DifficultyOfWork?.invalid}" class="head-label">Difficulty of Work
+                  <i *ngIf="DifficultyOfWork?.invalid" class="bi bi-x-square-fill"></i>
                 </label>
                 <div class="input-group mb-3 ">
                   <select class="custom-select subtext-color" formControlName="DifficultyOfWork">
@@ -619,8 +626,8 @@
             </div>
             <div class="col-lg-3">
               <div class="form-group ">
-                <label [ngClass]="{'text-danger': CorrectOfWork.invalid}" class="head-label">Correct of Work
-                  <i *ngIf="CorrectOfWork.invalid" class="bi bi-x-square-fill"></i>
+                <label [ngClass]="{'text-danger': CorrectOfWork?.invalid}" class="head-label">Correct of Work
+                  <i *ngIf="CorrectOfWork?.invalid" class="bi bi-x-square-fill"></i>
                 </label>
                 <div class="input-group mb-3 ">
                   <select class="custom-select subtext-color" formControlName="CorrectOfWork">
@@ -632,8 +639,8 @@
             </div>
             <div class="col-lg-3">
               <div class="form-group ">
-                <label [ngClass]="{'text-danger': AnalysisTime.invalid}" class="head-label">Analysis Time
-                  <i *ngIf="AnalysisTime.invalid" class="bi bi-x-square-fill"></i>
+                <label [ngClass]="{'text-danger': AnalysisTime?.invalid}" class="head-label">Analysis Time
+                  <i *ngIf="AnalysisTime?.invalid" class="bi bi-x-square-fill"></i>
                 </label>
                 <div class="input-group mb-3 ">
                   <select class="custom-select subtext-color" formControlName="AnalysisTime">
@@ -753,8 +760,8 @@
 
         <div class="col-lg-6 col-md-6 col-sm-12 ">
           <div class="form-group ">
-            <label [ngClass]="{'text-danger': Approve.invalid}" class="head-label">Reviewer
-              <i *ngIf="Approve.invalid" class="bi bi-x-square-fill"></i>
+            <label [ngClass]="{'text-danger': Approve?.invalid}" class="head-label">Reviewer
+              <i *ngIf="Approve?.invalid" class="bi bi-x-square-fill"></i>
             </label>
             <div class="input-group mb-3 ">
               <select class="custom-select subtext-color" formControlName="Approve" (change)="OnApproveChange()">
@@ -775,7 +782,7 @@
             (click)="ModalNote(rejectNote);">Reject</button>
         </div>
         <div class="col-lg-6">
-          <button [disabled]="ResultForm.invalid && !FileReport" class="btn btn-primary btn-lg btn-block " type="button"
+          <button [disabled]="disableSubmitBtn()" class="btn btn-primary btn-lg btn-block " type="button"
             (click)="ModalNote(approveNote);">Submits</button>
         </div>
       </div>
@@ -847,7 +854,7 @@
 
   </div>
   <div class="modal-footer">
-    <button [disabled]="SelectMDL.invalid" class="btn"
+    <button [disabled]="SelectMDL?.invalid" class="btn"
       (click)="modal.dismiss('Cross click'); onClickGenExcel();">GENERATE <i
         class="bi bi-file-earmark-spreadsheet"></i></button>
   </div>

@@ -23,8 +23,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label [ngClass]="{'text-danger': RequestItem.invalid}" class="head-label">Request Item
-                <i *ngIf="RequestItem.invalid" class="bi bi-x-square-fill"></i>
+              <label [ngClass]="{'text-danger': RequestItem?.invalid}" class="head-label">Request Item
+                <i *ngIf="RequestItem?.invalid" class="bi bi-x-square-fill"></i>
               </label>
               <div class="input-group mb-3">
                 <select formControlName="RequestItem" class="custom-select subtext-color" style="cursor: pointer;"
@@ -43,7 +43,7 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
               <label class="head-label">Request Number </label>
-              <p class="subtext-color">{{RequestNumber.value}}</p>
+              <p class="subtext-color">{{RequestNumber?.value}}</p>
             </div>
           </div>
           <!-- * -------------------------------------------------Request Number -->
@@ -55,8 +55,8 @@
           <!-- * -------------------------------------------------Issued Date -->
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
-              <label class="head-label" [ngClass]="{'text-danger': IssueDate.invalid}">Issued Date <i
-                  *ngIf="IssueDate.invalid" class="bi bi-x-square-fill"></i></label>
+              <label class="head-label" [ngClass]="{'text-danger': IssueDate?.invalid}">Issued Date <i
+                  *ngIf="IssueDate?.invalid" class="bi bi-x-square-fill"></i></label>
               <input type="date" formControlName="IssueDate" class="form-control subtext-color" [min]="MinDate1"
                 [max]="MaxDate1" (blur)="onChangeIssueDate()">
             </div>
@@ -68,8 +68,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': ReplyDate.invalid}">Reply Date <i
-                  *ngIf="ReplyDate.invalid" class="bi bi-x-square-fill"></i></label>
+              <label class="head-label" [ngClass]="{'text-danger': ReplyDate?.invalid}">Reply Date <i
+                  *ngIf="ReplyDate?.invalid" class="bi bi-x-square-fill"></i></label>
               <input type="date" formControlName="ReplyDate" class="form-control subtext-color" [min]="MinDate2">
 
             </div>
@@ -80,9 +80,9 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': RequestSection.invalid}">Request from
-                (Department-Section) <i *ngIf="RequestSection.invalid" class="bi bi-x-square-fill"></i></label>
-              <p *ngIf="SectionList.length == 1" class="subtext-color">{{RequestSection.value}}</p>
+              <label class="head-label" [ngClass]="{'text-danger': RequestSection?.invalid}">Request from
+                (Department-Section) <i *ngIf="RequestSection?.invalid" class="bi bi-x-square-fill"></i></label>
+              <p *ngIf="SectionList.length == 1" class="subtext-color">{{RequestSection?.value}}</p>
               <select *ngIf="SectionList.length > 1" formControlName="RequestSection"
                 class="custom-select subtext-color" (change)="OnChangeSection()">
                 <option disabled [value]="null">--select--</option>
@@ -113,9 +113,9 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-lg-4">
-                  <label class="head-label" [ngClass]="{'text-danger': ModelNumber.invalid}">Model
+                  <label class="head-label" [ngClass]="{'text-danger': ModelNumber?.invalid}">Model
                     Number
-                    <i *ngIf="ModelNumber.invalid" class="bi bi-x-square-fill"></i>
+                    <i *ngIf="ModelNumber?.invalid" class="bi bi-x-square-fill"></i>
                   </label>
                   <input type="search" formControlName="ModelNumber" class="form-control subtext-color"
                     (click)="ToggleFilterModelNumber();" (keyup)="OnkeyUpModelNumber();">
@@ -128,14 +128,14 @@
                   </div>
                 </div>
                 <div class="col-lg-3">
-                  <label class="head-label" [ngClass]="{'text-danger': Size.invalid}">Size
+                  <label class="head-label" [ngClass]="{'text-danger': Size?.invalid}">Size
                     (inch)</label>
-                  <!-- <p class="mt-2 subtext-color">{{Size.value}}</p> -->
+                  <!-- <p class="mt-2 subtext-color">{{Size?.value}}</p> -->
                   <input type="text " class="form-control subtext-color" formControlName="Size">
                 </div>
                 <div class="col-lg-5">
-                  <label class="head-label" [ngClass]="{'text-danger': Customer.invalid}">Customer</label>
-                  <!-- <p class="mt-2 subtext-color">{{Customer.value}}</p> -->
+                  <label class="head-label" [ngClass]="{'text-danger': Customer?.invalid}">Customer</label>
+                  <!-- <p class="mt-2 subtext-color">{{Customer?.value}}</p> -->
                   <input type="text " class="form-control subtext-color" formControlName="Customer">
 
                 </div>
@@ -154,9 +154,9 @@
               <div class="col-lg-5 col-md-5 col-sm-12">
                 <div class="form-group">
 
-                  <label class="head-label" [ngClass]="{'text-danger': LotNumber.invalid}">CPR Lot Number/CRR
+                  <label class="head-label" [ngClass]="{'text-danger': LotNumber?.invalid}">CPR Lot Number/CRR
                     Lot Number
-                    <i *ngIf="LotNumber.invalid" class="bi bi-x-square-fill"></i>
+                    <i *ngIf="LotNumber?.invalid" class="bi bi-x-square-fill"></i>
                   </label>
                   <input type="text" class="form-control subtext-color" formControlName="LotNumber">
                 </div>
@@ -168,8 +168,8 @@
               <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="form-group">
 
-                  <label class="head-label" [ngClass]="{'text-danger': TBN.invalid}">Normal/TBN. Lot
-                    <i *ngIf="TBN.invalid" class="bi bi-x-square-fill"></i>
+                  <label class="head-label" [ngClass]="{'text-danger': TBN?.invalid}">Normal/TBN. Lot
+                    <i *ngIf="TBN?.invalid" class="bi bi-x-square-fill"></i>
                   </label>
                   <div class="input-group mb-3">
                     <select formControlName="TBN" class="custom-select subtext-color" style="cursor: pointer;"
@@ -191,12 +191,12 @@
               <!-- * -------------------------------------------------TBN Lot Number -->
               <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="form-group">
-                  <label class="head-label" [ngClass]="{'text-danger': TBN.value==='TBN' && TBNNumber.invalid}">TBN.
+                  <label class="head-label" [ngClass]="{'text-danger': TBN?.value==='TBN' && TBNNumber?.invalid}">TBN.
                     Number
-                    <i *ngIf="TBN.value==='TBN' && TBNNumber.invalid" class="bi bi-x-square-fill"></i>
+                    <i *ngIf="TBN?.value==='TBN' && TBNNumber?.invalid" class="bi bi-x-square-fill"></i>
                   </label>
-                  <input [readOnly]="TBN.invalid ||TBN.value==='normal'" type="text" class="form-control subtext-color"
-                    formControlName="TBNNumber">
+                  <input [readOnly]="TBN?.invalid ||TBN?.value==='normal'" type="text"
+                    class="form-control subtext-color" formControlName="TBNNumber">
                 </div>
               </div>
 
@@ -217,8 +217,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
 
             <div class="form-group">
-              <label class="head-label" [ngClass]="{'text-danger': DefectName.invalid}">Defective Name
-                <i *ngIf="DefectName.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': DefectName?.invalid}">Defective Name
+                <i *ngIf="DefectName?.invalid" class="bi bi-x-square-fill"></i>
               </label>
               <input class="form-control subtext-color" type="search" formControlName="DefectName"
                 (click)="ToggleFilter();" (keyup)="Filter(); ClearDefectCode();" (change)="ClearDefectCode()">
@@ -245,8 +245,8 @@
             <div class="form-group">
 
               <label class="head-label">Defective Code</label>
-              <p *ngIf="DefectCode.invalid" class="subtext-color">-</p>
-              <p *ngIf="DefectCode.valid" class="subtext-color">{{DefectCode.value}}</p>
+              <p *ngIf="DefectCode?.invalid" class="subtext-color">-</p>
+              <p *ngIf="DefectCode?.valid" class="subtext-color">{{DefectCode?.value}}</p>
             </div>
           </div>
           <!-- * -------------------------------------------------Defective Code -->
@@ -255,9 +255,9 @@
           <div class="col-lg-3 col-md-3 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': Treatment.invalid}">
+              <label class="head-label" [ngClass]="{'text-danger': Treatment?.invalid}">
                 Treatment
-                <i *ngIf="Treatment.invalid" class="bi bi-x-square-fill"></i>
+                <i *ngIf="Treatment?.invalid" class="bi bi-x-square-fill"></i>
               </label>
 
               <div class="input-group mb-3">
@@ -292,8 +292,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': InputQ.invalid}">Input Quantity (Pcs)
-                <i *ngIf="InputQ.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': InputQ?.invalid}">Input Quantity (Pcs)
+                <i *ngIf="InputQ?.invalid" class="bi bi-x-square-fill"></i>
               </label>
 
               <input type="number" formControlName="InputQ" class="form-control subtext-color" (keyup)="CheckNumber()"
@@ -305,8 +305,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': NGQ.invalid}">NG Quantity (Pcs)
-                <i *ngIf="NGQ.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': NGQ?.invalid}">NG Quantity (Pcs)
+                <i *ngIf="NGQ?.invalid" class="bi bi-x-square-fill"></i>
               </label>
 
               <input type="number" formControlName="NGQ" class="form-control subtext-color" (change)="CheckNumber2()"
@@ -330,8 +330,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
               <label class="head-label">NG Ratio (%) </label>
-              <p class="subtext-color">{{NGR.value |number : '.1-2'}}</p>
-              <p *ngIf="NGR.invalid" class="subtext-color">-</p>
+              <p class="subtext-color">{{NGR?.value |number : '.1-2'}}</p>
+              <p *ngIf="NGR?.invalid" class="subtext-color">-</p>
             </div>
           </div>
           <!-- * -------------------------------------------------NG Ratio (%) -->
@@ -341,9 +341,9 @@
             <div class="form-group">
 
 
-              <label class="head-label" [ngClass]="{'text-danger': SendNG.invalid}">Send NG To Analysis
+              <label class="head-label" [ngClass]="{'text-danger': SendNG?.invalid}">Send NG To Analysis
                 (Pcs)
-                <i *ngIf="SendNG.invalid" class="bi bi-x-square-fill"></i>
+                <i *ngIf="SendNG?.invalid" class="bi bi-x-square-fill"></i>
               </label>
 
               <input type="number" formControlName="SendNG" class="form-control subtext-color" (change)="CheckNumber3()"
@@ -368,8 +368,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': ProductPhase.invalid}">Production Phase
-                <i *ngIf="ProductPhase.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': ProductPhase?.invalid}">Production Phase
+                <i *ngIf="ProductPhase?.invalid" class="bi bi-x-square-fill"></i>
               </label>
 
               <div class="input-group mb-3">
@@ -390,9 +390,9 @@
           <div class="col-lg-3 col-md-3 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': DefectCategory.invalid}">Defect
+              <label class="head-label" [ngClass]="{'text-danger': DefectCategory?.invalid}">Defect
                 Catagory
-                <i *ngIf="DefectCategory.invalid" class="bi bi-x-square-fill"></i>
+                <i *ngIf="DefectCategory?.invalid" class="bi bi-x-square-fill"></i>
               </label>
 
               <div class="input-group mb-3">
@@ -413,8 +413,8 @@
           <div class="col-lg-3 col-md-3 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': (DefectCategory.valid&&ClaimNo.invalid)}">Claim no.
-                <i *ngIf="(DefectCategory.valid&&ClaimNo.invalid)" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': (DefectCategory?.valid&&ClaimNo?.invalid)}">Claim no.
+                <i *ngIf="(DefectCategory?.valid&&ClaimNo?.invalid)" class="bi bi-x-square-fill"></i>
               </label>
 
               <input formControlName="ClaimNo" type="text" class="form-control subtext-color">
@@ -438,8 +438,8 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': OccurA.invalid}">Occur Place A
-                <i *ngIf="OccurA.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': OccurA?.invalid}">Occur Place A
+                <i *ngIf="OccurA?.invalid" class="bi bi-x-square-fill"></i>
               </label>
               <div class="input-group mb-3">
                 <select class="custom-select subtext-color" formControlName="OccurA" style="cursor: pointer;"
@@ -460,8 +460,8 @@
 
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
-              <label class="head-label" [ngClass]="{'text-danger': OccurB.invalid}">Occur Place B
-                <i *ngIf="OccurB.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': OccurB?.invalid}">Occur Place B
+                <i *ngIf="OccurB?.invalid" class="bi bi-x-square-fill"></i>
               </label>
               <div class="input-group mb-3">
                 <select class="custom-select subtext-color" formControlName="OccurB" style="cursor: pointer;">
@@ -490,8 +490,8 @@
             <div class="form-group">
 
 
-              <label class="head-label" [ngClass]="{'text-danger': Abnormal.invalid}">Abnormal Lot Level
-                <i *ngIf="Abnormal.invalid" class="bi bi-x-square-fill"></i>
+              <label class="head-label" [ngClass]="{'text-danger': Abnormal?.invalid}">Abnormal Lot Level
+                <i *ngIf="Abnormal?.invalid" class="bi bi-x-square-fill"></i>
               </label>
               <div class="input-group mb-3">
 
@@ -506,6 +506,35 @@
             </div>
           </div>
           <!-- * -------------------------------------------------Abnormal Lot Level -->
+
+          <!-- * -------------------------------------------------Need Report -->
+
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group">
+
+
+              <label class="head-label" [ngClass]="{'text-danger': NeedReport?.invalid}">Need Report Or Only Analysis
+                <i *ngIf="NeedReport?.invalid" class="bi bi-x-square-fill"></i>
+              </label>
+              <div class="input-group mb-3" style="margin-bottom: 0 !important;">
+                <div class="form-check form-check-inline btn-report-need" title="if requesters need analysis report. (Feedback data)">
+                  <input class="form-check-input" type="radio" id="needReportNeed" formControlName="NeedReport"
+                    value="Need" style="cursor: pointer;">
+                  <label class="form-check-label subtext-color" for="needReportNeed" style="padding-left: 0;">Need
+                    Report</label>
+                </div>
+                <div class="form-check form-check-inline btn-report-analysis" title="If requesters want only analysis result.">
+                  <input class="form-check-input" type="radio" id="needReportAnalysis" formControlName="NeedReport"
+                    value="Analysis" style="cursor: pointer;">
+                  <label class="form-check-label subtext-color" for="needReportAnalysis" style="padding-left: 0;">Only
+                    Analysis</label>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <!-- * -------------------------------------------------Need Report -->
         </div>
 
         <!-- ! ----------------------------------------ROW 7 -->
@@ -559,7 +588,7 @@
       <div class="col-12 mt-5">
         <div class="form-group">
           <label class="head-label">Issuer</label>
-          <p class="subtext-color">{{Issuer.value}}</p>
+          <p class="subtext-color">{{Issuer?.value}}</p>
         </div>
       </div>
     </div>
@@ -573,8 +602,8 @@
     <div class="row">
       <div class="col-12 mt-5">
         <div class="form-group">
-          <label class="head-label" [ngClass]="{'text-danger': Aprrove.invalid}">Approve
-            <i *ngIf="Aprrove.invalid" class="bi bi-x-square-fill"></i>
+          <label class="head-label" [ngClass]="{'text-danger': Aprrove?.invalid}">Approve
+            <i *ngIf="Aprrove?.invalid" class="bi bi-x-square-fill"></i>
           </label>
           <div class="input-group mb-3">
             <select formControlName="Aprrove" class="custom-select subtext-color" style="cursor: pointer;"
@@ -608,7 +637,7 @@
           </button>
         </div>
         <div class="col-lg-6">
-          <button type="button" [disabled]="RequestForm.invalid" class="btn btn-primary btn-lg btn-block "
+          <button type="button" [disabled]="RequestForm?.invalid" class="btn btn-primary btn-lg btn-block "
             (click)="openModalSubmit(approveNote)">Submit
             <i class="bi bi-check-square-fill"></i>
           </button>

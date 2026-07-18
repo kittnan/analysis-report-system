@@ -170,7 +170,7 @@ export class ProgressForm3Component implements OnInit {
     this.getForm();
     this.GetListAll()
     this.getReportList();
-    
+
     // อัปเดต validators หลังจากโหลดข้อมูล
     setTimeout(() => {
       this.updateResult2Validators();
@@ -201,7 +201,6 @@ export class ProgressForm3Component implements OnInit {
 
     this.api.FindFormById(this.formId).subscribe((data: any) => {
       if (data) {
-
         this.form = data;
         this.FileList = data.files;
         // this.SetPathFile();
@@ -2838,7 +2837,7 @@ export class ProgressForm3Component implements OnInit {
   newResultFM() {
     const result2Array = this.Result2 as FormArray;
     const isFM = this.isFM();
-    
+
     const newItem = new FormGroup({
       item: new FormControl('', isFM ? Validators.required : null),
       qty: new FormControl(0, isFM ? Validators.required : null),
@@ -2890,7 +2889,7 @@ export class ProgressForm3Component implements OnInit {
   updateResult2Validators() {
     const result2Array = this.Result2 as FormArray;
     const isFM = this.isFM();
-    
+
     if (isFM) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
@@ -2937,17 +2936,26 @@ export class ProgressForm3Component implements OnInit {
     result2Array.updateValueAndValidity();
   }
 
+  disableSubmitBtn(): Boolean {
+    if (this.form?.needReport && this.form?.needReport == 'Need') {
+      return this.ResultForm.valid && this.FileReport ? false : true
+    } else if (this.form?.needReport && this.form?.needReport == 'Analysis') {
+      return this.ResultForm.invalid
+    }
+    return true; // Default to disable the button if none of the conditions match
+  }
+
   // ฟังก์ชันสำหรับดีบักฟอร์ม เพื่อหาฟิลด์ที่ invalid
   debugFormValidation() {
     // อัปเดต validators ก่อนตรวจสอบ
     this.updateResult2Validators();
-    
+
     console.log('=== FORM VALIDATION DEBUG ===');
     console.log('ResultForm.valid:', this.ResultForm.valid);
     console.log('ResultForm.invalid:', this.ResultForm.invalid);
     console.log('TreatmentOfNg.valid:', this.TreatmentOfNg.valid);
     console.log('TreatmentOfNg.invalid:', this.TreatmentOfNg.invalid);
-    
+
     console.log('\n--- ResultForm Controls Status ---');
     Object.keys(this.ResultForm.controls).forEach(key => {
       const control = this.ResultForm.get(key);
@@ -2958,7 +2966,7 @@ export class ProgressForm3Component implements OnInit {
         console.log(`✅ ${key} is valid, value:`, control.value);
       }
     });
-    
+
     // ตรวจสอบ Result2 FormArray (สำหรับงาน FM)
     const result2Array = this.Result2 as FormArray;
     if (result2Array) {
@@ -2966,7 +2974,7 @@ export class ProgressForm3Component implements OnInit {
       console.log('Result2 Array valid:', result2Array.valid);
       console.log('Result2 Array invalid:', result2Array.invalid);
       console.log('Result2 Array length:', result2Array.length);
-      
+
       if (result2Array.invalid) {
         console.log('❌ Result2 FormArray is INVALID');
         result2Array.controls.forEach((control, index) => {
@@ -2977,16 +2985,16 @@ export class ProgressForm3Component implements OnInit {
         });
       }
     }
-    
+
     // ตรวจสอบว่าเป็นงาน FM หรือไม่
     console.log('\n--- FM Status ---');
     console.log('Is FM:', this.isFM());
-    
+
     console.log('\n--- Summary ---');
     const invalidControls = [];
     if (this.ResultForm.invalid) invalidControls.push('ResultForm');
     if (this.TreatmentOfNg.invalid) invalidControls.push('TreatmentOfNg');
-    
+
     console.log('Invalid controls:', invalidControls.length > 0 ? invalidControls : 'None');
     console.log('Overall form can submit:', this.ResultForm.valid && this.TreatmentOfNg.valid);
     console.log('=== END DEBUG ===');
