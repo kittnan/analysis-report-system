@@ -138,28 +138,45 @@ export class ViewFormComponent implements OnInit {
   }
 
   isAEUser(): boolean {
-    let level1: any = localStorage.getItem('AR_UserSection1Name')
+    let level1: any = localStorage.getItem('AR_UserLevel1')
 
 
-    let level2: any = localStorage.getItem('AR_UserSection2Name')
+    let level2: any = localStorage.getItem('AR_UserLevel2')
 
 
-    let level3: any = localStorage.getItem('AR_UserSection3Name')
+    let level3: any = localStorage.getItem('AR_UserLevel3')
 
 
-    let level4: any = localStorage.getItem('AR_UserSection4Name')
+    let level4: any = localStorage.getItem('AR_UserLevel4')
 
 
-    let level5: any = localStorage.getItem('AR_UserSection5Name')
+    let level5: any = localStorage.getItem('AR_UserLevel5')
 
 
-    let level6: any = localStorage.getItem('AR_UserSection6Name')
+    let level6: any = localStorage.getItem('AR_UserLevel6')
+
+    let levelName1: any = localStorage.getItem('AR_UserSection1Name')
+
+
+    let levelName2: any = localStorage.getItem('AR_UserSection2Name')
+
+
+    let levelName3: any = localStorage.getItem('AR_UserSection3Name')
+
+
+    let levelName4: any = localStorage.getItem('AR_UserSection4Name')
+
+
+    let levelName5: any = localStorage.getItem('AR_UserSection5Name')
+
+
+    let levelName6: any = localStorage.getItem('AR_UserSection6Name')
 
 
     let levelArr = [level1, level2, level3, level4, level5, level6]
+    let levelNameArr = [levelName1, levelName2, levelName3, levelName4, levelName5, levelName6]
 
-
-    if (levelArr.some((lv: any) => lv == 'AE')) return true
+    if (levelArr.some((lv: any) => lv && lv >= 3) || levelNameArr.some((lv: any) => lv && lv == 'AE')) return true
     return false
 
   }

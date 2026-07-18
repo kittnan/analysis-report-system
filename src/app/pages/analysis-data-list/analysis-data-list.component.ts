@@ -8,6 +8,7 @@ import * as ExcelJS from 'exceljs';
 import { ColDef, GridApi, GridReadyEvent, RowNode, ValueGetterParams } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
+var moment = require('moment')
 
 
 @Component({
@@ -31,7 +32,9 @@ export class AnalysisDataListComponent implements OnInit {
     ModelSelect: new FormControl(null, Validators.required),
     DateStart: new FormControl(null, Validators.required),
     DateEnd: new FormControl(null, Validators.required),
-    Month: new FormControl(null, Validators.required)
+    Month: new FormControl(null, Validators.required),
+    ReplyDateStart: new FormControl(null),
+    ReplyDateEnd: new FormControl(null),
   })
 
   LoadingPage: boolean = false
@@ -40,7 +43,8 @@ export class AnalysisDataListComponent implements OnInit {
   get DateStart() { return this.Form.get('DateStart') }
   get DateEnd() { return this.Form.get('DateEnd') }
   get Month() { return this.Form.get('Month') }
-
+  get ReplyStart() { return this.Form.get('ReplyDateStart') }
+  get ReplyEnd() { return this.Form.get('ReplyDateEnd') }
 
   // ? Variable Normal
 
@@ -349,7 +353,9 @@ export class AnalysisDataListComponent implements OnInit {
   // ? interval
   interval$: Subscription
 
-  ngOnInit(): void {
+  holidays: any = []
+
+  async ngOnInit(): Promise<void> {
 
     this.interval$ = interval(1000).subscribe(res => this.setFilter())
 
@@ -360,6 +366,9 @@ export class AnalysisDataListComponent implements OnInit {
     // this.test ={
     //   onFilterChanged
     // }
+
+    this.holidays = await this.getHoliday()
+
   }
   ngOnDestroy(): void {
     this.interval$.unsubscribe()
@@ -407,12 +416,13 @@ export class AnalysisDataListComponent implements OnInit {
     sessionStorage.getItem('Analysis-Month') ? this.Month.setValue(sessionStorage.getItem('Analysis-Month')) : false
     sessionStorage.getItem('Analysis-DateStart') ? this.DateStart.setValue(sessionStorage.getItem('Analysis-DateStart')) : false
     sessionStorage.getItem('Analysis-DateEnd') ? this.DateEnd.setValue(sessionStorage.getItem('Analysis-DateEnd')) : false
-
+    sessionStorage.getItem('Analysis-ReplyStart') ? this.ReplyStart.setValue(sessionStorage.getItem('Analysis-ReplyStart')) : false
+    sessionStorage.getItem('Analysis-ReplyEnd') ? this.ReplyEnd.setValue(sessionStorage.getItem('Analysis-ReplyEnd')) : false
     if (
       this.ModelSelect.valid ||
       this.Month.valid ||
       this.DateStart.valid ||
-      this.DateEnd.valid
+      this.DateEnd.valid 
     ) {
       this.OnClickSearch()
     }
@@ -471,7 +481,9 @@ export class AnalysisDataListComponent implements OnInit {
     const condition_search = {
       start: this.DateStart.value || null,
       end: this.DateEnd.value || null,
-      month: this.Month.value || null
+      month: this.Month.value || null,
+      replyStart: this.ReplyStart.value || null,
+      replyEnd: this.ReplyEnd.value || null
     }
     // console.log(condition_search);
 
@@ -746,26 +758,129 @@ export class AnalysisDataListComponent implements OnInit {
         case 7:
           item.onTimeReport = 'Ongoing'
 
-          let diffOnTimeReport = finishReportDate - finishAnalyzeDate
-          let dayOnTimeReport = Math.floor(diffOnTimeReport / 1000 / 60 / 60 / 24);
-          if (dayOnTimeReport <= 10 && (item.statusShow == 'Done' || item.statusShow == 'Done with delay')) {
-            item.onTimeReport = 'On due'
-          } else if (dayOnTimeReport > 10 && (item.statusShow == 'Done' || item.statusShow == 'Done with delay')) {
-            item.onTimeReport = 'Over due'
-          }
+          const isFinishAnalyze = item.finishAnalyzeDate ? true : false
+          const isFinishReport = item.finishReportDate ? true : false
+          let diffOnTimeReport = isFinishAnalyze && isFinishReport ? finishReportDate - finishAnalyzeDate : 0
 
-          if (finishAnalyzeDate && !item.finishReportDate && item.statusShow == 'Making report') {
-            let today = new Date().getTime()
-            let diffDay = today - finishAnalyzeDate
-            diffDay = Math.floor(diffDay / 1000 / 60 / 60 / 24);
+          if (isFinishReport && isFinishAnalyze) {
 
-            if (diffDay <= 10) {
-              item.onTimeReport = 'Ongoing'
-            } else if (diffDay > 10) {
-              item.onTimeReport = 'Over due'
+            const dueDate = this.findDueDate(item.finishAnalyzeDate, 5, false)
+
+            // const onDue = moment(item.finishReportDate, 'YYYY-MM-DD')
+            //   .isBetween(moment(item.finishAnalyzeDate, 'YYYY-MM-DD').startOf('day'), dueDate.endOf('day'))
+
+            const s = moment(item.finishAnalyzeDate).toDate()
+            const e = dueDate.toDate()
+
+            const v = moment(item.finishReportDate).toDate()
+
+            const onDue = moment(v).isBetween(moment(s).startOf('day'), moment(e).endOf('day'), undefined, '[]')
+
+            // if (item.requestNumber == 'MDL-2026-0901') {
+            //   if (s <= v && v <= e) {
+            //     console.log('on due')
+            //   }
+            // }
+
+            const afterDue = moment(item.finishReportDate, 'YYYY-MM-DD').isAfter(dueDate.endOf('day'))
+            if (onDue) {
+              item.onTimeReport = 'Done'
+            } else if (afterDue) {
+              item.onTimeReport = 'Done with delay'
             }
-          }
-          break;
+
+            // if (item.requestNumber == 'MDL-2026-0901') {
+            //   console.log('finishAnalyzeDate', item.finishAnalyzeDate);
+            //   console.log(`⚡ ~ :763 ~ AnalysisDataListComponent ~ dueDate:`, dueDate.clone().format('DD-MM-YYYY'));
+
+            //   console.log('finishReportDate', item.finishReportDate);
+
+            //   console.log(`⚡ ~ :767 ~ AnalysisDataListComponent ~ onDue:`, onDue);
+            //   console.log(`⚡ ~ :767 ~ AnalysisDataListComponent ~ afterDue:`, afterDue);
+
+            // }
+            //   console.log('dueDate', dueDate);
+
+            //   console.log('onDue', onDue);
+            // }
+            // let totalDaysSpanned = this.findRemainDay(4, item?.finishAnalyzeDate)
+            // // let countMakingReport = this.findStartBetweenEndWorkingDay(item.finishAnalyzeDate, item.finishReportDate, true)
+            // let foo = moment(item.finishAnalyzeDate).startOf('day').add(totalDaysSpanned, "days").diff(moment(item.finishReportDate).startOf('day'), "days")
+
+            // if (item.requestNumber == 'MDL-2026-0671') {
+            //   console.log('totalDaysSpanned', totalDaysSpanned);
+
+            //   // console.log(item?.finishAnalyzeDate, totalDaysSpanned);
+            //   console.log(`!!!`, foo);
+            //   console.log(item);
+
+            // }
+            // // if (item.status == 5 && item.status == 6) {
+            // //   if (countMakingReport !== null && countMakingReport <= 4 && countMakingReport >= 0) {
+            // //     item.onTimeReport = 'Done'
+            // //   } else {
+            // //     item.onTimeReport = 'Done with delay'
+            // //   }
+            // // } else {
+            // //   item.onTimeReport = 'Done with delay2'
+            // // }
+
+
+            // if (foo >= 1) {
+            //   item.onTimeReport = 'Done'
+            // } else {
+            //   item.onTimeReport = 'Done with delay'
+            // }
+            break;
+          } else
+            if (isFinishAnalyze && !isFinishReport) {
+              let totalDaysSpanned = this.findRemainDay(4, item?.finishAnalyzeDate)
+              let foo = moment().startOf('day').add(totalDaysSpanned, "days").diff(moment().startOf('day'), "days")
+
+              // // totalDaysSpanned += 1
+              // if (item.requestNumber == 'MDL-2026-0765') {
+              //   console.log(item?.finishAnalyzeDate);
+              //   console.log(`@@@`, totalDaysSpanned);
+
+              //   // let testaa = this.findRemainDay(4, moment('18-05-2026', 'DD-MM-YYYY').toDate())
+
+              //   // console.log(`⚡ ~ :796 ~ AnalysisDataListComponent ~ testaa:`, testaa);
+
+              //   let foo = moment().startOf('day').add(totalDaysSpanned, "days").diff(moment().startOf('day'), "days")
+
+              //   console.log(`⚡ ~ :800 ~ AnalysisDataListComponent ~ foo:`, foo);
+
+
+              // }
+
+              if (foo >= 1) {
+                item.onTimeReport = 'Ongoing'
+              } else {
+                item.onTimeReport = 'Over due'
+              }
+              break;
+            }
+
+
+        // let dayOnTimeReport = Math.floor(diffOnTimeReport / 1000 / 60 / 60 / 24);
+        // if (dayOnTimeReport <= 10 && (item.statusShow == 'Done' || item.statusShow == 'Done with delay')) {
+        //   item.onTimeReport = 'On due'
+        // } else if (dayOnTimeReport > 10 && (item.statusShow == 'Done' || item.statusShow == 'Done with delay')) {
+        //   item.onTimeReport = 'Over due'
+        // }
+
+        // if (finishAnalyzeDate && !item.finishReportDate && item.statusShow == 'Making report') {
+        //   let today = new Date().getTime()
+        //   let diffDay = today - finishAnalyzeDate
+        //   diffDay = Math.floor(diffDay / 1000 / 60 / 60 / 24);
+
+        //   if (diffDay <= 10) {
+        //     item.onTimeReport = 'Ongoing'
+        //   } else if (diffDay > 10) {
+        //     item.onTimeReport = 'Over due'
+        //   }
+        // }
+        // break;
       }
       resolve(item)
     })
@@ -1086,11 +1201,15 @@ export class AnalysisDataListComponent implements OnInit {
         this.Month.reset()
         this.DateStart.reset()
         this.DateEnd.reset()
+        this.ReplyStart.reset()
+        this.ReplyEnd.reset()
 
         sessionStorage.setItem('Analysis-Model', '')
         sessionStorage.setItem('Analysis-Month', '')
         sessionStorage.setItem('Analysis-DateStart', '')
         sessionStorage.setItem('Analysis-DateEnd', '')
+        sessionStorage.setItem('Analysis-ReplyStart', '')
+        sessionStorage.setItem('Analysis-ReplyEnd', '')
         this.rowData = []
       }
     })
@@ -1100,11 +1219,15 @@ export class AnalysisDataListComponent implements OnInit {
     sessionStorage.setItem('Analysis-Month', '')
     sessionStorage.setItem('Analysis-DateStart', '')
     sessionStorage.setItem('Analysis-DateEnd', '')
+    sessionStorage.setItem('Analysis-ReplyStart', '')
+    sessionStorage.setItem('Analysis-ReplyEnd', '')
 
     this.ModelSelect.valid ? sessionStorage.setItem('Analysis-Model', this.ModelSelect.value) : false
     this.Month.valid ? sessionStorage.setItem('Analysis-Month', this.Month.value) : false
     this.DateStart.valid ? sessionStorage.setItem('Analysis-DateStart', this.DateStart.value) : false
     this.DateEnd.valid ? sessionStorage.setItem('Analysis-DateEnd', this.DateEnd.value) : false
+    this.ReplyStart.valid ? sessionStorage.setItem('Analysis-ReplyStart', this.ReplyStart.value) : false
+    this.ReplyEnd.valid ? sessionStorage.setItem('Analysis-ReplyEnd', this.ReplyEnd.value) : false
 
   }
 
@@ -1166,5 +1289,76 @@ export class AnalysisDataListComponent implements OnInit {
     }
   }
 
+  async getHoliday() {
+    return await this.api.getWorkingDay({}).toPromise()
+  }
+
+  findRemainDay(workingDayCount: any, startDate: any) {
+    if (!startDate) return null
+    // Calculate working days
+    const start = moment(startDate).startOf('day').add(1, 'day') // เริ่มนับจากวันถัดไป
+    const workingDays = parseInt(workingDayCount) || 0;
+    let currentDate = start.clone();
+    let workingDaysFound = 0;
+    while (workingDaysFound < workingDays) {
+      const dayOfWeek = currentDate.day(); // Sunday=0, Monday=1, ..., Saturday=6
+      const dateStr = currentDate.format('YYYY-MM-DD');
+      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a: any) => a == dateStr) : false;
+      if (dayOfWeek >= 1 && dayOfWeek <= 5 && !isHoliday) {
+        workingDaysFound++;
+        if (workingDaysFound === workingDays) {
+          break;
+        }
+      }
+      currentDate.add(1, 'day');
+    }
+    // return currentDate
+    return currentDate.diff(moment().startOf('day'), 'days') + 1
+  }
+
+  findStartBetweenEndWorkingDay(startDate: any, endDate: any, ignoreStart = false) {
+    if (!startDate || !endDate) return null
+    const start = moment(startDate).startOf('day')
+    if (ignoreStart) {
+      start.add(1, 'day')
+    }
+    const end = moment(endDate).startOf('day')
+    let currentDate = start.clone();
+    let workingDaysCount = 0;
+    while (currentDate.isSameOrBefore(end)) {
+      const dayOfWeek = currentDate.day();
+      const dateStr = currentDate.format('YYYY-MM-DD');
+      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a: any) => a == dateStr) : false;
+      if (dayOfWeek >= 1 && dayOfWeek <= 5 && !isHoliday) {
+        workingDaysCount++;
+      }
+      currentDate.add(1, 'day');
+    }
+    return workingDaysCount
+  }
+
+  findDueDate(startDate: any, workingDayCount: any, ignoreEnd = false) {
+    if (!startDate) return null
+    const start = moment(startDate).startOf('day').add(1, 'day') // เริ่มนับจากวันถัดไป
+    const workingDays = parseInt(workingDayCount) || 0;
+    let currentDate = start.clone();
+    let workingDaysFound = 0;
+    while (workingDaysFound < workingDays) {
+      const dayOfWeek = currentDate.day(); // Sunday=0, Monday=1, ..., Saturday=6
+      const dateStr = currentDate.format('YYYY-MM-DD');
+      const isHoliday = this.holidays?.holidays ? this.holidays.holidays.some((a: any) => a == dateStr) : false;
+      if (dayOfWeek >= 1 && dayOfWeek <= 5 && !isHoliday) {
+        workingDaysFound++;
+        if (workingDaysFound === workingDays) {
+          break;
+        }
+      }
+      currentDate.add(1, 'day');
+    }
+    if (ignoreEnd) {
+      currentDate.subtract(1, 'day');
+    }
+    return currentDate;
+  }
 
 }
