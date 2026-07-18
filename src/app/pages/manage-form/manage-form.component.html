@@ -102,14 +102,19 @@
               <th width="10%" class="text-nowrap" scope="col">Defect name</th>
               <th width="10%" class="text-nowrap" scope="col">Issue date</th>
               <th width="10%" class="text-nowrap" scope="col">Reply date</th>
-              <th width="10%" class="text-nowrap" scope="col" *ngIf="check_permission(['0','3','4'])">Remain Analysis <br>Due Date</th>
-              <th width="10%" class="text-nowrap" scope="col" *ngIf="check_permission(['0','4'])">Remain Analysis <br>Report Due Date</th>
+              <th width="10%" class="text-nowrap" scope="col" *ngIf="check_permission(['0','3','4'])">Remain Analysis
+                <br>Due Date
+              </th>
+              <th width="10%" class="text-nowrap" scope="col" *ngIf="check_permission(['0','4'])">Remain Analysis
+                <br>Report Due Date
+              </th>
               <th width="10%" class="text-nowrap" scope="col">Wait</th>
               <th width="10%" class="text-nowrap" scope="col">Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of DataFilter; let i = index" class="tableRow" (click)="OnClickForm(item)" [style]="setStyleOverDue(item,['0','3','4'])" >
+            <tr *ngFor="let item of DataFilter; let i = index" class="tableRow" (click)="OnClickForm(item)"
+              [style]="setStyleOverDue(item,['0','3','4'])">
               <th scope="row">{{ (PageNow-1)*(CountNum.value) + (i+1) }}</th>
               <td>{{item.requestNumber}}</td>
               <td>{{item.requestFormSectionName}}</td>
@@ -119,12 +124,18 @@
               <td>{{item.defectiveName}}</td>
               <td>{{item.issuedDate |date:'M/d/y'}}</td>
               <td>{{item.replyDate |date:'M/d/y'}}</td>
-              <td [style]="setStyle(item.remain,['0','3','4'])" *ngIf="check_permission(['0','3','4'])">{{item.remain}} 
+              <td [style]="setStyle(item.remain,['0','3','4'])" *ngIf="check_permission(['0','3','4'])">{{item.remain}}
                 <!-- -> {{item.result[0]?.finishAnalyzeDate |date:'d/MM/yyyy'}} {{item.totalDaysSpanned}} -->
-             </td>
-              <td [style]="setStyle(item.remain_report,['0','3','4'])" *ngIf="check_permission(['0','4'])">{{item.remain_report}}</td>
+              </td>
+              <td [style]="setStyle(item.remain_report,['0','3','4'])" *ngIf="check_permission(['0','4'])">
+                {{item.remain_report}}</td>
               <td [ngClass]="{'primary-status': item.userApprove == UserId}">{{item.userApproveName}}</td>
-              <td class="status green-status" *ngIf="item.status == 1">Wait Approve Request</td>
+
+              <td class="status" [ngClass]="htmlStatusClass(item)">
+                {{htmlStatus(item)}}
+              </td>
+
+              <!-- <td class="status green-status" *ngIf="item.status == 1">Wait Approve Request</td>
               <td class="status green-status" *ngIf="item.status == 2">Analysis</td>
               <td class="status green-status" *ngIf="item.status == 3" [class]="cssEng(item)">{{htmlEng(item)}}</td>
               <td class="status green-status" *ngIf="item.status == 4">Reviewer Report</td>
@@ -135,7 +146,7 @@
               <td class="status red-status" *ngIf="item.status == 4.3">Reject</td>
               <td class="status red-status" *ngIf="item.status == 5.4">Reject</td>
               <td class="status red-status" *ngIf="item.status == 6.4">Reject</td>
-              <td class="status red-status" *ngIf="item.status == 0">Cancel</td>
+              <td class="status red-status" *ngIf="item.status == 0">Cancel</td> -->
 
             </tr>
 

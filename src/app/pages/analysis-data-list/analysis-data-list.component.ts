@@ -422,7 +422,7 @@ export class AnalysisDataListComponent implements OnInit {
       this.ModelSelect.valid ||
       this.Month.valid ||
       this.DateStart.valid ||
-      this.DateEnd.valid 
+      this.DateEnd.valid
     ) {
       this.OnClickSearch()
     }
@@ -620,7 +620,7 @@ export class AnalysisDataListComponent implements OnInit {
         merge.replyDate = new Date(merge.replyDate).toLocaleDateString("en-US")
         merge.startAnalyzeDate = merge.startAnalyzeDate ? new Date(merge.startAnalyzeDate).toLocaleDateString("en-US") : ""
         merge.finishAnalyzeDate = merge.finishAnalyzeDate ? new Date(merge.finishAnalyzeDate).toLocaleDateString("en-US") : ""
-        merge.finishReportDate = merge.finishReportDate ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : ""
+        merge.finishReportDate = merge.finishReportDate && merge.finishReportDate != 'No Need Report' ? new Date(merge.finishReportDate).toLocaleDateString("en-US") : merge.finishReportDate
         merge.TBNShow = merge.TBN && merge.TBN != 'normal' ? merge.TBNNumber : 'Normal'
         return merge
       })
@@ -672,6 +672,8 @@ export class AnalysisDataListComponent implements OnInit {
         }
         this.setStatusShow(item, 6)
         this.setStatusShow(item, 7)
+
+
       })
       resolve('ok')
     })
@@ -881,6 +883,10 @@ export class AnalysisDataListComponent implements OnInit {
         //   }
         // }
         // break;
+      }
+      if (item.needReport && item.needReport == 'Analysis') {
+        console.log(item['finishReportDate'])
+        item['finishReportDate'] = 'No Need Report'
       }
       resolve(item)
     })

@@ -399,17 +399,42 @@ export class ManageFormComponent implements OnInit {
   }
 
   // ? html function
-  htmlEng(item: any) {
+  htmlEng(item: any): string {
+    const result = item?.result?.[0];
 
-    if (item && item.result.length > 0) {
-      const result = item.result[0]
-      if (item.requestItem && item.requestItem.includes('_FM')) {
-        if (result.finishAnalyzeDate && result.result2 && result.result2.length > 0) return 'Making Report'
-      } else
-        if (result.finishAnalyzeDate && result.result) return 'Making Report'
+    if (!this.isAnalysisFinished(result)) {
+      return 'Under Analysis';
     }
-    return 'Under Analysis'
 
+    return this.hasResultAnalyze(result, item)
+      ? this.hasNeedReport(item) == 'Need' ? 'Making Report' : 'Wait Review Result'
+      : 'Under Analysis';
+  }
+  private hasNeedReport(item: any): string {
+    const needReport = item?.needReport ?? 'Need';
+    return needReport; // 'Need' or 'Analysis'
+  }
+
+  private isAnalysisFinished(result: any): boolean {
+    return !!result?.finishAnalyzeDate;
+  }
+
+  private hasResultAnalyze(result: any, item: any): boolean {
+    return this.isFM(item)
+      ? this.hasFMReport(result)
+      : this.hasNormalReport(result);
+  }
+
+  private isFM(item: any): boolean {
+    return item?.requestItem?.includes('_FM');
+  }
+
+  private hasFMReport(result: any): boolean {
+    return !!result?.result2?.length;
+  }
+
+  private hasNormalReport(result: any): boolean {
+    return !!result?.result;
   }
 
   cssEng(item: any) {
@@ -477,71 +502,71 @@ export class ManageFormComponent implements OnInit {
     return currentDate.diff(start, 'days')
   }
 
-  rep(data: any) {
-    data = data.map((d: any) => {
+  // rep(data: any) {
+  //   data = data.map((d: any) => {
 
-      let result = d.result?.[0] || {}
-      let day = moment(d.replyDate).startOf('day').diff(moment().startOf('day'), "day")
+  //     let result = d.result?.[0] || {}
+  //     let day = moment(d.replyDate).startOf('day').diff(moment().startOf('day'), "day")
 
-      if (day == 0) {
-        day = "Today"
-      }
-      if (day < 0) {
-        day = "Over Due Date"
-      }
+  //     if (day == 0) {
+  //       day = "Today"
+  //     }
+  //     if (day < 0) {
+  //       day = "Over Due Date"
+  //     }
 
-      // if(result){
-      //   console.log('@');
+  //     // if(result){
+  //     //   console.log('@');
 
-      //   const totalDaysSpanned = this.calWorkingDay(5, result?.finishAnalyzeDate)
-      // }
+  //     //   const totalDaysSpanned = this.calWorkingDay(5, result?.finishAnalyzeDate)
+  //     // }
 
-      let report = result?.finishAnalyzeDate ? moment(result?.finishAnalyzeDate).startOf('day').add(5, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
-      if (report == 0) {
-        report = "Today"
-      }
-      if (report < 0) {
-        report = "Over Due Date"
-      }
-
-
-      return {
-        ...d,
-        remain: (
-          // result.finishAnalyzeDate && result.result
-          (d.status == 3 && (result?.finishAnalyzeDate && result?.result)) ||
-          (d.status == 3 && (result?.finishAnalyzeDate && result?.result2 && result?.result2.length > 0)) ||
-          d.status == 4 ||
-          d.status == 5 ||
-          d.status == 2.1 ||
-          d.status == 3.1 ||
-          d.status == 4.3 ||
-          d.status == 5.4 ||
-          d.status == 6.4
-        )
-          ? "Finished" : day,
+  //     let report = result?.finishAnalyzeDate ? moment(result?.finishAnalyzeDate).startOf('day').add(5, "days").diff(moment().startOf('day'), "days") : "Under Analysis"
+  //     if (report == 0) {
+  //       report = "Today"
+  //     }
+  //     if (report < 0) {
+  //       report = "Over Due Date"
+  //     }
 
 
-        remain_report: (
-          d.status == 4 ||
-          d.status == 5 ||
-          d.status == 2.1 ||
-          d.status == 3.1 ||
-          d.status == 4.3 ||
-          d.status == 5.4 ||
-          d.status == 6.4
-        )
-          ? "Finished" : report
-      }
+  //     return {
+  //       ...d,
+  //       remain: (
+  //         // result.finishAnalyzeDate && result.result
+  //         (d.status == 3 && (result?.finishAnalyzeDate && result?.result)) ||
+  //         (d.status == 3 && (result?.finishAnalyzeDate && result?.result2 && result?.result2.length > 0)) ||
+  //         d.status == 4 ||
+  //         d.status == 5 ||
+  //         d.status == 2.1 ||
+  //         d.status == 3.1 ||
+  //         d.status == 4.3 ||
+  //         d.status == 5.4 ||
+  //         d.status == 6.4
+  //       )
+  //         ? "Finished" : day,
 
-    })
 
+  //       remain_report: (
+  //         d.status == 4 ||
+  //         d.status == 5 ||
+  //         d.status == 2.1 ||
+  //         d.status == 3.1 ||
+  //         d.status == 4.3 ||
+  //         d.status == 5.4 ||
+  //         d.status == 6.4
+  //       )
+  //         ? "Finished" : report
+  //     }
 
+  //   })
 
 
 
-    return data
-  }
+
+
+  //   return data
+  // }
 
   mappingDataTable(data: any) {
     return data.map((d: any) => {
@@ -570,31 +595,39 @@ export class ManageFormComponent implements OnInit {
         report = "Over Due Date"
       }
 
+      const remainStatus = (
+        (d.status == 3 && (result?.finishAnalyzeDate && result?.result)) ||
+        (d.status == 3 && (result?.finishAnalyzeDate && result?.result2 && result?.result2.length > 0)) ||
+        d.status == 4 ||
+        d.status == 5 ||
+        d.status == 2.1 ||
+        d.status == 3.1 ||
+        d.status == 4.3 ||
+        d.status == 5.4 ||
+        d.status == 6.4
+      )
+        ? "Finished" : day
+
+      let remain_report = (
+        d.status == 4 ||
+        d.status == 5 ||
+        d.status == 2.1 ||
+        d.status == 3.1 ||
+        d.status == 4.3 ||
+        d.status == 5.4 ||
+        d.status == 6.4
+      )
+        ? "Finished" : report
+
+      if (d.needReport && d.needReport == 'Analysis') {
+        remain_report = '-'
+      }
+
+
       return {
         ...d,
-        remain: (
-          (d.status == 3 && (result?.finishAnalyzeDate && result?.result)) ||
-          (d.status == 3 && (result?.finishAnalyzeDate && result?.result2 && result?.result2.length > 0)) ||
-          d.status == 4 ||
-          d.status == 5 ||
-          d.status == 2.1 ||
-          d.status == 3.1 ||
-          d.status == 4.3 ||
-          d.status == 5.4 ||
-          d.status == 6.4
-        )
-          ? "Finished" : day,
-
-        remain_report: (
-          d.status == 4 ||
-          d.status == 5 ||
-          d.status == 2.1 ||
-          d.status == 3.1 ||
-          d.status == 4.3 ||
-          d.status == 5.4 ||
-          d.status == 6.4
-        )
-          ? "Finished" : report
+        remain: remainStatus,
+        remain_report: remain_report
       }
     })
   }
@@ -640,6 +673,84 @@ export class ManageFormComponent implements OnInit {
   }
 
 
+  htmlStatusClass(data: any): string {
+    if (data.status == 1) {
+      return 'green-status'
+    }
+    if (data.status == 2) {
+      return 'green-status'
+    }
+    if (data.status == 3) {
+      return this.cssEng(data)
+    }
+    if (data.status == 4) {
+      return 'green-status'
+    }
+    if (data.status == 5) {
+      return 'green-status'
+    }
+    if (data.status == 6) {
+      return 'primary-status'
+    }
+    if (data.status == 2.1) {
+      return 'red-status'
+    }
+    if (data.status == 3.1) {
+      return 'red-status'
+    }
+    if (data.status == 4.3) {
+      return 'red-status'
+    }
+    if (data.status == 5.4) {
+      return 'red-status'
+    }
+    if (data.status == 6.4) {
+      return 'red-status'
+    }
+    if (data.status == 0) {
+      return 'red-status'
+    }
+    return ''
+  }
+  htmlStatus(data: any): string {
+    if (data.status == 1) {
+      return 'Wait Approve Request'
+    }
+    if (data.status == 2) {
+      return 'Analysis'
+    }
+    if (data.status == 3) {
+      return this.htmlEng(data)
+    }
+    if (data.status == 4) {
+      return 'Wait Review Report'
+    }
+    if (data.status == 5) {
+      return 'Wait Approve Report'
+    }
+    if (data.status == 6) {
+      return 'Finished'
+    }
+    if (data.status == 2.1) {
+      return 'Reject'
+    }
+    if (data.status == 3.1) {
+      return 'Reject'
+    }
+    if (data.status == 4.3) {
+      return 'Reject'
+    }
+    if (data.status == 5.4) {
+      return 'Reject'
+    }
+    if (data.status == 6.4) {
+      return 'Reject'
+    }
+    if (data.status == 0) {
+      return 'Cancel'
+    }
+    return ''
+  }
 
   //F6FDC3
   //FFCF96
