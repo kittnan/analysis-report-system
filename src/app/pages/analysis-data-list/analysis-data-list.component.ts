@@ -884,7 +884,7 @@ export class AnalysisDataListComponent implements OnInit {
         // }
         // break;
       }
-      if (item.needReport && item.needReport == 'Analysis') {
+      if (item.needReport && item.needReport == 'Only Analysis') {
         console.log(item['finishReportDate'])
         item['finishReportDate'] = 'No Need Report'
       }

@@ -407,12 +407,12 @@ export class ManageFormComponent implements OnInit {
     }
 
     return this.hasResultAnalyze(result, item)
-      ? this.hasNeedReport(item) == 'Need' ? 'Making Report' : 'Wait Review Result'
+      ? this.hasNeedReport(item) == 'Need Report' ? 'Making Report' : 'Wait Submit Result'
       : 'Under Analysis';
   }
   private hasNeedReport(item: any): string {
-    const needReport = item?.needReport ?? 'Need';
-    return needReport; // 'Need' or 'Analysis'
+    const needReport = item?.needReport ?? 'Need Report';
+    return needReport; // 'Need Report' or 'Only Analysis'
   }
 
   private isAnalysisFinished(result: any): boolean {
@@ -619,7 +619,7 @@ export class ManageFormComponent implements OnInit {
       )
         ? "Finished" : report
 
-      if (d.needReport && d.needReport == 'Analysis') {
+      if (d.needReport && d.needReport == 'Only Analysis') {
         remain_report = '-'
       }
 
@@ -723,9 +723,15 @@ export class ManageFormComponent implements OnInit {
       return this.htmlEng(data)
     }
     if (data.status == 4) {
+      if (data.needReport && data.needReport == 'Only Analysis') {
+        return 'Wait Review Result'
+      }
       return 'Wait Review Report'
     }
     if (data.status == 5) {
+      if (data.needReport && data.needReport == 'Only Analysis') {
+        return 'Wait Approve Result'
+      }
       return 'Wait Approve Report'
     }
     if (data.status == 6) {

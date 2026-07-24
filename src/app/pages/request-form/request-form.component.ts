@@ -161,7 +161,7 @@ export class RequestFormComponent implements OnInit {
         value[0] == 'A' ||
         value[0] == 'S'
       ) {
-        this.NeedReport.setValue('Need')
+        this.NeedReport.setValue('Need Report')
         this.NeedReport.disable()
       }else{
         this.NeedReport.enable()
@@ -544,6 +544,9 @@ export class RequestFormComponent implements OnInit {
     // console.log('2');
     // console.log("form start");
     // console.log(this.fileToUp);
+
+    // console.log(this.RequestForm.value);
+    
 
 
     if (this.RequestNumber.valid) {

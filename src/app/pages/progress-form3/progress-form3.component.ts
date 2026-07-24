@@ -2937,9 +2937,9 @@ export class ProgressForm3Component implements OnInit {
   }
 
   disableSubmitBtn(): Boolean {
-    if (this.form?.needReport && this.form?.needReport == 'Need') {
+    if (this.form?.needReport && this.form?.needReport == 'Need Report') {
       return this.ResultForm.valid && this.FileReport ? false : true
-    } else if (this.form?.needReport && this.form?.needReport == 'Analysis') {
+    } else if (this.form?.needReport && this.form?.needReport == 'Only Analysis') {
       return this.ResultForm.invalid
     }
     return true; // Default to disable the button if none of the conditions match

@@ -158,7 +158,7 @@ export class ProgressForm1Component implements OnInit {
         value[0] == 'A' ||
         value[0] == 'S'
       ) {
-        this.NeedReport.setValue('Need')
+        this.NeedReport.setValue('Need Report')
         this.NeedReport.disable()
       } else {
         this.NeedReport.enable()
@@ -353,6 +353,7 @@ export class ProgressForm1Component implements OnInit {
 
         this.Size.setValue(data.size);
         this.Customer.setValue(data.customer);
+        this.NeedReport.setValue(data.needReport);
 
         this.GetApprove();
         this.GetDefectByModelName();
@@ -642,7 +643,8 @@ export class ProgressForm1Component implements OnInit {
               noteNow: this.NoteApprove.value,
               noteApprove2: this.NoteApprove.value,
               treatment: this.Treatment.value,
-              status: 2
+              status: 2,
+              needReport: this.NeedReport.value
 
             }
             // console.log(da);
