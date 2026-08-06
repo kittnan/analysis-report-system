@@ -1315,11 +1315,38 @@
                     <button class="btn btn-danger btn-lg btn-block " type="button"
                         (click)="ModalNote(rejectNote);">Reject</button>
                 </div>
-                <div class="col-lg-6">
+                <ng-container *ngIf="UserLoginId === Approve.value;">
+                    <div class="col-3">
+                        <div class="row">
+                            <button [disabled]="Approve.invalid" type="button" class="btn btn-primary btn-lg btn-block "
+                                (click)="ModalNote(approveNote)">APPROVE
+                                <i class="bi bi-check-square-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <button [disabled]="Approve.invalid" type="button" class="btn  btn-lg btn-block "
+                                (click)="toClosed()">APPROVE & CLOSED
+                                <i class="bi bi-check-square-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="UserLoginId !== Approve.value;">
+                    <div class="col-6">
+                        <div class="row">
+                            <button [disabled]="ResultForm.invalid || analysisForm.invalid || File.invalid"
+                                class="btn btn-primary btn-lg btn-block " type="button"
+                                (click)="ModalNote(approveNote);">Approve</button>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- <div class="col-lg-6">
                     <button [disabled]="ResultForm.invalid || analysisForm.invalid || File.invalid"
                         class="btn btn-primary btn-lg btn-block " type="button"
                         (click)="ModalNote(approveNote);">Approve</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

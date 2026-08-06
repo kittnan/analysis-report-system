@@ -105,12 +105,13 @@ export class ProgressForm4Component implements OnInit {
   CorrectOfWorkOption: any = []
   AnalysisTimeOption: any = []
 
+  UserLoginId = localStorage.getItem('AR_UserId')
   constructor(
     private api: HttpService,
     // private api: ViewFormService,
     private modalService: NgbModal,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
     // private api: RequestServiceService
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
@@ -744,6 +745,80 @@ export class ProgressForm4Component implements OnInit {
     let tempIte = control.get('tempItem').value;
     control.get('item').setValue(tempIte);
     control.get('tempItem').reset()
+  }
+
+  toClosed() {
+    Swal.fire({
+      title: 'Do you want to close this form?',
+      showCancelButton: true,
+      icon: 'question',
+      confirmButtonText: 'Close',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let d = {
+          issuedDate: this.form.issuedDate,
+          replyDate: this.form.replyDate,
+          status: 6,
+          noteNow: "Closed",
+          userApprove: null,
+          userApproveName: null,
+          userApprove5: this.Approve.value,
+          userApprove5Name: this.ApproveName,
+          noteApprove5: this.NoteApprove.value,
+          JudgementDefect: this.AnalysisForm.value.JudgementDefect,
+          Remark: this.AnalysisForm.value.Remark,
+        };
+        await this.api.UpdateForm(this.formId, d).toPromise()
+        await this.onUpdateAnalysisResult(this.AnalysisForm.value)
+
+        const SectionEmail = this.form.requestFormSectionName;
+        let data = await this.api.GetUserBySectionName(SectionEmail).toPromise()
+        let UserEmailList = data.filter((item) => {
+          if (item.Level1 == 1 || item.Level2 == 1 || item.Level3 == 1 || item.Level4 == 1 || item.Level5 == 1 || item.Level6 == 1) {
+            return item
+          } else if (item.Level1 == 2 || item.Level2 == 2 || item.Level3 == 2 || item.Level4 == 2 || item.Level5 == 2 || item.Level6 == 2) {
+            return item
+          }
+        })
+          .map(item => item.Email);
+
+        let data2 = await this.api.GetSectionByName(this.form.requestFormSectionName).toPromise()
+        const temp1 = data2.filter(item => item.view == 1)
+        const cc = temp1[0].cc
+        cc.forEach(element => {
+          UserEmailList.push(element.Email)
+        });
+
+        const uniqEmail = [...new Set(UserEmailList)];
+        const requesterNameSp = this.form.requesterName.split(" ").filter(item => item.trim() !== "");
+        const requesterNameRemoveSpace = requesterNameSp.join("").replaceAll(/[\s.]+/g, "");
+
+        const to = UserEmailList.find(item => item.includes(requesterNameRemoveSpace.toLowerCase()))
+        let ccNew = uniqEmail.filter(item => item != to)
+
+        let Fname = localStorage.getItem('AR_UserFirstName')
+        let Lname = localStorage.getItem('AR_UserLastName')
+        const Content = "<p>To " + requesterNameRemoveSpace + "</p><br>" +
+          "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+          "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
+        const sendMail = {
+          Content: Content,
+          To: to,
+          Cc: ccNew,
+          Subject: "Analysis request was closed: " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
+            this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
+        }
+        await this.api.SendEmailTo(sendMail).toPromise()
+        Swal.fire({
+          title: 'SUCCESS',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 1000
+        }).then(() => {
+          this.route.navigate(['/manageForm'])
+        })
+      }
+    });
   }
 
   get OperatorName() { return this.AnalysisForm.get('OperatorName') }

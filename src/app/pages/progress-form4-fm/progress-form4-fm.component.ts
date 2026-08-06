@@ -212,6 +212,9 @@ export class ProgressForm4FmComponent implements OnInit {
 
   VisibleMappingPosition = false;
 
+
+  UserLoginId = localStorage.getItem('AR_UserId')
+
   // ? filter dropdown
   async ngOnInit(): Promise<void> {
     this.CheckStatusUser();
@@ -1263,6 +1266,141 @@ export class ProgressForm4FmComponent implements OnInit {
       })
 
     }
+
+  }
+  async ResultSubmitClose() {
+    this.FileReportPath ? false : this.FileReportPath = this.File.value
+    let ResultData = {
+      analysisReportNo: this.ReportNo.value,
+      formId: this.formId,
+      result: this.Result.value,
+      result2: this.Result2.value,
+      causeOfDefect: this.CategoryCause.value,
+      sourceOfDefect: this.SourceOfDefect.value,
+      analysisLevel: this.AnalysisLevel.value,
+      canAnalysis: this.CanAnalysis.value,
+      relatedToESD: this.RelatedToESD.value,
+      startAnalyzeDate: this.AnalyzeDate.value,
+      finishAnalyzeDate: this.ResultDate.value,
+      finishReportDate: this.ReportDate.value,
+      requestItemId: this.form.requestItemId,
+      requestItemName: this.form.requestItem,
+      treatMent: this.TreatmentOfNg.value,
+      file: this.FileReportPath,
+      files: this.tempEngFile,
+      JudgementDefect: this.JudgementDefect.value,
+      Remark: this.Remark.value,
+
+      operatorName: this.OperatorName.value || null,
+      difficultyOfWork: this.DifficultyOfWork.value || null,
+      correctOfWork: this.CorrectOfWork.value || null,
+      analysisTime: this.AnalysisTime.value || null,
+
+      resultItemRequire: this.ResultItemRequire.value,
+      resultAnalysisRequire: this.ResultAnalysisRequire.value,
+
+      // Analysis form data with uploaded image paths (formatted according to Schema)
+      analysisForm: {
+        mappingPositionUrl: this.uploadedMappingPositionPaths,
+        analysis: this.analysisForm.value.analysis ? this.analysisForm.value.analysis.map((item: any, index: number) => ({
+          no: item.no,
+          fmPosition: item.fmPosition,
+          microscopeImages: this.uploadedMicroscopeImagePaths[index] || [],
+          sizeLength: item.sizeLength,
+          sizeWidth: item.sizeWidth,
+          ftirSpectrumImages: this.uploadedFtirSpectrumImagePaths[index] || [],
+          ftirSpectrumImagesGraph: this.uploadedFtirSpectrumImagesGraphPaths[index] || [],
+          material: item.material,
+          estimateResultProcess: item.estimateResultProcess,
+          dataCode: item.dataCode,
+          color: item.color,
+          character: item.character,
+        })) : []
+      },
+    }
+
+
+    this.api.FindResultByFormIdMain(this.form._id).subscribe((data: any) => {
+      if (data.length > 0) {
+        // ? Update Result
+        this.api.UpdateResult(data[0]._id, ResultData).subscribe((data: any) => {
+          if (data) {
+
+            let d = {
+              issuedDate: this.form.issuedDate,
+              replyDate: this.form.replyDate,
+              status: 6,
+              userApprove5: this.Approve.value,
+              userApprove5Name: this.ApproveName,
+              userApprove: null,
+              userApproveName: null,
+              noteApprove5: this.NoteApprove.value,
+              noteNow: "Close",
+              JudgementDefect: this.JudgementDefect.value,
+              Remark: this.Remark.value
+            }
+            this.api.UpdateForm(this.formId, d).subscribe(async (data: any) => {
+              if (data) {
+
+                let Fname = localStorage.getItem('AR_UserFirstName')
+                let Lname = localStorage.getItem('AR_UserLastName')
+                const SectionEmail = this.form.requestFormSectionName;
+                let data = await this.api.GetUserBySectionName(SectionEmail).toPromise()
+                let UserEmailList = data.filter((item) => {
+                  if (item.Level1 == 1 || item.Level2 == 1 || item.Level3 == 1 || item.Level4 == 1 || item.Level5 == 1 || item.Level6 == 1) {
+                    return item
+                  } else if (item.Level1 == 2 || item.Level2 == 2 || item.Level3 == 2 || item.Level4 == 2 || item.Level5 == 2 || item.Level6 == 2) {
+                    return item
+                  }
+                })
+                  .map(item => item.Email);
+
+                let data2 = await this.api.GetSectionByName(this.form.requestFormSectionName).toPromise()
+                const temp1 = data2.filter(item => item.view == 1)
+                const cc = temp1[0].cc
+                cc.forEach(element => {
+                  UserEmailList.push(element.Email)
+                });
+
+                const uniqEmail = [...new Set(UserEmailList)];
+                const requesterNameSp = this.form.requesterName.split(" ").filter(item => item.trim() !== "");
+                const requesterNameRemoveSpace = requesterNameSp.join("").replaceAll(/[\s.]+/g, "");
+                const to = UserEmailList.find(item => item.includes(requesterNameRemoveSpace.toLowerCase()))
+                let ccNew = uniqEmail.filter(item => item != to)
+
+                const Content = "<p>To " + requesterNameRemoveSpace + "</p><br>" +
+                  "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                  "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
+
+                const sendMail = {
+                  Content: Content,
+                  To: to,
+                  Cc: ccNew,
+                  Subject: "Analysis request was closed: " + this.form.requestNumber + " / Model  " + this.form.ktcModelNumber + " " + this.form.size + " " +
+                    this.form.customer + " Lot no. " + this.form.pcLotNumber + " from" + this.form.occurAName + " " + this.form.occurBName + " =" + this.form.ngQuantity + "pcs."
+                }
+                await this.api.SendEmailTo(sendMail).toPromise()
+                Swal.fire({
+                  title: 'SUCCESS',
+                  icon: 'success',
+                  showConfirmButton: false,
+                  timer: 1000
+                }).then(() => {
+                  this.route.navigate(['/manageForm'])
+                })
+
+              }
+
+            })
+
+          }
+        })
+
+
+      }
+    })
+
+
 
   }
 
@@ -2322,6 +2460,35 @@ export class ProgressForm4FmComponent implements OnInit {
     }
   }
 
+
+  toClosed() {
+    Swal.fire({
+      title: 'Do you want to close this form?',
+      showCancelButton: true,
+      icon: 'question',
+      confirmButtonText: 'Close',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+
+        try {
+          if (this.toggleAttFileEng == false) {
+            await this.loopUploadFiles();
+          }
+          if (this.toggleAttReportEng == false) {
+            await this.uploadReport();
+          }
+          await this.uploadAllFilesAnalysisForm();
+        } catch (error) {
+          console.error(error);
+        } finally {
+          await this.ResultSubmitClose();
+        }
+
+      }
+    });
+  }
+
+
   get AnalyzeDate() { return this.ResultForm.get('AnalyzeDate') }
   get ResultDate() { return this.ResultForm.get('ResultDate') }
   get ReportDate() { return this.ResultForm.get('ReportDate') }
@@ -2523,7 +2690,7 @@ export class ProgressForm4FmComponent implements OnInit {
       this.updateResult2Validators();
     }
   }
-  
+
   controlResultAnalysisRequire() {
     const value = this.ResultAnalysisRequire.value;
     if (!value) {

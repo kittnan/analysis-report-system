@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 
@@ -11,6 +11,9 @@ export class AdminLayoutComponent implements OnInit {
 
 
   loginStatus: any;
+  isMobileView = false;
+  isMobileSidebarOpen = false;
+  isDesktopSidebarHidden = false;
 
   constructor(
     private route: Router
@@ -19,10 +22,36 @@ export class AdminLayoutComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateViewportState();
     this.loginStatus = localStorage.getItem('AR_loginStatus');
     if (localStorage.getItem('AR_loginStatus') != 'true') {
       this.route.navigate(['/login'])
       // location.href="#/login"
+    }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateViewportState();
+  }
+
+  toggleSidebar() {
+    if (this.isMobileView) {
+      this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+      return;
+    }
+
+    this.isDesktopSidebarHidden = !this.isDesktopSidebarHidden;
+  }
+
+  closeMobileSidebar() {
+    this.isMobileSidebarOpen = false;
+  }
+
+  private updateViewportState() {
+    this.isMobileView = window.innerWidth < 992;
+    if (!this.isMobileView) {
+      this.isMobileSidebarOpen = false;
     }
   }
 

@@ -601,7 +601,7 @@
                   No file..
                 </td>
                 <td class="text-center">
-                  <a *ngIf="Result" target="_blank" [download]="FileReportName" [href]="Result.file"
+                  <a *ngIf="Result?.file" target="_blank" [download]="FileReportName" [href]="Result?.file"
                     style="cursor: pointer;">
                     <button class="btn btn-primary btn-sm mr-2"><i class="bi bi-download"
                         style="font-size: 1rem;"></i></button>
@@ -616,7 +616,7 @@
                       style="font-size: 1rem;"></i></button>
                 </td>
                 <td class="text-center">
-                  <a *ngIf="Result.file" [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + Result.file"
+                  <a *ngIf="Result?.file" [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + Result?.file"
                     target="_blank">
                     <button class="btn btn-primary btn-sm"> <i class="bi bi-eye" style="font-size: 1rem;"></i></button>
                   </a>
@@ -684,14 +684,35 @@
             </button>
           </div>
         </div>
-        <div class="col-6 mt-5">
-          <div class="row">
-            <button [disabled]="Approve.invalid" type="button" class="btn btn-primary btn-lg btn-block "
-              (click)="ModalNote(approveNote)">APPROVE
-              <i class="bi bi-check-square-fill"></i>
-            </button>
+
+        <ng-container *ngIf="UserLoginId === Approve.value;">
+          <div class="col-3 mt-5">
+            <div class="row">
+              <button [disabled]="Approve.invalid" type="button" class="btn btn-primary btn-lg btn-block "
+                (click)="ModalNote(approveNote)">APPROVE
+                <i class="bi bi-check-square-fill"></i>
+              </button>
+            </div>
           </div>
-        </div>
+          <div class="col-3 mt-5">
+            <div class="row">
+              <button [disabled]="Approve.invalid" type="button" class="btn  btn-lg btn-block "
+                (click)="toClosed()">APPROVE & CLOSED
+                <i class="bi bi-check-square-fill"></i>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="UserLoginId !== Approve.value;">
+          <div class="col-6 mt-5">
+            <div class="row">
+              <button [disabled]="Approve.invalid" type="button" class="btn btn-primary btn-lg btn-block "
+                (click)="ModalNote(approveNote)">APPROVE
+                <i class="bi bi-check-square-fill"></i>
+              </button>
+            </div>
+          </div>
+        </ng-container>
 
       </div>
 

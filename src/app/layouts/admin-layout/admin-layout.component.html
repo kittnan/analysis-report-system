@@ -1,8 +1,17 @@
 <div class="wrapper" *ngIf="loginStatus">
-    <div class="sidebar" data-color="black" data-active-color="danger">
+    <button class="mobile-menu-toggle" type="button" (click)="toggleSidebar()" aria-label="Toggle sidebar menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="sidebar" data-color="black" data-active-color="danger" [class.sidebar-mobile-open]="isMobileSidebarOpen" [class.sidebar-desktop-hidden]="!isMobileView && isDesktopSidebarHidden">
         <sidebar-cmp></sidebar-cmp>
     </div>
-    <div class="main-panel">
+
+    <div class="mobile-sidebar-backdrop" *ngIf="isMobileView && isMobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+
+    <div class="main-panel" [class.main-panel-expanded]="!isMobileView && isDesktopSidebarHidden">
         <navbar-cmp></navbar-cmp>
         <div class="content">
             <!-- <h1 style="color: red;">

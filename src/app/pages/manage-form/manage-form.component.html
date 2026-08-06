@@ -91,36 +91,51 @@
     <div class="col-lg-12">
       <div class="tableFixHead" style="overflow: auto;">
         <table class="table table-bordered mt-3 text-center">
+          <colgroup>
+            <col span="1" style="width: 60px;">
+            <col span="1" style="width: 130px;">
+            <col span="1" style="width: 90px;">
+            <col span="1" style="width: 130px;">
+            <col span="1" style="width: 130px;">
+            <col span="1" style="width: 150px;">
+            <col span="1" style="width: 170px;">
+            <col span="1" style="width: 100px;">
+            <col span="1" style="width: 100px;">
+            <col span="1" style="width: 120px;">
+            <col span="1" style="width: 140px;">
+            <col span="1" style="width: 130px;">
+            <col span="1" style="width: 130px;">
+          </colgroup>
           <thead class="thead-dark">
             <tr>
               <th class="text-nowrap" scope="col">#</th>
-              <th width="10%" class="text-nowrap" scope="col">Req.no</th>
-              <th width="5%" class="text-nowrap" scope="col">Section</th>
-              <th width="10%" class="text-nowrap" scope="col">Req.name</th>
-              <th width="10%" class="text-nowrap" scope="col">Model</th>
-              <th width="10%" class="text-nowrap" scope="col">Lot number</th>
-              <th width="10%" class="text-nowrap" scope="col">Defect name</th>
-              <th width="10%" class="text-nowrap" scope="col">Issue date</th>
-              <th width="10%" class="text-nowrap" scope="col">Reply date</th>
-              <th width="10%" class="text-nowrap" scope="col" *ngIf="check_permission(['0','3','4'])">Remain Analysis
+              <th class="text-nowrap" scope="col">Req.no</th>
+              <th class="text-nowrap" scope="col">Section</th>
+              <th class="text-nowrap" scope="col">Req.name</th>
+              <th class="text-nowrap" scope="col">Model</th>
+              <th class="text-nowrap" scope="col">Lot number</th>
+              <th class="text-nowrap" scope="col">Defect name</th>
+              <th class="text-nowrap" scope="col">Issue date</th>
+              <th class="text-nowrap" scope="col">Reply date</th>
+              <th class="text-nowrap" scope="col" *ngIf="check_permission(['0','3','4'])">Remain Analysis
                 <br>Due Date
               </th>
-              <th width="10%" class="text-nowrap" scope="col" *ngIf="check_permission(['0','4'])">Remain Analysis
+              <th class="text-nowrap" scope="col" *ngIf="check_permission(['0','4'])">Remain Analysis
                 <br>Report Due Date
               </th>
-              <th width="10%" class="text-nowrap" scope="col">Wait</th>
-              <th width="10%" class="text-nowrap" scope="col">Status</th>
+              <th class="text-nowrap" scope="col">Wait</th>
+              <th class="text-nowrap" scope="col">Status</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of DataFilter; let i = index" class="tableRow" (click)="OnClickForm(item)"
               [style]="setStyleOverDue(item,['0','3','4'])">
               <th scope="row">{{ (PageNow-1)*(CountNum.value) + (i+1) }}</th>
-              <td>{{item.requestNumber}}</td>
+              <td style="white-space: nowrap;">{{item.requestNumber}}</td>
               <td>{{item.requestFormSectionName}}</td>
               <td>{{item.issuer}}</td>
               <td>{{item.ktcModelNumber}}</td>
-              <td>{{item.pcLotNumber}}</td>
+              <td style="white-space: normal; word-break: break-word;">{{item.pcLotNumber}}</td>
               <td>{{item.defectiveName}}</td>
               <td>{{item.issuedDate |date:'M/d/y'}}</td>
               <td>{{item.replyDate |date:'M/d/y'}}</td>
@@ -131,7 +146,7 @@
                 {{item.remain_report}}</td>
               <td [ngClass]="{'primary-status': item.userApprove == UserId}">{{item.userApproveName}}</td>
 
-              <td class="status" [ngClass]="htmlStatusClass(item)">
+              <td class="status" [ngClass]="htmlStatusClass(item)" style="white-space: nowrap;">
                 {{htmlStatus(item)}}
               </td>
 
