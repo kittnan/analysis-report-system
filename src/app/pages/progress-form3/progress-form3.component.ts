@@ -5,12 +5,14 @@ import Swal from 'sweetalert2'
 
 // import { saveAs } from 'file-saver';
 import * as fs from 'file-saver';
-import { Workbook } from 'exceljs'
+import { Borders, Fill, Workbook, Worksheet } from 'exceljs'
 // import * as ExcelJS from 'exceljs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
+
+type FileWithWebkitRelativePath = File & { webkitRelativePath?: string };
 
 @Component({
   selector: 'app-progress-form3',
@@ -1168,7 +1170,6 @@ export class ProgressForm3Component implements OnInit {
 
       }
     })
-
 
 
 
@@ -2854,6 +2855,368 @@ export class ProgressForm3Component implements OnInit {
     }
   }
 
+  async attachImgsReportFile(event: any) {
+    const files: FileList = event.target.files;
+    const magName = 'Mag.NG'
+    const pheName = 'Phe.NG'
+    const sepName = 'Sep.NG'
+    if (!files || files.length === 0) {
+      return;
+    }
+    console.log(files)
+    const phe = Array.from(files).filter((file: FileWithWebkitRelativePath) =>
+      (file.name ?? '').includes(pheName),
+    ).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+    console.log(phe);
+    const mic = Array.from(files).filter((file: FileWithWebkitRelativePath) =>
+      (file.name ?? '').includes(magName),
+    ).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+    console.log(mic);
+    const sep = Array.from(files).filter((file: FileWithWebkitRelativePath) =>
+      (file.name ?? '').includes(sepName),
+    ).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+    console.log(sep);
+
+    const phe64 = (await this.prepareBase64Images(Array.from(phe))).filter((file: string) => file.startsWith('data:image/png;base64,') || file.startsWith('data:image/jpeg;base64,'));
+    const mic64 = (await this.prepareBase64Images(Array.from(mic))).filter((file: string) => file.startsWith('data:image/png;base64,') || file.startsWith('data:image/jpeg;base64,'));
+    const sep64 = (await this.prepareBase64Images(Array.from(sep))).filter((file: string) => file.startsWith('data:image/png;base64,') || file.startsWith('data:image/jpeg;base64,'));
+
+    // console.log(`⚡ ~ :2882 ~ ProgressForm3Component ~ phe64:`, phe64);
+    // console.log(`⚡ ~ :2882 ~ ProgressForm3Component ~ mic64:`, mic64);
+    // console.log(`⚡ ~ :2882 ~ ProgressForm3Component ~ sep64:`, sep64);
+
+    this.setBase64();
+    this.genNewReportPNL({ phenomenonImages: phe64, microImages: mic64, separateImages: sep64 });
+  }
+
+  prepareBase64Images(files: File[]): Promise<string[]> {
+    const readFile = (file: File): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result;
+          if (typeof result !== 'string') {
+            reject(new Error('Unexpected FileReader result type'));
+            return;
+          }
+          resolve(result);
+        };
+        reader.onerror = (error) => {
+          reject(error);
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    return Promise.all(files.map(readFile))
+  }
+
+  TOTAL_COLUMNS = 22;
+  HEADER_LOGO_ROWS = 8; // fixed area used by the two logo images
+  TITLE_TO_CONTENT_GAP = 2; // rows from a section title to its first content row (1 blank row)
+  GAP_AFTER_CONTENT = 1; // blank rows after a section's content, before the next title
+  IMG_ROW_HEIGHT = 7; // height of the row containing the phenomenon images
+  PHENOMENON_COL_START = 2; // column index (0-based) where phenomenon images start
+  PHENOMENON_COL_END = 7; // column index (0-based) where phenomenon images end
+  MICRO_COL_START = 8; // column index (0-based) where magnified images start
+  MICRO_COL_END = 13; // column index (0-based) where magnified images end
+  COMMENT_BOX_HEIGHT = 10; // height of the comment box section
+  // RESERVED_GAP_BEFORE_METADATA = 2
+  async genNewReportPNL(options?: { phenomenonImages?: string[], microImages?: string[], separateImages?: string[] }) {
+    const model = this.Report.find(i => i.modelName == this.form.requestItem);
+    if (!model) {
+      console.error(`⚡ ~ :2865 ~ ProgressForm3Component ~ genNewReportPNL ~ Model not found for requestItem:`, this.form.requestItem);
+      Swal.fire({
+        title: 'Error',
+        text: `Model not found for requestItem: ${this.form.requestItem}`,
+      });
+      return;
+    }
+    let defectiveList = model.defective
+    let resultList = model.result
+    const requestNumber = this.form.requestNumber;
+
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet(requestNumber, { views: [{ showGridLines: false }] });
+
+    console.log(defectiveList);
+    console.log(resultList);
+    this.addLogos(worksheet);
+
+    const phenomenonImageIds = this.setImgToSheet(worksheet, options?.phenomenonImages || []);
+    const microImageIds = this.setImgToSheet(worksheet, options?.microImages || []);
+    const separateImageIds = this.setImgToSheet(worksheet, options?.separateImages || []);
+
+    console.log(`⚡ ~ :2918 ~ ProgressForm3Component ~ phenomenonImageIds:`, phenomenonImageIds);
+    console.log(`⚡ ~ :2946 ~ ProgressForm3Component ~ microImageIds:`, microImageIds);
+    console.log(`⚡ ~ :2950 ~ ProgressForm3Component ~ separateImageIds:`, separateImageIds);
+
+
+    this.setColumnWidths(worksheet);
+    this.addRequestHeader(worksheet);
+    let row = this.HEADER_LOGO_ROWS + this.TITLE_TO_CONTENT_GAP; // row 10, same starting point as the original
+    row = this.addFixedFieldsSection(worksheet, row, '1. Description:', [
+      ['KTC model number', this.form.ktcModelNumber],
+      ['Defective name', this.form.defectiveName],
+      ['PC lot number/CPR lot number', this.form.pcLotNumber],
+      ['Input Quantity (Pcs)', this.form.inputQuantity],
+      ['NG Quantity (Pcs)', this.form.ngQuantity],
+      ['Sent NG to Analysis (Pcs)', this.form.sendNgAnalysis],
+      ['Production phase', this.form.productionPhase],
+      ['Defect category', this.form.defectCatagory],
+      ['Abnormal lot level', this.form.abnormalLotLevel],
+      ['Occur place', this.form.occurBName],
+    ]);
+    row += this.GAP_AFTER_CONTENT;
+
+    const { nextRow: afterDefectivePhenomenon, range: defectivePhenomenonRange } = this.addDefectivePhenomenonSection(
+      worksheet,
+      row,
+      defectiveList,
+    );
+    const { nextRow: afterDefectPhenomenonNgImg, range: defectPhenomenonNgImgRange } = this.addDefectPhenomenonNgImg(worksheet, row, phenomenonImageIds, microImageIds);
+
+    row = Math.max(afterDefectivePhenomenon, afterDefectPhenomenonNgImg) + this.GAP_AFTER_CONTENT;
+
+
+    const { nextRow: afterResult, range: resultRange } = this.addAnalysisResultSection(
+      worksheet,
+      row,
+      resultList,
+    );
+    row = afterResult + this.GAP_AFTER_CONTENT;
+
+    const commentRange = this.addBoxSection(
+      worksheet,
+      row,
+      '5. Comment (Request to take countermeasure) :',
+      this.COMMENT_BOX_HEIGHT,
+    );
+    // row = commentRange.end + 1 + RESERVED_GAP_BEFORE_METADATA;
+
+    await this.downloadWorkbook(workbook, `${requestNumber}.xlsx`);
+
+  }
+
+  setImgToSheet(worksheet: Worksheet, imgs: string[]): number[] {
+    const workbook = worksheet.workbook;
+    const imgIds = imgs.map((image) => {
+      return workbook.addImage({ base64: image, extension: 'png' });
+    });
+
+    return imgIds;
+  }
+
+  private setColumnWidths(worksheet: Worksheet): void {
+    worksheet.columns = Array.from({ length: this.TOTAL_COLUMNS }, (_, i) =>
+      i === 0 || i === this.TOTAL_COLUMNS - 1 ? { width: 1 } : { width: 5 },
+    );
+  }
+  private addLogos(worksheet: Worksheet): void {
+    const workbook = worksheet.workbook;
+    const logoTop = workbook.addImage({ base64: this.imageBase64_1, extension: 'png' });
+    const logoBottom = workbook.addImage({ base64: this.imageBase64_2, extension: 'png' });
+
+    worksheet.addImage(logoTop, { tl: { col: 1, row: 1 }, ext: { width: 230.4, height: 76.8 } });
+    worksheet.addImage(logoBottom, { tl: { col: 1, row: 6 }, ext: { width: 291.84, height: 31.68 } });
+  }
+  private addRequestHeader(worksheet: Worksheet): void {
+    const requestorName = `${this.Users.FirstName}-${this.Users.LastName}`;
+    const rows: Array<[string, string, string, any]> = [
+      ['K3', 'Q3', 'Request Item', this.form.requestItem],
+      ['K4', 'Q4', 'Register number', this.form.requestNumber],
+      ['K5', 'Q5', 'Requestor Issued date', this.form.issuedDate],
+      ['K6', 'Q6', 'Request reply date', this.form.replyDate],
+      ['K7', 'Q7', 'Request from (Department-Section)', this.form.requestFormSectionName],
+      ['K8', 'Q8', 'Requestor', requestorName],
+    ];
+    for (const [labelCell, valueCell, label, value] of rows) {
+      worksheet.getCell(labelCell).value = label;
+      worksheet.getCell(valueCell).value = value;
+    }
+  }
+  private addFixedFieldsSection(
+    worksheet: Worksheet,
+    startRow: number,
+    title: string,
+    fields: Array<[string, any]>,
+  ): number {
+    worksheet.getCell(`B${startRow}`).value = title;
+    let row = startRow + this.TITLE_TO_CONTENT_GAP;
+    for (const [label, value] of fields) {
+      worksheet.getCell(`B${row}`).value = label;
+      worksheet.getCell(`H${row}`).value = value;
+      row++;
+    }
+    return row;
+  }
+
+  private addDefectivePhenomenonSection(
+    worksheet: Worksheet,
+    startRow: number,
+    defectiveList: any[],
+  ): { nextRow: number; range: { start: number; end: number } } {
+    worksheet.getCell(`B${startRow}`).value = '2. Defective phenomenon:';
+    const contentStart = startRow + this.TITLE_TO_CONTENT_GAP;
+    const rowCount = Math.max(defectiveList.length, 1); // keep at least one bordered row even if the list is empty
+
+    for (let i = 0; i < rowCount + 1; i++) {
+      if (defectiveList[i]) {
+        const rowNum = contentStart + i;
+        const anchor = `O${rowNum}`;
+        worksheet.getCell(anchor).value = `${i + 1}.${defectiveList[i]}`;
+        worksheet.mergeCells(`${anchor}:T${rowNum}`);
+        worksheet.getCell(anchor).border = {
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+        };
+      }
+    }
+
+    const contentEnd = contentStart + rowCount - 1;
+    return { nextRow: contentEnd + 1, range: { start: contentStart, end: contentEnd } };
+  }
+
+
+  private addDefectPhenomenonNgImg(worksheet: Worksheet, startRow: number, pheImgs: number[], micImgs: number[]) {
+    const contentStart = startRow + this.TITLE_TO_CONTENT_GAP + 5;
+    const GAP_AFTER_CONTENT = 1; // blank rows after a section's content, before the next title
+
+    const HEADER_FILL: Fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFD9E1F2' }, // light blue, adjust to match your template
+    };
+
+    const thinBorder: Partial<Borders> = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' },
+    };
+
+    // --- Header row ---
+    const headerRowIdx = contentStart;
+    const pheHeaderStartCol = this.PHENOMENON_COL_START + 1;
+    const pheHeaderEndCol = this.PHENOMENON_COL_END; // end is exclusive in addImage, so this is already the last 1-indexed col
+    const micHeaderStartCol = this.MICRO_COL_START + 1;
+    const micHeaderEndCol = this.MICRO_COL_END;
+
+    worksheet.mergeCells(headerRowIdx, pheHeaderStartCol, headerRowIdx, pheHeaderEndCol);
+    worksheet.mergeCells(headerRowIdx, micHeaderStartCol, headerRowIdx, micHeaderEndCol);
+
+    const pheHeaderCell = worksheet.getCell(headerRowIdx, pheHeaderStartCol);
+    pheHeaderCell.value = 'Defect phenomenon';
+    pheHeaderCell.font = { bold: true };
+    pheHeaderCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    pheHeaderCell.fill = HEADER_FILL;
+
+    const micHeaderCell = worksheet.getCell(headerRowIdx, micHeaderStartCol);
+    micHeaderCell.value = 'Magnify checking';
+    micHeaderCell.font = { bold: true };
+    micHeaderCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    micHeaderCell.fill = HEADER_FILL;
+
+    // border across the whole header row
+    for (let col = pheHeaderStartCol; col <= micHeaderEndCol; col++) {
+      worksheet.getCell(headerRowIdx, col).border = thinBorder;
+    }
+
+    // --- Phenomenon column images + borders ---
+    for (let index = 0; index < pheImgs.length; index++) {
+      const img = pheImgs[index];
+      const rowStart = contentStart + index * this.IMG_ROW_HEIGHT + index * GAP_AFTER_CONTENT;
+      const rowEnd = rowStart + this.IMG_ROW_HEIGHT;
+
+      worksheet.addImage(
+        img,
+        { tl: { col: this.PHENOMENON_COL_START, row: rowStart }, br: { col: this.PHENOMENON_COL_END, row: rowEnd } } as any,
+      );
+
+    }
+
+    // --- Magnify checking column images + borders ---
+    for (let index = 0; index < micImgs.length; index++) {
+      const img = micImgs[index];
+      const rowStart = contentStart + index * this.IMG_ROW_HEIGHT + index * GAP_AFTER_CONTENT;
+      const rowEnd = rowStart + this.IMG_ROW_HEIGHT;
+
+      worksheet.addImage(
+        img,
+        { tl: { col: this.MICRO_COL_START, row: rowStart }, br: { col: this.MICRO_COL_END, row: rowEnd } } as any,
+      );
+
+    }
+
+    return {
+      nextRow: contentStart + Math.max(pheImgs.length, micImgs.length) * (this.IMG_ROW_HEIGHT + GAP_AFTER_CONTENT),
+      range: {
+        start: contentStart,
+        end: contentStart + Math.max(pheImgs.length, micImgs.length) * (this.IMG_ROW_HEIGHT + GAP_AFTER_CONTENT) - 1,
+      }
+    }
+
+  }
+
+  private addAnalysisResultSection(
+    worksheet: Worksheet,
+    startRow: number,
+    resultList: any[],
+  ): { nextRow: number; range: { start: number; end: number } } {
+    startRow += 5; // add some space after the previous section
+    worksheet.getCell(`B${startRow}`).value = '3. Analysis result :';
+    const contentStart = startRow + this.TITLE_TO_CONTENT_GAP;
+    const rowCount = Math.max(resultList.length, 1);
+
+    for (let i = 0; i < rowCount; i++) {
+      const rowNum = contentStart + i;
+      worksheet.getCell(`B${rowNum}`).value = resultList[i];
+      worksheet.getCell(`K${rowNum}`).value = 'N/A';
+    }
+
+    const contentEnd = contentStart + rowCount - 1;
+    return { nextRow: contentEnd + 1, range: { start: contentStart, end: contentEnd } };
+  }
+
+  private addBoxSection(worksheet: Worksheet, startRow: number, title: string, boxHeight: number): { start: number; end: number } {
+    startRow += 5; // add some space after the previous section
+    worksheet.getCell(`B${startRow}`).value = title;
+    const contentStart = startRow + this.TITLE_TO_CONTENT_GAP;
+    return { start: contentStart, end: contentStart + boxHeight - 1 };
+  }
+  // private addDefectPhenomenonNgImg(worksheet: Worksheet, startRow: number, pheImgs: number[], micImgs: number[]): void {
+  //   const contentStart = startRow + this.TITLE_TO_CONTENT_GAP;
+  //   for (let index = 0; index < pheImgs.length; index++) {
+  //     const GAP_AFTER_CONTENT = 1; // blank rows after a section's content, before the next title
+  //     const img = pheImgs[index];
+  //     let rowStart = contentStart + index * this.IMG_ROW_HEIGHT + index * GAP_AFTER_CONTENT;
+  //     const rowEnd = rowStart + this.IMG_ROW_HEIGHT;
+  //     worksheet.addImage(
+  //       img,
+  //       { tl: { col: this.PHENOMENON_COL_START, row: rowStart }, br: { col: this.PHENOMENON_COL_END, row: rowEnd } } as any,
+  //     );
+  //   }
+  //   for (let index = 0; index < micImgs.length; index++) {
+  //     const GAP_AFTER_CONTENT = 1; // blank rows after a section's content, before the next title
+  //     const img = micImgs[index];
+  //     let rowStart = contentStart + index * this.IMG_ROW_HEIGHT + index * GAP_AFTER_CONTENT;
+  //     const rowEnd = rowStart + this.IMG_ROW_HEIGHT;
+  //     worksheet.addImage(
+  //       img,
+  //       { tl: { col: this.MICRO_COL_START, row: rowStart }, br: { col: this.MICRO_COL_END, row: rowEnd } } as any,
+  //     );
+  //   }
+  // }
+
+  private async downloadWorkbook(workbook: Workbook, fileName: string): Promise<void> {
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    fs.saveAs(blob, fileName);
+  }
   get AnalyzeDate() { return this.ResultForm.get('AnalyzeDate') }
   get ResultDate() { return this.ResultForm.get('ResultDate') }
   get ReportDate() { return this.ResultForm.get('ReportDate') }

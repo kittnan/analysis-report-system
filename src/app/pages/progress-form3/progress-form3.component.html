@@ -724,12 +724,22 @@
                   {{tempFileReportName}}
                 </td>
                 <th width="20%" class="text-center" *ngIf="this.form">
-                  <button *ngIf="this.form.requestItem=='MDL'" class="btn mt-0"
-                    (click)="onClickGenMDL(genReport);">Generate report file<i class="bi bi-file-earmark-spreadsheet"
-                      style="font-size: 1.2rem;"></i></button>
+                  <!-- <button *ngIf="this.form.requestItem=='MDL'" class="btn mt-0" (click)="onClickGenMDL(genReport);">
+                    Generate report file
+                    <i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i>
+                  </button>
 
-                  <button *ngIf="this.form.requestItem!='MDL'" class="btn mt-0" (click)="onClickGenExcel();">Generate
-                    report file<i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i></button>
+                  <button *ngIf="this.form.requestItem!='MDL'" class="btn mt-0" (click)="onClickGenExcel();">
+                    Generate report file
+                    <i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i>
+                  </button> -->
+
+                  <button *ngIf="this.form.requestItem!='MDL'" class="btn mt-0" (click)="attachImgsReport.click()">
+                    New Generate report
+                    <i class="bi bi-file-earmark-spreadsheet" style="font-size: 1.2rem;"></i>
+                  </button>
+                  <input type="file" hidden #attachImgsReport webkitdirectory (change)="attachImgsReportFile($event)">
+
                 </th>
                 <th width="20%" class="text-center" *ngIf="!this.form">
                 <th width="15%">
