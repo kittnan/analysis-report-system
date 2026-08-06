@@ -70,6 +70,7 @@ export class AnalysisDataListComponent implements OnInit {
         params.value == "Ongoing" ? color = "lightyellow" : false
         params.value == "Ongoing with delay" ? color = "orange" : false
         params.value == "Making report" ? color = "yellow" : false
+        params.value == "Entering Analysis Results" ? color = "lightblue" : false
         params.value == "Done" ? color = "lightgreen" : false
         params.value == "Done with delay" ? color = "green" : false
         params.value == "Cancel" ? color = "lightgray" : false
@@ -707,6 +708,10 @@ export class AnalysisDataListComponent implements OnInit {
           if (item.result != undefined || item.result2 != undefined) {
             item['statusShow'] = 'Making report'
             item['color'] = 'MakingReport'
+            if (item.needReport && item.needReport == 'Only Analysis') {
+              item['statusShow'] = 'Entering Analysis Results'
+              item['color'] = 'EnteringAnalysisResults'
+            }
           } else if (dateNow <= replyDate) {
             item['statusShow'] = 'Ongoing'
             item['color'] = 'Ongoing'
@@ -885,7 +890,6 @@ export class AnalysisDataListComponent implements OnInit {
         // break;
       }
       if (item.needReport && item.needReport == 'Only Analysis') {
-        console.log(item['finishReportDate'])
         item['finishReportDate'] = 'No Need Report'
       }
       resolve(item)
