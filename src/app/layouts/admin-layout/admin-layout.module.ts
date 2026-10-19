@@ -27,6 +27,7 @@ import { RejectForm3Component } from 'app/pages/reject-form3/reject-form3.compon
 import { UserComponent } from 'app/pages/user/user.component';
 import { SectionManageComponent } from 'app/pages/section-manage/section-manage.component';
 import { AnalysisDataListComponent } from 'app/pages/analysis-data-list/analysis-data-list.component';
+import { AnalysisExportReportComponent } from 'app/pages/analysis-export-report/analysis-export-report.component';
 
 import { ViewFormComponent } from 'app/pages/view-form/view-form.component';
 
@@ -97,6 +98,7 @@ import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical
     ManageFormComponent,
     // LoginComponent,
     AnalysisDataListComponent,
+    AnalysisExportReportComponent,
     ProfileComponent,
     LibrarySearchComponent,
     // PdfComponent,
