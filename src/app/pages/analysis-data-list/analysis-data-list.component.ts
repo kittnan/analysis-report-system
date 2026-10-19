@@ -19,7 +19,7 @@ var moment = require('moment')
 export class AnalysisDataListComponent implements OnInit {
   constructor(
     private api: HttpService,
-    private route: Router
+    protected route: Router
   ) { }
 
   // ? API

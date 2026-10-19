@@ -85,6 +85,15 @@ a:hover {
   left: 0;
 }
 
+.tableFixHead {
+  overflow-x: auto;
+}
+
+.manage-form-table {
+  width: max-content;
+  min-width: 100%;
+}
+
 @keyframes fade {
   0% {
     background-color: rgba(180, 180, 180, 0.938);

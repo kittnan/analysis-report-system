@@ -18,7 +18,8 @@
             "polyfills": "src/polyfills.ts",
             "allowedCommonJsDependencies": [
               "chart.js",
-              "file-saver"
+              "file-saver",
+              "jszip"
             ],
             "assets": [
               "src/assets",

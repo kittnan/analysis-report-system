@@ -18,6 +18,7 @@ import { UserComponent } from 'app/pages/user/user.component';
 import { SectionManageComponent } from 'app/pages/section-manage/section-manage.component';
 
 import { AnalysisDataListComponent } from 'app/pages/analysis-data-list/analysis-data-list.component';
+import { AnalysisExportReportComponent } from 'app/pages/analysis-export-report/analysis-export-report.component';
 import { ViewFormComponent } from 'app/pages/view-form/view-form.component';
 import { ProfileComponent } from 'app/pages/profile/profile.component';
 import { LibrarySearchComponent } from 'app/pages/library-search/library-search.component';
@@ -79,6 +80,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'user', component: UserComponent },
   { path: 'sectionManage', component: SectionManageComponent },
   { path: 'analysisDataList', component: AnalysisDataListComponent },
+  { path: 'analysisExportReport', component: AnalysisExportReportComponent },
   { path: 'viewForm', component: ViewFormComponent },
   { path: 'library', component: LibrarySearchComponent },
   // { path: 'pdf', component: PdfComponent },

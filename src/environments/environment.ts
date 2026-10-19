@@ -24,6 +24,8 @@ export const environment = {
   MasterCauseOfDefective: "63a514d136895b117bc81296",
   MasterMakerSupplierName: "63a514d236895b117bc81298",
 
+  WEB_URL:'http://10.200.90.152:8081/Analysis-Report/',
+
 
 
   ModelNumber: "KTC Model Number",

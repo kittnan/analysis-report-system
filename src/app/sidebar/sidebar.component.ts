@@ -21,17 +21,20 @@ export const routesLevel1: RouteInfo[] = [
   { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '', type: 'internal' },
   { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '', type: 'internal' },
   { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '', type: 'internal' },
+  { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '', type: 'internal' },
 ];
 export const routesLevel2: RouteInfo[] = [
   // { path: '/dashboard', title: 'Dashboard', icon: 'bi bi-bar-chart', class: '' },
   { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '', type: 'internal' },
   // { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '' },
   { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '', type: 'internal' },
+  { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '', type: 'internal' },
 ];
 export const routesLevel3: RouteInfo[] = [
   { path: '/dashboard', title: 'Dashboard', icon: 'bi bi-bar-chart', class: '', type: 'internal' },
   { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '', type: 'internal' },
   { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '', type: 'internal' },
+  { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '', type: 'internal' },
   { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '', type: 'internal' },
 
 ];
@@ -41,6 +44,7 @@ export const routesAdmin: RouteInfo[] = [
   { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '', type: 'internal' },
   { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '', type: 'internal' },
   { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '', type: 'internal' },
+  { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '', type: 'internal' },
   { path: '/masterlists', title: 'master list', icon: 'bi bi-list-task', class: '', type: 'internal' },
   { path: '/sectionManage', title: 'Section Manage', icon: 'bi bi-diagram-3', class: '', type: 'internal' },
   { path: '/user', title: 'Users Manage', icon: 'bi bi-people', class: '', type: 'internal' },
@@ -124,6 +128,7 @@ export class SidebarComponent implements OnInit {
           { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '' , type: 'internal'},
           { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
           { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' , type: 'internal'},
+          { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
           { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' , type: 'internal'},
           { path: '/electricalInput', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' , type: 'internal'},
         ]
@@ -140,6 +145,7 @@ export class SidebarComponent implements OnInit {
             { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' , type: 'internal'},
             { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
             { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' , type: 'internal'},
+            { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
             { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' , type: 'internal'},
             { path: '/electricalInput', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' , type: 'internal'},
 
@@ -157,6 +163,7 @@ export class SidebarComponent implements OnInit {
               { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' , type: 'internal'},
               { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
               { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' , type: 'internal'},
+              { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
               { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' , type: 'internal'},
               { path: '/electricalInput', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' , type: 'internal'},
             ]
@@ -170,6 +177,7 @@ export class SidebarComponent implements OnInit {
                 { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' , type: 'internal'},
                 { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '' , type: 'internal'},
                 { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
+                { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
 
               ]
               Permission = temp
@@ -181,6 +189,7 @@ export class SidebarComponent implements OnInit {
                   { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' , type: 'internal'},
                   { path: '/requestform', title: 'Analysis Form Entry', icon: 'nc-paper', class: '' , type: 'internal'},
                   { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
+                  { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
                   { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' , type: 'internal'},
                   { path: '/electricalInput', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' , type: 'internal'},
 
@@ -193,6 +202,7 @@ export class SidebarComponent implements OnInit {
                   let temp = [
                     { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' , type: 'internal'},
                     { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
+                    { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
                     { path: '/searchDatabase', title: 'Outsource', icon: 'bi bi-clipboard2-data', class: '' , type: 'internal'},
                     { path: '/electricalInput', title: 'Electrical Database', icon: 'bi bi-calculator', class: '' , type: 'internal'},
 
@@ -208,6 +218,7 @@ export class SidebarComponent implements OnInit {
                       { path: '/manageForm', title: 'Manage Form', icon: 'bi bi-journal-arrow-down', class: '' , type: 'internal'},
                       { path: '/library', title: 'Library Search', icon: 'bi bi-search', class: '' , type: 'internal'},
                       { path: '/analysisDataList', title: 'Analysis Data List', icon: 'bi bi-files', class: '' , type: 'internal'},
+                      { path: '/analysisExportReport', title: 'Export Report Files', icon: 'bi bi-file-earmark-zip', class: '' , type: 'internal'},
                       { path: '/masterlists', title: 'master list', icon: 'bi bi-list-task', class: '' , type: 'internal'},
                       { path: '/sectionManage', title: 'Section Manage', icon: 'bi bi-diagram-3', class: '' , type: 'internal'},
                       { path: '/user', title: 'Users Manage', icon: 'bi bi-people', class: '' , type: 'internal'},
