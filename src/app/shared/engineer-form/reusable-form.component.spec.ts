@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { ReusableFormComponent } from './reusable-form.component';
 import { HttpService } from 'app/service/http.service';
@@ -18,12 +19,13 @@ describe('ReusableFormComponent', () => {
       imports: [
         ReactiveFormsModule,
         RouterTestingModule,
-        NgbModule,
-        HttpClientTestingModule
+        NgbModule
       ],
       providers: [
         HttpService,
-        HelperMasterFMService
+        HelperMasterFMService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
     .compileComponents();

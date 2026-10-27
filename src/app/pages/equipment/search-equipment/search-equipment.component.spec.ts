@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { SearchEquipmentComponent } from './search-equipment.component';
 
@@ -10,7 +11,7 @@ describe('SearchEquipmentComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ SearchEquipmentComponent ],
-      imports: [ HttpClientTestingModule ]
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });

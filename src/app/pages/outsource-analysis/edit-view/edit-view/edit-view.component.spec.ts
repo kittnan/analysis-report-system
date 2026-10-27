@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { EditViewComponent } from './edit-view.component';
@@ -12,7 +13,7 @@ describe('EditViewComponent', () => {
     sessionStorage.setItem('dataAll', JSON.stringify({ registerNo: '', urlFile: [] }));
     await TestBed.configureTestingModule({
       declarations: [ EditViewComponent, FileSizePipe ],
-      imports: [ HttpClientTestingModule ]
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });

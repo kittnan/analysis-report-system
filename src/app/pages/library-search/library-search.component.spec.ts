@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { LibrarySearchComponent } from './library-search.component';
@@ -11,7 +12,8 @@ describe('LibrarySearchComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ LibrarySearchComponent ],
-      imports: [ HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ]
+      imports: [ RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ],
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });

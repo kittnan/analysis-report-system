@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { ElectricalTftDrivingComponent } from './electrical-tft-driving.component';
@@ -11,7 +12,7 @@ describe('ElectricalTftDrivingComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ ElectricalTftDrivingComponent, FileSizePipe ],
-      imports: [ HttpClientTestingModule ]
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });
