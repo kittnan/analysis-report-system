@@ -4,7 +4,8 @@ import { HttpService } from 'app/service/http.service';
 @Component({
   selector: 'app-outsource-view',
   templateUrl: './outsource-view.component.html',
-  styleUrls: ['./outsource-view.component.css']
+  styleUrls: ['./outsource-view.component.css'],
+  standalone: false
 })
 export class OutsourceViewComponent implements OnInit {
 

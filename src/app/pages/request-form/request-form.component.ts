@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
   selector: 'app-request-form',
   templateUrl: './request-form.component.html',
   // styleUrls: ['./request-form.component.css',],
-  styleUrls: ['../pagesStyle.css']
+  styleUrls: ['../pagesStyle.css'],
+  standalone: false
 })
 
 

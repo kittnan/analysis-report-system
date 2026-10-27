@@ -12,7 +12,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 @Component({
   selector: 'app-view-form',
   templateUrl: './view-form.component.html',
-  styleUrls: ['./view-form.component.css', '../pagesStyle.css']
+  styleUrls: ['./view-form.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ViewFormComponent implements OnInit {
 

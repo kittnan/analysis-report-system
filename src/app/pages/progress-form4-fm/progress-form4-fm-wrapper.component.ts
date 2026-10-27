@@ -11,7 +11,8 @@ import { FormConfig } from 'app/shared/engineer-form/reusable-form.component';
       (onFormChange)="handleFormChange($event)">
     </app-reusable-form>
   `,
-  styleUrls: ['../pagesStyle.css']
+  styleUrls: ['../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm4FmWrapperComponent implements OnInit {
 

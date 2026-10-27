@@ -13,7 +13,8 @@ var FileSaver = require('file-saver');
 @Component({
   selector: 'app-electrical-tft-driving',
   templateUrl: './electrical-tft-driving.component.html',
-  styleUrls: ['./electrical-tft-driving.component.scss']
+  styleUrls: ['./electrical-tft-driving.component.scss'],
+  standalone: false
 })
 export class ElectricalTftDrivingComponent implements OnInit {
   LoadingPage: boolean;

@@ -13,7 +13,8 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-reject-form3',
   templateUrl: './reject-form3.component.html',
-  styleUrls: ['./reject-form3.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form3.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm3Component implements OnInit {
 

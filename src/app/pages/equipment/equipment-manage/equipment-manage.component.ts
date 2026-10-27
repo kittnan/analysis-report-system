@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-equipment-manage',
   templateUrl: './equipment-manage.component.html',
-  styleUrls: ['./equipment-manage.component.css']
+  styleUrls: ['./equipment-manage.component.css'],
+  standalone: false
 })
 export class EquipmentManageComponent implements OnInit {
 

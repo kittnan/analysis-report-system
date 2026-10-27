@@ -16,7 +16,8 @@ import { logWarnings } from 'protractor/built/driverProviders';
 @Component({
   selector: 'app-edit-view',
   templateUrl: './edit-view.component.html',
-  styleUrls: ['./edit-view.component.css']
+  styleUrls: ['./edit-view.component.css'],
+  standalone: false
 })
 export class EditViewComponent implements OnInit {
 

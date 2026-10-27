@@ -12,7 +12,8 @@ type AOA = any[][];
 @Component({
   selector: 'app-electrical-search',
   templateUrl: './electrical-search.component.html',
-  styleUrls: ['./electrical-search.component.scss']
+  styleUrls: ['./electrical-search.component.scss'],
+  standalone: false
 })
 export class ElectricalSearchComponent implements OnInit {
   //-----------------------------------------------------------------------------------------------------//

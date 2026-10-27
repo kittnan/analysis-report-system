@@ -6,7 +6,8 @@ import { PreviewEquipmentComponent } from '../preview-equipment/preview-equipmen
 @Component({
   selector: 'app-equipment-home',
   templateUrl: './equipment-home.component.html',
-  styleUrls: ['./equipment-home.component.css']
+  styleUrls: ['./equipment-home.component.css'],
+  standalone: false
 })
 export class EquipmentHomeComponent implements OnInit {
 

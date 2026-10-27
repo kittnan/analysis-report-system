@@ -11,7 +11,8 @@ import { PreviewEquipmentComponent } from '../preview-equipment/preview-equipmen
 @Component({
   selector: 'app-search-equipment',
   templateUrl: './search-equipment.component.html',
-  styleUrls: ['./search-equipment.component.css']
+  styleUrls: ['./search-equipment.component.css'],
+  standalone: false
 })
 export class SearchEquipmentComponent implements OnInit {
 

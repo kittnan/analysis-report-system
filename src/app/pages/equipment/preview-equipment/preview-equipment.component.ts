@@ -4,7 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-preview-equipment',
   templateUrl: './preview-equipment.component.html',
-  styleUrls: ['./preview-equipment.component.css']
+  styleUrls: ['./preview-equipment.component.css'],
+  standalone: false
 })
 export class PreviewEquipmentComponent implements OnInit {
 

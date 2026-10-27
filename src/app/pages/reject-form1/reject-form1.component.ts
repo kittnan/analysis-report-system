@@ -10,7 +10,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 @Component({
   selector: 'app-reject-form1',
   templateUrl: './reject-form1.component.html',
-  styleUrls: ['./reject-form1.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form1.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm1Component implements OnInit {
   constructor(

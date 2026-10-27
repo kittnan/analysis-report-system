@@ -12,7 +12,8 @@ export interface EquipmentMasterForm {
 @Component({
   selector: 'app-master-manage',
   templateUrl: './master-manage.component.html',
-  styleUrls: ['./master-manage.component.css']
+  styleUrls: ['./master-manage.component.css'],
+  standalone: false
 })
 export class MasterManageComponent implements OnInit {
 

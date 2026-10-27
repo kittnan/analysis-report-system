@@ -19,7 +19,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
   selector: 'app-progress-form2',
   templateUrl: './progress-form2.component.html',
   // styleUrls: ['./progress-form2.component.css'],
-  styleUrls: ['../pagesStyle.css']
+  styleUrls: ['../pagesStyle.css'],
+  standalone: false
 
 })
 export class ProgressForm2Component implements OnInit {

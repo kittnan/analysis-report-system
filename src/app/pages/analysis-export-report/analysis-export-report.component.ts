@@ -20,7 +20,8 @@ interface ExportItem {
 @Component({
   selector: 'app-analysis-export-report',
   templateUrl: './analysis-export-report.component.html',
-  styleUrls: ['../analysis-data-list/analysis-data-list.component.css']
+  styleUrls: ['../analysis-data-list/analysis-data-list.component.css'],
+  standalone: false
 })
 export class AnalysisExportReportComponent extends AnalysisDataListComponent implements OnInit, OnDestroy {
 

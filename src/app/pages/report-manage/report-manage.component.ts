@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-report-manage',
   templateUrl: './report-manage.component.html',
-  styleUrls: ['./report-manage.component.css', '../pagesStyle.css']
+  styleUrls: ['./report-manage.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ReportManageComponent implements OnInit {
 

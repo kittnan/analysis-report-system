@@ -14,7 +14,8 @@ import { replaceAll } from 'chartist';
 @Component({
   selector: 'app-electrical-input',
   templateUrl: './electrical-input.component.html',
-  styleUrls: ['./electrical-input.component.scss']
+  styleUrls: ['./electrical-input.component.scss'],
+  standalone: false
 })
 export class ElectricalInputComponent implements OnInit {
 

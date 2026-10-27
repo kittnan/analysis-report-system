@@ -13,6 +13,7 @@ import { HttpParams } from '@angular/common/http';
     selector: 'app-masterlists',
     templateUrl: './masterlists.component.html',
     styleUrls: ['./masterlists.component.css'],
+    standalone: false
 
 
 })

@@ -11,7 +11,8 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-progress-form4',
   templateUrl: './progress-form4.component.html',
-  styleUrls: ['./progress-form4.component.css', '../pagesStyle.css']
+  styleUrls: ['./progress-form4.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm4Component implements OnInit {
   // ? params

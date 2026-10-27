@@ -12,7 +12,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-library-search',
   templateUrl: './library-search.component.html',
-  styleUrls: ['./library-search.component.css']
+  styleUrls: ['./library-search.component.css'],
+  standalone: false
 })
 export class LibrarySearchComponent implements OnInit {
   constructor(

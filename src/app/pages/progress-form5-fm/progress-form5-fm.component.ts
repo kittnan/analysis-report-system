@@ -16,7 +16,8 @@ import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
 @Component({
   selector: 'app-progress-form5-fm',
   templateUrl: './progress-form5-fm.component.html',
-  styleUrls: ['./progress-form5-fm.component.scss', '../pagesStyle.css']
+  styleUrls: ['./progress-form5-fm.component.scss', '../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm5FmComponent implements OnInit {
 

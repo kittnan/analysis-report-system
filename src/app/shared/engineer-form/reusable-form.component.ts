@@ -27,7 +27,8 @@ export interface FormConfig {
 @Component({
   selector: 'app-reusable-form',
   templateUrl: './reusable-form.component.html',
-  styleUrls: ['./reusable-form.component.scss', '../../pages/pagesStyle.css']
+  styleUrls: ['./reusable-form.component.scss', '../../pages/pagesStyle.css'],
+  standalone: false
 })
 export class ReusableFormComponent implements OnInit {
 

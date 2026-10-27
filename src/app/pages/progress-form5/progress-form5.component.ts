@@ -13,7 +13,8 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-progress-form5',
   templateUrl: './progress-form5.component.html',
-  styleUrls: ['./progress-form5.component.css', '../pagesStyle.css']
+  styleUrls: ['./progress-form5.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm5Component implements OnInit {
 

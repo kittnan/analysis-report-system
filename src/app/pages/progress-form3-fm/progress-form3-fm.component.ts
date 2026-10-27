@@ -16,7 +16,8 @@ import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
 @Component({
   selector: 'app-progress-form3-fm',
   templateUrl: './progress-form3-fm.component.html',
-  styleUrls: ['./progress-form3-fm.component.scss', '../pagesStyle.css']
+  styleUrls: ['./progress-form3-fm.component.scss', '../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm3FmComponent implements OnInit {
 

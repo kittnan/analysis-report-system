@@ -16,7 +16,8 @@ import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
 @Component({
   selector: 'app-reject-form3-fm',
   templateUrl: './reject-form3-fm.component.html',
-  styleUrls: ['./reject-form3-fm.component.scss', '../pagesStyle.css']
+  styleUrls: ['./reject-form3-fm.component.scss', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm3FmComponent implements OnInit {
 

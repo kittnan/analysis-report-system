@@ -73,6 +73,7 @@ export let equipmentItems: RouteInfo[] = [
 @Component({
   selector: 'sidebar-cmp',
   templateUrl: 'sidebar.component.html',
+  standalone: false
 })
 
 export class SidebarComponent implements OnInit {

@@ -9,7 +9,8 @@ type AOA = any[][];
 @Component({
   selector: 'app-electrical-otp',
   templateUrl: './electrical-otp.component.html',
-  styleUrls: ['./electrical-otp.component.scss']
+  styleUrls: ['./electrical-otp.component.scss'],
+  standalone: false
 })
 export class ElectricalOtpComponent implements OnInit {
 

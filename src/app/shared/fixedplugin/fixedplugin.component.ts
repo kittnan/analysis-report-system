@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'fixedplugin-cmp',
-    templateUrl: 'fixedplugin.component.html'
+    templateUrl: 'fixedplugin.component.html',
+    standalone: false
 })
 
 export class FixedPluginComponent implements OnInit{

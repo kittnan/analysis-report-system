@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-reject-form4',
   templateUrl: './reject-form4.component.html',
-  styleUrls: ['./reject-form4.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form4.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm4Component implements OnInit {
 

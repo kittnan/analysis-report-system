@@ -6,7 +6,8 @@ import { HttpService } from 'app/service/http.service';
 @Component({
   selector: 'app-mailler',
   templateUrl: './mailler.component.html',
-  styleUrls: ['./mailler.component.css']
+  styleUrls: ['./mailler.component.css'],
+  standalone: false
 })
 export class MaillerComponent implements OnInit {
   constructor(

@@ -7,7 +7,8 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-v2',
   templateUrl: './dashboard-v2.component.html',
-  styleUrls: ['./dashboard-v2.component.css']
+  styleUrls: ['./dashboard-v2.component.css'],
+  standalone: false
 })
 
 
@@ -354,7 +355,7 @@ export class DashboardV2Component implements OnInit {
       const PercentAll = (countOntime / total) * 100;
       // this.PercentAll = Math.round(this.PercentAll) || null
       const result = {
-        percent: Math.round(PercentAll) ? Math.round(PercentAll) + '%' : null || null,
+        percent: Math.round(PercentAll) ? Math.round(PercentAll) + '%' : null,
         timeUpdate: new Date().toLocaleDateString()
       }
       return result
@@ -368,7 +369,7 @@ export class DashboardV2Component implements OnInit {
       const tempResult = (newCount / oldCount) * 100;
       // const result = Math.round(tempResult) || null
       const result = {
-        percent: Math.round(tempResult) ? Math.round(tempResult) + '%' : null || null,
+        percent: Math.round(tempResult) ? Math.round(tempResult) + '%' : null,
         timeUpdate: new Date().toLocaleDateString()
       }
       return result

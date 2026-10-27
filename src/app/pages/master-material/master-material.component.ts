@@ -15,7 +15,8 @@ interface DataItem {
 @Component({
   selector: 'app-master-material',
   templateUrl: './master-material.component.html',
-  styleUrls: ['./master-material.component.scss']
+  styleUrls: ['./master-material.component.scss'],
+  standalone: false
 })
 export class MasterMaterialComponent implements OnInit, AfterViewInit {
 

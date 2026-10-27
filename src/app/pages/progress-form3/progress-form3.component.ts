@@ -17,6 +17,7 @@ import { HttpParams } from '@angular/common/http';
   templateUrl: './progress-form3.component.html',
   styleUrls: ['./progress-form3.component.css', '../pagesStyle.css'],
   // styleUrls: ['../pagesStyle.css']
+  standalone: false
 
 })
 export class ProgressForm3Component implements OnInit {

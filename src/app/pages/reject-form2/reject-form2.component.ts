@@ -15,7 +15,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 @Component({
   selector: 'app-reject-form2',
   templateUrl: './reject-form2.component.html',
-  styleUrls: ['./reject-form2.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form2.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm2Component implements OnInit {
 

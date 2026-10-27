@@ -11,7 +11,8 @@ type AOA = any[][];
 @Component({
   selector: 'app-electrical-resistance',
   templateUrl: './electrical-resistance.component.html',
-  styleUrls: ['./electrical-resistance.component.scss']
+  styleUrls: ['./electrical-resistance.component.scss'],
+  standalone: false
 })
 export class ElectricalResistanceComponent implements OnInit {
   LoadingPage: boolean;

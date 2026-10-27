@@ -17,7 +17,8 @@ import { interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-outsource-analysis',
   templateUrl: './outsource-analysis.component.html',
-  styleUrls: ['./outsource-analysis.component.css']
+  styleUrls: ['./outsource-analysis.component.css'],
+  standalone: false
 })
 
 

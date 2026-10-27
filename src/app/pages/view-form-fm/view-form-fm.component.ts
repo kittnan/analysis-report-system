@@ -11,7 +11,8 @@ import { ActivatedRoute, Params } from '@angular/router';
 @Component({
   selector: 'app-view-form-fm',
   templateUrl: './view-form-fm.component.html',
-  styleUrls: ['./view-form-fm.component.scss', '../pagesStyle.css']
+  styleUrls: ['./view-form-fm.component.scss', '../pagesStyle.css'],
+  standalone: false
 })
 export class ViewFormFmComponent implements OnInit {
 

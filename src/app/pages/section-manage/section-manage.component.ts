@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-section-manage',
   templateUrl: './section-manage.component.html',
-  styleUrls: ['./section-manage.component.css']
+  styleUrls: ['./section-manage.component.css'],
+  standalone: false
 })
 export class SectionManageComponent implements OnInit {
 

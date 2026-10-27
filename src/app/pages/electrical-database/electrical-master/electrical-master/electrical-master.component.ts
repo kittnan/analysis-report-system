@@ -11,7 +11,8 @@ type AOA = any[][];
 @Component({
   selector: 'app-electrical-master',
   templateUrl: './electrical-master.component.html',
-  styleUrls: ['./electrical-master.component.scss']
+  styleUrls: ['./electrical-master.component.scss'],
+  standalone: false
 })
 export class ElectricalMasterComponent implements OnInit {
 

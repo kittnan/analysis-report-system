@@ -7,7 +7,8 @@ import { MasterService } from '../master-manage/master.service';
 @Component({
   selector: 'app-add-equipment',
   templateUrl: './add-equipment.component.html',
-  styleUrls: ['./add-equipment.component.css']
+  styleUrls: ['./add-equipment.component.css'],
+  standalone: false
 })
 export class AddEquipmentComponent implements OnInit {
 

@@ -10,6 +10,7 @@ var moment = require('moment')
   templateUrl: './manage-form.component.html',
   styleUrls: ['./manage-form.component.css'],
   // template:'<app-progress-form1 [a]="SS"></app-progress-form1>'
+  standalone: false
 })
 
 export class ManageFormComponent implements OnInit {

@@ -14,7 +14,8 @@ var moment = require('moment')
 @Component({
   selector: 'app-analysis-data-list',
   templateUrl: './analysis-data-list.component.html',
-  styleUrls: ['./analysis-data-list.component.css']
+  styleUrls: ['./analysis-data-list.component.css'],
+  standalone: false
 })
 export class AnalysisDataListComponent implements OnInit {
   constructor(
