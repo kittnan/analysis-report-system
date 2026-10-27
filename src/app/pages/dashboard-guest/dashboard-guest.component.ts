@@ -15,7 +15,7 @@ Chart.register(...registerables);
 export class DashboardGuestComponent implements OnInit {
 
   // @HostListener('scroll', ['$event']) // for scroll events of the current element
-  @HostListener('window:scroll', ['$event']) // for window scroll events
+  @HostListener('window:scroll') // for window scroll events
   scrollFunction() {
     var mybutton = document.getElementById("myBtn");
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
