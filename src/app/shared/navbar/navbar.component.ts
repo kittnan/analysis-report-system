@@ -5,7 +5,6 @@ import { Location } from '@angular/common';
 import { LocalStorageService } from 'app/service/local-storage.service';
 
 @Component({
-  moduleId: module.id,
   selector: 'navbar-cmp',
   templateUrl: 'navbar.component.html'
 })

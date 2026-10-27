@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'dashboard-cmp',
-  moduleId: module.id,
   templateUrl: 'dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })

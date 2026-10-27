@@ -15,8 +15,8 @@
         "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "./eslint-config/ng-cli-compat.json",
+        "./eslint-config/ng-cli-compat--formatting-add-on.json",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
