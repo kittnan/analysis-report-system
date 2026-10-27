@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,9 @@ export class AppComponent{
 
     if (this.swUpdate.isEnabled) {
 
-      this.swUpdate.available.subscribe(() => {
+      this.swUpdate.versionUpdates
+        .pipe(filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'))
+        .subscribe(() => {
 
           if(confirm("New version available. Load New Version?")) {
 
