@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { ExportEquipmentService } from '../export-equipment.service';
@@ -21,13 +21,13 @@ export class SearchEquipmentComponent implements OnInit {
 
   tableHead: any[] = []
 
-  filterForm = new FormGroup({
-    analysisEquipmentName: new FormControl(''),
-    field: new FormControl(''),
-    country: new FormControl(''),
-    province: new FormControl(''),
-    scope: new FormControl(''),
-    defectMode: new FormControl(''),
+  filterForm = new UntypedFormGroup({
+    analysisEquipmentName: new UntypedFormControl(''),
+    field: new UntypedFormControl(''),
+    country: new UntypedFormControl(''),
+    province: new UntypedFormControl(''),
+    scope: new UntypedFormControl(''),
+    defectMode: new UntypedFormControl(''),
   })
 
   public get filterFormControl

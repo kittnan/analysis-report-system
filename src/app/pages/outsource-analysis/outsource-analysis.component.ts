@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, TestabilityRegistry, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFrameworkComponentWrapper } from 'ag-grid-angular';
 import { GridApi, GridReadyEvent, LoggerFactory, RowNode } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
@@ -68,7 +68,7 @@ export class OutsourceAnalysisComponent implements OnInit {
 
   // ? file attacnt
   FileList: any = [];
-  fileInput = new FormControl(null)
+  fileInput = new UntypedFormControl(null)
   gridApi: GridApi
   dateSize: any;
   file: any;

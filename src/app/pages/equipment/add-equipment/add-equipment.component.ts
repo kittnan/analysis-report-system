@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { MasterService } from '../master-manage/master.service';
@@ -13,17 +13,17 @@ export class AddEquipmentComponent implements OnInit {
 
   FileUpload: File
 
-  newEquipment = new FormGroup({
-    analysisEquipmentName: new FormControl('', Validators.required),
-    field: new FormControl('', Validators.required),
-    analysisScope: new FormControl('', Validators.required),
-    defectMode: new FormControl([], Validators.required),
-    limitationOfSample: new FormControl('', Validators.required),
-    country: new FormControl(''),
-    province: new FormControl([], Validators.required),
-    brand: new FormControl('', Validators.required),
+  newEquipment = new UntypedFormGroup({
+    analysisEquipmentName: new UntypedFormControl('', Validators.required),
+    field: new UntypedFormControl('', Validators.required),
+    analysisScope: new UntypedFormControl('', Validators.required),
+    defectMode: new UntypedFormControl([], Validators.required),
+    limitationOfSample: new UntypedFormControl('', Validators.required),
+    country: new UntypedFormControl(''),
+    province: new UntypedFormControl([], Validators.required),
+    brand: new UntypedFormControl('', Validators.required),
     // analysisFee: new FormControl('', Validators.required),
-    urlImage: new FormControl({}, Validators.required),
+    urlImage: new UntypedFormControl({}, Validators.required),
   })
 
   public get newEquipmentControl(): any {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
@@ -24,10 +24,10 @@ export class ProfileComponent implements OnInit {
   UserId: any;
   Sections = [];
 
-  Pass = new FormGroup({
-    OldPassword: new FormControl(null, Validators.required),
-    NewPassword: new FormControl(null, Validators.required),
-    NewPassword2: new FormControl(null, Validators.required),
+  Pass = new UntypedFormGroup({
+    OldPassword: new UntypedFormControl(null, Validators.required),
+    NewPassword: new UntypedFormControl(null, Validators.required),
+    NewPassword2: new UntypedFormControl(null, Validators.required),
   })
 
 

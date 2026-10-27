@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
 
@@ -17,17 +17,17 @@ export class MaillerComponent implements OnInit {
   Mailler: any;
 
   // ? Form Group
-  Mail = new FormGroup({
-    From: new FormControl(null, Validators.required),
-    Password: new FormControl(null, Validators.required),
-    Subject: new FormControl(null, Validators.required)
+  Mail = new UntypedFormGroup({
+    From: new UntypedFormControl(null, Validators.required),
+    Password: new UntypedFormControl(null, Validators.required),
+    Subject: new UntypedFormControl(null, Validators.required)
   })
 
   // ?Toggle
   ToggleBtn1 = false;
 
 
-  test1 = new FormControl(null, Validators.required)
+  test1 = new UntypedFormControl(null, Validators.required)
 
   ngOnInit(): void {
     this.CheckStatusUser();

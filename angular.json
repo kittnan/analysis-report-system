@@ -189,7 +189,6 @@
       }
     }
   },
-  "defaultProject": "Analysis-Report",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
@@ -201,6 +200,8 @@
   },
   "cli": {
     "analytics": false,
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

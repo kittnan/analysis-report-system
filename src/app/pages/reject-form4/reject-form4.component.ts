@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
@@ -24,11 +24,11 @@ export class RejectForm4Component implements OnInit {
 
 
   // ? Form Control
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
-  Approve = new FormControl(null, Validators.required);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  Approve = new UntypedFormControl(null, Validators.required);
 
-  htmlFile = new FormControl(null);
+  htmlFile = new UntypedFormControl(null);
   // ? Email
   SendEmailApproved: any;
   SendEmailUser: any;
@@ -42,7 +42,7 @@ export class RejectForm4Component implements OnInit {
   tempFile: any = [];
   tempFileName: any = [];
   tempFileTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
   constructor(
     // private api: ProgressForm4Service,

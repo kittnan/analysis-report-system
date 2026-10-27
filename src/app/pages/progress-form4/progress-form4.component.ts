@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -33,9 +33,9 @@ export class ProgressForm4Component implements OnInit {
 
 
   // ? Form Control
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
-  Approve = new FormControl(null, Validators.required);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  Approve = new UntypedFormControl(null, Validators.required);
 
 
   // ? Email
@@ -44,7 +44,7 @@ export class ProgressForm4Component implements OnInit {
   SendRejectUser: any;
 
   // ?file
-  htmlFile = new FormControl(null)
+  htmlFile = new UntypedFormControl(null)
 
 
   // ?upload file
@@ -52,34 +52,34 @@ export class ProgressForm4Component implements OnInit {
   tempFile: any = [];
   tempFileName: any = [];
   tempFileTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
   // ? comment
   CommentLists: any = [];
 
   // ? Analysis form
-  AnalysisForm = new FormGroup({
-    _id: new FormControl('', Validators.required),
-    causeOfDefect: new FormControl('', Validators.required),
-    sourceOfDefect: new FormControl('', Validators.required),
-    analysisLevel: new FormControl('', Validators.required),
-    canAnalysis: new FormControl('', Validators.required),
-    relatedToESD: new FormControl('', Validators.required),
-    result: new FormControl('', Validators.required),
-    JudgementDefect: new FormControl('', Validators.required),
-    Remark: new FormControl(''),
+  AnalysisForm = new UntypedFormGroup({
+    _id: new UntypedFormControl('', Validators.required),
+    causeOfDefect: new UntypedFormControl('', Validators.required),
+    sourceOfDefect: new UntypedFormControl('', Validators.required),
+    analysisLevel: new UntypedFormControl('', Validators.required),
+    canAnalysis: new UntypedFormControl('', Validators.required),
+    relatedToESD: new UntypedFormControl('', Validators.required),
+    result: new UntypedFormControl('', Validators.required),
+    JudgementDefect: new UntypedFormControl('', Validators.required),
+    Remark: new UntypedFormControl(''),
 
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
 
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0, Validators.required),
-        item: new FormControl(null, Validators.required),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0, Validators.required),
+        item: new UntypedFormControl(null, Validators.required),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
       })
     ]),
 
@@ -216,14 +216,14 @@ export class ProgressForm4Component implements OnInit {
         this.FileReportName = this.Result.file ? (this.Result.file.split('/'))[5] : []
 
         if (this.Result.requestItemName.includes("_FM")) {
-          const result2Array = this.Result2 as FormArray;
+          const result2Array = this.Result2 as UntypedFormArray;
           result2Array.clear();
           this.Result.result2.forEach((res: any) => {
-            const formGroup = new FormGroup({
-              item: new FormControl(res.item || '', Validators.required),
-              qty: new FormControl(res.qty || '', Validators.required),
-              tempItem: new FormControl(res.item || ''),
-              dropdown: new FormControl(res.dropdown || ''),
+            const formGroup = new UntypedFormGroup({
+              item: new UntypedFormControl(res.item || '', Validators.required),
+              qty: new UntypedFormControl(res.qty || '', Validators.required),
+              tempItem: new UntypedFormControl(res.item || ''),
+              dropdown: new UntypedFormControl(res.dropdown || ''),
             });
             result2Array.push(formGroup);
           });
@@ -260,23 +260,23 @@ export class ProgressForm4Component implements OnInit {
 
   // Update Result2 FormArray validators based on FM status
   updateResult2Validators() {
-    const result2Array = this.AnalysisForm.get('Result2') as FormArray;
+    const result2Array = this.AnalysisForm.get('Result2') as UntypedFormArray;
     const isFM = this.isFM();
 
     if (this.isFM()) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
         });
         result2Array.push(newItem);
       } else {
         // Update existing controls to be required
         result2Array.controls.forEach(control => {
-          const group = control as FormGroup;
+          const group = control as UntypedFormGroup;
           const qtyControl = group.get('qty');
           const itemControl = group.get('item');
           qtyControl?.setValidators([Validators.required]);
@@ -317,10 +317,10 @@ export class ProgressForm4Component implements OnInit {
     console.log('AnalysisForm valid:', this.AnalysisForm.valid);
     console.log('AnalysisForm errors:', this.getFormValidationErrors(this.AnalysisForm));
     console.log('Result2 FormArray valid:', this.AnalysisForm.get('Result2')?.valid);
-    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.AnalysisForm.get('Result2') as FormArray));
+    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.AnalysisForm.get('Result2') as UntypedFormArray));
   }
 
-  getFormValidationErrors(form: FormGroup) {
+  getFormValidationErrors(form: UntypedFormGroup) {
     const errors: any = {};
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
@@ -331,9 +331,9 @@ export class ProgressForm4Component implements OnInit {
     return errors;
   }
 
-  getFormArrayValidationErrors(formArray: FormArray) {
+  getFormArrayValidationErrors(formArray: UntypedFormArray) {
     return formArray.controls.map((control, index) => {
-      if (control instanceof FormGroup) {
+      if (control instanceof UntypedFormGroup) {
         return {
           index,
           errors: this.getFormValidationErrors(control)
@@ -705,18 +705,18 @@ export class ProgressForm4Component implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
-    const newItem = new FormGroup({
-      item: new FormControl('', Validators.required),
-      qty: new FormControl(0, Validators.required),
-      tempItem: new FormControl(''),
-      dropdown: new FormControl(false)
+    const result2Array = this.Result2 as UntypedFormArray;
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', Validators.required),
+      qty: new UntypedFormControl(0, Validators.required),
+      tempItem: new UntypedFormControl(''),
+      dropdown: new UntypedFormControl(false)
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }

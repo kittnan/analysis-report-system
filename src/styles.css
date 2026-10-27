@@ -76,3 +76,9 @@ body {
   border-radius: 10px !important;
   margin-right: 10px !important;
 }
+/* ng-bootstrap 13+ gives the backdrop an inline z-index of 1055 (Bootstrap 5),
+   but Bootstrap 4 sets .modal to 1050, so the backdrop covered the modal.
+   The window comes after the backdrop in the DOM, and stays below SweetAlert2 (1060). */
+ngb-modal-window.modal {
+  z-index: 1055;
+}

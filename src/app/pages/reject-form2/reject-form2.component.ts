@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
 
@@ -47,13 +47,13 @@ export class RejectForm2Component implements OnInit {
   FormView = sessionStorage.getItem('FormView');
 
   // ? Form control
-  Form = new FormGroup({
-    ReplyDate: new FormControl(null, Validators.required),
-    AeApprove: new FormControl(null, Validators.required),
+  Form = new UntypedFormGroup({
+    ReplyDate: new UntypedFormControl(null, Validators.required),
+    AeApprove: new UntypedFormControl(null, Validators.required),
   })
 
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
 
 
 

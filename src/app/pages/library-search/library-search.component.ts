@@ -1,6 +1,6 @@
 import { interval, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import Swal, { SweetAlertResult } from 'sweetalert2'
 import { environment } from '../../../environments/environment.prod'
 import * as FileSaver from 'file-saver';
@@ -45,15 +45,15 @@ export class LibrarySearchComponent implements OnInit {
   ModelNumberFilter: any = [];
 
   // ? Form Control
-  Form = new FormGroup({
-    ModelNumber: new FormControl(null, Validators.required),
-    LotNumber: new FormControl(null, Validators.required),
-    DefectName: new FormControl(null, Validators.required),
-    DateStart: new FormControl(null, Validators.required),
-    DateEnd: new FormControl(null, Validators.required),
-    Month: new FormControl(null, Validators.required),
-    InputQty: new FormControl(null, Validators.required),
-    NgQty: new FormControl(null, Validators.required)
+  Form = new UntypedFormGroup({
+    ModelNumber: new UntypedFormControl(null, Validators.required),
+    LotNumber: new UntypedFormControl(null, Validators.required),
+    DefectName: new UntypedFormControl(null, Validators.required),
+    DateStart: new UntypedFormControl(null, Validators.required),
+    DateEnd: new UntypedFormControl(null, Validators.required),
+    Month: new UntypedFormControl(null, Validators.required),
+    InputQty: new UntypedFormControl(null, Validators.required),
+    NgQty: new UntypedFormControl(null, Validators.required)
 
   })
 
@@ -66,14 +66,14 @@ export class LibrarySearchComponent implements OnInit {
   get InputQty() { return this.Form.get('InputQty') }
   get NgQty() { return this.Form.get('NgQty') }
 
-  SelectAnySearch = new FormControl(null, Validators.required);
-  RequestorName = new FormControl(null, Validators.required);
-  RequestorId = new FormControl(null, Validators.required);
-  SectionName = new FormControl(null, Validators.required);
-  SelectRequestItem = new FormControl(null, Validators.required)
-  SelectDefect = new FormControl(null, Validators.required);
+  SelectAnySearch = new UntypedFormControl(null, Validators.required);
+  RequestorName = new UntypedFormControl(null, Validators.required);
+  RequestorId = new UntypedFormControl(null, Validators.required);
+  SectionName = new UntypedFormControl(null, Validators.required);
+  SelectRequestItem = new UntypedFormControl(null, Validators.required)
+  SelectDefect = new UntypedFormControl(null, Validators.required);
 
-  TempModelNumber = new FormControl(null, Validators.required);
+  TempModelNumber = new UntypedFormControl(null, Validators.required);
 
   // ? Toggle
   ToggleDefect = false;

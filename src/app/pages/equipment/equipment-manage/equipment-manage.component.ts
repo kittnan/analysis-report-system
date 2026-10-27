@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MasterService } from '../master-manage/master.service';
 import Swal from 'sweetalert2';
@@ -15,17 +15,17 @@ export class EquipmentManageComponent implements OnInit {
   Equipment: any[] = []
   EquipmentFiltered: any[] = []
 
-  EquipmentForm = new FormGroup({
-    _id: new FormControl('', Validators.required),
-    analysisEquipmentName: new FormControl('', Validators.required),
-    field: new FormControl('', Validators.required),
-    analysisScope: new FormControl('', Validators.required),
-    defectMode: new FormControl([], Validators.required),
-    limitationOfSample: new FormControl('', Validators.required),
-    province: new FormControl([], Validators.required),
-    brand: new FormControl('', Validators.required),
+  EquipmentForm = new UntypedFormGroup({
+    _id: new UntypedFormControl('', Validators.required),
+    analysisEquipmentName: new UntypedFormControl('', Validators.required),
+    field: new UntypedFormControl('', Validators.required),
+    analysisScope: new UntypedFormControl('', Validators.required),
+    defectMode: new UntypedFormControl([], Validators.required),
+    limitationOfSample: new UntypedFormControl('', Validators.required),
+    province: new UntypedFormControl([], Validators.required),
+    brand: new UntypedFormControl('', Validators.required),
     // analysisFee: new FormControl('', Validators.required),
-    urlImage: new FormControl({}, Validators.required),
+    urlImage: new UntypedFormControl({}, Validators.required),
   })
   public get EquipmentFormControl(): any {
     return this.EquipmentForm.controls

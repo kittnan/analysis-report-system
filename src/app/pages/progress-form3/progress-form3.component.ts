@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment'
 import Swal from 'sweetalert2'
 
@@ -50,43 +50,43 @@ export class ProgressForm3Component implements OnInit {
   Report: any;
 
   // ? Form Control
-  ResultForm = new FormGroup({
-    AnalyzeDate: new FormControl(null, Validators.required),
-    ResultDate: new FormControl(null, Validators.required),
-    ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null, Validators.required),
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0),
-        item: new FormControl(null),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
+  ResultForm = new UntypedFormGroup({
+    AnalyzeDate: new UntypedFormControl(null, Validators.required),
+    ResultDate: new UntypedFormControl(null, Validators.required),
+    ReportDate: new UntypedFormControl(null, Validators.required),
+    Result: new UntypedFormControl(null, Validators.required),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0),
+        item: new UntypedFormControl(null),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
       })
     ]),
-    SourceOfDefect: new FormControl(null, Validators.required),
-    CategoryCause: new FormControl(null, Validators.required),
-    AnalysisLevel: new FormControl(null, Validators.required),
-    CanAnalysis: new FormControl(null, Validators.required),
-    RelatedToESD: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null, Validators.required),
-    Approve: new FormControl(null, Validators.required),
-    File: new FormControl(null),
-    TempCause: new FormControl(null),
-    htmlReport: new FormControl(null),
-    JudgementDefect: new FormControl(null, Validators.required),
-    Remark: new FormControl(null),
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
+    SourceOfDefect: new UntypedFormControl(null, Validators.required),
+    CategoryCause: new UntypedFormControl(null, Validators.required),
+    AnalysisLevel: new UntypedFormControl(null, Validators.required),
+    CanAnalysis: new UntypedFormControl(null, Validators.required),
+    RelatedToESD: new UntypedFormControl(null, Validators.required),
+    ReportNo: new UntypedFormControl(null, Validators.required),
+    Approve: new UntypedFormControl(null, Validators.required),
+    File: new UntypedFormControl(null),
+    TempCause: new UntypedFormControl(null),
+    htmlReport: new UntypedFormControl(null),
+    JudgementDefect: new UntypedFormControl(null, Validators.required),
+    Remark: new UntypedFormControl(null),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
 
   })
 
-  TreatmentOfNg = new FormControl(null, Validators.required);
+  TreatmentOfNg = new UntypedFormControl(null, Validators.required);
   // GenItemName = new FormControl(null, Validators.required);
 
-  NoteReject = new FormControl(null);
-  NoteApprove = new FormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  NoteApprove = new UntypedFormControl(null);
 
 
   // ? Variable Normal
@@ -148,9 +148,9 @@ export class ProgressForm3Component implements OnInit {
   tempFileName: any = [];
   tempFileTotal: number = 0;
   tempFileENGTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
-  SelectMDL = new FormControl(null, Validators.required);
+  SelectMDL = new UntypedFormControl(null, Validators.required);
   // pathFile = [];
 
 
@@ -230,14 +230,14 @@ export class ProgressForm3Component implements OnInit {
             console.log(`⚡ ~ :232 ~ ProgressForm3Component ~ result.result2`, result.result2);
 
             if (result.result2 && result.result2.length > 0 && result.result2[0].item) {
-              const result2Array = this.Result2 as FormArray;
+              const result2Array = this.Result2 as UntypedFormArray;
               result2Array.clear();
               result.result2.forEach((res: any) => {
-                const formGroup = new FormGroup({
-                  item: new FormControl(res.item || ''),
-                  qty: new FormControl(res.qty || ''),
-                  tempItem: new FormControl(res.item || ''),
-                  dropdown: new FormControl(res.dropdown || ''),
+                const formGroup = new UntypedFormGroup({
+                  item: new UntypedFormControl(res.item || ''),
+                  qty: new UntypedFormControl(res.qty || ''),
+                  tempItem: new UntypedFormControl(res.item || ''),
+                  dropdown: new UntypedFormControl(res.dropdown || ''),
                 });
                 result2Array.push(formGroup);
               });
@@ -2835,20 +2835,20 @@ export class ProgressForm3Component implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     const isFM = this.isFM();
 
-    const newItem = new FormGroup({
-      item: new FormControl('', isFM ? Validators.required : null),
-      qty: new FormControl(0, isFM ? Validators.required : null),
-      tempItem: new FormControl(''),
-      dropdown: new FormControl(false)
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', isFM ? Validators.required : null),
+      qty: new UntypedFormControl(0, isFM ? Validators.required : null),
+      tempItem: new UntypedFormControl(''),
+      dropdown: new UntypedFormControl(false)
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }
@@ -2887,17 +2887,17 @@ export class ProgressForm3Component implements OnInit {
 
   // อัปเดต validators สำหรับ Result2 ตามสถานะ FM
   updateResult2Validators() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     const isFM = this.isFM();
 
     if (isFM) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
         });
         result2Array.push(newItem);
       } else {
@@ -2968,7 +2968,7 @@ export class ProgressForm3Component implements OnInit {
     });
 
     // ตรวจสอบ Result2 FormArray (สำหรับงาน FM)
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array) {
       console.log('\n--- Result2 FormArray Status ---');
       console.log('Result2 Array valid:', result2Array.valid);

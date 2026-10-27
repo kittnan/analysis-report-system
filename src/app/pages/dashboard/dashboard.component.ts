@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 
 import Chart from 'chart.js/auto';
 import { HttpService } from 'app/service/http.service';
@@ -25,9 +25,9 @@ export class DashboardComponent implements OnInit {
   LoadingPage: boolean;
 
   // ? Form control
-  DateStart = new FormControl(null, Validators.required);
-  DateEnd = new FormControl(null, Validators.required);
-  Month = new FormControl(null, Validators.required)
+  DateStart = new UntypedFormControl(null, Validators.required);
+  DateEnd = new UntypedFormControl(null, Validators.required);
+  Month = new UntypedFormControl(null, Validators.required)
 
   Year: any;
 

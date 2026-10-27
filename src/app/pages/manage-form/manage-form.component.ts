@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
 import Swal from 'sweetalert2';
@@ -29,7 +29,7 @@ export class ManageFormComponent implements OnInit {
 
 
   // ? form control
-  SelectStatus = new FormControl('inProcess');
+  SelectStatus = new UntypedFormControl('inProcess');
 
   // ?
   UserLevel = [];
@@ -37,15 +37,15 @@ export class ManageFormComponent implements OnInit {
 
   // ? data table
   DataFilter = [];
-  CountNum = new FormControl(10, Validators.required)
+  CountNum = new UntypedFormControl(10, Validators.required)
   PageNow = 1;
   CountPage: any;
   CountList = [10, 20, 50, 100]
   Count: Number = 1
-  Sort = new FormControl(-1)
+  Sort = new UntypedFormControl(-1)
   //TODO boat san
-  remain = new FormControl('null')
-  status = new FormControl('null')
+  remain = new UntypedFormControl('null')
+  status = new UntypedFormControl('null')
 
   // ? search
   KeySearch: any

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'environments/environment.prod'
 import Swal from 'sweetalert2'
@@ -33,40 +33,40 @@ export class RejectForm1Component implements OnInit {
   formId: null | string = null
 
   // ? Form Conttrol
-  RequestForm = new FormGroup({
-    RequestItem: new FormControl(null, Validators.required),
-    RequestNumber: new FormControl("-", Validators.required),
-    IssueDate: new FormControl(null, Validators.required),
-    ReplyDate: new FormControl(null, Validators.required),
-    RequestSection: new FormControl("-", Validators.required),
-    ModelNumber: new FormControl(null, Validators.required),
-    Size: new FormControl(null, Validators.required),
-    Customer: new FormControl(null, Validators.required),
-    LotNumber: new FormControl(null,),
-    DefectName: new FormControl(null, Validators.required),
-    DefectCode: new FormControl("null", Validators.required),
-    InputQ: new FormControl(null, [Validators.required, Validators.min(1)]),
-    NGQ: new FormControl(null, Validators.required),
-    NGR: new FormControl(null, Validators.required),
-    SendNG: new FormControl(null, Validators.required),
-    ProductPhase: new FormControl(null, Validators.required),
-    DefectCategory: new FormControl(null, Validators.required),
-    ClaimNo: new FormControl(null),
-    OccurA: new FormControl(null, Validators.required),
-    OccurB: new FormControl(null, Validators.required),
-    Abnormal: new FormControl(null, Validators.required),
-    Issuer: new FormControl(null, Validators.required),
-    Aprrove: new FormControl(null, Validators.required),
-    TempDefectName: new FormControl(null),
-    TempModelNumber: new FormControl(null),
-    TBN: new FormControl(null, Validators.required),
-    TBNNumber: new FormControl(null),
-    Treatment: new FormControl(null, Validators.required),
-    NeedReport: new FormControl(null, Validators.required),
+  RequestForm = new UntypedFormGroup({
+    RequestItem: new UntypedFormControl(null, Validators.required),
+    RequestNumber: new UntypedFormControl("-", Validators.required),
+    IssueDate: new UntypedFormControl(null, Validators.required),
+    ReplyDate: new UntypedFormControl(null, Validators.required),
+    RequestSection: new UntypedFormControl("-", Validators.required),
+    ModelNumber: new UntypedFormControl(null, Validators.required),
+    Size: new UntypedFormControl(null, Validators.required),
+    Customer: new UntypedFormControl(null, Validators.required),
+    LotNumber: new UntypedFormControl(null,),
+    DefectName: new UntypedFormControl(null, Validators.required),
+    DefectCode: new UntypedFormControl("null", Validators.required),
+    InputQ: new UntypedFormControl(null, [Validators.required, Validators.min(1)]),
+    NGQ: new UntypedFormControl(null, Validators.required),
+    NGR: new UntypedFormControl(null, Validators.required),
+    SendNG: new UntypedFormControl(null, Validators.required),
+    ProductPhase: new UntypedFormControl(null, Validators.required),
+    DefectCategory: new UntypedFormControl(null, Validators.required),
+    ClaimNo: new UntypedFormControl(null),
+    OccurA: new UntypedFormControl(null, Validators.required),
+    OccurB: new UntypedFormControl(null, Validators.required),
+    Abnormal: new UntypedFormControl(null, Validators.required),
+    Issuer: new UntypedFormControl(null, Validators.required),
+    Aprrove: new UntypedFormControl(null, Validators.required),
+    TempDefectName: new UntypedFormControl(null),
+    TempModelNumber: new UntypedFormControl(null),
+    TBN: new UntypedFormControl(null, Validators.required),
+    TBNNumber: new UntypedFormControl(null),
+    Treatment: new UntypedFormControl(null, Validators.required),
+    NeedReport: new UntypedFormControl(null, Validators.required),
   })
 
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
 
 
 
@@ -99,7 +99,7 @@ export class RejectForm1Component implements OnInit {
   // FileListname = [];
   // PathListName = [];
   FileList: any = [];
-  fileInput = new FormControl(null)
+  fileInput = new UntypedFormControl(null)
 
   // ? Fix Id
   IdModelNumber = environment.IdModelNumber;

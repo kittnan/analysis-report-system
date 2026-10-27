@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment.prod'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
@@ -50,45 +50,45 @@ export class RejectForm3Component implements OnInit {
   Report: any;
 
   // ? Form Control
-  ResultForm = new FormGroup({
-    AnalyzeDate: new FormControl(null, Validators.required),
-    ResultDate: new FormControl(null, Validators.required),
-    ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null),
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0),
-        item: new FormControl(null),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
+  ResultForm = new UntypedFormGroup({
+    AnalyzeDate: new UntypedFormControl(null, Validators.required),
+    ResultDate: new UntypedFormControl(null, Validators.required),
+    ReportDate: new UntypedFormControl(null, Validators.required),
+    Result: new UntypedFormControl(null),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0),
+        item: new UntypedFormControl(null),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
       })
     ]),
-    SourceOfDefect: new FormControl(null, Validators.required),
-    CategoryCause: new FormControl(null, Validators.required),
-    AnalysisLevel: new FormControl(null, Validators.required),
-    CanAnalysis: new FormControl(null, Validators.required),
-    relatedToESD: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null),
-    Approve: new FormControl(null, Validators.required),
-    TempCause: new FormControl(null),
-    JudgementDefect: new FormControl('', Validators.required),
-    Remark: new FormControl(''),
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
+    SourceOfDefect: new UntypedFormControl(null, Validators.required),
+    CategoryCause: new UntypedFormControl(null, Validators.required),
+    AnalysisLevel: new UntypedFormControl(null, Validators.required),
+    CanAnalysis: new UntypedFormControl(null, Validators.required),
+    relatedToESD: new UntypedFormControl(null, Validators.required),
+    ReportNo: new UntypedFormControl(null),
+    Approve: new UntypedFormControl(null, Validators.required),
+    TempCause: new UntypedFormControl(null),
+    JudgementDefect: new UntypedFormControl('', Validators.required),
+    Remark: new UntypedFormControl(''),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
   })
 
-  IssueDate = new FormControl(null);
-  ReplyDate = new FormControl(null);
+  IssueDate = new UntypedFormControl(null);
+  ReplyDate = new UntypedFormControl(null);
 
 
-  NoteReject = new FormControl(null);
-  NoteApprove = new FormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  NoteApprove = new UntypedFormControl(null);
 
 
-  htmlFile = new FormControl(null);
-  TreatmentOfNg = new FormControl(null);
+  htmlFile = new UntypedFormControl(null);
+  TreatmentOfNg = new UntypedFormControl(null);
   TreatmentList: any;
   // GenItemName = new FormControl(null, Validators.required);
 
@@ -138,7 +138,7 @@ export class RejectForm3Component implements OnInit {
   FileList: any
   FileReportName: any = "No file..";
   FileReportPath: any;
-  SelectMDL = new FormControl(null, Validators.required)
+  SelectMDL = new UntypedFormControl(null, Validators.required)
 
 
   // ?upload file
@@ -146,7 +146,7 @@ export class RejectForm3Component implements OnInit {
   tempFile: any = [];
   tempFileName: any = [];
   tempFileTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
 
   // ? comment
@@ -269,14 +269,14 @@ export class RejectForm3Component implements OnInit {
       if (data2.length > 0) {
         let result = data2[0];
         if (result.result2) {
-          const result2Array = this.Result2 as FormArray;
+          const result2Array = this.Result2 as UntypedFormArray;
           result2Array.clear();
           result.result2.forEach((res: any) => {
-            const formGroup = new FormGroup({
-              item: new FormControl(res.item || '', Validators.required),
-              qty: new FormControl(res.qty || '', Validators.required),
-              tempItem: new FormControl(res.item || ''),
-              dropdown: new FormControl(res.dropdown || ''),
+            const formGroup = new UntypedFormGroup({
+              item: new UntypedFormControl(res.item || '', Validators.required),
+              qty: new UntypedFormControl(res.qty || '', Validators.required),
+              tempItem: new UntypedFormControl(res.item || ''),
+              dropdown: new UntypedFormControl(res.dropdown || ''),
             });
             result2Array.push(formGroup);
           });
@@ -926,7 +926,7 @@ export class RejectForm3Component implements OnInit {
   get ResultDate() { return this.ResultForm.get('ResultDate') }
   get ReportDate() { return this.ResultForm.get('ReportDate') }
   get Result() { return this.ResultForm.get('Result') }
-  get Result2() { return this.ResultForm.get('Result2') as FormArray }
+  get Result2() { return this.ResultForm.get('Result2') as UntypedFormArray }
   get SourceOfDefect() { return this.ResultForm.get('SourceOfDefect') }
   get CategoryCause() { return this.ResultForm.get('CategoryCause') }
   get AnalysisLevel() { return this.ResultForm.get('AnalysisLevel') }
@@ -1049,22 +1049,22 @@ export class RejectForm3Component implements OnInit {
 
   // Update Result2 FormArray validators based on FM status
   updateResult2Validators() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
 
     if (this.isFM()) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
         });
         result2Array.push(newItem);
       } else {
         // Update existing controls to be required
         result2Array.controls.forEach(control => {
-          const group = control as FormGroup;
+          const group = control as UntypedFormGroup;
           const qtyControl = group.get('qty');
           const itemControl = group.get('item');
           qtyControl?.setValidators([Validators.required]);
@@ -1104,10 +1104,10 @@ export class RejectForm3Component implements OnInit {
     console.log('ResultForm valid:', this.ResultForm.valid);
     console.log('ResultForm errors:', this.getFormValidationErrors(this.ResultForm));
     console.log('Result2 FormArray valid:', this.ResultForm.get('Result2')?.valid);
-    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.ResultForm.get('Result2') as FormArray));
+    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.ResultForm.get('Result2') as UntypedFormArray));
   }
 
-  getFormValidationErrors(form: FormGroup) {
+  getFormValidationErrors(form: UntypedFormGroup) {
     const errors: any = {};
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
@@ -1118,9 +1118,9 @@ export class RejectForm3Component implements OnInit {
     return errors;
   }
 
-  getFormArrayValidationErrors(formArray: FormArray) {
+  getFormArrayValidationErrors(formArray: UntypedFormArray) {
     return formArray.controls.map((control, index) => {
-      if (control instanceof FormGroup) {
+      if (control instanceof UntypedFormGroup) {
         return {
           index,
           errors: this.getFormValidationErrors(control)
@@ -1131,16 +1131,16 @@ export class RejectForm3Component implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
-    const newItem = new FormGroup({
-      item: new FormControl('', Validators.required),
-      qty: new FormControl(0, Validators.required)
+    const result2Array = this.Result2 as UntypedFormArray;
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', Validators.required),
+      qty: new UntypedFormControl(0, Validators.required)
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }
