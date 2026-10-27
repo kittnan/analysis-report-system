@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { OutsourceViewComponent } from './outsource-view.component';
 
@@ -7,8 +8,10 @@ describe('OutsourceViewComponent', () => {
   let fixture: ComponentFixture<OutsourceViewComponent>;
 
   beforeEach(async () => {
+    sessionStorage.setItem('dataAll', JSON.stringify({ registerNo: '', urlFile: [] }));
     await TestBed.configureTestingModule({
-      declarations: [ OutsourceViewComponent ]
+      declarations: [ OutsourceViewComponent ],
+      imports: [ HttpClientTestingModule ]
     })
     .compileComponents();
   });
@@ -17,6 +20,10 @@ describe('OutsourceViewComponent', () => {
     fixture = TestBed.createComponent(OutsourceViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    sessionStorage.removeItem('dataAll');
   });
 
   it('should create', () => {

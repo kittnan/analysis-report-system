@@ -107,7 +107,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/sass/paper-dashboard.scss",
+              "src/assets/scss/paper-dashboard.scss",
               "node_modules/roboto-fontface/css/roboto/roboto-fontface.css"
             ],
             "assets": [
@@ -159,7 +159,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-package",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/my-lib/tsconfig.lib.json",
             "project": "projects/my-lib/ng-package.json"

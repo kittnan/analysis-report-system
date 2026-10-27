@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { ProgressForm3Component } from './progress-form3.component';
 
 describe('ProgressForm3Component', () => {
@@ -8,7 +11,8 @@ describe('ProgressForm3Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProgressForm3Component ]
+      declarations: [ ProgressForm3Component, FileSizePipe ],
+      imports: [ HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ]
     })
     .compileComponents();
   });

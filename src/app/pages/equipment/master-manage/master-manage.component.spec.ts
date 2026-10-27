@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
+import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { MasterManageComponent } from './master-manage.component';
 
 describe('MasterManageComponent', () => {
@@ -8,7 +10,8 @@ describe('MasterManageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MasterManageComponent ]
+      declarations: [ MasterManageComponent, FileSizePipe ],
+      imports: [ HttpClientTestingModule ]
     })
     .compileComponents();
   });

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ElectricalOtpComponent } from './electrical-otp.component';
 
@@ -8,7 +9,8 @@ describe('ElectricalOtpComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ElectricalOtpComponent ]
+      declarations: [ ElectricalOtpComponent ],
+      imports: [ HttpClientTestingModule ]
     })
     .compileComponents();
   });

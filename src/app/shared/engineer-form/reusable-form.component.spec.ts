@@ -55,7 +55,7 @@ describe('ReusableFormComponent', () => {
       enableOperatorAnalysis: false
     };
     
-    component.applyFormConfiguration();
+    component['applyFormConfiguration']();
     
     expect(component.ResultForm.get('JudgementDefect')?.valid).toBe(true);
     expect(component.ResultForm.get('OperatorName')?.valid).toBe(true);

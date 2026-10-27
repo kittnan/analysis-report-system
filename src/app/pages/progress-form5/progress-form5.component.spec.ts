@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ProgressForm5Component } from './progress-form5.component';
 
@@ -8,7 +10,8 @@ describe('ProgressForm5Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProgressForm5Component ]
+      declarations: [ ProgressForm5Component ],
+      imports: [ HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ]
     })
     .compileComponents();
   });
@@ -16,6 +19,7 @@ describe('ProgressForm5Component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProgressForm5Component);
     component = fixture.componentInstance;
+    component.result = {};
     fixture.detectChanges();
   });
 

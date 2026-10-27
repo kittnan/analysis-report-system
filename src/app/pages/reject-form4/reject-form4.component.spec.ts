@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { RejectForm4Component } from './reject-form4.component';
 
@@ -8,7 +10,8 @@ describe('RejectForm4Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RejectForm4Component ]
+      declarations: [ RejectForm4Component ],
+      imports: [ HttpClientTestingModule, RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ]
     })
     .compileComponents();
   });
@@ -16,6 +19,8 @@ describe('RejectForm4Component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RejectForm4Component);
     component = fixture.componentInstance;
+    component.form = { fileList: [] };
+    component.result = {};
     fixture.detectChanges();
   });
 

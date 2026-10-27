@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
+import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { AddEquipmentComponent } from './add-equipment.component';
 
 describe('AddEquipmentComponent', () => {
@@ -8,7 +10,8 @@ describe('AddEquipmentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddEquipmentComponent ]
+      declarations: [ AddEquipmentComponent, FileSizePipe ],
+      imports: [ HttpClientTestingModule ]
     })
     .compileComponents();
   });
