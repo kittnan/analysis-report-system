@@ -71,7 +71,7 @@ import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    AgGridModule.withComponents([])
+    AgGridModule
 
   ],
   declarations: [

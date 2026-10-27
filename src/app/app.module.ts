@@ -68,8 +68,7 @@ import { MasterEstimateResultProcessComponent } from './pages/master-estimate-re
   imports: [
     BrowserAnimationsModule,
     RouterModule.forRoot(AppRoutes, {
-    useHash: true,
-    relativeLinkResolution: 'legacy'
+    useHash: true
 }),
     SidebarModule,
     NavbarModule,
