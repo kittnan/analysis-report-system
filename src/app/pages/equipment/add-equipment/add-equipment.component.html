@@ -133,7 +133,7 @@
                                     {{item2.name}}
                                 </td>
                                 <td *ngIf="item2.files.length>0">
-                                    <a [download]="item2.files[0].name" target="_blank" [href]="item2.files[0].url">
+                                    <a [download]="item2.files[0].filename" target="_blank" [href]="item2.files[0].path">
                                         Quotation pdf file
                                     </a>
                                 </td>

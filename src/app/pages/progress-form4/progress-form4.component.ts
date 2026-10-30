@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'environments/environment';
 import { HttpParams } from '@angular/common/http';
@@ -15,6 +16,7 @@ import { HttpParams } from '@angular/common/http';
   standalone: false
 })
 export class ProgressForm4Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
   // ? params
   formId: any = null
 
@@ -113,6 +115,7 @@ export class ProgressForm4Component implements OnInit {
     private modalService: NgbModal,
     private route: Router,
     private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
     // private api: RequestServiceService
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
@@ -213,8 +216,7 @@ export class ProgressForm4Component implements OnInit {
         this.Result.finishReportDate = str3[0];
         this.tempFile = this.Result.files
 
-        // this.FileReportName = (this.result.file.split('/'))[6]
-        this.FileReportName = this.Result.file ? (this.Result.file.split('/'))[5] : []
+        this.FileReportName = this.fileUploadService.getFileName(this.Result.file)
 
         if (this.Result.requestItemName.includes("_FM")) {
           const result2Array = this.Result2 as UntypedFormArray;
@@ -560,11 +562,27 @@ export class ProgressForm4Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.htmlFile.reset();
-              this.alertSuccess();
-            }
+          const formData = new FormData();
+          formData.append('path', `${environment.namespace}/ENG/Report/`);
+          formData.append('file', file, file.name);
+
+          this.fileUploadService.upload(formData).toPromise().then((response: any) => {
+            const uploaded = Array.isArray(response) ? response[0] : response;
+            this.api.UpdateResult(this.Result._id, { file: this.fileUploadService.toReportFile(uploaded, file) }).subscribe((data: any) => {
+              if (data) {
+                this.htmlFile.reset();
+                this.alertSuccess();
+                this.GetResult();
+              }
+            })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Upload failed.',
+            })
           })
 
         } else {

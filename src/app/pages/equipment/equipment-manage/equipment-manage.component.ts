@@ -3,6 +3,10 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MasterService } from '../master-manage/master.service';
 import Swal from 'sweetalert2';
+import { FileUploadService, StoredFile } from 'app/service/file-upload.service';
+import { environment } from 'environments/environment';
+
+const EQUIPMENT_IMG_FOLDER = `${environment.namespace}/equipment/img/`;
 import { Router } from '@angular/router';
 
 @Component({
@@ -42,7 +46,8 @@ export class EquipmentManageComponent implements OnInit {
   constructor(
     private middleAPI: MasterService,
     private modal: NgbModal,
-    private route: Router
+    private route: Router,
+    private fileUploadService: FileUploadService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -161,8 +166,8 @@ export class EquipmentManageComponent implements OnInit {
     var output: any = document.getElementById('output')
     let boxOutput: any = document.getElementById('box-output')
     if (equipment.urlImage) {
-      output.src = equipment.urlImage.url
-      this.FileUpload = equipment.urlImage
+      output.src = equipment.urlImage.path
+      this.FileUpload = undefined
       btnOutput.hidden = true
       output.hidden = false
       boxOutput.hidden = false
@@ -285,7 +290,7 @@ export class EquipmentManageComponent implements OnInit {
       const equipment: any = await this.middleAPI.getEquipment()
       await this.checkDuplicateEquipmentName(equipment, this.EquipmentForm.value)
 
-      if (this.FileUpload.lastModified) {
+      if (this.FileUpload?.lastModified) {
         const resultUpload: any = await this.uploadImg()
         this.EquipmentForm.patchValue({
           urlImage: resultUpload
@@ -321,21 +326,17 @@ export class EquipmentManageComponent implements OnInit {
 
   // ? upload img
   uploadImg() {
-    return new Promise(async resolve => {
-      let formData: FormData = new FormData()
+    return new Promise(async (resolve, reject) => {
+      try {
       const oldFileName: any = this.FileUpload.name.split('.')
       const type = '.' + oldFileName[oldFileName.length - 1]
       const fileName = this.EquipmentForm.controls['analysisEquipmentName'].value + type
-      formData.append('File', this.FileUpload, fileName)
-      // console.log('form data before upload', formData);
-      const result: any = await this.middleAPI.uploadImgEquipment(formData)
-      // console.log('result upload img: ', result);
-      const urlImage = {
-        size: this.FileUpload.size,
-        url: result + '?' + this.FileUpload.lastModified,
-        name: fileName
-      }
+      const uploaded = await this.fileUploadService.uploadOne(EQUIPMENT_IMG_FOLDER, this.FileUpload, fileName)
+      const urlImage: StoredFile = this.fileUploadService.toStoredFile(uploaded, this.FileUpload, fileName)
       resolve(urlImage)
+      } catch (error) {
+        reject(error)
+      }
     })
   }
   // ? upload img

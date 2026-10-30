@@ -17,6 +17,7 @@ import { environment } from 'environments/environment';
   standalone: false
 })
 export class ViewFormComponent implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   form: any = []
   result: any = []

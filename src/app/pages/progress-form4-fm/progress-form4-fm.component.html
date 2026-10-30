@@ -243,10 +243,10 @@
                             </tr>
                             <tr *ngFor="let item of FileList; let i=index">
                                 <td>
-                                    {{item.name}}
+                                    {{item.filename}}
                                 </td>
                                 <td class="text-center">
-                                    <a target="_blank" [download]="item.name" [href]="item.path"
+                                    <a target="_blank" [download]="item.filename" [href]="item.path"
                                         class="btn btn-sm btn-outline-primary mr-0" style="cursor: pointer;"><i
                                             class="bi bi-download" style="font-size: 1rem;"></i></a>
                                 </td>
@@ -1106,9 +1106,9 @@
 
                         <tbody class="subtext-color" *ngIf="toggleAttFileEng">
                             <tr *ngFor="let item of tempEngFile; let i=index">
-                                <td>{{item.name}} ({{item.size|fileSize}})</td>
+                                <td>{{item.filename}} ({{item.size|fileSize}})</td>
                                 <td class="text-center">
-                                    <a target="_blank" [download]="item.name" [href]="item.path"
+                                    <a target="_blank" [download]="item.filename" [href]="item.path"
                                         class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i
                                             class="bi bi-download" style="font-size: 1rem;"></i></a>
 
@@ -1215,13 +1215,13 @@
                                         <input type="file" class="form-control" #fileUploadReport
                                             (change)="uploadReportFileNow($event)" [formControl]="htmlReport"
                                             style="display: none;">
-                                        <a target="_blank" [download]="tempFileReportName" [href]="File.value"
+                                        <a target="_blank" [download]="tempFileReportName" [href]="File.value?.path"
                                             class="btn btn-primary mr-0" style="cursor: pointer;">
                                             Download
                                             <i class="bi bi-download" style="font-size: 1rem;"></i>
                                         </a>
                                         <a target="_blank"
-                                            [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + File.value"
+                                            [href]="onlyOfficeUrl + File.value?.path"
                                             class="btn btn-primary mr-0" style="cursor: pointer;">
                                             View
                                             <i class="bi bi-eye" style="font-size: 1rem;"></i>
@@ -1237,7 +1237,7 @@
                                         style="display: none;">
                                 </th>
                                 <th width="15%">
-                                    <a target="_blank" [download]="tempFileReportName" [href]="File.value"
+                                    <a target="_blank" [download]="tempFileReportName" [href]="File.value?.path"
                                         class="btn btn-primary mr-0" style="cursor: pointer;">
                                         Download
                                         <i class="bi bi-download" style="font-size: 1rem;"></i>

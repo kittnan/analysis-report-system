@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../environments/environment.prod'
 import Swal from 'sweetalert2'
@@ -20,7 +21,7 @@ import { Router } from '@angular/router';
 export class RequestFormComponent implements OnInit {
 
   // ?
-  LoadingPage: boolean;
+  LoadingPage: boolean = false
 
   RequestForm = new UntypedFormGroup({
     RequestItem: new UntypedFormControl(null, Validators.required),
@@ -62,7 +63,9 @@ export class RequestFormComponent implements OnInit {
   constructor(
     private md: NgbModal,
     private api: HttpService,
-    private route: Router) { }
+    private route: Router,
+    private fileUploadService: FileUploadService
+  ) { }
 
   // ? Variable API
   Model: any;
@@ -164,7 +167,7 @@ export class RequestFormComponent implements OnInit {
       ) {
         this.NeedReport.setValue('Need Report')
         this.NeedReport.disable()
-      }else{
+      } else {
         this.NeedReport.enable()
       }
     })
@@ -503,37 +506,55 @@ export class RequestFormComponent implements OnInit {
   }
 
   async uploadFile() {
-    let count = 0;
     if (this.FileList.length > 0) {
-      this.FileList.forEach(file => {
-        let name = `${this.RequestNumber.value}!${file.name}`
-        this.api.UploadFile(file, name).then(async (res) => {
-          if (res) {
-            count += 1;
-            const b = {
-              path: res,
-              name: name,
-              size: file.size
-            }
-            this.fileToUp.push(b);
-            // console.log('1');
+      for (const file of this.FileList) {
+        const name = `${this.RequestNumber.value}!${file.name}`;
+        const path = `${environment.namespace}/Requester/`
+        const formData = new FormData();
+        formData.append('path', path);
+        formData.append('file', file, name);
 
-            if (count == this.FileList.length) {
-              // console.log("file finish");
-              this.updateForm();
-            }
-
-
-          }
-        })
-      });
-
-    } else {
-      this.updateForm();
+        const response: any = await this.fileUploadService.upload(formData).toPromise();
+        const uploaded = Array.isArray(response) ? response[0] : response;
+        if (uploaded) {
+          this.fileToUp.push(this.fileUploadService.toStoredFile(uploaded, file, name));
+        }
+      }
     }
-
-
+    this.updateForm();
   }
+  // async uploadFile() {
+  //   let count = 0;
+  //   if (this.FileList.length > 0) {
+  //     this.FileList.forEach(file => {
+  //       let name = `${this.RequestNumber.value}!${file.name}`
+  //       this.api.UploadFile(file, name).then(async (res) => {
+  //         if (res) {
+  //           count += 1;
+  //           const b = {
+  //             path: res,
+  //             name: name,
+  //             size: file.size
+  //           }
+  //           this.fileToUp.push(b);
+  //           // console.log('1');
+
+  //           if (count == this.FileList.length) {
+  //             // console.log("file finish");
+  //             this.updateForm();
+  //           }
+
+
+  //         }
+  //       })
+  //     });
+
+  //   } else {
+  //     this.updateForm();
+  //   }
+
+
+  // }
 
   openModalSubmit(content) {
     this.md.open(content, { size: 'lg' });
@@ -547,7 +568,7 @@ export class RequestFormComponent implements OnInit {
     // console.log(this.fileToUp);
 
     // console.log(this.RequestForm.value);
-    
+
 
 
     if (this.RequestNumber.valid) {

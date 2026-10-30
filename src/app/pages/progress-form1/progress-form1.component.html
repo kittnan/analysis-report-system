@@ -565,12 +565,12 @@
         <tbody class="subtext-color">
           <tr *ngFor="let item of FileList; let i=index">
             <td>
-              {{item.name}} ( {{item.size |fileSize}} )
+              {{item.filename}} ( {{item.size |fileSize}} )
             </td>
             <td>
               <button (click)="OnClickDeleteFile(item)" class="btn btn-sm btn-outline-danger mr-2"
                 style="cursor: pointer;"><i class="bi bi-trash" style="font-size: 1rem;"></i></button>
-              <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-outline-success mr-0"
+              <a target="_blank" [download]="item.filename" [href]="item.path" class="btn btn-sm btn-outline-success mr-0"
                 style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
             </td>
           </tr>

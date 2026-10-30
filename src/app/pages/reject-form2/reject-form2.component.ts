@@ -238,7 +238,7 @@ export class RejectForm2Component implements OnInit {
             replyDate: this.ReplyDate.value,
             status: 3.1,
             noteNow: this.NoteReject.value,
-            noteApprove2: this.NoteReject.value,
+            noteReject2: this.NoteReject.value,
             userApprove: this.form.requesterId,
             userApproveName: sum,
           }

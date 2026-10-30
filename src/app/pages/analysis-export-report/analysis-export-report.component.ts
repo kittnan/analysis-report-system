@@ -7,7 +7,7 @@ import { environment } from 'environments/environment';
 import { AnalysisDataListComponent } from '../analysis-data-list/analysis-data-list.component';
 
 // ? origin ที่ result.file ถูกบันทึกไว้ (ดู routes/main_fn/file.js -> pathEngReport)
-const FILE_SERVER_ORIGIN = 'http://10.200.90.152:4501'
+const FILE_SERVER_ORIGIN = environment.FileServerOrigin
 // ? จำนวนไฟล์ที่ download พร้อมกัน
 const DOWNLOAD_CONCURRENCY = 5
 
@@ -86,7 +86,7 @@ export class AnalysisExportReportComponent extends AnalysisDataListComponent imp
     {
       headerName: 'File Name',
       colId: 'fileName',
-      valueGetter: (p: any) => p.data?.file ? this.getFileName(p.data.file) : '',
+      valueGetter: (p: any) => p.data?.file ? this.getFileName(p.data.file?.path) : '',
     },
   ];
 
@@ -210,7 +210,7 @@ export class AnalysisExportReportComponent extends AnalysisDataListComponent imp
   private buildExportItems(rows: any[]): ExportItem[] {
     const usedNames = new Set<string>()
     return rows.map((row: any) => {
-      const original = this.getFileName(row.file) || `${row.requestNumber}`
+      const original = this.getFileName(row.file?.path) || `${row.requestNumber}`
       let name = original
       if (usedNames.has(name.toLowerCase())) {
         name = `${row.requestNumber}_${original}`
@@ -223,7 +223,7 @@ export class AnalysisExportReportComponent extends AnalysisDataListComponent imp
         name = `${base}(${n++})${ext}`
       }
       usedNames.add(name.toLowerCase())
-      return { requestNumber: row.requestNumber, url: this.toDownloadUrl(row.file), fileName: name }
+      return { requestNumber: row.requestNumber, url: this.toDownloadUrl(row.file?.path), fileName: name }
     })
   }
 

@@ -3,15 +3,17 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { Router } from '@angular/router';
-@Component({
 import { environment } from 'environments/environment';
+@Component({
   selector: 'app-reject-form4',
   templateUrl: './reject-form4.component.html',
   styleUrls: ['./reject-form4.component.css', '../pagesStyle.css'],
   standalone: false
 })
 export class RejectForm4Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
 
   // ? API
@@ -52,7 +54,8 @@ export class RejectForm4Component implements OnInit {
     private modalService: NgbModal,
     // private api: ProgressForm1Service,
     private api: HttpService,
-    private route: Router
+    private route: Router,
+    private fileUploadService: FileUploadService
   ) { }
 
 
@@ -124,8 +127,7 @@ export class RejectForm4Component implements OnInit {
         this.result.finishReportDate = str3[0];
 
         this.tempFile = this.result.files
-        this.FileReportName = (this.result.file.split('/'))[5]
-        // this.FileReportName = (this.result.file.split('/'))[6]
+        this.FileReportName = this.fileUploadService.getFileName(this.result.file)
 
       } else this.result = null;
     })
@@ -297,11 +299,19 @@ export class RejectForm4Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.htmlFile.reset();
-              this.alertSuccess();
-            }
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
+            this.api.UpdateResult(this.result._id, { file: this.fileUploadService.toReportFile(uploaded, file) }).subscribe((data: any) => {
+              if (data) {
+                this.result.file = this.fileUploadService.toReportFile(uploaded, file)
+                this.FileReportName = this.fileUploadService.getFileName(uploaded.path)
+                this.htmlFile.reset();
+                this.alertSuccess();
+              }
+            })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {

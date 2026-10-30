@@ -24,7 +24,7 @@ export class PreviewEquipmentComponent implements OnInit {
     this.activeModal.close(sendData);
   }
   downloadFileName(province: any, indexList: number) {
-    return `${province.master}-${province.lists[indexList].name}.${province.lists[indexList].files[0].name.split('.')[1]}`
+    return `${province.master}-${province.lists[indexList].name}.${province.lists[indexList].files[0].filename.split('.').pop()}`
   }
 
 }

@@ -3,6 +3,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EquipmentService } from 'app/service/equipment.service';
 import Swal from 'sweetalert2'
 import { MasterService } from './master.service';
+import { FileUploadService, StoredFile } from 'app/service/file-upload.service';
+import { environment } from 'environments/environment';
+
+const EQUIPMENT_QUOTATION_FOLDER = `${environment.namespace}/equipment/quotation/`;
 
 export interface EquipmentMasterForm {
   master: string,
@@ -47,7 +51,8 @@ export class MasterManageComponent implements OnInit {
   constructor(
     private md: NgbModal,
     private api: EquipmentService,
-    private middleAPI: MasterService
+    private middleAPI: MasterService,
+    private fileUploadService: FileUploadService
   ) {
   }
 
@@ -448,7 +453,7 @@ export class MasterManageComponent implements OnInit {
     let file: any = []
     if (this.newFile) {
       file = [{
-        name: new Date().getTime() + '-' + this.newFile.name || '',
+        filename: new Date().getTime() + '-' + this.newFile.name || '',
         size: this.newFile.size || '',
         src: this.newFile
       }]
@@ -498,13 +503,14 @@ export class MasterManageComponent implements OnInit {
         showCancelButton: true
       }).then(async res => {
         if (res.isConfirmed) {
-          if (this.newLists[index].files.length) {
-            this.middleAPI.removeQuotation({
-              filename: this.newLists[index].files[0].name
-            }).then(res => {
-              this.newLists.splice(index, 1)
-              this.onUpdateCountry()
-            })
+          const storedFile = this.newLists[index].files[0]
+          if (storedFile && !storedFile.src) {
+            this.fileUploadService.deleteFile(storedFile).toPromise()
+              .catch(error => console.log('delete quotation failed', error))
+              .then(() => {
+                this.newLists.splice(index, 1)
+                this.onUpdateCountry()
+              })
           } else {
             this.newLists.splice(index, 1)
             this.onUpdateCountry()
@@ -561,19 +567,14 @@ export class MasterManageComponent implements OnInit {
     if (data.lists.length > 0) {
       data.lists.forEach(list => {
         if (list.files.length > 0) {
-          let formData: FormData = new FormData()
-          const oldFileName: any = list.files[0].name.split('.')
+          const src: File = list.files[0].src
+          const oldFileName: any = src.name.split('.')
           const type = '.' + oldFileName[oldFileName.length - 1]
           const filename = new Date().getTime() + type
-          formData.append('File', list.files[0].src, filename)
-          this.api.UploadQuotation(formData).toPromise().then(res => {
-            if (res) {
+          this.fileUploadService.uploadOne(EQUIPMENT_QUOTATION_FOLDER, src, filename).then(uploaded => {
+            if (uploaded) {
               c1 += 1;
-              const newFile = {
-                url: res,
-                name: filename,
-                size: list.files[0].size
-              }
+              const newFile: StoredFile = this.fileUploadService.toStoredFile(uploaded, src, filename)
               list.files[0] = newFile
               if (c1 == data.lists.length) {
                 // console.log('insert');
@@ -645,23 +646,14 @@ export class MasterManageComponent implements OnInit {
       if (body.lists.length > 0) {
         body.lists.forEach(list => {
           if (list.files.length > 0 && list.files[0].src) {
-            let formData: FormData = new FormData()
-            const oldFileName: any = list.files[0].name.split('.')
+            const src: File = list.files[0].src
+            const oldFileName: any = src.name.split('.')
             const type = '.' + oldFileName[oldFileName.length - 1]
-            let filename = new Date().getTime() + type
-            if (list.files[0].name != list.files[0].src.name) {
-              filename = oldFileName + type
-            }
-
-            formData.append('File', list.files[0].src, filename)
-            this.api.UploadQuotation(formData).toPromise().then(res => {
-              if (res) {
+            const filename = new Date().getTime() + type
+            this.fileUploadService.uploadOne(EQUIPMENT_QUOTATION_FOLDER, src, filename).then(uploaded => {
+              if (uploaded) {
                 c1 += 1;
-                const newFile = {
-                  url: res,
-                  name: filename,
-                  size: list.files[0].size
-                }
+                const newFile: StoredFile = this.fileUploadService.toStoredFile(uploaded, src, filename)
                 list.files[0] = newFile
                 if (c1 == body.lists.length) {
                   // console.log('update');
@@ -757,7 +749,7 @@ export class MasterManageComponent implements OnInit {
           if (r.value != '') {
             this.editFile = r.value
             this.newLists[index].files = [{
-              name: r.value.name,
+              filename: r.value.name,
               size: r.value.size,
               src: r.value
             }]

@@ -36,6 +36,7 @@ import { ProgressForm5FmWrapperComponent } from './pages/progress-form5-fm/progr
 import { RejectForm3FmWrapperComponent } from './pages/reject-form3-fm/reject-form3-fm-wrapper.component';
 import { MasterFmPositionComponent } from './pages/master-fm-position/master-fm-position.component';
 import { MasterMaterialComponent } from './pages/master-material/master-material.component';
+import { FileSizePipe } from './pages/progress-form3/file-size.pipe';
 import { MasterEstimateResultProcessComponent } from './pages/master-estimate-result-process/master-estimate-result-process.component';
 
 
@@ -80,6 +81,7 @@ import { MasterEstimateResultProcessComponent } from './pages/master-estimate-re
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    FileSizePipe,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],

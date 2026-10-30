@@ -362,75 +362,6 @@ export class HttpService {
 
 
 
-  async UploadFile(file: any, data: any) {
-    return new Promise((resolve, reject) => {
-      const uploadData = new FormData();
-      uploadData.append('File', file, data);
-      this.http
-        .post(this.Url + "/upload", uploadData,)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-
-  async UploadFileEng(file: any, data: any) {
-    return new Promise((resolve, reject) => {
-      const uploadData = new FormData();
-      uploadData.append('File', file, data);
-      this.http
-        .post(this.Url + "/UploadFileEng", uploadData,)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-  async RemoveFileEng(name: any) {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post(this.Url + "/RemoveFileEng", name)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-
-  async UploadFileEReport(file: any, data: any) {
-    return new Promise((resolve, reject) => {
-      const uploadData = new FormData();
-      uploadData.append('File', file, data);
-      this.http
-        .post(this.Url + "/UploadReport", uploadData,)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-
-  uploadReport2(data: any): Promise<any> {
-    return this.http.post(this.Url + "/UploadReport/", data).toPromise()
-  }
-
   // FindResultByFormId(id: any): Observable<any> {
   //   return this.http.get(this.Url + "/ResultByFormId/" + id);
   // }
@@ -442,18 +373,6 @@ export class HttpService {
   }
   DeleteFileName(Url: any): Observable<any> {
     return this.http.post(this.Url + "/FileNameDel", Url);
-  }
-
-
-
-
-  async RemoveFile(data: any): Promise<any> {
-    const res = await this.http.post(this.Url + "/Remove", data).toPromise();
-    return res;
-  }
-  async RemoveReport(data: any): Promise<any> {
-    const res = await this.http.post(this.Url + "/RemoveReport", data).toPromise();
-    return res;
   }
 
 

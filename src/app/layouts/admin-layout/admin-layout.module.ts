@@ -67,6 +67,7 @@ import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical
 @NgModule({
   imports: [
     CommonModule,
+    FileSizePipe,
     RouterModule.forChild(AdminLayoutRoutes),
     NgbModule,
     FormsModule,
@@ -77,7 +78,6 @@ import { ElectricalOtpComponent } from 'app/pages/electrical-database/electrical
   declarations: [
     DashboardComponent,
     DashboardV2Component,
-    FileSizePipe,
     RequestFormComponent,
     ProgressForm1Component,
     ProgressForm2Component,

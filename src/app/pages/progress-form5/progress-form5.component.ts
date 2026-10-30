@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
 // import { UserService } from '../user/user.service';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'environments/environment';
 import { HttpParams } from '@angular/common/http';
@@ -17,6 +18,7 @@ import { HttpParams } from '@angular/common/http';
   standalone: false
 })
 export class ProgressForm5Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   // ? Params
   formId: null | string = null
@@ -116,7 +118,8 @@ export class ProgressForm5Component implements OnInit {
     private modalService: NgbModal,
     private api: HttpService,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
     // private api: RequestServiceService,
     // private us: UserService
   ) {
@@ -249,10 +252,7 @@ export class ProgressForm5Component implements OnInit {
 
 
         this.tempFile = this.result.files
-        // this.FileReportName = (this.result.file.split('/'))[5]
-        this.FileReportName = this.result.file ? (this.result.file.split('/'))[5] : []
-
-        // this.FileReportName = (this.result.file.split('/'))[6]
+        this.FileReportName = this.fileUploadService.getFileName(this.result.file)
 
         // Update Result2 validators after loading data
         this.updateResult2Validators();
@@ -583,12 +583,19 @@ export class ProgressForm5Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.htmlFile.reset();
-              this.alertSuccess();
-
-            }
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
+            this.api.UpdateResult(this.result._id, { file: this.fileUploadService.toReportFile(uploaded, file) }).subscribe((data: any) => {
+              if (data) {
+                this.result.file = this.fileUploadService.toReportFile(uploaded, file)
+                this.FileReportName = this.fileUploadService.getFileName(uploaded.path)
+                this.htmlFile.reset();
+                this.alertSuccess();
+              }
+            })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {

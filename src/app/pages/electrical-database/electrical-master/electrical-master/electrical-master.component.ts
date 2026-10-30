@@ -5,7 +5,10 @@ import { LogarithmicScale } from 'chart.js';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { LoggerFactory } from 'ag-grid-community';
+import { FileUploadService, StoredFile } from 'app/service/file-upload.service';
 type AOA = any[][];
+
+const MASTER_FILE_FOLDER = `${environment.namespace}/mastereletrical/`;
 
 
 @Component({
@@ -26,7 +29,7 @@ export class ElectricalMasterComponent implements OnInit {
   masterList: any
   dataOldTFT: any
   dataOldResis: any
-  urls: any[] = []
+  urls: StoredFile[] = []  // [ProductSpec, Resistance, TFT] master excel files
   master: any[] = []
   fullData: any[] = []
   dataExcel: any[] = []
@@ -38,7 +41,7 @@ export class ElectricalMasterComponent implements OnInit {
   ExportOTP: any
   showButtonImport: any[] = []
   IdModelNumber = environment.IdModelNumber
-  constructor(private api: HttpService) { }
+  constructor(private api: HttpService, private fileUploadService: FileUploadService) { }
   //-----------------------------------------------------------------------------------------------------//
   //TODO init
   async ngOnInit(): Promise<void> {
@@ -90,28 +93,19 @@ export class ElectricalMasterComponent implements OnInit {
     const Resistance = await this.api.getMasterResis().toPromise()
     const TFT = await this.api.getMasterTFT().toPromise()
 
-    ProductSpec.length > 0 ? this.urls.push(ProductSpec[ProductSpec.length - 1].urlMaster[0]) : undefined
-    Resistance.length > 0 ? this.urls.push(Resistance[Resistance.length - 1].urlMaster[0]) : undefined
-    TFT.length > 0 ? this.urls.push(TFT[TFT.length - 1].urlMaster[0]) : undefined
+    // urlMaster is stored on the last document: [{ filename, path, delete_path }]
+    this.urls[0] = ProductSpec?.length > 0 ? ProductSpec[ProductSpec.length - 1].urlMaster?.[0] : undefined
+    this.urls[1] = Resistance?.length > 0 ? Resistance[Resistance.length - 1].urlMaster?.[0] : undefined
+    this.urls[2] = TFT?.length > 0 ? TFT[TFT.length - 1].urlMaster?.[0] : undefined
 
 
   }
 
-  //TODO rename
-  addFormData(files: any, controlNo: any) {
-    return new Promise(resolve => {
-      const formData = new FormData()
-      for (let i = 0; i < files.length; i++) {
-        let type = files[i].name.split('.');
-        type = type[type.length - 1]
-        const newFileName = `${controlNo}`
-        formData.append('File', files[i], newFileName)
-        if (i + 1 === files.length) {
-          resolve(formData)
-        }
-      }
-
-    })
+  //TODO upload master excel to file server → [{ filename, path, delete_path, size }]
+  async uploadMasterFile(files: File[], fileName: string): Promise<StoredFile[]> {
+    const file = files[0]
+    const uploaded = await this.fileUploadService.uploadOne(MASTER_FILE_FOLDER, file, fileName)
+    return [this.fileUploadService.toStoredFile(uploaded, file, fileName)]
   }
 
   //TODO ImportMaster
@@ -193,13 +187,13 @@ export class ElectricalMasterComponent implements OnInit {
   async ExportMaster() {
     switch (this.masterList) {
       case this.master[0]:
-        window.open(this.urls[0]);
+        this.urls[0]?.path && window.open(this.urls[0].path);
         break;
       case this.master[1]:
-        window.open(this.urls[1]);
+        this.urls[1]?.path && window.open(this.urls[1].path);
         break;
       case this.master[2]:
-        window.open(this.urls[2]);
+        this.urls[2]?.path && window.open(this.urls[2].path);
         break;
       case this.master[3]:
         break;
@@ -296,8 +290,7 @@ export class ElectricalMasterComponent implements OnInit {
     let D2 = "Electrical value specification of all product. (Refer from Manafacturing Specification)"
     if (ws?.B2?.h == D2) {
 
-      const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
-      this.resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+      this.resUpload = await this.uploadMasterFile(data, `${this.masterList}.xlsx`)
       const colExcel = 5
       const number = []
 
@@ -400,8 +393,7 @@ export class ElectricalMasterComponent implements OnInit {
     this.fullData = []
     if (ws?.B2?.h == D2) {
 
-      const formData = await this.addFormData(data, `${this.masterList}.xlsx`)
-      this.resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+      this.resUpload = await this.uploadMasterFile(data, `${this.masterList}.xlsx`)
       const colExcel = 5
       const number = []
 
@@ -518,8 +510,7 @@ export class ElectricalMasterComponent implements OnInit {
       let type = filename[filename.length - 1]
 
 
-      const formData = await this.addFormData(data, `${this.masterList}.${type}`)
-      this.resUpload = await this.api.uploadMasterProductSpec(formData).toPromise()
+      this.resUpload = await this.uploadMasterFile(data, `${this.masterList}.${type}`)
       // console.log(sheet);
       // for (let round = 70; round < 90; round++) {
       for (let round = 0; round < wb.SheetNames.length; round++) {
@@ -670,7 +661,7 @@ export class ElectricalMasterComponent implements OnInit {
       //sand step-step
       for (let i of this.fullData) {
         for (const j of this.dataOldResis) {
-          if (j.model == i.model) {
+          if (i && j.model == i.model) {
             i.urlAssignment = j.urlAssignment
           }
         }

@@ -7,6 +7,7 @@ import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'
 // import { RequestServiceService } from '../request-form/request-service.service';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 
@@ -17,6 +18,7 @@ import { HttpParams } from '@angular/common/http';
   standalone: false
 })
 export class RejectForm3Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   constructor(
     // private api: RejectForm2Service,
@@ -27,7 +29,8 @@ export class RejectForm3Component implements OnInit {
     private modalService: NgbModal,
     private api: HttpService,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
       if (param) {
@@ -98,9 +101,6 @@ export class RejectForm3Component implements OnInit {
   // ? Variable Normal
   ApproveName: any;
   ResultId: any;
-
-  FileListname = [];
-  PathListName = [];
 
   // ? Fix Id
   SourceId = environment.IdSource;
@@ -205,18 +205,6 @@ export class RejectForm3Component implements OnInit {
     })
   }
 
-  // SetPathFile() {
-  //   if (this.FileListname.length > 0) {
-  //     this.FileListname.forEach(i => {
-  //       this.progressForm1.FindPath(i).subscribe((data: any) => {
-  //         if (data.length > 0) {
-  //           this.PathListName.push(data[0].path);
-  //         }
-  //       })
-  //     });
-  //   }
-  // }
-
   GetResultFMMaster() {
     let type = this.form.requestItem.includes('DST') ? 'DST' : 'AMT'
     this.api.getResultFMMaster(new HttpParams().set('type', type)).subscribe((res: any) => {
@@ -240,8 +228,6 @@ export class RejectForm3Component implements OnInit {
 
       if (data) {
         this.form = data;
-        this.FileListname = data.fileList;
-        // this.SetPathFile();
         let str = data.issuedDate.split("T");
         let str2 = data.replyDate.split("T");
         let temp1 = str[0];
@@ -315,10 +301,8 @@ export class RejectForm3Component implements OnInit {
 
         this.tempFile = this.result.files;
 
-
-
-        this.FileReportName = this.result && this.result.length > 0 ? (this.result.file?.split('/'))[5] : ''
-        // this.FileReportName = (this.result.file.split('/'))[6];
+        this.FileReportPath = this.result.file
+        this.FileReportName = this.fileUploadService.getFileName(this.result.file) || 'No file..'
 
         this.tempFile.forEach(i => {
           this.tempFileTotal += Number(i.size);
@@ -692,75 +676,39 @@ export class RejectForm3Component implements OnInit {
       showCancelButton: true,
       icon: 'error',
       confirmButtonText: 'Delete',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    }).then(async (result) => {
+      if (!result.isConfirmed) return
 
-        if (this.FileListname.length > 0) {
+      try {
+        // requester attachments + engineer attachments + report
+        const targets: any[] = [...(this.FileList || []), ...(this.tempFile || [])]
+        if (this.result?.file) targets.push(this.result.file)
 
+        const { failed } = await this.fileUploadService.deleteFiles(targets)
+        if (failed.length > 0) console.error('OnCancel: some files failed to delete', failed)
 
-          let round = 0;
-          this.FileListname.forEach((item, index) => {
-            round += 1;
-
-            let body = {
-              path: this.PathListName[index]
-            }
-
-            this.api.RemoveFile(body).then((data: any) => {
-              if (data) {
-                let d = {
-                  path: this.PathListName[index]
-                }
-                this.api.DeleteFileName(d).subscribe((data: any) => {
-                })
-              }
-            })
-
-          });
-
-          if (this.FileListname.length == round) {
-            round = 0;
-            this.FileListname = [];
-            this.PathListName = [];
-            let da = {
-              status: 0,
-              issuedDate: this.form.issuedDate,
-              replyDate: this.form.replyDate,
-              userApprove: null,
-              userApproveName: null
-            }
-            this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
-              // console.log(data);
-              this.alertSuccess();
-              // location.href = "#/manageForm";
-              this.route.navigate(['/manageForm'])
-
-            })
-          }
-
-        } else {
-          let da = {
-            status: 0,
-            issuedDate: this.form.issuedDate,
-            replyDate: this.form.replyDate,
-            userApprove: null,
-            userApproveName: null
-          }
-          // console.log(da);
-
-          this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
-            // console.log(data);
-            this.alertSuccess();
-            // location.href = "#/manageForm";
-            this.route.navigate(['/manageForm'])
-
-          })
-
+        if (this.result?._id) {
+          await this.api.UpdateResult(this.result._id, { file: null, files: [] }).toPromise()
         }
+
+        await this.api.UpadateRequestForm(this.formId, {
+          status: 0,
+          issuedDate: this.form.issuedDate,
+          replyDate: this.form.replyDate,
+          files: [],
+          userApprove: null,
+          userApproveName: null
+        }).toPromise()
+
+        this.FileList = []
+        this.tempFile = []
+        this.alertSuccess();
+        this.route.navigate(['/manageForm'])
+      } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Cancel failed.' })
       }
     })
-
-
   }
 
   ToggleCauseFilter() {
@@ -811,19 +759,15 @@ export class RejectForm3Component implements OnInit {
       if (result.isConfirmed) {
         let tempName = this.form.requestNumber + "@" + event.target.files[0].name
 
-        if (this.tempFile.filter(item => item.name == tempName).length == 0) {
+        if (this.tempFile.filter(item => item.filename == tempName).length == 0) {
           this.tempFileTotal += event.target.files[0].size;
 
 
           if (this.tempFileTotal < 31457280) {
 
-            this.api.UploadFileEng(event.target.files[0], tempName).then((res) => {
-              const setData = {
-                path: res,
-                name: tempName,
-                size: event.target.files[0].size
-              }
-              this.tempFile.push(setData);
+            const file: File = event.target.files[0]
+            this.fileUploadService.uploadEngFile(file, tempName).then((uploaded) => {
+              this.tempFile.push(this.fileUploadService.toStoredFile(uploaded, file, tempName));
 
               const data = {
                 startAnalyzeDate: this.AnalyzeDate.value,
@@ -838,8 +782,11 @@ export class RejectForm3Component implements OnInit {
                   this.alertSuccess();
                 }
               })
-
-
+            }).catch((error) => {
+              console.error(error);
+              this.tempFileTotal -= file.size;
+              this.inputFile.reset();
+              Swal.fire({ title: 'Error', icon: 'error', text: 'Upload failed.' })
             })
 
           } else {
@@ -875,7 +822,7 @@ export class RejectForm3Component implements OnInit {
     Swal.fire({
       title: 'Do you want to delete ? ',
       icon: 'error',
-      text: `Delete ${event.name} (${event.size})`,
+      text: `Delete ${event.filename} (${event.size})`,
       confirmButtonText: 'Delete',
       showCancelButton: true
     }).then((result) => {
@@ -884,11 +831,8 @@ export class RejectForm3Component implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileTotal -= this.tempFile[indexToRemove].size;
           this.tempFile.splice(indexToRemove, 1)
-          const data = {
-            name: event.name
-          }
 
-          this.api.RemoveFileEng(data).then((res) => {
+          this.fileUploadService.deleteFile(event).toPromise().then((res) => {
             if (res) {
 
 
@@ -906,6 +850,9 @@ export class RejectForm3Component implements OnInit {
                 }
               })
             }
+          }).catch((error) => {
+            console.error(error);
+            Swal.fire({ title: 'Error', icon: 'error', text: 'Delete failed.' })
           })
 
         }
@@ -967,14 +914,15 @@ export class RejectForm3Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.FileReportPath = data;
-              this.FileReportName = (data.split('/'))[5];
-              this.htmlFile.reset();
-              this.alertSuccess();
-
-            }
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
+            this.FileReportPath = this.fileUploadService.toReportFile(uploaded, file);
+            this.FileReportName = this.fileUploadService.getFileName(uploaded.path);
+            this.htmlFile.reset();
+            this.alertSuccess();
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {

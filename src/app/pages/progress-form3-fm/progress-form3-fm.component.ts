@@ -9,6 +9,7 @@ import { Workbook } from 'exceljs'
 // import * as ExcelJS from 'exceljs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
@@ -20,6 +21,7 @@ import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
   standalone: false
 })
 export class ProgressForm3FmComponent implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   constructor(
     private api: HttpService,
@@ -27,7 +29,8 @@ export class ProgressForm3FmComponent implements OnInit {
     private modalService: NgbModal,
     private route: Router,
     private routerActive: ActivatedRoute,
-    private masterFM: HelperMasterFMService
+    private masterFM: HelperMasterFMService,
+    private fileUploadService: FileUploadService
     // private api: RejectForm2Service
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
@@ -318,9 +321,8 @@ export class ProgressForm3FmComponent implements OnInit {
             result.treatMent ? this.TreatmentOfNg.setValue(result.treatMent) : null
 
             this.File.setValue(result.file);
-            // result.file ? this.tempFileReport = (result.file).split('/')[6] : false
             // * เก็บชื่อReport ไฟล์
-            result.file ? this.tempFileReportName = (result.file).split('/')[5] : false
+            result.file ? this.tempFileReportName = this.fileUploadService.getFileName(result.file) : false
             result.file ? this.toggleAttReportEng = true : false
 
             // * เก็บ obj files
@@ -768,10 +770,25 @@ export class ProgressForm3FmComponent implements OnInit {
           }
         }
 
+        // attached files live only in the browser until uploaded, so a draft must upload them
+        let draftFiles = {}
+        try {
+          draftFiles = await this.uploadPendingForDraft()
+        } catch (error) {
+          console.error(error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Upload failed',
+            text: 'Files were not saved. Please try Draft again.',
+          })
+          return
+        }
+
         const resultCheck: any = await this.checkResult(this.formId)
         if (resultCheck.length == 0) {
-          const res: any = await this.insertResultWhenFinish(this.formId)
+          const res: any = await this.insertResultWhenFinish(this.formId, draftFiles)
           if (res.length != 0) {
+            this.ResultAPi = Array.isArray(res) ? res[0] : res
             this.alertSuccess()
           } else {
             Swal.fire({
@@ -782,7 +799,8 @@ export class ProgressForm3FmComponent implements OnInit {
           }
 
         } else {
-          const res = await this.updateResultWhenDraft(resultCheck[0]._id)
+          this.ResultAPi = this.ResultAPi || resultCheck[0]
+          const res = await this.updateResultWhenDraft(resultCheck[0]._id, draftFiles)
           // console.log(res);
           if (res) {
             this.alertSuccess()
@@ -829,14 +847,10 @@ export class ProgressForm3FmComponent implements OnInit {
           const file = this.mappingPositionFiles[i];
           const fileName = `${requestNo}_MappingPosition_${i + 1}_${file.name}`;
 
-          const uploadPromise = this.api.UploadFileEng(file, fileName)
+          const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
             .then((data: any) => {
               if (data) {
-                const path = {
-                  path: data,
-                  name: fileName,
-                  size: file.size
-                };
+                const path = this.fileUploadService.toStoredFile(data, file, fileName);
                 this.uploadedMappingPositionPaths.push(path);
                 console.log(`Mapping Position image ${i + 1} uploaded successfully`);
                 return data;
@@ -866,14 +880,10 @@ export class ProgressForm3FmComponent implements OnInit {
               const file = imageArray[imgIdx];
               const fileName = `${requestNo}_Microscope_Item${analysisIdx + 1}_Img${imgIdx + 1}_${file.name}`;
 
-              const uploadPromise = this.api.UploadFileEng(file, fileName)
+              const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
                 .then((data: any) => {
                   if (data) {
-                    const path = {
-                      path: data,
-                      name: fileName,
-                      size: file.size
-                    };
+                    const path = this.fileUploadService.toStoredFile(data, file, fileName);
                     this.uploadedMicroscopeImagePaths[analysisIdx].push(path);
                     console.log(`Microscope image [${analysisIdx}][${imgIdx}] uploaded successfully`);
                     return data;
@@ -905,14 +915,10 @@ export class ProgressForm3FmComponent implements OnInit {
               const file = imageArray[imgIdx];
               const fileName = `${requestNo}_FTIR_Item${analysisIdx + 1}_Img${imgIdx + 1}_${file.name}`;
 
-              const uploadPromise = this.api.UploadFileEng(file, fileName)
+              const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
                 .then((data: any) => {
                   if (data) {
-                    const path = {
-                      path: data,
-                      name: fileName,
-                      size: file.size
-                    };
+                    const path = this.fileUploadService.toStoredFile(data, file, fileName);
                     this.uploadedFtirSpectrumImagePaths[analysisIdx].push(path);
                     console.log(`FT-IR Spectrum image [${analysisIdx}][${imgIdx}] uploaded successfully`);
                     return data;
@@ -944,14 +950,10 @@ export class ProgressForm3FmComponent implements OnInit {
               const file = imageArray[imgIdx];
               const fileName = `${requestNo}_FTIR_Graph_Item${analysisIdx + 1}_Img${imgIdx + 1}_${file.name}`;
 
-              const uploadPromise = this.api.UploadFileEng(file, fileName)
+              const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
                 .then((data: any) => {
                   if (data) {
-                    const path = {
-                      path: data,
-                      name: fileName,
-                      size: file.size
-                    };
+                    const path = this.fileUploadService.toStoredFile(data, file, fileName);
                     this.uploadedFtirSpectrumImagesGraphPaths[analysisIdx].push(path);
                     console.log(`FT-IR Spectrum Graph image [${analysisIdx}][${imgIdx}] uploaded successfully`);
                     return data;
@@ -988,10 +990,11 @@ export class ProgressForm3FmComponent implements OnInit {
     }
   }
 
-  insertResultWhenFinish(formId: string) {
+  insertResultWhenFinish(formId: string, draftFiles: any = {}) {
 
     return new Promise(async resolve => {
       const ResultData = {
+        ...draftFiles,
         analysisReportNo: this.ReportNo.value,
         formId: formId,
         engineerId: localStorage.getItem('AR_UserId'),
@@ -1042,12 +1045,13 @@ export class ProgressForm3FmComponent implements OnInit {
     })
   }
   //TODO
-  updateResultWhenDraft(resultId: string) {
+  updateResultWhenDraft(resultId: string, draftFiles: any = {}) {
     return new Promise(resolve => {
       let analysisFormValue = this.analysisForm.value
       console.log(this.ResultItemRequire.value);
 
       const ResultData = {
+        ...draftFiles,
         result: this.Result.value || null,
         result2: this.Result2.value || null,
         causeOfDefect: this.CategoryCause.value || null,
@@ -1114,37 +1118,51 @@ export class ProgressForm3FmComponent implements OnInit {
     }
   }
 
+  /**
+   * Upload files that were attached but not yet uploaded, and switch the tables to
+   * "uploaded" mode. Returns the fields to save with the draft ({ files?, file? }).
+   * Each file leaves tempFile as soon as it is uploaded, so a retry after a failure
+   * does not upload it twice.
+   */
+  private async uploadPendingForDraft() {
+    const draftFiles: any = {}
+
+    if (!this.toggleAttFileEng && this.tempFile.length > 0) {
+      for (const file of [...this.tempFile]) {
+        const fileName = `${this.form.requestNumber}@${file.name}`
+        const uploaded = await this.fileUploadService.uploadEngFile(file, fileName)
+        this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, fileName))
+        this.tempFile.splice(this.tempFile.indexOf(file), 1)
+        this.tempFileTotal -= file.size
+        this.tempFileENGTotal += file.size
+      }
+      this.toggleAttFileEng = true
+      draftFiles.files = this.tempEngFile
+    }
+
+    if (!this.toggleAttReportEng && this.FileReport) {
+      await this.uploadReport()
+      this.File.setValue(this.FileReportPath)
+      this.toggleAttReportEng = true
+      draftFiles.file = this.FileReportPath
+    }
+
+    return draftFiles
+  }
+
   async loopUploadFiles() {
-
-    this.tempFile.forEach(file => {
+    for (const file of this.tempFile) {
       const fileName = `${this.form.requestNumber}@${file.name}`
-      this.api.UploadFileEng(file, fileName).then((data) => {
-        if (data) {
-          const name = (data.toString()).split('/')
-          const path = {
-            path: data,
-            // name: name[6],
-            // name: name[5],
-            name: fileName,
-            size: file.size
-          }
-          this.tempEngFile.push(path)
-        }
-      })
-    });
-
-    // const b = await this.uploadReport();
-
+      const uploaded = await this.fileUploadService.uploadEngFile(file, fileName)
+      if (uploaded) {
+        this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, fileName))
+      }
+    }
   }
 
   async uploadReport() {
-    let all = new FormData();
-    all.append('File', this.FileReport, this.FileReport.name)
-    await this.api.uploadReport2(all).then(async (data: any) => {
-      this.FileReportPath = await data
-      // console.log(this.FileReportPath);
-
-    })
+    const uploaded = await this.fileUploadService.uploadEngReport(this.FileReport)
+    this.FileReportPath = uploaded ? this.fileUploadService.toReportFile(uploaded, this.FileReport) : null
   }
   // ResultForm = new FormGroup({
   //   AnalyzeDate: new FormControl(null, Validators.required),
@@ -1510,15 +1528,12 @@ export class ProgressForm3FmComponent implements OnInit {
 
         if (file.name == realFileName) {
 
-          let ReportFile = new FormData();
-          ReportFile.append('File', file, file.name)
-          this.api.uploadReport2(ReportFile).then(async (data: any) => {
-            await data
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
             const temp = {
               startAnalyzeDate: this.AnalyzeDate.value,
               finishAnalyzeDate: this.ResultDate.value,
               finishReportDate: this.ReportDate.value,
-              file: data
+              file: this.fileUploadService.toReportFile(uploaded, file)
             }
 
             this.api.UpdateResult(this.ResultAPi._id, temp).subscribe((data: any) => {
@@ -1528,6 +1543,10 @@ export class ProgressForm3FmComponent implements OnInit {
                 this.getForm();
               }
             })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlReport.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {
@@ -1547,7 +1566,7 @@ export class ProgressForm3FmComponent implements OnInit {
     Swal.fire({
       title: 'Do you want to delete ? ',
       icon: 'error',
-      text: `Delete ${event.name} (${event.size})`,
+      text: `Delete ${event.filename} (${event.size})`,
       confirmButtonText: 'Delete',
       showCancelButton: true
     }).then((result) => {
@@ -1556,11 +1575,8 @@ export class ProgressForm3FmComponent implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileENGTotal -= this.tempEngFile[indexToRemove].size;
           this.tempEngFile.splice(indexToRemove, 1)
-          const data = {
-            name: event.name
-          }
 
-          this.api.RemoveFileEng(data).then((res) => {
+          this.fileUploadService.deleteFile(event).toPromise().then((res) => {
             if (res) {
               const data = {
                 startAnalyzeDate: this.AnalyzeDate.value,
@@ -1576,6 +1592,9 @@ export class ProgressForm3FmComponent implements OnInit {
                 }
               })
             }
+          }).catch((error) => {
+            console.error(error);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Delete failed.' })
           })
 
         }
@@ -1601,23 +1620,13 @@ export class ProgressForm3FmComponent implements OnInit {
         //   CheckFileName = `${this.form.requestNumber}@${file.name}`
         // }
 
-        if (this.tempEngFile.filter(item => item.name == CheckFileName).length == 0) {
+        if (this.tempEngFile.filter(item => item.filename == CheckFileName).length == 0) {
           this.tempFileENGTotal += file.size;
           if (this.tempFileENGTotal < 31457280) {
-            // this.tempFile.push(file);
-            // ! to upload file
 
-
-            this.api.UploadFileEng(file, CheckFileName).then((data) => {
-              if (data) {
-
-                // const name = (data.toString()).split('/')
-                const TempFile = {
-                  path: data,
-                  name: CheckFileName,
-                  size: file.size
-                }
-                this.tempEngFile.push(TempFile);
+            this.fileUploadService.uploadEngFile(file, CheckFileName).then((uploaded) => {
+              if (uploaded) {
+                this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, CheckFileName));
 
                 let tempData = {
                   startAnalyzeDate: this.AnalyzeDate.value,
@@ -1633,6 +1642,11 @@ export class ProgressForm3FmComponent implements OnInit {
                 })
 
               }
+            }).catch((error) => {
+              console.error(error);
+              this.tempFileENGTotal -= file.size;
+              this.inputFile.reset();
+              Swal.fire({ title: 'Error', icon: 'error', text: 'Upload failed.' })
             })
 
           } else {
@@ -1712,7 +1726,7 @@ export class ProgressForm3FmComponent implements OnInit {
                 const result = data[0]
                 this.toggleAttReportEng = true;
                 this.File.setValue(result.file);
-                this.tempFileReportName = result.file ? result.file.replace('http://10.200.90.152:4501/ENG/Report/', '') : '';
+                this.tempFileReportName = this.fileUploadService.getFileName(result.file);
               }
             });
           },

@@ -6,6 +6,7 @@ import { environment } from 'environments/environment.prod'
 import Swal from 'sweetalert2'
 
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 @Component({
   selector: 'app-progress-form1',
@@ -21,7 +22,8 @@ export class ProgressForm1Component implements OnInit {
     // private api: RequestServiceService,
     private modalService: NgbModal,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
       if (param) {
@@ -494,7 +496,7 @@ export class ProgressForm1Component implements OnInit {
       text: `Upload ${file.name} ?`,
       icon: 'question',
       showCancelButton: true
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         if (this.FileList.length == 3) {
           this.fileInput.reset();
@@ -506,7 +508,7 @@ export class ProgressForm1Component implements OnInit {
         } else {
           if (file.size <= 5242880) {
 
-            if (this.FileList.filter(item => item.name == file.name).length > 0) {
+            if (this.FileList.filter(item => item.filename == file.name).length > 0) {
               this.fileInput.reset();
               Swal.fire({
                 icon: 'error',
@@ -515,16 +517,19 @@ export class ProgressForm1Component implements OnInit {
               })
             } else {
 
-              let name = `${this.Form.requestNumber}!${file.name}`
-              let tempFileList = this.FileList
-              this.api.UploadFile(file, name).then(async (res) => {
-                const path = await res
-                const dateSet = {
-                  path: path,
-                  name: name,
-                  size: file.size
-                }
-                this.FileList.push(dateSet);
+              const name = `${this.Form.requestNumber}!${file.name}`
+              const tempFileList = [...this.FileList]
+
+              try {
+                const path = `${environment.namespace}/Requester/`
+                const formData = new FormData();
+                formData.append('path', path);
+                formData.append('file', file, name);
+
+                const response: any = await this.fileUploadService.upload(formData).toPromise();
+                const uploaded = Array.isArray(response) ? response[0] : response;
+
+                this.FileList.push(this.fileUploadService.toStoredFile(uploaded, file, name));
                 const dataToApi = {
                   issuedDate: this.Form.issuedDate,
                   replyDate: this.Form.replyDate,
@@ -544,10 +549,15 @@ export class ProgressForm1Component implements OnInit {
                     })
                   }
                 })
-              })
-              // this.FileList.push(file);
-              // this.fileInput.reset();
-              // this.alertSuccess();
+              } catch (error) {
+                console.error(error);
+                this.fileInput.reset();
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Upload failed',
+                  text: 'Try Again',
+                })
+              }
             }
 
 
@@ -570,7 +580,7 @@ export class ProgressForm1Component implements OnInit {
 
     Swal.fire({
       title: 'Do you have remove file ?',
-      text: `Remove ${file.name} ?`,
+      text: `Remove ${file.filename} ?`,
       icon: 'question',
       showCancelButton: true
     }).then((result) => {
@@ -578,7 +588,7 @@ export class ProgressForm1Component implements OnInit {
 
 
         const IdForm = this.Form._id
-        this.api.RemoveFile(file).then((data: any) => {
+        this.fileUploadService.deleteFile(file).toPromise().then((data: any) => {
           if (data) {
             const indexOfFile = this.FileList.indexOf(file);
             // console.log(indexOfFile);
@@ -586,7 +596,7 @@ export class ProgressForm1Component implements OnInit {
             const data = {
               issuedDate: this.IssueDate.value,
               replyDate: this.ReplyDate.value,
-              file: this.FileList
+              files: this.FileList
             }
             this.api.UpadateRequestForm(IdForm, data).subscribe((data: any) => {
               if (data) {

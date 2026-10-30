@@ -383,7 +383,7 @@ export class ReusableFormComponent implements OnInit {
     // Bind file information
     this.File.setValue(result.file);
     if (result.file) {
-      this.tempFileReportName = (result.file).split('/')[5];
+      this.tempFileReportName = result.file.filename || (result.file.path || '').split('/').pop();
       this.toggleAttReportEng = true;
     }
 

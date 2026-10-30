@@ -16,6 +16,7 @@ import { environment } from 'environments/environment';
   standalone: false
 })
 export class ViewFormFmComponent implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   form: any = [];
   result: any = {};
@@ -514,14 +515,14 @@ export class ViewFormFmComponent implements OnInit {
   private mapFile(file: any, prefix: string, index: number) {
     if (typeof file === 'string') {
       return {
-        name: `${prefix}-${index + 1}`,
+        filename: `${prefix}-${index + 1}`,
         path: file,
         size: ''
       };
     }
 
     return {
-      name: file?.name || `${prefix}-${index + 1}`,
+      filename: file?.filename || file?.name || `${prefix}-${index + 1}`,
       path: file?.path || file?.url || '',
       size: file?.size || ''
     };
