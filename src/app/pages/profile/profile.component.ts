@@ -24,6 +24,7 @@ export class ProfileComponent implements OnInit {
   User: any;
   UserId: any;
   Sections = [];
+  PasswordError: string = null;
 
   Pass = new UntypedFormGroup({
     OldPassword: new UntypedFormControl(null, Validators.required),
@@ -100,16 +101,24 @@ export class ProfileComponent implements OnInit {
       showCancelButton: true
     }).then((r) => {
       if (r.isConfirmed) {
+        // the server checks OldPassword; passwords are no longer sent to the browser
         let d = {
+          OldPassword: this.OldPassword.value,
           Password: this.NewPassword.value,
         }
-        this.api.UpdateUser(this.UserId, d).subscribe((data: any) => {
-          if (data) {
-            this.modalService.dismissAll()
-            this.alertSuccess();
-            sessionStorage.clear();
-            this.route.navigate(['/login'])
-            // location.href = "#/login";
+        this.PasswordError = null;
+        this.api.UpdateUser(this.UserId, d).subscribe({
+          next: (data: any) => {
+            if (data) {
+              this.modalService.dismissAll()
+              this.alertSuccess();
+              sessionStorage.clear();
+              this.route.navigate(['/login'])
+              // location.href = "#/login";
+            }
+          },
+          error: (err) => {
+            this.PasswordError = err?.error?.message || 'Change password failed';
           }
         })
 

@@ -74,7 +74,7 @@
         <div class="form-group" [formGroup]="Pass">
             <label for="">Old password</label>
             <input type="password" class="form-control" formControlName="OldPassword">
-            <p *ngIf="User.Password != OldPassword.value" class="text-danger">Not match.</p>
+            <p *ngIf="PasswordError" class="text-danger">{{ PasswordError }}</p>
             <label for="">New password</label>
             <input type="password" class="form-control" formControlName="NewPassword">
             <label for="">New password</label>
@@ -83,7 +83,7 @@
 
         </div>
         <div class="modal-footer">
-            <button [disabled]="Pass.invalid || NewPassword.value != NewPassword2.value || User.Password != OldPassword.value" class="btn btn-warning" (click)="onSaveChangePassword()">Save</button>
+            <button [disabled]="Pass.invalid || NewPassword.value != NewPassword2.value" class="btn btn-warning" (click)="onSaveChangePassword()">Save</button>
         </div>
     </div>
 </ng-template>
