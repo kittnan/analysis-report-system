@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
   // UrlApi: "http://localhost:4026",
-  UrlApi: "http://10.200.90.152:4026",
+  // UrlApi: "http://10.200.90.152:4026",
   // UrlApi: "http://10.200.90.152:8787",
-  FileServerUrl: 'http://10.200.90.152:4501',
+  UrlApi: "/api",
   master: 'equipment/master',
   country: 'equipment/country',
   equipment: 'equipment',
@@ -17,7 +17,6 @@ export const environment = {
   MasterCauseOfDefective: "63a514d136895b117bc81296",
   MasterMakerSupplierName: "63a514d236895b117bc81298",
 
-  WEB_URL: 'http://10.200.90.152:8081/Analysis-Report/',
 
 
   ModelNumber: "KTC Model Number",
@@ -38,5 +37,13 @@ export const environment = {
 
   appVersion: require('../../package.json').version,
 
+  FileServerOrigin: 'https://file_serve.web.kyocera.co.th',
+  fileServer: 'https://file_serve.web.kyocera.co.th/api/upload/new',
+  fileServerDelete: 'https://file_serve.web.kyocera.co.th/api/delete',
+  namespace: 'analysis-report',
+  OnlyOfficeUrl: 'https://file_serve.web.kyocera.co.th/api/onlyoffice?fileUrl=',
+  AppUrl: 'https://analysis-report.web.kyocera.co.th/',
+  ReportFileUrl: 'https://file_serve.web.kyocera.co.th/analysis-report/ENG/Report/',
+  PortalUrl: 'https://an-portal.web.kyocera.co.th',
 
 };

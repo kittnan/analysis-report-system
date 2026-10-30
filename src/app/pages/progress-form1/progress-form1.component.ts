@@ -657,7 +657,7 @@ export class ProgressForm1Component implements OnInit {
               let Lname = localStorage.getItem('AR_UserLastName')
               if (data) {
                 const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Window)</p><br>" +
-                  "Please analysis the defect as link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                  "Please analysis the defect as link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                   "<p>From " + Fname + " " + Lname + "(Issuer)</p>";
 
                 const sendMail = {
@@ -717,7 +717,7 @@ export class ProgressForm1Component implements OnInit {
                 let Fname = localStorage.getItem('AR_UserFirstName')
                 let Lname = localStorage.getItem('AR_UserLastName')
                 const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(Issuer)</p><br>" +
-                  "Analysis request not approve as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                  "Analysis request not approve as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                   "<p>From " + Fname + " " + Lname + "(Requestor approval)</p>";
 
                 const sendMail = {

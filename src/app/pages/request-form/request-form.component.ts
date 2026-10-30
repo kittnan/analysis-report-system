@@ -608,7 +608,7 @@ export class RequestFormComponent implements OnInit {
           this.api.PostRequestForm(da).subscribe((data: any) => {
             if (data.length > 0) {
               const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(Requestor approval)</p><br>" +
-                "Please approve analysis request as link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                "Please approve analysis request as link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                 "<p>From " + Fname + " " + Lname + "(Issuer)</p>";
 
               const sendMail = {

@@ -743,7 +743,7 @@ export class ProgressForm3Component implements OnInit {
                 let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
-                    "Please review analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Please review analysis report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,
@@ -792,7 +792,7 @@ export class ProgressForm3Component implements OnInit {
                 let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
-                    "Please review analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Please review analysis report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,
@@ -855,7 +855,7 @@ export class ProgressForm3Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Window)</p><br>" +
-                    "Analysis request not approve as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Analysis request not approve as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,

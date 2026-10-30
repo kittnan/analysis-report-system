@@ -6,6 +6,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params } from '@angular/router';
+import { environment } from 'environments/environment';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({

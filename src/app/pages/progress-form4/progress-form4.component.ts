@@ -427,7 +427,7 @@ export class ProgressForm4Component implements OnInit {
           try {
             await this.onUpdateAnalysisResult(this.AnalysisForm.value)
             const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Approval)</p><br>" +
-              "Please approve analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+              "Please approve analysis report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
               "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";
 
             const sendMail = {
@@ -500,7 +500,7 @@ export class ProgressForm4Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
-                    "AE Reviewer not approve report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "AE Reviewer not approve report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";
 
                   const sendMail = {
@@ -800,7 +800,7 @@ export class ProgressForm4Component implements OnInit {
         let Fname = localStorage.getItem('AR_UserFirstName')
         let Lname = localStorage.getItem('AR_UserLastName')
         const Content = "<p>To " + requesterNameRemoveSpace + "</p><br>" +
-          "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+          "Analysis request was closed as  link:  <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
           "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
         const sendMail = {
           Content: Content,

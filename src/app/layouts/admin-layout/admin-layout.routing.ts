@@ -55,7 +55,6 @@ import { MasterEstimateResultProcessComponent } from 'app/pages/master-estimate-
 
 // import { LoginComponent } from 'app/pages/login/login.component';
 
-// const path = "http://10.200.90.152:4014/Analysis-Report";
 
 export const AdminLayoutRoutes: Routes = [
   // { path: 'dashboard', component: DashboardComponent },

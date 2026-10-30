@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
 import { Router } from '@angular/router';
 @Component({
+import { environment } from 'environments/environment';
   selector: 'app-reject-form4',
   templateUrl: './reject-form4.component.html',
   styleUrls: ['./reject-form4.component.css', '../pagesStyle.css'],
@@ -182,7 +183,7 @@ export class RejectForm4Component implements OnInit {
         let Lname = localStorage.getItem('AR_UserLastName')
         if (data) {
           const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Approval)</p><br>" +
-            "Please approve analysis report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+            "Please approve analysis report as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
             "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";
 
           const sendMail = {
@@ -239,7 +240,7 @@ export class RejectForm4Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
-                    "AE Reviewer not approve report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "AE Reviewer not approve report as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";
 
                   const sendMail = {

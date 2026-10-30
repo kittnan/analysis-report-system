@@ -457,7 +457,7 @@ export class ProgressForm5Component implements OnInit {
                 this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
                   if (data) {
                     const Content = "<p>To " + this.Approve.FirstName + " " + this.Approve.LastName + "</p><br>" +
-                      "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                      "Analysis request was closed as  link:  <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                       "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
                     const sendMail = {
                       Content: Content,
@@ -536,7 +536,7 @@ export class ProgressForm5Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
-                    "AE Approval not approve report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "AE Approval not approve report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
                   const sendMail = {
                     Content: Content,
