@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http'
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'environments/environment'
 @Injectable({
   providedIn: 'root'
@@ -382,6 +382,14 @@ export class HttpService {
 
 
   SendEmailTo(data: any): Observable<any> {
+    // set by qa-tool/switch-user.html while testing as another user: keep the mail in this browser instead of sending it
+    if (localStorage.getItem('AR_QA_noMail') == 'true') {
+      const held = JSON.parse(localStorage.getItem('AR_QA_heldMail') || '[]');
+      held.push({ at: new Date().toISOString(), To: data?.To, Cc: data?.Cc, Subject: data?.Subject, Content: data?.Content });
+      localStorage.setItem('AR_QA_heldMail', JSON.stringify(held.slice(-50)));
+      console.warn('[QA] mail not sent', data);
+      return of(data); // /SendEmailTo replies with the request body
+    }
     return this.http.post(this.Url + "/SendEmailTo", data);
   }
 
