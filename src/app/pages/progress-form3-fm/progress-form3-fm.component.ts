@@ -1012,6 +1012,8 @@ export class ProgressForm3FmComponent implements OnInit {
         requestItemId: this.form.requestItemId || null,
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
+        JudgementDefect: this.JudgementDefect.value || null,
+        Remark: this.Remark.value || null,
         operatorName: this.OperatorName.value || null,
         difficultyOfWork: this.DifficultyOfWork.value || null,
         correctOfWork: this.CorrectOfWork.value || null,
