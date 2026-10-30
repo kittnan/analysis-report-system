@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
+import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { PreviewEquipmentComponent } from './preview-equipment.component';
 
 describe('PreviewEquipmentComponent', () => {
@@ -8,7 +10,8 @@ describe('PreviewEquipmentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PreviewEquipmentComponent ]
+      declarations: [ PreviewEquipmentComponent, FileSizePipe ],
+      providers: [ NgbActiveModal ]
     })
     .compileComponents();
   });
@@ -16,6 +19,7 @@ describe('PreviewEquipmentComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PreviewEquipmentComponent);
     component = fixture.componentInstance;
+    component.fromParent = {};
     fixture.detectChanges();
   });
 

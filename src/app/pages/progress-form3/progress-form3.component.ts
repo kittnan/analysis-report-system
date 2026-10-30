@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment'
 import Swal from 'sweetalert2'
 
@@ -9,6 +9,7 @@ import { Workbook } from 'exceljs'
 // import * as ExcelJS from 'exceljs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 
@@ -17,15 +18,18 @@ import { HttpParams } from '@angular/common/http';
   templateUrl: './progress-form3.component.html',
   styleUrls: ['./progress-form3.component.css', '../pagesStyle.css'],
   // styleUrls: ['../pagesStyle.css']
+  standalone: false
 
 })
 export class ProgressForm3Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
   constructor(
     private api: HttpService,
     // private api: ViewFormService,
     private modalService: NgbModal,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
     // private api: RejectForm2Service
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
@@ -50,43 +54,43 @@ export class ProgressForm3Component implements OnInit {
   Report: any;
 
   // ? Form Control
-  ResultForm = new FormGroup({
-    AnalyzeDate: new FormControl(null, Validators.required),
-    ResultDate: new FormControl(null, Validators.required),
-    ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null, Validators.required),
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0),
-        item: new FormControl(null),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
+  ResultForm = new UntypedFormGroup({
+    AnalyzeDate: new UntypedFormControl(null, Validators.required),
+    ResultDate: new UntypedFormControl(null, Validators.required),
+    ReportDate: new UntypedFormControl(null, Validators.required),
+    Result: new UntypedFormControl(null, Validators.required),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0),
+        item: new UntypedFormControl(null),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
       })
     ]),
-    SourceOfDefect: new FormControl(null, Validators.required),
-    CategoryCause: new FormControl(null, Validators.required),
-    AnalysisLevel: new FormControl(null, Validators.required),
-    CanAnalysis: new FormControl(null, Validators.required),
-    RelatedToESD: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null, Validators.required),
-    Approve: new FormControl(null, Validators.required),
-    File: new FormControl(null),
-    TempCause: new FormControl(null),
-    htmlReport: new FormControl(null),
-    JudgementDefect: new FormControl(null, Validators.required),
-    Remark: new FormControl(null),
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
+    SourceOfDefect: new UntypedFormControl(null, Validators.required),
+    CategoryCause: new UntypedFormControl(null, Validators.required),
+    AnalysisLevel: new UntypedFormControl(null, Validators.required),
+    CanAnalysis: new UntypedFormControl(null, Validators.required),
+    RelatedToESD: new UntypedFormControl(null, Validators.required),
+    ReportNo: new UntypedFormControl(null, Validators.required),
+    Approve: new UntypedFormControl(null, Validators.required),
+    File: new UntypedFormControl(null),
+    TempCause: new UntypedFormControl(null),
+    htmlReport: new UntypedFormControl(null),
+    JudgementDefect: new UntypedFormControl(null, Validators.required),
+    Remark: new UntypedFormControl(null),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
 
   })
 
-  TreatmentOfNg = new FormControl(null, Validators.required);
+  TreatmentOfNg = new UntypedFormControl(null, Validators.required);
   // GenItemName = new FormControl(null, Validators.required);
 
-  NoteReject = new FormControl(null);
-  NoteApprove = new FormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  NoteApprove = new UntypedFormControl(null);
 
 
   // ? Variable Normal
@@ -148,9 +152,9 @@ export class ProgressForm3Component implements OnInit {
   tempFileName: any = [];
   tempFileTotal: number = 0;
   tempFileENGTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
-  SelectMDL = new FormControl(null, Validators.required);
+  SelectMDL = new UntypedFormControl(null, Validators.required);
   // pathFile = [];
 
 
@@ -230,14 +234,14 @@ export class ProgressForm3Component implements OnInit {
             console.log(`⚡ ~ :232 ~ ProgressForm3Component ~ result.result2`, result.result2);
 
             if (result.result2 && result.result2.length > 0 && result.result2[0].item) {
-              const result2Array = this.Result2 as FormArray;
+              const result2Array = this.Result2 as UntypedFormArray;
               result2Array.clear();
               result.result2.forEach((res: any) => {
-                const formGroup = new FormGroup({
-                  item: new FormControl(res.item || ''),
-                  qty: new FormControl(res.qty || ''),
-                  tempItem: new FormControl(res.item || ''),
-                  dropdown: new FormControl(res.dropdown || ''),
+                const formGroup = new UntypedFormGroup({
+                  item: new UntypedFormControl(res.item || ''),
+                  qty: new UntypedFormControl(res.qty || ''),
+                  tempItem: new UntypedFormControl(res.item || ''),
+                  dropdown: new UntypedFormControl(res.dropdown || ''),
                 });
                 result2Array.push(formGroup);
               });
@@ -263,9 +267,8 @@ export class ProgressForm3Component implements OnInit {
             result.treatMent ? this.TreatmentOfNg.setValue(result.treatMent) : null
 
             this.File.setValue(result.file);
-            // result.file ? this.tempFileReport = (result.file).split('/')[6] : false
             // * เก็บชื่อReport ไฟล์
-            result.file ? this.tempFileReportName = (result.file).split('/')[5] : false
+            result.file ? this.tempFileReportName = this.fileUploadService.getFileName(result.file) : false
             result.file ? this.toggleAttReportEng = true : false
 
             // * เก็บ obj files
@@ -509,10 +512,25 @@ export class ProgressForm3Component implements OnInit {
       showCancelButton: true
     }).then(async answer => {
       if (answer.isConfirmed) {
+        // attached files live only in the browser until uploaded, so a draft must upload them
+        let draftFiles = {}
+        try {
+          draftFiles = await this.uploadPendingForDraft()
+        } catch (error) {
+          console.error(error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Upload failed',
+            text: 'Files were not saved. Please try Draft again.',
+          })
+          return
+        }
+
         const resultCheck: any = await this.checkResult(this.formId)
         if (resultCheck.length == 0) {
-          const res: any = await this.insertResultWhenFinish(this.formId)
+          const res: any = await this.insertResultWhenFinish(this.formId, draftFiles)
           if (res.length != 0) {
+            this.ResultAPi = Array.isArray(res) ? res[0] : res
             this.alertSuccess()
           } else {
             Swal.fire({
@@ -523,7 +541,8 @@ export class ProgressForm3Component implements OnInit {
           }
 
         } else {
-          const res = await this.updateResultWhenDraft(resultCheck[0]._id)
+          this.ResultAPi = this.ResultAPi || resultCheck[0]
+          const res = await this.updateResultWhenDraft(resultCheck[0]._id, draftFiles)
           // console.log(res);
           if (res) {
             this.alertSuccess()
@@ -547,10 +566,11 @@ export class ProgressForm3Component implements OnInit {
     })
   }
 
-  insertResultWhenFinish(formId: string) {
+  insertResultWhenFinish(formId: string, draftFiles: any = {}) {
 
     return new Promise(async resolve => {
       const ResultData = {
+        ...draftFiles,
         analysisReportNo: this.ReportNo.value,
         formId: formId,
         engineerId: localStorage.getItem('AR_UserId'),
@@ -568,6 +588,8 @@ export class ProgressForm3Component implements OnInit {
         requestItemId: this.form.requestItemId || null,
         requestItemName: this.form.requestItem || null,
         treatMent: this.TreatmentOfNg.value || null,
+        JudgementDefect: this.JudgementDefect.value || null,
+        Remark: this.Remark.value || null,
         operatorName: this.OperatorName.value || null,
         difficultyOfWork: this.DifficultyOfWork.value || null,
         correctOfWork: this.CorrectOfWork.value || null,
@@ -579,9 +601,10 @@ export class ProgressForm3Component implements OnInit {
     })
   }
   //TODO
-  updateResultWhenDraft(resultId: string) {
+  updateResultWhenDraft(resultId: string, draftFiles: any = {}) {
     return new Promise(resolve => {
       const ResultData = {
+        ...draftFiles,
         result: this.Result.value || null,
         result2: this.Result2.value || null,
         causeOfDefect: this.CategoryCause.value || null,
@@ -623,37 +646,67 @@ export class ProgressForm3Component implements OnInit {
     }
   }
 
+  /**
+   * Upload files that were attached but not yet uploaded, and switch the tables to
+   * "uploaded" mode. Returns the fields to save with the draft ({ files?, file? }).
+   * Each file leaves tempFile as soon as it is uploaded, so a retry after a failure
+   * does not upload it twice.
+   */
+  private async uploadPendingForDraft() {
+    const draftFiles: any = {}
+
+    if (!this.toggleAttFileEng && this.tempFile.length > 0) {
+      for (const file of [...this.tempFile]) {
+        const fileName = `${this.form.requestNumber}@${file.name}`
+        const uploaded = await this.uploadEngFile(file, fileName)
+        this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, fileName))
+        this.tempFile.splice(this.tempFile.indexOf(file), 1)
+        this.tempFileTotal -= file.size
+        this.tempFileENGTotal += file.size
+      }
+      this.toggleAttFileEng = true
+      draftFiles.files = this.tempEngFile
+    }
+
+    if (!this.toggleAttReportEng && this.FileReport) {
+      await this.uploadReport()
+      this.File.setValue(this.FileReportPath)
+      this.toggleAttReportEng = true
+      draftFiles.file = this.FileReportPath
+    }
+
+    return draftFiles
+  }
+
   async loopUploadFiles() {
-
-    this.tempFile.forEach(file => {
+    for (const file of this.tempFile) {
       const fileName = `${this.form.requestNumber}@${file.name}`
-      this.api.UploadFileEng(file, fileName).then((data) => {
-        if (data) {
-          const name = (data.toString()).split('/')
-          const path = {
-            path: data,
-            // name: name[6],
-            // name: name[5],
-            name: fileName,
-            size: file.size
-          }
-          this.tempEngFile.push(path)
-        }
-      })
-    });
+      const uploaded = await this.uploadEngFile(file, fileName)
+      if (uploaded) {
+        this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, fileName))
+      }
+    }
+  }
 
-    // const b = await this.uploadReport();
+  private async uploadEngFile(file: File, fileName: string) {
+    const formData = new FormData();
+    formData.append('path', `${environment.namespace}/ENG/Files/`);
+    formData.append('file', file, fileName);
+    const response: any = await this.fileUploadService.upload(formData).toPromise();
+    return Array.isArray(response) ? response[0] : response;
+  }
 
+  private async uploadReportFile(file: File) {
+    const formData = new FormData();
+    formData.append('path', `${environment.namespace}/ENG/Report/`);
+    formData.append('file', file, file.name);
+    const response: any = await this.fileUploadService.upload(formData).toPromise();
+    return Array.isArray(response) ? response[0] : response;
   }
 
   async uploadReport() {
-    let all = new FormData();
-    all.append('File', this.FileReport, this.FileReport.name)
-    await this.api.uploadReport2(all).then(async (data: any) => {
-      this.FileReportPath = await data
-      // console.log(this.FileReportPath);
-
-    })
+    const uploaded = await this.uploadReportFile(this.FileReport)
+    this.FileReportPath = uploaded ? this.fileUploadService.toReportFile(uploaded, this.FileReport) : null
   }
   // ResultForm = new FormGroup({
   //   AnalyzeDate: new FormControl(null, Validators.required),
@@ -742,7 +795,7 @@ export class ProgressForm3Component implements OnInit {
                 let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
-                    "Please review analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Please review analysis report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,
@@ -791,7 +844,7 @@ export class ProgressForm3Component implements OnInit {
                 let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
-                    "Please review analysis report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Please review analysis report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,
@@ -854,7 +907,7 @@ export class ProgressForm3Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Window)</p><br>" +
-                    "Analysis request not approve as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Analysis request not approve as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,
@@ -1018,15 +1071,12 @@ export class ProgressForm3Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          let ReportFile = new FormData();
-          ReportFile.append('File', file, file.name)
-          this.api.uploadReport2(ReportFile).then(async (data: any) => {
-            await data
+          this.uploadReportFile(file).then((uploaded) => {
             const temp = {
               startAnalyzeDate: this.AnalyzeDate.value,
               finishAnalyzeDate: this.ResultDate.value,
               finishReportDate: this.ReportDate.value,
-              file: data
+              file: this.fileUploadService.toReportFile(uploaded, file)
             }
 
             this.api.UpdateResult(this.ResultAPi._id, temp).subscribe((data: any) => {
@@ -1035,6 +1085,14 @@ export class ProgressForm3Component implements OnInit {
                 this.alertSuccess();
                 this.getForm();
               }
+            })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlReport.reset();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Upload failed.',
             })
           })
 
@@ -1055,7 +1113,7 @@ export class ProgressForm3Component implements OnInit {
     Swal.fire({
       title: 'Do you want to delete ? ',
       icon: 'error',
-      text: `Delete ${event.name} (${event.size})`,
+      text: `Delete ${event.filename} (${event.size})`,
       confirmButtonText: 'Delete',
       showCancelButton: true
     }).then((result) => {
@@ -1064,11 +1122,8 @@ export class ProgressForm3Component implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileENGTotal -= this.tempEngFile[indexToRemove].size;
           this.tempEngFile.splice(indexToRemove, 1)
-          const data = {
-            name: event.name
-          }
 
-          this.api.RemoveFileEng(data).then((res) => {
+          this.fileUploadService.deleteFile(event).toPromise().then((res) => {
             if (res) {
               const data = {
                 startAnalyzeDate: this.AnalyzeDate.value,
@@ -1109,23 +1164,13 @@ export class ProgressForm3Component implements OnInit {
         //   CheckFileName = `${this.form.requestNumber}@${file.name}`
         // }
 
-        if (this.tempEngFile.filter(item => item.name == CheckFileName).length == 0) {
+        if (this.tempEngFile.filter(item => item.filename == CheckFileName).length == 0) {
           this.tempFileENGTotal += file.size;
           if (this.tempFileENGTotal < 31457280) {
-            // this.tempFile.push(file);
-            // ! to upload file
 
-
-            this.api.UploadFileEng(file, CheckFileName).then((data) => {
-              if (data) {
-
-                // const name = (data.toString()).split('/')
-                const TempFile = {
-                  path: data,
-                  name: CheckFileName,
-                  size: file.size
-                }
-                this.tempEngFile.push(TempFile);
+            this.uploadEngFile(file, CheckFileName).then((uploaded) => {
+              if (uploaded) {
+                this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, CheckFileName));
 
                 let tempData = {
                   startAnalyzeDate: this.AnalyzeDate.value,
@@ -1139,8 +1184,16 @@ export class ProgressForm3Component implements OnInit {
                     this.alertSuccess();
                   }
                 })
-
               }
+            }).catch((error) => {
+              console.error(error);
+              this.tempFileENGTotal -= file.size;
+              this.inputFile.reset();
+              Swal.fire({
+                title: 'Error',
+                icon: 'error',
+                text: 'Upload failed.'
+              })
             })
 
           } else {
@@ -2835,20 +2888,20 @@ export class ProgressForm3Component implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     const isFM = this.isFM();
 
-    const newItem = new FormGroup({
-      item: new FormControl('', isFM ? Validators.required : null),
-      qty: new FormControl(0, isFM ? Validators.required : null),
-      tempItem: new FormControl(''),
-      dropdown: new FormControl(false)
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', isFM ? Validators.required : null),
+      qty: new UntypedFormControl(0, isFM ? Validators.required : null),
+      tempItem: new UntypedFormControl(''),
+      dropdown: new UntypedFormControl(false)
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }
@@ -2887,17 +2940,17 @@ export class ProgressForm3Component implements OnInit {
 
   // อัปเดต validators สำหรับ Result2 ตามสถานะ FM
   updateResult2Validators() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     const isFM = this.isFM();
 
     if (isFM) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
         });
         result2Array.push(newItem);
       } else {
@@ -2938,7 +2991,8 @@ export class ProgressForm3Component implements OnInit {
 
   disableSubmitBtn(): Boolean {
     if (this.form?.needReport && this.form?.needReport == 'Need Report') {
-      return this.ResultForm.valid && this.FileReport ? false : true
+      // a report already uploaded (by Draft or "Upload and Replace") counts too
+      return this.ResultForm.valid && (this.FileReport || this.File.value) ? false : true
     } else if (this.form?.needReport && this.form?.needReport == 'Only Analysis') {
       return this.ResultForm.invalid
     }
@@ -2968,7 +3022,7 @@ export class ProgressForm3Component implements OnInit {
     });
 
     // ตรวจสอบ Result2 FormArray (สำหรับงาน FM)
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array) {
       console.log('\n--- Result2 FormArray Status ---');
       console.log('Result2 Array valid:', result2Array.valid);

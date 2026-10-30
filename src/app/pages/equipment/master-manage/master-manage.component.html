@@ -93,7 +93,7 @@
                     <td>{{i+1}}</td>
                     <td>{{item.name}}</td>
                     <td *ngIf="item.files.length >0">
-                        <a [download]="item.files[0].name" target="_blank" [href]="item.files[0].url">
+                        <a [download]="item.files[0].filename" target="_blank" [href]="item.files[0].path">
                             Quotation pdf file
                         </a>
                     </td>
@@ -271,7 +271,7 @@
                                         <td *ngIf="item.files.length>0">
                                             <tr *ngFor="let file of item.files; let indexFile=index" class="text-center">
                                                 <span>
-                                            {{file.name}} ({{file.size |fileSize}})
+                                            {{file.filename}} ({{file.size |fileSize}})
                                         </span>
                                             </tr>
                                         </td>

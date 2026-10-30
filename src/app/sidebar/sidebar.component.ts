@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'environments/environment';
 
 
 export interface RouteInfo {
@@ -71,12 +72,13 @@ export let equipmentItems: RouteInfo[] = [
 ]
 
 @Component({
-  moduleId: module.id,
   selector: 'sidebar-cmp',
   templateUrl: 'sidebar.component.html',
+  standalone: false
 })
 
 export class SidebarComponent implements OnInit {
+  appUrl = environment.AppUrl;
   public menuItems: any[];
   equipmentItemsTemp: RouteInfo[]
   public UserLevel1 = localStorage.getItem('AR_UserLevel1');
@@ -251,7 +253,7 @@ export class SidebarComponent implements OnInit {
       path: '/equipment', title: 'Equipment', icon: 'bi bi-tools', class: '', type: 'internal'
     }
     const backToPortal = {
-      path: 'http://10.200.90.152:8081/an-portal', title: 'Home', icon: 'bi bi-house', class: '', type: 'external'
+      path: environment.PortalUrl, title: 'Home', icon: 'bi bi-house', class: '', type: 'external'
     }
     this.menuItems.push(equipment)
     this.menuItems.push(backToPortal)

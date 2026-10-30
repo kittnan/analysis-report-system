@@ -247,10 +247,10 @@
               </tr>
               <tr *ngFor="let item of form.files; let i=index">
                 <td>
-                  {{item.name}}
+                  {{item.filename}}
                 </td>
                 <td class="text-center">
-                  <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
+                  <a target="_blank" [download]="item.filename" [href]="item.path" class="btn btn-sm btn-primary mr-0"
                     style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
                 </td>
               </tr>
@@ -555,9 +555,9 @@
             </thead>
             <tbody class="subtext-color">
               <tr *ngFor="let item of tempFile; let i=index">
-                <td>{{item.name}} </td>
+                <td>{{item.filename}} </td>
                 <td class="text-center">
-                  <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
+                  <a target="_blank" [download]="item.filename" [href]="item.path" class="btn btn-sm btn-primary mr-0"
                     style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
                 </td>
               </tr>
@@ -592,7 +592,7 @@
                   No file..
                 </td>
                 <td class="text-center">
-                  <a *ngIf="result" target="_blank" [download]="FileReportName" [href]="result.file"
+                  <a *ngIf="result" target="_blank" [download]="FileReportName" [href]="result.file?.path"
                     style="cursor: pointer;">
                     <button class="btn btn-primary btn-sm mr-2"><i class="bi bi-download"
                         style="font-size: 1rem;"></i></button>
@@ -607,7 +607,7 @@
                       style="font-size: 1rem;"></i></button>
                 </td>
                 <td class="text-center">
-                  <a *ngIf="result.file" [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file"
+                  <a *ngIf="result.file" [href]="onlyOfficeUrl + result.file?.path"
                     target="_blank">
                     <button class="btn btn-primary btn-sm"> <i class="bi bi-eye" style="font-size: 1rem;"></i></button>
                   </a>
@@ -625,7 +625,7 @@
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12 " *ngIf="result">
                     <label class="head-label">Download report </label>
-                    <a target="_blank" [download]="FileReportName" [href]="result.file" style="cursor: pointer;">
+                    <a target="_blank" [download]="FileReportName" [href]="result.file?.path" style="cursor: pointer;">
                         <button class="btn btn-block mt-0">download
                             <i class="bi bi-file-earmark-excel" style="font-size: 1.2rem;">
 

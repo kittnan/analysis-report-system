@@ -3,8 +3,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 const FILE_SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 const FILE_SIZE_UNITS_LONG = ['Bytes', 'Kilobytes', 'Megabytes', 'Gigabytes', 'Pettabytes', 'Exabytes', 'Zettabytes', 'Yottabytes'];
 
+// standalone so both AdminLayoutModule and AppModule (the *-fm pages) can import it
 @Pipe({
-  name: 'fileSize'
+  name: 'fileSize',
+  standalone: true
 })
 export class FileSizePipe implements PipeTransform {
 

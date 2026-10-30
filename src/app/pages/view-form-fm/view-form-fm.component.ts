@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params } from '@angular/router';
+import { environment } from 'environments/environment';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-view-form-fm',
   templateUrl: './view-form-fm.component.html',
-  styleUrls: ['./view-form-fm.component.scss', '../pagesStyle.css']
+  styleUrls: ['./view-form-fm.component.scss', '../pagesStyle.css'],
+  standalone: false
 })
 export class ViewFormFmComponent implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   form: any = [];
   result: any = {};
@@ -512,14 +515,14 @@ export class ViewFormFmComponent implements OnInit {
   private mapFile(file: any, prefix: string, index: number) {
     if (typeof file === 'string') {
       return {
-        name: `${prefix}-${index + 1}`,
+        filename: `${prefix}-${index + 1}`,
         path: file,
         size: ''
       };
     }
 
     return {
-      name: file?.name || `${prefix}-${index + 1}`,
+      filename: file?.filename || file?.name || `${prefix}-${index + 1}`,
       path: file?.path || file?.url || '',
       size: file?.size || ''
     };

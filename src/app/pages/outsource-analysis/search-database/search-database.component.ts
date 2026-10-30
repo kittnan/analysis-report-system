@@ -17,7 +17,8 @@ import { interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-search-database',
   templateUrl: './search-database.component.html',
-  styleUrls: ['./search-database.component.css']
+  styleUrls: ['./search-database.component.css'],
+  standalone: false
 })
 export class SearchDatabaseComponent implements OnInit {
 

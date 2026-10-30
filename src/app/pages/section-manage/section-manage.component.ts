@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-section-manage',
   templateUrl: './section-manage.component.html',
-  styleUrls: ['./section-manage.component.css']
+  styleUrls: ['./section-manage.component.css'],
+  standalone: false
 })
 export class SectionManageComponent implements OnInit {
 
@@ -19,27 +20,27 @@ export class SectionManageComponent implements OnInit {
   ) { }
 
   // ? Variable Form
-  ModalSectionName = new FormControl(null, Validators.required);
-  ModalSectionLevel = new FormControl(null, Validators.required);
+  ModalSectionName = new UntypedFormControl(null, Validators.required);
+  ModalSectionLevel = new UntypedFormControl(null, Validators.required);
 
   // ? Variable Get Api
   Section: any;
 
   // ? Modal Variable
-  ModalSectionId = new FormControl(null, Validators.required);
+  ModalSectionId = new UntypedFormControl(null, Validators.required);
 
   CC = [];
   toggleAddCC = false;
-  ModalCC = new FormGroup({
-    section: new FormControl(null, Validators.required),
-    userId: new FormControl({ value: null, disabled: true }, Validators.required),
+  ModalCC = new UntypedFormGroup({
+    section: new UntypedFormControl(null, Validators.required),
+    userId: new UntypedFormControl({ value: null, disabled: true }, Validators.required),
   })
   Users = [];
   ModalCCSectionId: any;
 
   // ? filter
   ResultFilter: any;
-  WordFilter = new FormControl(null, Validators.required);
+  WordFilter = new UntypedFormControl(null, Validators.required);
 
 
   ngOnInit(): void {

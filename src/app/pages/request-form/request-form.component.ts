@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../environments/environment.prod'
 import Swal from 'sweetalert2'
@@ -11,7 +12,8 @@ import { Router } from '@angular/router';
   selector: 'app-request-form',
   templateUrl: './request-form.component.html',
   // styleUrls: ['./request-form.component.css',],
-  styleUrls: ['../pagesStyle.css']
+  styleUrls: ['../pagesStyle.css'],
+  standalone: false
 })
 
 
@@ -19,41 +21,41 @@ import { Router } from '@angular/router';
 export class RequestFormComponent implements OnInit {
 
   // ?
-  LoadingPage: boolean;
+  LoadingPage: boolean = false
 
-  RequestForm = new FormGroup({
-    RequestItem: new FormControl(null, Validators.required),
-    RequestNumber: new FormControl("-", Validators.required),
-    IssueDate: new FormControl(null, Validators.required),
-    ReplyDate: new FormControl(null, Validators.required),
-    RequestSection: new FormControl(null, Validators.required),
-    ModelNumber: new FormControl(null, Validators.required),
-    LotNumber: new FormControl(null, Validators.required),
-    DefectName: new FormControl(null, Validators.required),
-    DefectCode: new FormControl(null, Validators.required),
-    InputQ: new FormControl(null, [Validators.required, Validators.min(1)]),
-    NGQ: new FormControl(null, Validators.required),
-    NGR: new FormControl(null, Validators.required),
-    SendNG: new FormControl(null, Validators.required),
-    ProductPhase: new FormControl(null, Validators.required),
-    DefectCategory: new FormControl(null, Validators.required),
-    ClaimNo: new FormControl(null),
-    OccurA: new FormControl(null, Validators.required),
-    OccurB: new FormControl(null, Validators.required),
-    Abnormal: new FormControl(null, Validators.required),
-    Issuer: new FormControl(null, Validators.required),
-    Aprrove: new FormControl(null, Validators.required),
-    TempDefectName: new FormControl(null, Validators.required),
-    TempModelNumber: new FormControl(null),
-    Size: new FormControl(null, Validators.required),
-    Customer: new FormControl(null, Validators.required),
-    TBN: new FormControl(null, Validators.required),
-    TBNNumber: new FormControl(null),
-    Treatment: new FormControl(null, Validators.required),
-    NeedReport: new FormControl(null, Validators.required),
+  RequestForm = new UntypedFormGroup({
+    RequestItem: new UntypedFormControl(null, Validators.required),
+    RequestNumber: new UntypedFormControl("-", Validators.required),
+    IssueDate: new UntypedFormControl(null, Validators.required),
+    ReplyDate: new UntypedFormControl(null, Validators.required),
+    RequestSection: new UntypedFormControl(null, Validators.required),
+    ModelNumber: new UntypedFormControl(null, Validators.required),
+    LotNumber: new UntypedFormControl(null, Validators.required),
+    DefectName: new UntypedFormControl(null, Validators.required),
+    DefectCode: new UntypedFormControl(null, Validators.required),
+    InputQ: new UntypedFormControl(null, [Validators.required, Validators.min(1)]),
+    NGQ: new UntypedFormControl(null, Validators.required),
+    NGR: new UntypedFormControl(null, Validators.required),
+    SendNG: new UntypedFormControl(null, Validators.required),
+    ProductPhase: new UntypedFormControl(null, Validators.required),
+    DefectCategory: new UntypedFormControl(null, Validators.required),
+    ClaimNo: new UntypedFormControl(null),
+    OccurA: new UntypedFormControl(null, Validators.required),
+    OccurB: new UntypedFormControl(null, Validators.required),
+    Abnormal: new UntypedFormControl(null, Validators.required),
+    Issuer: new UntypedFormControl(null, Validators.required),
+    Aprrove: new UntypedFormControl(null, Validators.required),
+    TempDefectName: new UntypedFormControl(null, Validators.required),
+    TempModelNumber: new UntypedFormControl(null),
+    Size: new UntypedFormControl(null, Validators.required),
+    Customer: new UntypedFormControl(null, Validators.required),
+    TBN: new UntypedFormControl(null, Validators.required),
+    TBNNumber: new UntypedFormControl(null),
+    Treatment: new UntypedFormControl(null, Validators.required),
+    NeedReport: new UntypedFormControl(null, Validators.required),
   })
 
-  NoteApprove = new FormControl(null)
+  NoteApprove = new UntypedFormControl(null)
 
 
 
@@ -61,7 +63,9 @@ export class RequestFormComponent implements OnInit {
   constructor(
     private md: NgbModal,
     private api: HttpService,
-    private route: Router) { }
+    private route: Router,
+    private fileUploadService: FileUploadService
+  ) { }
 
   // ? Variable API
   Model: any;
@@ -128,7 +132,7 @@ export class RequestFormComponent implements OnInit {
 
   // ? file attacnt
   FileList: any = [];
-  fileInput = new FormControl(null)
+  fileInput = new UntypedFormControl(null)
 
 
   ngOnInit(): void {
@@ -163,7 +167,7 @@ export class RequestFormComponent implements OnInit {
       ) {
         this.NeedReport.setValue('Need Report')
         this.NeedReport.disable()
-      }else{
+      } else {
         this.NeedReport.enable()
       }
     })
@@ -502,37 +506,55 @@ export class RequestFormComponent implements OnInit {
   }
 
   async uploadFile() {
-    let count = 0;
     if (this.FileList.length > 0) {
-      this.FileList.forEach(file => {
-        let name = `${this.RequestNumber.value}!${file.name}`
-        this.api.UploadFile(file, name).then(async (res) => {
-          if (res) {
-            count += 1;
-            const b = {
-              path: res,
-              name: name,
-              size: file.size
-            }
-            this.fileToUp.push(b);
-            // console.log('1');
+      for (const file of this.FileList) {
+        const name = `${this.RequestNumber.value}!${file.name}`;
+        const path = `${environment.namespace}/Requester/`
+        const formData = new FormData();
+        formData.append('path', path);
+        formData.append('file', file, name);
 
-            if (count == this.FileList.length) {
-              // console.log("file finish");
-              this.updateForm();
-            }
-
-
-          }
-        })
-      });
-
-    } else {
-      this.updateForm();
+        const response: any = await this.fileUploadService.upload(formData).toPromise();
+        const uploaded = Array.isArray(response) ? response[0] : response;
+        if (uploaded) {
+          this.fileToUp.push(this.fileUploadService.toStoredFile(uploaded, file, name));
+        }
+      }
     }
-
-
+    this.updateForm();
   }
+  // async uploadFile() {
+  //   let count = 0;
+  //   if (this.FileList.length > 0) {
+  //     this.FileList.forEach(file => {
+  //       let name = `${this.RequestNumber.value}!${file.name}`
+  //       this.api.UploadFile(file, name).then(async (res) => {
+  //         if (res) {
+  //           count += 1;
+  //           const b = {
+  //             path: res,
+  //             name: name,
+  //             size: file.size
+  //           }
+  //           this.fileToUp.push(b);
+  //           // console.log('1');
+
+  //           if (count == this.FileList.length) {
+  //             // console.log("file finish");
+  //             this.updateForm();
+  //           }
+
+
+  //         }
+  //       })
+  //     });
+
+  //   } else {
+  //     this.updateForm();
+  //   }
+
+
+  // }
 
   openModalSubmit(content) {
     this.md.open(content, { size: 'lg' });
@@ -546,7 +568,7 @@ export class RequestFormComponent implements OnInit {
     // console.log(this.fileToUp);
 
     // console.log(this.RequestForm.value);
-    
+
 
 
     if (this.RequestNumber.valid) {
@@ -607,7 +629,7 @@ export class RequestFormComponent implements OnInit {
           this.api.PostRequestForm(da).subscribe((data: any) => {
             if (data.length > 0) {
               const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(Requestor approval)</p><br>" +
-                "Please approve analysis request as link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                "Please approve analysis request as link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                 "<p>From " + Fname + " " + Lname + "(Issuer)</p>";
 
               const sendMail = {

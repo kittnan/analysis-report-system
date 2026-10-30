@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AdminLayoutComponent } from './admin-layout.component';
 
@@ -8,7 +9,8 @@ describe('AdminLayoutComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminLayoutComponent ]
+      declarations: [ AdminLayoutComponent ],
+      imports: [ RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ]
     })
     .compileComponents();
   }));

@@ -5,9 +5,9 @@ import { Location } from '@angular/common';
 import { LocalStorageService } from 'app/service/local-storage.service';
 
 @Component({
-  moduleId: module.id,
   selector: 'navbar-cmp',
-  templateUrl: 'navbar.component.html'
+  templateUrl: 'navbar.component.html',
+  standalone: false
 })
 
 export class NavbarComponent implements OnInit {
@@ -72,11 +72,11 @@ export class NavbarComponent implements OnInit {
     const html = document.getElementsByTagName('html')[0];
     const mainPanel = <HTMLElement>document.getElementsByClassName('main-panel')[0];
     setTimeout(function () {
-      toggleButton.classList.add('toggled');
+      toggleButton?.classList.add('toggled');
     }, 500);
 
     html.classList.add('nav-open');
-    if (window.innerWidth < 991) {
+    if (window.innerWidth < 991 && mainPanel) {
       mainPanel.style.position = 'fixed';
     }
     this.sidebarVisible = true;
@@ -84,12 +84,12 @@ export class NavbarComponent implements OnInit {
   sidebarClose() {
     const html = document.getElementsByTagName('html')[0];
     const mainPanel = <HTMLElement>document.getElementsByClassName('main-panel')[0];
-    if (window.innerWidth < 991) {
+    if (window.innerWidth < 991 && mainPanel) {
       setTimeout(function () {
         mainPanel.style.position = '';
       }, 500);
     }
-    this.toggleButton.classList.remove('toggled');
+    this.toggleButton?.classList.remove('toggled');
     this.sidebarVisible = false;
     html.classList.remove('nav-open');
   };

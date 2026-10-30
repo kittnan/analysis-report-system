@@ -9,12 +9,13 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-guest',
   templateUrl: './dashboard-guest.component.html',
-  styleUrls: ['./dashboard-guest.component.css']
+  styleUrls: ['./dashboard-guest.component.css'],
+  standalone: false
 })
 export class DashboardGuestComponent implements OnInit {
 
   // @HostListener('scroll', ['$event']) // for scroll events of the current element
-  @HostListener('window:scroll', ['$event']) // for window scroll events
+  @HostListener('window:scroll') // for window scroll events
   scrollFunction() {
     var mybutton = document.getElementById("myBtn");
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
@@ -337,7 +338,7 @@ export class DashboardGuestComponent implements OnInit {
       const PercentAll = (countOntime / total) * 100;
       // this.PercentAll = Math.round(this.PercentAll) || null
       const result = {
-        percent: Math.round(PercentAll) ? Math.round(PercentAll) + '%' : null || null,
+        percent: Math.round(PercentAll) ? Math.round(PercentAll) + '%' : null,
         timeUpdate: new Date().toLocaleDateString()
       }
       return result
@@ -351,7 +352,7 @@ export class DashboardGuestComponent implements OnInit {
       const tempResult = (newCount / oldCount) * 100;
       // const result = Math.round(tempResult) || null
       const result = {
-        percent: Math.round(tempResult) ? Math.round(tempResult) + '%' : null || null,
+        percent: Math.round(tempResult) ? Math.round(tempResult) + '%' : null,
         timeUpdate: new Date().toLocaleDateString()
       }
       return result

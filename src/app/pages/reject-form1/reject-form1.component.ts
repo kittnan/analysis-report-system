@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'environments/environment.prod'
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-reject-form1',
   templateUrl: './reject-form1.component.html',
-  styleUrls: ['./reject-form1.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form1.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm1Component implements OnInit {
   constructor(
@@ -19,7 +21,8 @@ export class RejectForm1Component implements OnInit {
     private modalService: NgbModal,
     private api: HttpService,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
     // private progressForm3: ProgressForm3Service,
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
@@ -33,40 +36,40 @@ export class RejectForm1Component implements OnInit {
   formId: null | string = null
 
   // ? Form Conttrol
-  RequestForm = new FormGroup({
-    RequestItem: new FormControl(null, Validators.required),
-    RequestNumber: new FormControl("-", Validators.required),
-    IssueDate: new FormControl(null, Validators.required),
-    ReplyDate: new FormControl(null, Validators.required),
-    RequestSection: new FormControl("-", Validators.required),
-    ModelNumber: new FormControl(null, Validators.required),
-    Size: new FormControl(null, Validators.required),
-    Customer: new FormControl(null, Validators.required),
-    LotNumber: new FormControl(null,),
-    DefectName: new FormControl(null, Validators.required),
-    DefectCode: new FormControl("null", Validators.required),
-    InputQ: new FormControl(null, [Validators.required, Validators.min(1)]),
-    NGQ: new FormControl(null, Validators.required),
-    NGR: new FormControl(null, Validators.required),
-    SendNG: new FormControl(null, Validators.required),
-    ProductPhase: new FormControl(null, Validators.required),
-    DefectCategory: new FormControl(null, Validators.required),
-    ClaimNo: new FormControl(null),
-    OccurA: new FormControl(null, Validators.required),
-    OccurB: new FormControl(null, Validators.required),
-    Abnormal: new FormControl(null, Validators.required),
-    Issuer: new FormControl(null, Validators.required),
-    Aprrove: new FormControl(null, Validators.required),
-    TempDefectName: new FormControl(null),
-    TempModelNumber: new FormControl(null),
-    TBN: new FormControl(null, Validators.required),
-    TBNNumber: new FormControl(null),
-    Treatment: new FormControl(null, Validators.required),
-    NeedReport: new FormControl(null, Validators.required),
+  RequestForm = new UntypedFormGroup({
+    RequestItem: new UntypedFormControl(null, Validators.required),
+    RequestNumber: new UntypedFormControl("-", Validators.required),
+    IssueDate: new UntypedFormControl(null, Validators.required),
+    ReplyDate: new UntypedFormControl(null, Validators.required),
+    RequestSection: new UntypedFormControl("-", Validators.required),
+    ModelNumber: new UntypedFormControl(null, Validators.required),
+    Size: new UntypedFormControl(null, Validators.required),
+    Customer: new UntypedFormControl(null, Validators.required),
+    LotNumber: new UntypedFormControl(null,),
+    DefectName: new UntypedFormControl(null, Validators.required),
+    DefectCode: new UntypedFormControl("null", Validators.required),
+    InputQ: new UntypedFormControl(null, [Validators.required, Validators.min(1)]),
+    NGQ: new UntypedFormControl(null, Validators.required),
+    NGR: new UntypedFormControl(null, Validators.required),
+    SendNG: new UntypedFormControl(null, Validators.required),
+    ProductPhase: new UntypedFormControl(null, Validators.required),
+    DefectCategory: new UntypedFormControl(null, Validators.required),
+    ClaimNo: new UntypedFormControl(null),
+    OccurA: new UntypedFormControl(null, Validators.required),
+    OccurB: new UntypedFormControl(null, Validators.required),
+    Abnormal: new UntypedFormControl(null, Validators.required),
+    Issuer: new UntypedFormControl(null, Validators.required),
+    Aprrove: new UntypedFormControl(null, Validators.required),
+    TempDefectName: new UntypedFormControl(null),
+    TempModelNumber: new UntypedFormControl(null),
+    TBN: new UntypedFormControl(null, Validators.required),
+    TBNNumber: new UntypedFormControl(null),
+    Treatment: new UntypedFormControl(null, Validators.required),
+    NeedReport: new UntypedFormControl(null, Validators.required),
   })
 
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
 
 
 
@@ -99,7 +102,7 @@ export class RejectForm1Component implements OnInit {
   // FileListname = [];
   // PathListName = [];
   FileList: any = [];
-  fileInput = new FormControl(null)
+  fileInput = new UntypedFormControl(null)
 
   // ? Fix Id
   IdModelNumber = environment.IdModelNumber;
@@ -478,7 +481,7 @@ export class RejectForm1Component implements OnInit {
         } else {
           if (file.size <= 5242880) {
 
-            if (this.FileList.filter(item => item.name == file.name).length > 0) {
+            if (this.FileList.filter(item => item.filename == file.name).length > 0) {
               this.fileInput.reset();
               Swal.fire({
                 icon: 'error',
@@ -488,15 +491,9 @@ export class RejectForm1Component implements OnInit {
             } else {
 
               let name = `${this.RequestNumber.value}!${file.name}`
-              let tempFileList = this.FileList
-              this.api.UploadFile(file, name).then(async (res) => {
-                const path = await res
-                const dateSet = {
-                  path: path,
-                  name: name,
-                  size: file.size
-                }
-                this.FileList.push(dateSet);
+              let tempFileList = [...this.FileList]
+              this.fileUploadService.uploadRequesterFile(file, name).then((uploaded) => {
+                this.FileList.push(this.fileUploadService.toStoredFile(uploaded, file, name));
                 const dataToApi = {
                   issuedDate: this.IssueDate.value,
                   replyDate: this.ReplyDate.value,
@@ -516,6 +513,10 @@ export class RejectForm1Component implements OnInit {
                     })
                   }
                 })
+              }).catch((error) => {
+                console.error(error);
+                this.fileInput.reset();
+                Swal.fire({ icon: 'error', title: 'Upload failed', text: 'Try Again' })
               })
             }
 
@@ -545,7 +546,7 @@ export class RejectForm1Component implements OnInit {
 
     Swal.fire({
       title: 'Do you have remove file ?',
-      text: `Remove ${file.name} ?`,
+      text: `Remove ${file.filename} ?`,
       icon: 'question',
       showCancelButton: true
     }).then((result) => {
@@ -553,7 +554,7 @@ export class RejectForm1Component implements OnInit {
 
 
         const IdForm = this.formId
-        this.api.RemoveFile(file).then((data: any) => {
+        this.fileUploadService.deleteFile(file).toPromise().then((data: any) => {
           if (data) {
             const indexOfFile = this.FileList.indexOf(file);
             // console.log(indexOfFile);
@@ -561,7 +562,7 @@ export class RejectForm1Component implements OnInit {
             const data = {
               issuedDate: this.IssueDate.value,
               replyDate: this.ReplyDate.value,
-              file: this.FileList
+              files: this.FileList
             }
             this.api.UpadateRequestForm(IdForm, data).subscribe((data: any) => {
               if (data) {
@@ -569,6 +570,9 @@ export class RejectForm1Component implements OnInit {
               }
             })
           }
+        }).catch((error) => {
+          console.error(error);
+          Swal.fire({ icon: 'error', title: 'Delete failed', text: 'Try Again' })
         })
       }
     })
@@ -637,7 +641,7 @@ export class RejectForm1Component implements OnInit {
                 let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(Requestor approval)</p><br>" +
-                    "Please approve analysis request as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "Please approve analysis request as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(Issuer)</p>";
 
                   const sendMail = {
@@ -682,59 +686,21 @@ export class RejectForm1Component implements OnInit {
   }
 
   async deleteEngFile() {
-    // console.log('1');
+    const data: any = await this.api.FindResultByFormIdMain(this.formId).toPromise()
+    if (!data || data.length == 0) return
 
-    this.api.FindResultByFormIdMain(this.formId).subscribe((data: any) => {
-      if (data.length > 0) {
-        const result = data[0]
-        const files = result.files
-        //  * ลบfile report
-        if (result.file) {
-          // const reportFile = (result.file.split('/'))[6]
-          const reportFile = (result.file.split('/'))[5]
-          const temp = {
-            name: reportFile
-          }
-          this.api.RemoveReport(temp).then(async (data: any) => {
-            if (data) {
-              await data
-            }
-          })
-        }
+    const result = data[0]
+    const targets: any[] = []
+    if (result.file) targets.push(result.file)
+    if (result.files?.length > 0) targets.push(...result.files)
 
-        //  * ลบfile ของ result
-        if (files.length > 0) {
-          files.forEach(fileEng => {
-            const temp = {
-              name: fileEng.name
-            }
-            this.api.RemoveFileEng(temp).then(async (data) => {
-              if (data) {
-                const a = await data
-              }
-            })
-          });
-        }
-
-      }
-    })
+    const { failed } = await this.fileUploadService.deleteFiles(targets)
+    if (failed.length > 0) console.error('deleteEngFile: some files failed', failed)
   }
   async deleteRequesterFile() {
-    // console.log('2');
-
     if (this.FileList.length > 0) {
-      this.FileList.forEach(file => {
-        // console.log(file);
-        const temp = {
-          name: file.name
-        }
-        this.api.RemoveFile(temp).then(async (data: any) => {
-          if (data) {
-            const a = await data
-          }
-        })
-      });
-
+      const { failed } = await this.fileUploadService.deleteFiles(this.FileList)
+      if (failed.length > 0) console.error('deleteRequesterFile: some files failed', failed)
     }
   }
 

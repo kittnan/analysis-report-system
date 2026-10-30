@@ -59,6 +59,7 @@
                   *ngIf="IssueDate?.invalid" class="bi bi-x-square-fill"></i></label>
               <input type="date" formControlName="IssueDate" class="form-control subtext-color" [min]="MinDate1"
                 [max]="MaxDate1" (blur)="onChangeIssueDate()">
+              <small *ngIf="IssueDate?.value && IssueDate?.value < MinDate1" class="text-danger">Issued Date must not be in the past</small>
             </div>
           </div>
           <!-- * -------------------------------------------------Issued Date -->
@@ -68,9 +69,10 @@
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
 
-              <label class="head-label" [ngClass]="{'text-danger': ReplyDate?.invalid}">Reply Date <i
+              <label class="head-label" [ngClass]="{'text-danger': ReplyDate?.invalid || ReplyDate?.value < IssueDate?.value}">Reply Date <i
                   *ngIf="ReplyDate?.invalid" class="bi bi-x-square-fill"></i></label>
-              <input type="date" formControlName="ReplyDate" class="form-control subtext-color" [min]="MinDate2">
+              <input type="date" formControlName="ReplyDate" class="form-control subtext-color" [min]="MinDate2 || IssueDate?.value">
+              <small *ngIf="ReplyDate?.value && ReplyDate?.value < IssueDate?.value" class="text-danger">Reply Date must not be before Issued Date</small>
 
             </div>
           </div>
@@ -158,7 +160,7 @@
                     Lot Number
                     <i *ngIf="LotNumber?.invalid" class="bi bi-x-square-fill"></i>
                   </label>
-                  <input type="text" class="form-control subtext-color" formControlName="LotNumber">
+                  <input type="text" class="form-control subtext-color" formControlName="LotNumber" maxlength="500">
                 </div>
               </div>
 
@@ -637,7 +639,10 @@
           </button>
         </div>
         <div class="col-lg-6">
-          <button type="button" [disabled]="RequestForm?.invalid" class="btn btn-primary btn-lg btn-block "
+          <!-- extra checks: HTML min/max on date inputs does not stop typed values -->
+          <button type="button"
+            [disabled]="RequestForm?.invalid || ReplyDate?.value < IssueDate?.value || IssueDate?.value < MinDate1 || !LotNumber?.value?.trim()"
+            class="btn btn-primary btn-lg btn-block "
             (click)="openModalSubmit(approveNote)">Submit
             <i class="bi bi-check-square-fill"></i>
           </button>

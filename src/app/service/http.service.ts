@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http'
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'environments/environment'
 @Injectable({
   providedIn: 'root'
@@ -362,75 +362,6 @@ export class HttpService {
 
 
 
-  async UploadFile(file: any, data: any) {
-    return new Promise((resolve, reject) => {
-      const uploadData = new FormData();
-      uploadData.append('File', file, data);
-      this.http
-        .post(this.Url + "/upload", uploadData,)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-
-  async UploadFileEng(file: any, data: any) {
-    return new Promise((resolve, reject) => {
-      const uploadData = new FormData();
-      uploadData.append('File', file, data);
-      this.http
-        .post(this.Url + "/UploadFileEng", uploadData,)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-  async RemoveFileEng(name: any) {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post(this.Url + "/RemoveFileEng", name)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-
-  async UploadFileEReport(file: any, data: any) {
-    return new Promise((resolve, reject) => {
-      const uploadData = new FormData();
-      uploadData.append('File', file, data);
-      this.http
-        .post(this.Url + "/UploadReport", uploadData,)
-        .subscribe(
-          (data) => {
-            resolve(data);
-          },
-          (err) => {
-            reject(err);
-          }
-        );
-    });
-  }
-
-  uploadReport2(data: any): Promise<any> {
-    return this.http.post(this.Url + "/UploadReport/", data).toPromise()
-  }
-
   // FindResultByFormId(id: any): Observable<any> {
   //   return this.http.get(this.Url + "/ResultByFormId/" + id);
   // }
@@ -445,24 +376,20 @@ export class HttpService {
   }
 
 
-
-
-  async RemoveFile(data: any): Promise<any> {
-    const res = await this.http.post(this.Url + "/Remove", data).toPromise();
-    return res;
-  }
-  async RemoveReport(data: any): Promise<any> {
-    const res = await this.http.post(this.Url + "/RemoveReport", data).toPromise();
-    return res;
-  }
-
-
   // UpdateResult(id: any, data: any): Observable<any> {
   //   return this.http.put(this.Url + "/Result/" + id, data);
   // }
 
 
   SendEmailTo(data: any): Observable<any> {
+    // set by qa-tool/switch-user.html while testing as another user: keep the mail in this browser instead of sending it
+    if (localStorage.getItem('AR_QA_noMail') == 'true') {
+      const held = JSON.parse(localStorage.getItem('AR_QA_heldMail') || '[]');
+      held.push({ at: new Date().toISOString(), To: data?.To, Cc: data?.Cc, Subject: data?.Subject, Content: data?.Content });
+      localStorage.setItem('AR_QA_heldMail', JSON.stringify(held.slice(-50)));
+      console.warn('[QA] mail not sent', data);
+      return of(data); // /SendEmailTo replies with the request body
+    }
     return this.http.post(this.Url + "/SendEmailTo", data);
   }
 

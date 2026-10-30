@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment.prod'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
@@ -7,15 +7,18 @@ import * as fs from 'file-saver';
 import { Workbook } from 'exceljs'
 // import { RequestServiceService } from '../request-form/request-service.service';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-reject-form3',
   templateUrl: './reject-form3.component.html',
-  styleUrls: ['./reject-form3.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form3.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm3Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   constructor(
     // private api: RejectForm2Service,
@@ -26,7 +29,8 @@ export class RejectForm3Component implements OnInit {
     private modalService: NgbModal,
     private api: HttpService,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
       if (param) {
@@ -50,45 +54,45 @@ export class RejectForm3Component implements OnInit {
   Report: any;
 
   // ? Form Control
-  ResultForm = new FormGroup({
-    AnalyzeDate: new FormControl(null, Validators.required),
-    ResultDate: new FormControl(null, Validators.required),
-    ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null),
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0),
-        item: new FormControl(null),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
+  ResultForm = new UntypedFormGroup({
+    AnalyzeDate: new UntypedFormControl(null, Validators.required),
+    ResultDate: new UntypedFormControl(null, Validators.required),
+    ReportDate: new UntypedFormControl(null, Validators.required),
+    Result: new UntypedFormControl(null),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0),
+        item: new UntypedFormControl(null),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
       })
     ]),
-    SourceOfDefect: new FormControl(null, Validators.required),
-    CategoryCause: new FormControl(null, Validators.required),
-    AnalysisLevel: new FormControl(null, Validators.required),
-    CanAnalysis: new FormControl(null, Validators.required),
-    relatedToESD: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null),
-    Approve: new FormControl(null, Validators.required),
-    TempCause: new FormControl(null),
-    JudgementDefect: new FormControl('', Validators.required),
-    Remark: new FormControl(''),
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
+    SourceOfDefect: new UntypedFormControl(null, Validators.required),
+    CategoryCause: new UntypedFormControl(null, Validators.required),
+    AnalysisLevel: new UntypedFormControl(null, Validators.required),
+    CanAnalysis: new UntypedFormControl(null, Validators.required),
+    relatedToESD: new UntypedFormControl(null, Validators.required),
+    ReportNo: new UntypedFormControl(null),
+    Approve: new UntypedFormControl(null, Validators.required),
+    TempCause: new UntypedFormControl(null),
+    JudgementDefect: new UntypedFormControl('', Validators.required),
+    Remark: new UntypedFormControl(''),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
   })
 
-  IssueDate = new FormControl(null);
-  ReplyDate = new FormControl(null);
+  IssueDate = new UntypedFormControl(null);
+  ReplyDate = new UntypedFormControl(null);
 
 
-  NoteReject = new FormControl(null);
-  NoteApprove = new FormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  NoteApprove = new UntypedFormControl(null);
 
 
-  htmlFile = new FormControl(null);
-  TreatmentOfNg = new FormControl(null);
+  htmlFile = new UntypedFormControl(null);
+  TreatmentOfNg = new UntypedFormControl(null);
   TreatmentList: any;
   // GenItemName = new FormControl(null, Validators.required);
 
@@ -97,9 +101,6 @@ export class RejectForm3Component implements OnInit {
   // ? Variable Normal
   ApproveName: any;
   ResultId: any;
-
-  FileListname = [];
-  PathListName = [];
 
   // ? Fix Id
   SourceId = environment.IdSource;
@@ -138,7 +139,7 @@ export class RejectForm3Component implements OnInit {
   FileList: any
   FileReportName: any = "No file..";
   FileReportPath: any;
-  SelectMDL = new FormControl(null, Validators.required)
+  SelectMDL = new UntypedFormControl(null, Validators.required)
 
 
   // ?upload file
@@ -146,7 +147,7 @@ export class RejectForm3Component implements OnInit {
   tempFile: any = [];
   tempFileName: any = [];
   tempFileTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
 
   // ? comment
@@ -204,18 +205,6 @@ export class RejectForm3Component implements OnInit {
     })
   }
 
-  // SetPathFile() {
-  //   if (this.FileListname.length > 0) {
-  //     this.FileListname.forEach(i => {
-  //       this.progressForm1.FindPath(i).subscribe((data: any) => {
-  //         if (data.length > 0) {
-  //           this.PathListName.push(data[0].path);
-  //         }
-  //       })
-  //     });
-  //   }
-  // }
-
   GetResultFMMaster() {
     let type = this.form.requestItem.includes('DST') ? 'DST' : 'AMT'
     this.api.getResultFMMaster(new HttpParams().set('type', type)).subscribe((res: any) => {
@@ -239,8 +228,6 @@ export class RejectForm3Component implements OnInit {
 
       if (data) {
         this.form = data;
-        this.FileListname = data.fileList;
-        // this.SetPathFile();
         let str = data.issuedDate.split("T");
         let str2 = data.replyDate.split("T");
         let temp1 = str[0];
@@ -269,14 +256,14 @@ export class RejectForm3Component implements OnInit {
       if (data2.length > 0) {
         let result = data2[0];
         if (result.result2) {
-          const result2Array = this.Result2 as FormArray;
+          const result2Array = this.Result2 as UntypedFormArray;
           result2Array.clear();
           result.result2.forEach((res: any) => {
-            const formGroup = new FormGroup({
-              item: new FormControl(res.item || '', Validators.required),
-              qty: new FormControl(res.qty || '', Validators.required),
-              tempItem: new FormControl(res.item || ''),
-              dropdown: new FormControl(res.dropdown || ''),
+            const formGroup = new UntypedFormGroup({
+              item: new UntypedFormControl(res.item || '', Validators.required),
+              qty: new UntypedFormControl(res.qty || '', Validators.required),
+              tempItem: new UntypedFormControl(res.item || ''),
+              dropdown: new UntypedFormControl(res.dropdown || ''),
             });
             result2Array.push(formGroup);
           });
@@ -314,10 +301,8 @@ export class RejectForm3Component implements OnInit {
 
         this.tempFile = this.result.files;
 
-
-
-        this.FileReportName = this.result && this.result.length > 0 ? (this.result.file?.split('/'))[5] : ''
-        // this.FileReportName = (this.result.file.split('/'))[6];
+        this.FileReportPath = this.result.file
+        this.FileReportName = this.fileUploadService.getFileName(this.result.file) || 'No file..'
 
         this.tempFile.forEach(i => {
           this.tempFileTotal += Number(i.size);
@@ -593,7 +578,7 @@ export class RejectForm3Component implements OnInit {
             let Lname = localStorage.getItem('AR_UserLastName')
             if (data) {
               const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Reviewer)</p><br>" +
-                "Please review analysis report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                "Please review analysis report as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                 "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
               const sendMail = {
@@ -656,7 +641,7 @@ export class RejectForm3Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Window)</p><br>" +
-                    "Analysis result not approve as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
+                    "Analysis result not approve as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" + "<p>From " + Fname + " " + Lname + "(AE Engineer)</p>";
 
                   const sendMail = {
                     Content: Content,
@@ -691,75 +676,39 @@ export class RejectForm3Component implements OnInit {
       showCancelButton: true,
       icon: 'error',
       confirmButtonText: 'Delete',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    }).then(async (result) => {
+      if (!result.isConfirmed) return
 
-        if (this.FileListname.length > 0) {
+      try {
+        // requester attachments + engineer attachments + report
+        const targets: any[] = [...(this.FileList || []), ...(this.tempFile || [])]
+        if (this.result?.file) targets.push(this.result.file)
 
+        const { failed } = await this.fileUploadService.deleteFiles(targets)
+        if (failed.length > 0) console.error('OnCancel: some files failed to delete', failed)
 
-          let round = 0;
-          this.FileListname.forEach((item, index) => {
-            round += 1;
-
-            let body = {
-              path: this.PathListName[index]
-            }
-
-            this.api.RemoveFile(body).then((data: any) => {
-              if (data) {
-                let d = {
-                  path: this.PathListName[index]
-                }
-                this.api.DeleteFileName(d).subscribe((data: any) => {
-                })
-              }
-            })
-
-          });
-
-          if (this.FileListname.length == round) {
-            round = 0;
-            this.FileListname = [];
-            this.PathListName = [];
-            let da = {
-              status: 0,
-              issuedDate: this.form.issuedDate,
-              replyDate: this.form.replyDate,
-              userApprove: null,
-              userApproveName: null
-            }
-            this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
-              // console.log(data);
-              this.alertSuccess();
-              // location.href = "#/manageForm";
-              this.route.navigate(['/manageForm'])
-
-            })
-          }
-
-        } else {
-          let da = {
-            status: 0,
-            issuedDate: this.form.issuedDate,
-            replyDate: this.form.replyDate,
-            userApprove: null,
-            userApproveName: null
-          }
-          // console.log(da);
-
-          this.api.UpadateRequestForm(this.formId, da).subscribe((data: any) => {
-            // console.log(data);
-            this.alertSuccess();
-            // location.href = "#/manageForm";
-            this.route.navigate(['/manageForm'])
-
-          })
-
+        if (this.result?._id) {
+          await this.api.UpdateResult(this.result._id, { file: null, files: [] }).toPromise()
         }
+
+        await this.api.UpadateRequestForm(this.formId, {
+          status: 0,
+          issuedDate: this.form.issuedDate,
+          replyDate: this.form.replyDate,
+          files: [],
+          userApprove: null,
+          userApproveName: null
+        }).toPromise()
+
+        this.FileList = []
+        this.tempFile = []
+        this.alertSuccess();
+        this.route.navigate(['/manageForm'])
+      } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Cancel failed.' })
       }
     })
-
-
   }
 
   ToggleCauseFilter() {
@@ -810,19 +759,15 @@ export class RejectForm3Component implements OnInit {
       if (result.isConfirmed) {
         let tempName = this.form.requestNumber + "@" + event.target.files[0].name
 
-        if (this.tempFile.filter(item => item.name == tempName).length == 0) {
+        if (this.tempFile.filter(item => item.filename == tempName).length == 0) {
           this.tempFileTotal += event.target.files[0].size;
 
 
           if (this.tempFileTotal < 31457280) {
 
-            this.api.UploadFileEng(event.target.files[0], tempName).then((res) => {
-              const setData = {
-                path: res,
-                name: tempName,
-                size: event.target.files[0].size
-              }
-              this.tempFile.push(setData);
+            const file: File = event.target.files[0]
+            this.fileUploadService.uploadEngFile(file, tempName).then((uploaded) => {
+              this.tempFile.push(this.fileUploadService.toStoredFile(uploaded, file, tempName));
 
               const data = {
                 startAnalyzeDate: this.AnalyzeDate.value,
@@ -837,8 +782,11 @@ export class RejectForm3Component implements OnInit {
                   this.alertSuccess();
                 }
               })
-
-
+            }).catch((error) => {
+              console.error(error);
+              this.tempFileTotal -= file.size;
+              this.inputFile.reset();
+              Swal.fire({ title: 'Error', icon: 'error', text: 'Upload failed.' })
             })
 
           } else {
@@ -874,7 +822,7 @@ export class RejectForm3Component implements OnInit {
     Swal.fire({
       title: 'Do you want to delete ? ',
       icon: 'error',
-      text: `Delete ${event.name} (${event.size})`,
+      text: `Delete ${event.filename} (${event.size})`,
       confirmButtonText: 'Delete',
       showCancelButton: true
     }).then((result) => {
@@ -883,11 +831,8 @@ export class RejectForm3Component implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileTotal -= this.tempFile[indexToRemove].size;
           this.tempFile.splice(indexToRemove, 1)
-          const data = {
-            name: event.name
-          }
 
-          this.api.RemoveFileEng(data).then((res) => {
+          this.fileUploadService.deleteFile(event).toPromise().then((res) => {
             if (res) {
 
 
@@ -905,6 +850,9 @@ export class RejectForm3Component implements OnInit {
                 }
               })
             }
+          }).catch((error) => {
+            console.error(error);
+            Swal.fire({ title: 'Error', icon: 'error', text: 'Delete failed.' })
           })
 
         }
@@ -926,7 +874,7 @@ export class RejectForm3Component implements OnInit {
   get ResultDate() { return this.ResultForm.get('ResultDate') }
   get ReportDate() { return this.ResultForm.get('ReportDate') }
   get Result() { return this.ResultForm.get('Result') }
-  get Result2() { return this.ResultForm.get('Result2') as FormArray }
+  get Result2() { return this.ResultForm.get('Result2') as UntypedFormArray }
   get SourceOfDefect() { return this.ResultForm.get('SourceOfDefect') }
   get CategoryCause() { return this.ResultForm.get('CategoryCause') }
   get AnalysisLevel() { return this.ResultForm.get('AnalysisLevel') }
@@ -966,14 +914,15 @@ export class RejectForm3Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.FileReportPath = data;
-              this.FileReportName = (data.split('/'))[5];
-              this.htmlFile.reset();
-              this.alertSuccess();
-
-            }
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
+            this.FileReportPath = this.fileUploadService.toReportFile(uploaded, file);
+            this.FileReportName = this.fileUploadService.getFileName(uploaded.path);
+            this.htmlFile.reset();
+            this.alertSuccess();
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {
@@ -1049,22 +998,22 @@ export class RejectForm3Component implements OnInit {
 
   // Update Result2 FormArray validators based on FM status
   updateResult2Validators() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
 
     if (this.isFM()) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
         });
         result2Array.push(newItem);
       } else {
         // Update existing controls to be required
         result2Array.controls.forEach(control => {
-          const group = control as FormGroup;
+          const group = control as UntypedFormGroup;
           const qtyControl = group.get('qty');
           const itemControl = group.get('item');
           qtyControl?.setValidators([Validators.required]);
@@ -1104,10 +1053,10 @@ export class RejectForm3Component implements OnInit {
     console.log('ResultForm valid:', this.ResultForm.valid);
     console.log('ResultForm errors:', this.getFormValidationErrors(this.ResultForm));
     console.log('Result2 FormArray valid:', this.ResultForm.get('Result2')?.valid);
-    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.ResultForm.get('Result2') as FormArray));
+    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.ResultForm.get('Result2') as UntypedFormArray));
   }
 
-  getFormValidationErrors(form: FormGroup) {
+  getFormValidationErrors(form: UntypedFormGroup) {
     const errors: any = {};
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
@@ -1118,9 +1067,9 @@ export class RejectForm3Component implements OnInit {
     return errors;
   }
 
-  getFormArrayValidationErrors(formArray: FormArray) {
+  getFormArrayValidationErrors(formArray: UntypedFormArray) {
     return formArray.controls.map((control, index) => {
-      if (control instanceof FormGroup) {
+      if (control instanceof UntypedFormGroup) {
         return {
           index,
           errors: this.getFormValidationErrors(control)
@@ -1131,16 +1080,16 @@ export class RejectForm3Component implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
-    const newItem = new FormGroup({
-      item: new FormControl('', Validators.required),
-      qty: new FormControl(0, Validators.required)
+    const result2Array = this.Result2 as UntypedFormArray;
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', Validators.required),
+      qty: new UntypedFormControl(0, Validators.required)
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }

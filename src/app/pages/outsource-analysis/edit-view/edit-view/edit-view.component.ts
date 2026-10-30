@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, TestabilityRegistry, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { AngularFrameworkComponentWrapper } from 'ag-grid-angular';
 import { GridApi, GridReadyEvent, LoggerFactory, RowNode } from 'ag-grid-community';
 import { HttpService } from 'app/service/http.service';
@@ -16,7 +16,8 @@ import { logWarnings } from 'protractor/built/driverProviders';
 @Component({
   selector: 'app-edit-view',
   templateUrl: './edit-view.component.html',
-  styleUrls: ['./edit-view.component.css']
+  styleUrls: ['./edit-view.component.css'],
+  standalone: false
 })
 export class EditViewComponent implements OnInit {
 
@@ -67,7 +68,7 @@ export class EditViewComponent implements OnInit {
   pathFile: any
   // ? file attacnt
   FileList: any = [];
-  fileInput = new FormControl(null)
+  fileInput = new UntypedFormControl(null)
   gridApi: GridApi
   sizeFile: any[] = []
   EmSize: number = 0;

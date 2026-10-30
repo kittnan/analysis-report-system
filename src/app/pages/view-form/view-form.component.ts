@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 // import * as fs from 'file-saver';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { environment } from 'environments/environment';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-view-form',
   templateUrl: './view-form.component.html',
-  styleUrls: ['./view-form.component.css', '../pagesStyle.css']
+  styleUrls: ['./view-form.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ViewFormComponent implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   form: any = []
   result: any = []

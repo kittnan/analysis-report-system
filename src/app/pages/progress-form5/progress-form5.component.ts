@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 // import { ProgressForm5Service } from './progress-form5.service';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // import { ProgressForm1Service } from '../progress-form1/progress-form1.service';
 import Swal from 'sweetalert2'
 // import { UserService } from '../user/user.service';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'environments/environment';
 import { HttpParams } from '@angular/common/http';
@@ -13,9 +14,11 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-progress-form5',
   templateUrl: './progress-form5.component.html',
-  styleUrls: ['./progress-form5.component.css', '../pagesStyle.css']
+  styleUrls: ['./progress-form5.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm5Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
   // ? Params
   formId: null | string = null
@@ -34,9 +37,9 @@ export class ProgressForm5Component implements OnInit {
   Approve: any;
 
   // ? Form Control
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
-  htmlFile = new FormControl(null);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  htmlFile = new UntypedFormControl(null);
   // Approve = new FormControl(null, Validators.required);
 
   // ? progress
@@ -57,35 +60,35 @@ export class ProgressForm5Component implements OnInit {
   tempFile: any = [];
   tempFileName: any = [];
   tempFileTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
   JudgementDefects: any = ["Latent", "Overlook", "Can't judgement", "Other"]
   // ? comment
   CommentLists: any = [];
 
   // ? Analysis form
-  AnalysisForm = new FormGroup({
-    _id: new FormControl('', Validators.required),
-    causeOfDefect: new FormControl('', Validators.required),
-    sourceOfDefect: new FormControl('', Validators.required),
-    analysisLevel: new FormControl('', Validators.required),
-    canAnalysis: new FormControl('', Validators.required),
-    relatedToESD: new FormControl('', Validators.required),
-    result: new FormControl('', Validators.required),
-    JudgementDefect: new FormControl('', Validators.required),
-    Remark: new FormControl(''),
+  AnalysisForm = new UntypedFormGroup({
+    _id: new UntypedFormControl('', Validators.required),
+    causeOfDefect: new UntypedFormControl('', Validators.required),
+    sourceOfDefect: new UntypedFormControl('', Validators.required),
+    analysisLevel: new UntypedFormControl('', Validators.required),
+    canAnalysis: new UntypedFormControl('', Validators.required),
+    relatedToESD: new UntypedFormControl('', Validators.required),
+    result: new UntypedFormControl('', Validators.required),
+    JudgementDefect: new UntypedFormControl('', Validators.required),
+    Remark: new UntypedFormControl(''),
 
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
 
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0, Validators.required),
-        item: new FormControl(null, Validators.required),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0, Validators.required),
+        item: new UntypedFormControl(null, Validators.required),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
       })
     ]),
   })
@@ -115,7 +118,8 @@ export class ProgressForm5Component implements OnInit {
     private modalService: NgbModal,
     private api: HttpService,
     private route: Router,
-    private routerActive: ActivatedRoute
+    private routerActive: ActivatedRoute,
+    private fileUploadService: FileUploadService
     // private api: RequestServiceService,
     // private us: UserService
   ) {
@@ -215,14 +219,14 @@ export class ProgressForm5Component implements OnInit {
 
 
         if (this.result.requestItemName.includes("_FM")) {
-          const result2Array = this.Result2 as FormArray;
+          const result2Array = this.Result2 as UntypedFormArray;
           result2Array.clear();
           this.result.result2.forEach((res: any) => {
-            const formGroup = new FormGroup({
-              item: new FormControl(res.item || '', Validators.required),
-              qty: new FormControl(res.qty || '', Validators.required),
-              tempItem: new FormControl(res.item || ''),
-              dropdown: new FormControl(res.dropdown || ''),
+            const formGroup = new UntypedFormGroup({
+              item: new UntypedFormControl(res.item || '', Validators.required),
+              qty: new UntypedFormControl(res.qty || '', Validators.required),
+              tempItem: new UntypedFormControl(res.item || ''),
+              dropdown: new UntypedFormControl(res.dropdown || ''),
             });
             result2Array.push(formGroup);
           });
@@ -248,10 +252,7 @@ export class ProgressForm5Component implements OnInit {
 
 
         this.tempFile = this.result.files
-        // this.FileReportName = (this.result.file.split('/'))[5]
-        this.FileReportName = this.result.file ? (this.result.file.split('/'))[5] : []
-
-        // this.FileReportName = (this.result.file.split('/'))[6]
+        this.FileReportName = this.fileUploadService.getFileName(this.result.file)
 
         // Update Result2 validators after loading data
         this.updateResult2Validators();
@@ -276,22 +277,22 @@ export class ProgressForm5Component implements OnInit {
 
   // Update Result2 FormArray validators based on FM status
   updateResult2Validators() {
-    const result2Array = this.AnalysisForm.get('Result2') as FormArray;
+    const result2Array = this.AnalysisForm.get('Result2') as UntypedFormArray;
 
     if (this.isFM()) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
         });
         result2Array.push(newItem);
       } else {
         // Update existing controls to be required
         result2Array.controls.forEach(control => {
-          const group = control as FormGroup;
+          const group = control as UntypedFormGroup;
           const qtyControl = group.get('qty');
           const itemControl = group.get('item');
           qtyControl?.setValidators([Validators.required]);
@@ -330,10 +331,10 @@ export class ProgressForm5Component implements OnInit {
     console.log('AnalysisForm valid:', this.AnalysisForm.valid);
     console.log('AnalysisForm errors:', this.getFormValidationErrors(this.AnalysisForm));
     console.log('Result2 FormArray valid:', this.AnalysisForm.get('Result2')?.valid);
-    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.AnalysisForm.get('Result2') as FormArray));
+    console.log('Result2 errors:', this.getFormArrayValidationErrors(this.AnalysisForm.get('Result2') as UntypedFormArray));
   }
 
-  getFormValidationErrors(form: FormGroup) {
+  getFormValidationErrors(form: UntypedFormGroup) {
     const errors: any = {};
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
@@ -344,9 +345,9 @@ export class ProgressForm5Component implements OnInit {
     return errors;
   }
 
-  getFormArrayValidationErrors(formArray: FormArray) {
+  getFormArrayValidationErrors(formArray: UntypedFormArray) {
     return formArray.controls.map((control, index) => {
-      if (control instanceof FormGroup) {
+      if (control instanceof UntypedFormGroup) {
         return {
           index,
           errors: this.getFormValidationErrors(control)
@@ -456,7 +457,7 @@ export class ProgressForm5Component implements OnInit {
                 this.api.UpdateForm(this.formId, d).subscribe((data: any) => {
                   if (data) {
                     const Content = "<p>To " + this.Approve.FirstName + " " + this.Approve.LastName + "</p><br>" +
-                      "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                      "Analysis request was closed as  link:  <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                       "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
                     const sendMail = {
                       Content: Content,
@@ -535,7 +536,7 @@ export class ProgressForm5Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
-                    "AE Approval not approve report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "AE Approval not approve report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
                   const sendMail = {
                     Content: Content,
@@ -582,12 +583,19 @@ export class ProgressForm5Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.htmlFile.reset();
-              this.alertSuccess();
-
-            }
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
+            this.api.UpdateResult(this.result._id, { file: this.fileUploadService.toReportFile(uploaded, file) }).subscribe((data: any) => {
+              if (data) {
+                this.result.file = this.fileUploadService.toReportFile(uploaded, file)
+                this.FileReportName = this.fileUploadService.getFileName(uploaded.path)
+                this.htmlFile.reset();
+                this.alertSuccess();
+              }
+            })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {
@@ -735,18 +743,18 @@ export class ProgressForm5Component implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
-    const newItem = new FormGroup({
-      item: new FormControl('', Validators.required),
-      qty: new FormControl(0, Validators.required),
-      tempItem: new FormControl(''),
-      dropdown: new FormControl(false)
+    const result2Array = this.Result2 as UntypedFormArray;
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', Validators.required),
+      qty: new UntypedFormControl(0, Validators.required),
+      tempItem: new UntypedFormControl(''),
+      dropdown: new UntypedFormControl(false)
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }

@@ -8,9 +8,9 @@ export const environment = {
   // UrlApi: "http://localhost:8787",
   // UrlApi: "http://10.200.90.152:8787",
 
-  // UrlApi: "http://localhost:4026",
-  UrlApi: "http://10.200.90.152:4026",
-  FileServerUrl: '/file-proxy',
+  UrlApi: "http://localhost:4026",
+  // UrlApi: "http://10.200.90.152:4026",
+  // UrlApi: "https://analysis-report-system.web.kyocera.co.th/api",
   master: 'equipment/master',
   country: 'equipment/country',
   equipment: 'equipment',
@@ -24,7 +24,6 @@ export const environment = {
   MasterCauseOfDefective: "63a514d136895b117bc81296",
   MasterMakerSupplierName: "63a514d236895b117bc81298",
 
-  WEB_URL:'http://10.200.90.152:8081/Analysis-Report/',
 
 
 
@@ -44,4 +43,15 @@ export const environment = {
   CorrectOfWork: "Correct of Work",
   AnalysisTime: "Analysis Time",
   appVersion: require('../../package.json').version + '-dev',
+
+
+  fileServer: 'https://file_serve.web.kyocera.co.th/api/upload/new',
+  fileServerDelete: 'https://file_serve.web.kyocera.co.th/api/delete',
+  namespace: 'analysis-report',
+
+  OnlyOfficeUrl: 'http://10.200.90.152:30000/onlyoffice?fileUrl=',
+  AppUrl: 'http://10.200.90.152:8081/Analysis-Report/',
+  PortalUrl: 'http://10.200.90.152:8081/an-portal',
+  FileServerOrigin: 'http://10.200.90.152:4501',
+  ReportFileUrl: 'https://file_serve.web.kyocera.co.th/analysis-report/ENG/Report/',
 };

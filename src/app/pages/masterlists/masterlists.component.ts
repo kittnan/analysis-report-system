@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../environments/environment.prod'
@@ -13,6 +13,7 @@ import { HttpParams } from '@angular/common/http';
     selector: 'app-masterlists',
     templateUrl: './masterlists.component.html',
     styleUrls: ['./masterlists.component.css'],
+    standalone: false
 
 
 })
@@ -54,64 +55,64 @@ export class MasterlistsComponent implements OnInit {
     // CauseMasterFix = "Category Root Cause";
 
     // ? ตัวแปร สร้างมาใช้กับ Form
-    SelectModel = new FormControl(null, Validators.required);
-    SelectMaster = new FormControl(null, Validators.required);
-    SelectOccurA = new FormControl(null, Validators.required);
-    SelectOccurAId = new FormControl(null, Validators.required);
+    SelectModel = new UntypedFormControl(null, Validators.required);
+    SelectMaster = new UntypedFormControl(null, Validators.required);
+    SelectOccurA = new UntypedFormControl(null, Validators.required);
+    SelectOccurAId = new UntypedFormControl(null, Validators.required);
 
-    ModalMasterName = new FormControl(null, Validators.required);
+    ModalMasterName = new UntypedFormControl(null, Validators.required);
 
-    ModalListName = new FormControl(null, Validators.required);
-    ModalListId = new FormControl(null, Validators.required);
+    ModalListName = new UntypedFormControl(null, Validators.required);
+    ModalListId = new UntypedFormControl(null, Validators.required);
 
     // ? Form for Model Number
-    Modal_ModelNumbers = new FormGroup({
-        name: new FormControl(null, Validators.required),
-        size: new FormControl(null, Validators.required),
-        customer: new FormControl(null, Validators.required)
+    Modal_ModelNumbers = new UntypedFormGroup({
+        name: new UntypedFormControl(null, Validators.required),
+        size: new UntypedFormControl(null, Validators.required),
+        customer: new UntypedFormControl(null, Validators.required)
     })
 
-    Modal_Defects = new FormGroup({
-        name: new FormControl(null, Validators.required),
-        code: new FormControl(null, Validators.required),
+    Modal_Defects = new UntypedFormGroup({
+        name: new UntypedFormControl(null, Validators.required),
+        code: new UntypedFormControl(null, Validators.required),
         // checkBoxStatus: new FormControl(false, Validators.requiredTrue)
     })
 
-    Modal_Occurs = new FormGroup({
-        occurA: new FormControl(null, Validators.required),
-        occurAId: new FormControl(null, Validators.required),
-        name: new FormControl(null, Validators.required),
+    Modal_Occurs = new UntypedFormGroup({
+        occurA: new UntypedFormControl(null, Validators.required),
+        occurAId: new UntypedFormControl(null, Validators.required),
+        name: new UntypedFormControl(null, Validators.required),
     })
 
-    Modal_Causes = new FormGroup({
-        name: new FormControl(null, Validators.required),
-        modelName: new FormControl(null, Validators.required),
+    Modal_Causes = new UntypedFormGroup({
+        name: new UntypedFormControl(null, Validators.required),
+        modelName: new UntypedFormControl(null, Validators.required),
     })
 
-    CauseName = new FormControl(null, Validators.required);
+    CauseName = new UntypedFormControl(null, Validators.required);
 
-    ModalOccurB = new FormControl(null, Validators.required);
-    ExcelMasterName = new FormControl(null, Validators.required);
+    ModalOccurB = new UntypedFormControl(null, Validators.required);
+    ExcelMasterName = new UntypedFormControl(null, Validators.required);
 
-    Modal_CBModel = new FormGroup({
-        PNL: new FormControl(false),
-        MDL: new FormControl(false),
-        AMT: new FormControl(false),
-        SMT: new FormControl(false),
-        DSTFM: new FormControl(false),
-        AMTFM: new FormControl(false)
+    Modal_CBModel = new UntypedFormGroup({
+        PNL: new UntypedFormControl(false),
+        MDL: new UntypedFormControl(false),
+        AMT: new UntypedFormControl(false),
+        SMT: new UntypedFormControl(false),
+        DSTFM: new UntypedFormControl(false),
+        AMTFM: new UntypedFormControl(false)
     })
 
-    PNL = new FormControl(false, Validators.requiredTrue)
-    MDL = new FormControl(false, Validators.requiredTrue)
-    AMT = new FormControl(false, Validators.requiredTrue)
-    SMT = new FormControl(false, Validators.requiredTrue)
-    DSTFM = new FormControl(false, Validators.requiredTrue)
-    AMTFM = new FormControl(false, Validators.requiredTrue)
+    PNL = new UntypedFormControl(false, Validators.requiredTrue)
+    MDL = new UntypedFormControl(false, Validators.requiredTrue)
+    AMT = new UntypedFormControl(false, Validators.requiredTrue)
+    SMT = new UntypedFormControl(false, Validators.requiredTrue)
+    DSTFM = new UntypedFormControl(false, Validators.requiredTrue)
+    AMTFM = new UntypedFormControl(false, Validators.requiredTrue)
 
 
     // SelectsModel = new FormControl(null, Validators.required);
-    SelectModelId = new FormControl(null, Validators.required);
+    SelectModelId = new UntypedFormControl(null, Validators.required);
 
     // ? new Toggle Func to using Select Model
     ToggleNormalSelect: boolean = false;
@@ -151,7 +152,7 @@ export class MasterlistsComponent implements OnInit {
 
 
     // ? !Excel Modal
-    ModalExcelMaster = new FormControl(null, Validators.required);
+    ModalExcelMaster = new UntypedFormControl(null, Validators.required);
     ModalExcelMasterId: any;
 
     DataTempDownload: any;
@@ -164,37 +165,37 @@ export class MasterlistsComponent implements OnInit {
     DataExcelResultFM: any;
 
     // ? Form control to modal Model NUmber
-    ModelNumbers = new FormGroup({
-        name: new FormControl(null, Validators.required),
-        size: new FormControl(null, Validators.required),
-        customer: new FormControl(null, Validators.required)
+    ModelNumbers = new UntypedFormGroup({
+        name: new UntypedFormControl(null, Validators.required),
+        size: new UntypedFormControl(null, Validators.required),
+        customer: new UntypedFormControl(null, Validators.required)
     })
     // ? Form control to modal Normal
-    Normals = new FormGroup({
-        name: new FormControl(null, Validators.required),
+    Normals = new UntypedFormGroup({
+        name: new UntypedFormControl(null, Validators.required),
     })
     // ? Form control to modal Defect
-    Defects = new FormGroup({
-        name: new FormControl(null, Validators.required),
-        code: new FormControl(null, Validators.required),
-        checkBoxStatus: new FormControl(false, Validators.requiredTrue)
+    Defects = new UntypedFormGroup({
+        name: new UntypedFormControl(null, Validators.required),
+        code: new UntypedFormControl(null, Validators.required),
+        checkBoxStatus: new UntypedFormControl(false, Validators.requiredTrue)
     })
     // ? Form control to modal Cause
-    Causes = new FormGroup({
-        modelName: new FormControl(null, Validators.required),
-        causeName: new FormControl(null, Validators.required),
+    Causes = new UntypedFormGroup({
+        modelName: new UntypedFormControl(null, Validators.required),
+        causeName: new UntypedFormControl(null, Validators.required),
     })
     // ? Form control to modal Occur
-    Occurs = new FormGroup({
-        occurA: new FormControl(null, Validators.required),
-        occurAId: new FormControl(null, Validators.required),
-        name: new FormControl(null, Validators.required),
+    Occurs = new UntypedFormGroup({
+        occurA: new UntypedFormControl(null, Validators.required),
+        occurAId: new UntypedFormControl(null, Validators.required),
+        name: new UntypedFormControl(null, Validators.required),
     })
     // ? Form control to modal ResultFM
-    ResultFM = new FormGroup({
-        _id: new FormControl(null),
-        item: new FormControl(null, Validators.required),
-        type: new FormControl(null, Validators.required),
+    ResultFM = new UntypedFormGroup({
+        _id: new UntypedFormControl(null),
+        item: new UntypedFormControl(null, Validators.required),
+        type: new UntypedFormControl(null, Validators.required),
     })
     occurAId: any;
     ModalMasterId: any;
@@ -211,8 +212,8 @@ export class MasterlistsComponent implements OnInit {
 
 
     // ? data table
-    DataNum = new FormControl(null, Validators.required)
-    WordFilter = new FormControl(null, Validators.required)
+    DataNum = new UntypedFormControl(null, Validators.required)
+    WordFilter = new UntypedFormControl(null, Validators.required)
     PageNow = 1;
     PageNum = 1;
     NumList = [10, 50, 100, 200, 500, 1000, 'ALL']

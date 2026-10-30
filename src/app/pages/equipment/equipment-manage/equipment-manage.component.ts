@@ -1,31 +1,36 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MasterService } from '../master-manage/master.service';
 import Swal from 'sweetalert2';
+import { FileUploadService, StoredFile } from 'app/service/file-upload.service';
+import { environment } from 'environments/environment';
+
+const EQUIPMENT_IMG_FOLDER = `${environment.namespace}/equipment/img/`;
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-equipment-manage',
   templateUrl: './equipment-manage.component.html',
-  styleUrls: ['./equipment-manage.component.css']
+  styleUrls: ['./equipment-manage.component.css'],
+  standalone: false
 })
 export class EquipmentManageComponent implements OnInit {
 
   Equipment: any[] = []
   EquipmentFiltered: any[] = []
 
-  EquipmentForm = new FormGroup({
-    _id: new FormControl('', Validators.required),
-    analysisEquipmentName: new FormControl('', Validators.required),
-    field: new FormControl('', Validators.required),
-    analysisScope: new FormControl('', Validators.required),
-    defectMode: new FormControl([], Validators.required),
-    limitationOfSample: new FormControl('', Validators.required),
-    province: new FormControl([], Validators.required),
-    brand: new FormControl('', Validators.required),
+  EquipmentForm = new UntypedFormGroup({
+    _id: new UntypedFormControl('', Validators.required),
+    analysisEquipmentName: new UntypedFormControl('', Validators.required),
+    field: new UntypedFormControl('', Validators.required),
+    analysisScope: new UntypedFormControl('', Validators.required),
+    defectMode: new UntypedFormControl([], Validators.required),
+    limitationOfSample: new UntypedFormControl('', Validators.required),
+    province: new UntypedFormControl([], Validators.required),
+    brand: new UntypedFormControl('', Validators.required),
     // analysisFee: new FormControl('', Validators.required),
-    urlImage: new FormControl({}, Validators.required),
+    urlImage: new UntypedFormControl({}, Validators.required),
   })
   public get EquipmentFormControl(): any {
     return this.EquipmentForm.controls
@@ -41,7 +46,8 @@ export class EquipmentManageComponent implements OnInit {
   constructor(
     private middleAPI: MasterService,
     private modal: NgbModal,
-    private route: Router
+    private route: Router,
+    private fileUploadService: FileUploadService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -160,8 +166,8 @@ export class EquipmentManageComponent implements OnInit {
     var output: any = document.getElementById('output')
     let boxOutput: any = document.getElementById('box-output')
     if (equipment.urlImage) {
-      output.src = equipment.urlImage.url
-      this.FileUpload = equipment.urlImage
+      output.src = equipment.urlImage.path
+      this.FileUpload = undefined
       btnOutput.hidden = true
       output.hidden = false
       boxOutput.hidden = false
@@ -284,7 +290,7 @@ export class EquipmentManageComponent implements OnInit {
       const equipment: any = await this.middleAPI.getEquipment()
       await this.checkDuplicateEquipmentName(equipment, this.EquipmentForm.value)
 
-      if (this.FileUpload.lastModified) {
+      if (this.FileUpload?.lastModified) {
         const resultUpload: any = await this.uploadImg()
         this.EquipmentForm.patchValue({
           urlImage: resultUpload
@@ -320,21 +326,17 @@ export class EquipmentManageComponent implements OnInit {
 
   // ? upload img
   uploadImg() {
-    return new Promise(async resolve => {
-      let formData: FormData = new FormData()
+    return new Promise(async (resolve, reject) => {
+      try {
       const oldFileName: any = this.FileUpload.name.split('.')
       const type = '.' + oldFileName[oldFileName.length - 1]
       const fileName = this.EquipmentForm.controls['analysisEquipmentName'].value + type
-      formData.append('File', this.FileUpload, fileName)
-      // console.log('form data before upload', formData);
-      const result: any = await this.middleAPI.uploadImgEquipment(formData)
-      // console.log('result upload img: ', result);
-      const urlImage = {
-        size: this.FileUpload.size,
-        url: result + '?' + this.FileUpload.lastModified,
-        name: fileName
-      }
+      const uploaded = await this.fileUploadService.uploadOne(EQUIPMENT_IMG_FOLDER, this.FileUpload, fileName)
+      const urlImage: StoredFile = this.fileUploadService.toStoredFile(uploaded, this.FileUpload, fileName)
       resolve(urlImage)
+      } catch (error) {
+        reject(error)
+      }
     })
   }
   // ? upload img

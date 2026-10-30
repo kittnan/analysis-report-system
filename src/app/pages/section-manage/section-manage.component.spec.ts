@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SectionManageComponent } from './section-manage.component';
 
@@ -8,7 +11,9 @@ describe('SectionManageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SectionManageComponent ]
+      declarations: [ SectionManageComponent ],
+      imports: [ RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ],
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });

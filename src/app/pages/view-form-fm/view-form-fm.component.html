@@ -2,22 +2,22 @@
 	<span *ngIf="toggleLabel" class="icon-make" (click)="pdfLabel();"><i class="bi bi-file-earmark-pdf"
 			style="font-size: 2rem;"></i>label</span>
 	<ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
-		<a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+		<a class="icon-make" [download]="ReportName" [href]="result.file?.path"><i class="bi bi-file-earmark-pdf"
 				style="font-size: 2rem;"></i>Report</a>
 	</ng-container>
 	<ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
-		<a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+		<a class="icon-make" [download]="ReportName" [href]="result.file?.path"><i class="bi bi-file-earmark-pdf"
 				style="font-size: 2rem;"></i>Report</a>
 	</ng-container>
 
 	<ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
 		<a class="icon-make" [download]="ReportName"
-			[href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file" target="_blank"><i
+			[href]="onlyOfficeUrl + result.file?.path" target="_blank"><i
 				class="bi bi-search" style="font-size: 2rem;"></i>View</a>
 	</ng-container>
 	<ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
 		<a class="icon-make" [download]="ReportName"
-			[href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file" target="_blank"><i
+			[href]="onlyOfficeUrl + result.file?.path" target="_blank"><i
 				class="bi bi-search" style="font-size: 2rem;"></i>View</a>
 	</ng-container>
 
@@ -268,10 +268,10 @@
 						<tbody *ngIf="form.files.length != 0 || form.files != null">
 							<tr *ngFor="let item of form.files; let i=index">
 								<td>
-									{{item.name}}
+									{{item.filename}}
 								</td>
 								<td class="text-center">
-									<a target="_blank" [download]="item.name" [href]="item.path"
+									<a target="_blank" [download]="item.filename" [href]="item.path"
 										class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i
 											class="bi bi-download" style="font-size: 1rem;"></i></a>
 								</td>
@@ -399,8 +399,8 @@
 						<div class="analysis-image-list large-image-list">
 							<a class="analysis-image-card" target="_blank" *ngFor="let image of mappingPositionImages"
 								[href]="getFilePath(image)">
-								<img [src]="getFilePath(image)" [alt]="image.name">
-								<span>{{image.name}}</span>
+								<img [src]="getFilePath(image)" [alt]="image.filename">
+								<span>{{image.filename}}</span>
 							</a>
 						</div>
 					</div>
@@ -467,8 +467,8 @@
 							<div class="analysis-image-list">
 								<a class="analysis-image-card" target="_blank"
 									*ngFor="let image of item.microscopeImages" [href]="getFilePath(image)">
-									<img [src]="getFilePath(image)" [alt]="image.name">
-									<span>{{image.name}}</span>
+									<img [src]="getFilePath(image)" [alt]="image.filename">
+									<span>{{image.filename}}</span>
 								</a>
 							</div>
 						</div>
@@ -478,8 +478,8 @@
 							<div class="analysis-image-list">
 								<a class="analysis-image-card" target="_blank"
 									*ngFor="let image of item.ftirSpectrumImages" [href]="getFilePath(image)">
-									<img [src]="getFilePath(image)" [alt]="image.name">
-									<span>{{image.name}}</span>
+									<img [src]="getFilePath(image)" [alt]="image.filename">
+									<span>{{image.filename}}</span>
 								</a>
 							</div>
 						</div>
@@ -489,8 +489,8 @@
 							<div class="analysis-image-list">
 								<a class="analysis-image-card" target="_blank"
 									*ngFor="let image of item.ftirSpectrumImagesGraph" [href]="getFilePath(image)">
-									<img [src]="getFilePath(image)" [alt]="image.name">
-									<span>{{image.name}}</span>
+									<img [src]="getFilePath(image)" [alt]="image.filename">
+									<span>{{image.filename}}</span>
 								</a>
 							</div>
 						</div>
@@ -599,9 +599,9 @@
 						</thead>
 						<tbody *ngIf="result" class="subtext-color">
 							<tr *ngFor="let item of result.files; let i=index">
-								<td>{{item.name}} </td>
+								<td>{{item.filename}} </td>
 								<td class="text-center">
-									<a target="_blank" [download]="item.name" [href]="item.path"
+									<a target="_blank" [download]="item.filename" [href]="item.path"
 										class="btn btn-sm btn-primary mr-0" style="cursor: pointer;"><i
 											class="bi bi-download" style="font-size: 1rem;"></i></a>
 								</td>

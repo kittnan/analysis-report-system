@@ -9,7 +9,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-master-outsource',
   templateUrl: './master-outsource.component.html',
-  styleUrls: ['./master-outsource.component.css']
+  styleUrls: ['./master-outsource.component.css'],
+  standalone: false
 })
 export class MasterOutsourceComponent implements OnInit {
 

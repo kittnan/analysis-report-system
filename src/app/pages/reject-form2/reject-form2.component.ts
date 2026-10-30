@@ -1,21 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2'
 
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 // import * as fs from 'file-saver';
 import { HttpService } from 'app/service/http.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { environment } from 'environments/environment';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 
 @Component({
   selector: 'app-reject-form2',
   templateUrl: './reject-form2.component.html',
-  styleUrls: ['./reject-form2.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form2.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm2Component implements OnInit {
 
@@ -47,13 +49,13 @@ export class RejectForm2Component implements OnInit {
   FormView = sessionStorage.getItem('FormView');
 
   // ? Form control
-  Form = new FormGroup({
-    ReplyDate: new FormControl(null, Validators.required),
-    AeApprove: new FormControl(null, Validators.required),
+  Form = new UntypedFormGroup({
+    ReplyDate: new UntypedFormControl(null, Validators.required),
+    AeApprove: new UntypedFormControl(null, Validators.required),
   })
 
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
 
 
 
@@ -188,7 +190,7 @@ export class RejectForm2Component implements OnInit {
       this.api.UpadateRequestForm(this.formId, d).subscribe((data: any) => {
         if (data) {
           const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Engineer)</p><br>" +
-            "Please check analysis result and make report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+            "Please check analysis result and make report as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
             "<p>From " + Fname + " " + Lname + "(AE Window)</p>";
 
           const sendMail = {
@@ -236,7 +238,7 @@ export class RejectForm2Component implements OnInit {
             replyDate: this.ReplyDate.value,
             status: 3.1,
             noteNow: this.NoteReject.value,
-            noteApprove2: this.NoteReject.value,
+            noteReject2: this.NoteReject.value,
             userApprove: this.form.requesterId,
             userApproveName: sum,
           }
@@ -250,7 +252,7 @@ export class RejectForm2Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(Issuer)</p><br>" +
-                    "Analysis request not approve as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "Analysis request not approve as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Window)</p>";
 
                   const sendMail = {

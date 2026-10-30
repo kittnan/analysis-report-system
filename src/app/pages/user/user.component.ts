@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
@@ -8,7 +8,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css']
+  styleUrls: ['./user.component.css'],
+  standalone: false
 })
 export class UserComponent implements OnInit {
 
@@ -36,41 +37,41 @@ export class UserComponent implements OnInit {
   Section4Name: string;
   Section5Name: string;
   Section6Name: string;
-  UserForm = new FormGroup({
-    FirstName: new FormControl(null, Validators.required),
-    LastName: new FormControl(null, Validators.required),
-    Email: new FormControl(null, [Validators.required, Validators.email]),
-    EmployeeCode: new FormControl(null, Validators.required),
-    Section1: new FormControl(null, Validators.required),
-    Section2: new FormControl(null, Validators.required),
-    Section3: new FormControl(null, Validators.required),
-    Section4: new FormControl(null, Validators.required),
-    Section5: new FormControl(null, Validators.required),
-    Section6: new FormControl(null, Validators.required),
-    Authority1: new FormControl(null, Validators.required),
-    Authority2: new FormControl(null, Validators.required),
-    Authority3: new FormControl(null, Validators.required),
-    Authority4: new FormControl(null, Validators.required),
-    Authority5: new FormControl(null, Validators.required),
-    Authority6: new FormControl(null, Validators.required),
-    CB1: new FormControl(false),
-    CB2: new FormControl(false),
-    CB3: new FormControl(false),
-    CB4: new FormControl(false),
-    CB5: new FormControl(false),
+  UserForm = new UntypedFormGroup({
+    FirstName: new UntypedFormControl(null, Validators.required),
+    LastName: new UntypedFormControl(null, Validators.required),
+    Email: new UntypedFormControl(null, [Validators.required, Validators.email]),
+    EmployeeCode: new UntypedFormControl(null, Validators.required),
+    Section1: new UntypedFormControl(null, Validators.required),
+    Section2: new UntypedFormControl(null, Validators.required),
+    Section3: new UntypedFormControl(null, Validators.required),
+    Section4: new UntypedFormControl(null, Validators.required),
+    Section5: new UntypedFormControl(null, Validators.required),
+    Section6: new UntypedFormControl(null, Validators.required),
+    Authority1: new UntypedFormControl(null, Validators.required),
+    Authority2: new UntypedFormControl(null, Validators.required),
+    Authority3: new UntypedFormControl(null, Validators.required),
+    Authority4: new UntypedFormControl(null, Validators.required),
+    Authority5: new UntypedFormControl(null, Validators.required),
+    Authority6: new UntypedFormControl(null, Validators.required),
+    CB1: new UntypedFormControl(false),
+    CB2: new UntypedFormControl(false),
+    CB3: new UntypedFormControl(false),
+    CB4: new UntypedFormControl(false),
+    CB5: new UntypedFormControl(false),
   })
 
   // ? Variable Html Control
-  SelectSection = new FormControl('all', Validators.required);
+  SelectSection = new UntypedFormControl('all', Validators.required);
   // SelectGroup = new FormControl(null, Validators.required);
-  SelectLevel = new FormControl('all', Validators.required);
+  SelectLevel = new UntypedFormControl('all', Validators.required);
   UserId: any;
   CountSelect = [1, 2, 3, 4, 5, 6];
 
 
   // ? filter
   ResultFilter: any;
-  WordFilter = new FormControl(null, Validators.required);
+  WordFilter = new UntypedFormControl(null, Validators.required);
 
 
   constructor(

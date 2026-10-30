@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { Router } from '@angular/router';
+import { environment } from 'environments/environment';
 @Component({
   selector: 'app-reject-form4',
   templateUrl: './reject-form4.component.html',
-  styleUrls: ['./reject-form4.component.css', '../pagesStyle.css']
+  styleUrls: ['./reject-form4.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class RejectForm4Component implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
 
   // ? API
@@ -24,11 +28,11 @@ export class RejectForm4Component implements OnInit {
 
 
   // ? Form Control
-  NoteApprove = new FormControl(null);
-  NoteReject = new FormControl(null);
-  Approve = new FormControl(null, Validators.required);
+  NoteApprove = new UntypedFormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  Approve = new UntypedFormControl(null, Validators.required);
 
-  htmlFile = new FormControl(null);
+  htmlFile = new UntypedFormControl(null);
   // ? Email
   SendEmailApproved: any;
   SendEmailUser: any;
@@ -42,7 +46,7 @@ export class RejectForm4Component implements OnInit {
   tempFile: any = [];
   tempFileName: any = [];
   tempFileTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
   constructor(
     // private api: ProgressForm4Service,
@@ -50,7 +54,8 @@ export class RejectForm4Component implements OnInit {
     private modalService: NgbModal,
     // private api: ProgressForm1Service,
     private api: HttpService,
-    private route: Router
+    private route: Router,
+    private fileUploadService: FileUploadService
   ) { }
 
 
@@ -122,8 +127,7 @@ export class RejectForm4Component implements OnInit {
         this.result.finishReportDate = str3[0];
 
         this.tempFile = this.result.files
-        this.FileReportName = (this.result.file.split('/'))[5]
-        // this.FileReportName = (this.result.file.split('/'))[6]
+        this.FileReportName = this.fileUploadService.getFileName(this.result.file)
 
       } else this.result = null;
     })
@@ -181,7 +185,7 @@ export class RejectForm4Component implements OnInit {
         let Lname = localStorage.getItem('AR_UserLastName')
         if (data) {
           const Content = "<p>To " + this.SendEmailUser.FirstName + " " + this.SendEmailUser.LastName + "(AE Approval)</p><br>" +
-            "Please approve analysis report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+            "Please approve analysis report as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
             "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";
 
           const sendMail = {
@@ -238,7 +242,7 @@ export class RejectForm4Component implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
-                    "AE Reviewer not approve report as below link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "AE Reviewer not approve report as below link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Reviewer)</p>";
 
                   const sendMail = {
@@ -295,11 +299,19 @@ export class RejectForm4Component implements OnInit {
 
         if (file.name == realFileName) {
 
-          this.api.UploadFileEReport(file, file.name).then((data: any) => {
-            if (data) {
-              this.htmlFile.reset();
-              this.alertSuccess();
-            }
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
+            this.api.UpdateResult(this.result._id, { file: this.fileUploadService.toReportFile(uploaded, file) }).subscribe((data: any) => {
+              if (data) {
+                this.result.file = this.fileUploadService.toReportFile(uploaded, file)
+                this.FileReportName = this.fileUploadService.getFileName(uploaded.path)
+                this.htmlFile.reset();
+                this.alertSuccess();
+              }
+            })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlFile.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {

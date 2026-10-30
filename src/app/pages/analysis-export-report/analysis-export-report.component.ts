@@ -3,11 +3,8 @@ import { ColDef, GridReadyEvent, RowNode } from 'ag-grid-community';
 import Swal from 'sweetalert2'
 import * as FileSaver from 'file-saver';
 import * as JSZip from 'jszip';
-import { environment } from 'environments/environment';
 import { AnalysisDataListComponent } from '../analysis-data-list/analysis-data-list.component';
 
-// ? origin ที่ result.file ถูกบันทึกไว้ (ดู routes/main_fn/file.js -> pathEngReport)
-const FILE_SERVER_ORIGIN = 'http://10.200.90.152:4501'
 // ? จำนวนไฟล์ที่ download พร้อมกัน
 const DOWNLOAD_CONCURRENCY = 5
 
@@ -20,7 +17,8 @@ interface ExportItem {
 @Component({
   selector: 'app-analysis-export-report',
   templateUrl: './analysis-export-report.component.html',
-  styleUrls: ['../analysis-data-list/analysis-data-list.component.css']
+  styleUrls: ['../analysis-data-list/analysis-data-list.component.css'],
+  standalone: false
 })
 export class AnalysisExportReportComponent extends AnalysisDataListComponent implements OnInit, OnDestroy {
 
@@ -222,7 +220,7 @@ export class AnalysisExportReportComponent extends AnalysisDataListComponent imp
         name = `${base}(${n++})${ext}`
       }
       usedNames.add(name.toLowerCase())
-      return { requestNumber: row.requestNumber, url: this.toDownloadUrl(row.file), fileName: name }
+      return { requestNumber: row.requestNumber, url: this.toDownloadUrl(this.getFilePath(row.file)), fileName: name }
     })
   }
 
@@ -232,6 +230,7 @@ export class AnalysisExportReportComponent extends AnalysisDataListComponent imp
       while (index < items.length && !this.cancelRequested) {
         const item = items[index++]
         try {
+          if (!item.url) throw new Error('No file path')
           const res = await fetch(item.url)
           if (!res.ok) throw new Error(`HTTP ${res.status}`)
           zip.file(item.fileName, await res.blob())
@@ -249,22 +248,26 @@ export class AnalysisExportReportComponent extends AnalysisDataListComponent imp
     await Promise.all(workers)
   }
 
-  // ? file server :4501 ไม่มี CORS header -> download ผ่าน backend /FileDownload แทน
+  // ? file server ใหม่ (file_serve.web.kyocera.co.th) ส่ง CORS header มาแล้ว -> fetch ตรงได้
+  // ? new URL() จะ encode ช่องว่าง / ภาษาไทยในชื่อไฟล์ให้
   toDownloadUrl(file: string) {
+    if (!file) return ''
     try {
-      const u = new URL(file, window.location.href)
-      if (u.origin == FILE_SERVER_ORIGIN) {
-        return `${environment.UrlApi}/FileDownload?path=${encodeURIComponent(decodeURIComponent(u.pathname))}`
-      }
-      return u.href
+      return new URL(file, window.location.href).href
     } catch (error) {
       return file
     }
   }
 
-  getFileName(file: string) {
+  // ? result.file เป็นได้ทั้ง string (ข้อมูลเก่า) และ { path, filename, ... }
+  private getFilePath(file: any): string {
+    return typeof file == 'string' ? file : file?.path || ''
+  }
+
+  getFileName(file: any) {
     if (!file) return ''
-    const last = file.split('?')[0].split('/').pop() || ''
+    if (typeof file != 'string' && file.filename) return file.filename
+    const last = this.getFilePath(file).split('?')[0].split('/').pop() || ''
     try {
       return decodeURIComponent(last)
     } catch (error) {

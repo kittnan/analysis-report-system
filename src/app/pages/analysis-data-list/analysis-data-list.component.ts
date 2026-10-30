@@ -1,6 +1,6 @@
 import { interval, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import Swal, { SweetAlertResult } from 'sweetalert2'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -14,7 +14,8 @@ var moment = require('moment')
 @Component({
   selector: 'app-analysis-data-list',
   templateUrl: './analysis-data-list.component.html',
-  styleUrls: ['./analysis-data-list.component.css']
+  styleUrls: ['./analysis-data-list.component.css'],
+  standalone: false
 })
 export class AnalysisDataListComponent implements OnInit {
   constructor(
@@ -28,13 +29,13 @@ export class AnalysisDataListComponent implements OnInit {
   diffInDays: any;
 
   // ? Form COntrol
-  Form = new FormGroup({
-    ModelSelect: new FormControl(null, Validators.required),
-    DateStart: new FormControl(null, Validators.required),
-    DateEnd: new FormControl(null, Validators.required),
-    Month: new FormControl(null, Validators.required),
-    ReplyDateStart: new FormControl(null),
-    ReplyDateEnd: new FormControl(null),
+  Form = new UntypedFormGroup({
+    ModelSelect: new UntypedFormControl(null, Validators.required),
+    DateStart: new UntypedFormControl(null, Validators.required),
+    DateEnd: new UntypedFormControl(null, Validators.required),
+    Month: new UntypedFormControl(null, Validators.required),
+    ReplyDateStart: new UntypedFormControl(null),
+    ReplyDateEnd: new UntypedFormControl(null),
   })
 
   LoadingPage: boolean = false

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpService } from 'app/service/http.service';
 import { LocalStorageService } from 'app/service/local-storage.service';
@@ -7,7 +7,8 @@ import { environment } from 'environments/environment'
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  standalone: false
 })
 export class LoginComponent implements OnInit {
 
@@ -30,9 +31,9 @@ export class LoginComponent implements OnInit {
   // loginStatus : any = localStorage.getItem('AR_loginStatus');
 
   // ? Form Control
-  LoginForm = new FormGroup({
-    UserName: new FormControl(null, Validators.required),
-    PassWord: new FormControl(null, Validators.required)
+  LoginForm = new UntypedFormGroup({
+    UserName: new UntypedFormControl(null, Validators.required),
+    PassWord: new UntypedFormControl(null, Validators.required)
   })
 
   SSOToggle: boolean = false

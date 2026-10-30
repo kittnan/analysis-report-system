@@ -1,29 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
+import { FileUploadService, StoredFile } from 'app/service/file-upload.service';
+import { environment } from 'environments/environment';
+
+const EQUIPMENT_IMG_FOLDER = `${environment.namespace}/equipment/img/`;
 import { MasterService } from '../master-manage/master.service';
 
 @Component({
   selector: 'app-add-equipment',
   templateUrl: './add-equipment.component.html',
-  styleUrls: ['./add-equipment.component.css']
+  styleUrls: ['./add-equipment.component.css'],
+  standalone: false
 })
 export class AddEquipmentComponent implements OnInit {
 
   FileUpload: File
 
-  newEquipment = new FormGroup({
-    analysisEquipmentName: new FormControl('', Validators.required),
-    field: new FormControl('', Validators.required),
-    analysisScope: new FormControl('', Validators.required),
-    defectMode: new FormControl([], Validators.required),
-    limitationOfSample: new FormControl('', Validators.required),
-    country: new FormControl(''),
-    province: new FormControl([], Validators.required),
-    brand: new FormControl('', Validators.required),
+  newEquipment = new UntypedFormGroup({
+    analysisEquipmentName: new UntypedFormControl('', Validators.required),
+    field: new UntypedFormControl('', Validators.required),
+    analysisScope: new UntypedFormControl('', Validators.required),
+    defectMode: new UntypedFormControl([], Validators.required),
+    limitationOfSample: new UntypedFormControl('', Validators.required),
+    country: new UntypedFormControl(''),
+    province: new UntypedFormControl([], Validators.required),
+    brand: new UntypedFormControl('', Validators.required),
     // analysisFee: new FormControl('', Validators.required),
-    urlImage: new FormControl({}, Validators.required),
+    urlImage: new UntypedFormControl({}, Validators.required),
   })
 
   public get newEquipmentControl(): any {
@@ -38,7 +43,8 @@ export class AddEquipmentComponent implements OnInit {
 
   constructor(
     private middleAPI: MasterService,
-    private modal: NgbModal
+    private modal: NgbModal,
+    private fileUploadService: FileUploadService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -269,21 +275,17 @@ export class AddEquipmentComponent implements OnInit {
 
   // ? upload img
   uploadImg() {
-    return new Promise(async resolve => {
-      let formData: FormData = new FormData()
+    return new Promise(async (resolve, reject) => {
+      try {
       const oldFileName: any = this.FileUpload.name.split('.')
       const type = '.' + oldFileName[oldFileName.length - 1]
       const fileName = this.newEquipment.controls['analysisEquipmentName'].value + type
-      formData.append('File', this.FileUpload, fileName)
-      // console.log('form data before upload', formData);
-      const result: any = await this.middleAPI.uploadImgEquipment(formData)
-      // console.log('result upload img: ', result);
-      const urlImage = {
-        size: this.FileUpload.size,
-        url: result + '?' + this.FileUpload.lastModified,
-        name: fileName
-      }
+      const uploaded = await this.fileUploadService.uploadOne(EQUIPMENT_IMG_FOLDER, this.FileUpload, fileName)
+      const urlImage: StoredFile = this.fileUploadService.toStoredFile(uploaded, this.FileUpload, fileName)
       resolve(urlImage)
+      } catch (error) {
+        reject(error)
+      }
     })
   }
   // ? upload img

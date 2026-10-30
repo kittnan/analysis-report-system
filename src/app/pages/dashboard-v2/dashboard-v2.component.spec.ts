@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DashboardV2Component } from './dashboard-v2.component';
 
@@ -8,7 +11,9 @@ describe('DashboardV2Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DashboardV2Component ]
+      declarations: [ DashboardV2Component ],
+      imports: [ RouterTestingModule.withRoutes([{ path: '**', children: [] }]) ],
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });

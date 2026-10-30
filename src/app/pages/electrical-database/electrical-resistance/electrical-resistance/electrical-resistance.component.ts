@@ -6,12 +6,17 @@ import * as fs from 'file-saver';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { allowedNodeEnvironmentFlags } from 'process';
 import * as XLSX from 'xlsx';
+import { FileUploadService, StoredFile } from 'app/service/file-upload.service';
+import { environment } from 'environments/environment';
 type AOA = any[][];
+
+const RESISTANCE_FILE_FOLDER = `${environment.namespace}/mastereletrical/Resistance/`;
 
 @Component({
   selector: 'app-electrical-resistance',
   templateUrl: './electrical-resistance.component.html',
-  styleUrls: ['./electrical-resistance.component.scss']
+  styleUrls: ['./electrical-resistance.component.scss'],
+  standalone: false
 })
 export class ElectricalResistanceComponent implements OnInit {
   LoadingPage: boolean;
@@ -41,7 +46,7 @@ export class ElectricalResistanceComponent implements OnInit {
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
   fileName: string = 'SheetJS.xlsx';
 
-  constructor(private api: HttpService, private http: HttpClient) { }
+  constructor(private api: HttpService, private http: HttpClient, private fileUploadService: FileUploadService) { }
 
   ngOnInit(): void {
     this.getDataResistance()
@@ -53,15 +58,9 @@ export class ElectricalResistanceComponent implements OnInit {
 
   async getUrlOld() {
     let url = await this.getUrlid(this.model)
-    this.urlOldUse = url.urlAssignment
-    // console.log(this.urlOldUse);
-
-    this.urlOldShow = url.urlAssignment.map((d: any) => {
-      // console.log(d);
-      return {
-        name: d.split("Resistance/")[1]
-      }
-    })
+    // stored files are { filename, path, delete_path }
+    this.urlOldUse = [...((url?.urlAssignment || []) as StoredFile[])]
+    this.urlOldShow = [...this.urlOldUse]
     this.count[0] = this.urlOldShow.length
     // console.log(this.data);
   }
@@ -219,9 +218,12 @@ export class ElectricalResistanceComponent implements OnInit {
   }
 
   //---------------------------------DeleteFile----------------------------------------//
-  onClickDel(file: File) {
+  /** file is either a pending File (tempUpload) or a StoredFile already saved in DB */
+  onClickDel(file: any) {
+    const isStored = !(file instanceof File) && !!file?.path
+    const name = isStored ? this.fileUploadService.getFileName(file) : file.name
     Swal.fire({
-      title: `Do you want to delete ${file.name}?`,
+      title: `Do you want to delete ${name}?`,
       icon: 'warning',
       showCancelButton: true
     }).then(ans => {
@@ -229,7 +231,10 @@ export class ElectricalResistanceComponent implements OnInit {
         this.tempUpload = this.tempUpload.filter((f: any) => f != file);
         this.urlOldShow = this.urlOldShow.filter((f: any) => f != file);
         this.temp = this.temp.filter((f: any) => f != file);
-        this.listDelete.push(file)
+        if (isStored) {
+          this.urlOldUse = (this.urlOldUse || []).filter((f: StoredFile) => f.path != file.path);
+          this.listDelete.push(file)
+        }
         this.checkSizeFile()
         this.count[1] = this.urlOldShow.length
         this.count[2] = this.tempUpload.length
@@ -290,22 +295,25 @@ export class ElectricalResistanceComponent implements OnInit {
     }).then(async r => {
       if (r.isConfirmed) {
         //code start
-        let resUpload = []
+        let resUpload: StoredFile[] = []
         let sendData
         let CheckHave = await this.getUrlid(this.model)
         if (this.model) {
           if (this.tempUpload.length > 0) {
-            const formData = await addFormData(this.tempUpload, this.model)
-            resUpload = await this.api.uploadResis(formData).toPromise()
+            resUpload = await this.uploadFiles(this.tempUpload, this.model)
           }
-          let urlAll = this.urlOldUse.concat(resUpload)
+          let urlAll: StoredFile[] = (this.urlOldUse || []).concat(resUpload)
           sendData = {
             model: this.model,
             urlAssignment: urlAll,
-            delete: this.listDelete
           }
 
           const sandDataForm = await this.api.putDataResis(CheckHave._id, sendData).toPromise()
+          // remove deleted stored files from the file server
+          const storedDeletes = this.listDelete.filter((f: any) => f?.path)
+          if (storedDeletes.length > 0) {
+            await this.fileUploadService.deleteFiles(storedDeletes)
+          }
           this.tempUpload = []
           this.temp = []
           this.listDelete = []
@@ -318,37 +326,28 @@ export class ElectricalResistanceComponent implements OnInit {
         }, 200);
       }
     })
+  }
 
-
-
-
-
-    //rename
-    function addFormData(files: any, controlNo: any) {
-      return new Promise(resolve => {
-        const formData = new FormData()
-        for (let i = 0; i < files.length; i++) {
-          let type = files[i].name.split('.');
-          type = type[type.length - 1]
-          const newFileName = `${controlNo}-${generateToken(3)}.${type}`
-          formData.append('File', files[i], newFileName)
-          if (i + 1 === files.length) {
-            resolve(formData)
-          }
-        }
-
-      })
-      //token
-      function generateToken(n: number) {
-        var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        var token = '';
-        for (var i = 0; i < n; i++) {
-          token += chars[Math.floor(Math.random() * chars.length)];
-        }
-        return token;
-      }
+  /** Upload pending files to the file server as `${controlNo}-xxx.ext` and return DB records */
+  async uploadFiles(files: File[], controlNo: any): Promise<StoredFile[]> {
+    const result: StoredFile[] = []
+    for (const file of files) {
+      let type: any = file.name.split('.');
+      type = type[type.length - 1]
+      const newFileName = `${controlNo}-${generateToken(3)}.${type}`
+      const uploaded = await this.fileUploadService.uploadOne(RESISTANCE_FILE_FOLDER, file, newFileName)
+      result.push(this.fileUploadService.toStoredFile(uploaded, file, newFileName))
     }
-
+    return result
+    //token
+    function generateToken(n: number) {
+      var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var token = '';
+      for (var i = 0; i < n; i++) {
+        token += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return token;
+    }
   }
 
 
@@ -445,17 +444,15 @@ export class ElectricalResistanceComponent implements OnInit {
     }
   }
 
-  async downloadImageOnly(file: any) {
-    const data = await this.api.getBASE64Resis(file).toPromise()
-    downloadBase64File(data, file.name)
-    function downloadBase64File(contentBase64, fileName) {
-      const linkSource = `data:application/pdf;base64,${contentBase64}`;
-      const downloadLink = document.createElement('a');
-      document.body.appendChild(downloadLink);
-      downloadLink.href = linkSource;
-      downloadLink.target = '_self';
-      downloadLink.download = fileName;
-      downloadLink.click();
+  /** Download a stored file ({ filename, path }) straight from the file server */
+  async downloadImageOnly(file: StoredFile) {
+    const fileName = this.fileUploadService.getFileName(file)
+    try {
+      const blob = await this.http.get(file.path, { responseType: 'blob' }).toPromise()
+      fs.saveAs(blob, fileName)
+    } catch (error) {
+      // e.g. CORS blocked → let the browser open it
+      window.open(file.path, '_blank')
     }
   }
 

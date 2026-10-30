@@ -2,20 +2,20 @@
   <span *ngIf="toggleLabel" class="icon-make" (click)="pdfLabel();"><i class="bi bi-file-earmark-pdf"
       style="font-size: 2rem;"></i>label</span>
   <ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
-    <a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+    <a class="icon-make" [download]="ReportName" [href]="result.file?.path"><i class="bi bi-file-earmark-pdf"
         style="font-size: 2rem;"></i>Report</a>
   </ng-container>
   <ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
-    <a class="icon-make" [download]="ReportName" [href]="result.file"><i class="bi bi-file-earmark-pdf"
+    <a class="icon-make" [download]="ReportName" [href]="result.file?.path"><i class="bi bi-file-earmark-pdf"
         style="font-size: 2rem;"></i>Report</a>
   </ng-container>
 
   <ng-container *ngIf="toggleReportUserAE && toggleReportFile && result">
-    <a class="icon-make" [download]="ReportName" [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file"
+    <a class="icon-make" [download]="ReportName" [href]="onlyOfficeUrl + result.file?.path"
       target="_blank"><i class="bi bi-search" style="font-size: 2rem;"></i>View</a>
   </ng-container>
   <ng-container *ngIf="!toggleReportUserAE && toggleReportFile && status">
-    <a class="icon-make" [download]="ReportName" [href]="'http://10.200.90.152:30000/onlyoffice?fileUrl=' + result.file"
+    <a class="icon-make" [download]="ReportName" [href]="onlyOfficeUrl + result.file?.path"
       target="_blank"><i class="bi bi-search" style="font-size: 2rem;"></i>View</a>
   </ng-container>
 
@@ -283,10 +283,10 @@
             <tbody *ngIf="form.files.length != 0 || form.files != null">
               <tr *ngFor="let item of form.files; let i=index">
                 <td>
-                  {{item.name}}
+                  {{item.filename}}
                 </td>
                 <td class="text-center">
-                  <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
+                  <a target="_blank" [download]="item.filename" [href]="item.path" class="btn btn-sm btn-primary mr-0"
                     style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
                 </td>
               </tr>
@@ -508,9 +508,9 @@
             </thead>
             <tbody *ngIf="result" class="subtext-color">
               <tr *ngFor="let item of result.files; let i=index">
-                <td>{{item.name}} </td>
+                <td>{{item.filename}} </td>
                 <td class="text-center">
-                  <a target="_blank" [download]="item.name" [href]="item.path" class="btn btn-sm btn-primary mr-0"
+                  <a target="_blank" [download]="item.filename" [href]="item.path" class="btn btn-sm btn-primary mr-0"
                     style="cursor: pointer;"><i class="bi bi-download" style="font-size: 1rem;"></i></a>
                 </td>
               </tr>

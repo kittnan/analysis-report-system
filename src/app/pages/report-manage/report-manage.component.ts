@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-report-manage',
   templateUrl: './report-manage.component.html',
-  styleUrls: ['./report-manage.component.css', '../pagesStyle.css']
+  styleUrls: ['./report-manage.component.css', '../pagesStyle.css'],
+  standalone: false
 })
 export class ReportManageComponent implements OnInit {
 
@@ -35,13 +36,13 @@ export class ReportManageComponent implements OnInit {
   DefectiveList = [];
   ResultList = [];
 
-  NameToAdd = new FormControl(null, Validators.required)
-  NameToEdit = new FormControl(null, Validators.required)
-  NameToEditId = new FormControl(null)
+  NameToAdd = new UntypedFormControl(null, Validators.required)
+  NameToEdit = new UntypedFormControl(null, Validators.required)
+  NameToEditId = new UntypedFormControl(null)
   indexToEdit: any;
 
 
-  SelectRequestItem = new FormControl(null)
+  SelectRequestItem = new UntypedFormControl(null)
 
   async ngOnInit(): Promise<void> {
     await this.CheckStatusUser();

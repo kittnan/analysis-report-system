@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
@@ -8,7 +8,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  standalone: false
 })
 export class ProfileComponent implements OnInit {
 
@@ -23,11 +24,12 @@ export class ProfileComponent implements OnInit {
   User: any;
   UserId: any;
   Sections = [];
+  PasswordError: string = null;
 
-  Pass = new FormGroup({
-    OldPassword: new FormControl(null, Validators.required),
-    NewPassword: new FormControl(null, Validators.required),
-    NewPassword2: new FormControl(null, Validators.required),
+  Pass = new UntypedFormGroup({
+    OldPassword: new UntypedFormControl(null, Validators.required),
+    NewPassword: new UntypedFormControl(null, Validators.required),
+    NewPassword2: new UntypedFormControl(null, Validators.required),
   })
 
 
@@ -99,16 +101,24 @@ export class ProfileComponent implements OnInit {
       showCancelButton: true
     }).then((r) => {
       if (r.isConfirmed) {
+        // the server checks OldPassword; passwords are no longer sent to the browser
         let d = {
+          OldPassword: this.OldPassword.value,
           Password: this.NewPassword.value,
         }
-        this.api.UpdateUser(this.UserId, d).subscribe((data: any) => {
-          if (data) {
-            this.modalService.dismissAll()
-            this.alertSuccess();
-            sessionStorage.clear();
-            this.route.navigate(['/login'])
-            // location.href = "#/login";
+        this.PasswordError = null;
+        this.api.UpdateUser(this.UserId, d).subscribe({
+          next: (data: any) => {
+            if (data) {
+              this.modalService.dismissAll()
+              this.alertSuccess();
+              sessionStorage.clear();
+              this.route.navigate(['/login'])
+              // location.href = "#/login";
+            }
+          },
+          error: (err) => {
+            this.PasswordError = err?.error?.message || 'Change password failed';
           }
         })
 

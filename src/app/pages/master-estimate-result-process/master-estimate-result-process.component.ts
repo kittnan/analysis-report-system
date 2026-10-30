@@ -15,7 +15,8 @@ interface DataItem {
 @Component({
   selector: 'app-master-estimate-result-process',
   templateUrl: './master-estimate-result-process.component.html',
-  styleUrls: ['./master-estimate-result-process.component.scss']
+  styleUrls: ['./master-estimate-result-process.component.scss'],
+  standalone: false
 })
 export class MasterEstimateResultProcessComponent implements OnInit, AfterViewInit {
 

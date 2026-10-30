@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment'
 import Swal from 'sweetalert2'
 
@@ -9,6 +9,7 @@ import { Workbook } from 'exceljs'
 // import * as ExcelJS from 'exceljs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'app/service/http.service';
+import { FileUploadService } from 'app/service/file-upload.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpParams } from '@angular/common/http';
 import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
@@ -16,9 +17,11 @@ import { HelperMasterFMService } from 'app/service/helper-master-fm.service';
 @Component({
   selector: 'app-progress-form5-fm',
   templateUrl: './progress-form5-fm.component.html',
-  styleUrls: ['./progress-form5-fm.component.scss', '../pagesStyle.css']
+  styleUrls: ['./progress-form5-fm.component.scss', '../pagesStyle.css'],
+  standalone: false
 })
 export class ProgressForm5FmComponent implements OnInit {
+  onlyOfficeUrl = environment.OnlyOfficeUrl;
 
 
   constructor(
@@ -27,7 +30,8 @@ export class ProgressForm5FmComponent implements OnInit {
     private modalService: NgbModal,
     private route: Router,
     private routerActive: ActivatedRoute,
-    private masterFM: HelperMasterFMService
+    private masterFM: HelperMasterFMService,
+    private fileUploadService: FileUploadService
     // private api: RejectForm2Service
   ) {
     this.routerActive.queryParams.subscribe((param: Params) => {
@@ -52,65 +56,65 @@ export class ProgressForm5FmComponent implements OnInit {
   Report: any;
 
   // ? Form Control
-  ResultForm = new FormGroup({
-    AnalyzeDate: new FormControl(null, Validators.required),
-    ResultDate: new FormControl(null, Validators.required),
-    ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null, Validators.required),
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0),
-        item: new FormControl(null),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
-        rootCase: new FormControl(null),
-        material: new FormControl(null),
+  ResultForm = new UntypedFormGroup({
+    AnalyzeDate: new UntypedFormControl(null, Validators.required),
+    ResultDate: new UntypedFormControl(null, Validators.required),
+    ReportDate: new UntypedFormControl(null, Validators.required),
+    Result: new UntypedFormControl(null, Validators.required),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0),
+        item: new UntypedFormControl(null),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
+        rootCase: new UntypedFormControl(null),
+        material: new UntypedFormControl(null),
       })
     ]),
-    SourceOfDefect: new FormControl(null, Validators.required),
-    CategoryCause: new FormControl(null, Validators.required),
-    AnalysisLevel: new FormControl(null, Validators.required),
-    CanAnalysis: new FormControl(null, Validators.required),
-    RelatedToESD: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null, Validators.required),
-    File: new FormControl(null),
-    TempCause: new FormControl(null),
-    htmlReport: new FormControl(null),
-    JudgementDefect: new FormControl(null, Validators.required),
-    Remark: new FormControl(null),
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
-    resultItemRequire: new FormControl(true),
-    resultAnalysisRequire: new FormControl(true)
+    SourceOfDefect: new UntypedFormControl(null, Validators.required),
+    CategoryCause: new UntypedFormControl(null, Validators.required),
+    AnalysisLevel: new UntypedFormControl(null, Validators.required),
+    CanAnalysis: new UntypedFormControl(null, Validators.required),
+    RelatedToESD: new UntypedFormControl(null, Validators.required),
+    ReportNo: new UntypedFormControl(null, Validators.required),
+    File: new UntypedFormControl(null),
+    TempCause: new UntypedFormControl(null),
+    htmlReport: new UntypedFormControl(null),
+    JudgementDefect: new UntypedFormControl(null, Validators.required),
+    Remark: new UntypedFormControl(null),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
+    resultItemRequire: new UntypedFormControl(true),
+    resultAnalysisRequire: new UntypedFormControl(true)
   })
 
-  TreatmentOfNg = new FormControl(null, Validators.required);
+  TreatmentOfNg = new UntypedFormControl(null, Validators.required);
   // GenItemName = new FormControl(null, Validators.required);
 
-  NoteReject = new FormControl(null);
-  NoteApprove = new FormControl(null);
+  NoteReject = new UntypedFormControl(null);
+  NoteApprove = new UntypedFormControl(null);
 
-  analysisForm = new FormGroup({
-    mappingPositionUrl: new FormControl([], Validators.required),
-    analysis: new FormArray([
-      new FormGroup({
-        no: new FormControl(1, Validators.required),
-        fmPosition: new FormControl(null, Validators.required),
-        tempFmPosition: new FormControl(null),
-        microscopeImages: new FormControl([], Validators.required),
-        sizeLength: new FormControl(null, Validators.required),
-        sizeWidth: new FormControl(null, Validators.required),
-        ftirSpectrumImages: new FormControl([], Validators.required),
-        ftirSpectrumImagesGraph: new FormControl([], Validators.required),
-        material: new FormControl(null, Validators.required),
-        tempMaterial: new FormControl(null),
-        estimateResultProcess: new FormControl(null, Validators.required),
-        tempEstimateResultProcess: new FormControl(null),
-        dataCode: new FormControl(null, Validators.required),
-        color: new FormControl(null, Validators.required),
-        character: new FormControl(null, Validators.required),
+  analysisForm = new UntypedFormGroup({
+    mappingPositionUrl: new UntypedFormControl([], Validators.required),
+    analysis: new UntypedFormArray([
+      new UntypedFormGroup({
+        no: new UntypedFormControl(1, Validators.required),
+        fmPosition: new UntypedFormControl(null, Validators.required),
+        tempFmPosition: new UntypedFormControl(null),
+        microscopeImages: new UntypedFormControl([], Validators.required),
+        sizeLength: new UntypedFormControl(null, Validators.required),
+        sizeWidth: new UntypedFormControl(null, Validators.required),
+        ftirSpectrumImages: new UntypedFormControl([], Validators.required),
+        ftirSpectrumImagesGraph: new UntypedFormControl([], Validators.required),
+        material: new UntypedFormControl(null, Validators.required),
+        tempMaterial: new UntypedFormControl(null),
+        estimateResultProcess: new UntypedFormControl(null, Validators.required),
+        tempEstimateResultProcess: new UntypedFormControl(null),
+        dataCode: new UntypedFormControl(null, Validators.required),
+        color: new UntypedFormControl(null, Validators.required),
+        character: new UntypedFormControl(null, Validators.required),
       })
     ])
   })
@@ -188,9 +192,9 @@ export class ProgressForm5FmComponent implements OnInit {
   tempFileName: any = [];
   tempFileTotal: number = 0;
   tempFileENGTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
-  SelectMDL = new FormControl(null, Validators.required);
+  SelectMDL = new UntypedFormControl(null, Validators.required);
   // pathFile = [];
 
 
@@ -281,16 +285,16 @@ export class ProgressForm5FmComponent implements OnInit {
 
 
             if (result.result2 && result.result2.length > 0 && result.result2[0].item) {
-              const result2Array = this.Result2 as FormArray;
+              const result2Array = this.Result2 as UntypedFormArray;
               result2Array.clear();
               result.result2.forEach((res: any) => {
-                const formGroup = new FormGroup({
-                  item: new FormControl(res.item || ''),
-                  qty: new FormControl(res.qty || ''),
-                  tempItem: new FormControl(res.item || ''),
-                  dropdown: new FormControl(res.dropdown || ''),
-                  rootCase: new FormControl(res.rootCase || ''),
-                  material: new FormControl(res.material || ''),
+                const formGroup = new UntypedFormGroup({
+                  item: new UntypedFormControl(res.item || ''),
+                  qty: new UntypedFormControl(res.qty || ''),
+                  tempItem: new UntypedFormControl(res.item || ''),
+                  dropdown: new UntypedFormControl(res.dropdown || ''),
+                  rootCase: new UntypedFormControl(res.rootCase || ''),
+                  material: new UntypedFormControl(res.material || ''),
                 });
                 result2Array.push(formGroup);
               });
@@ -316,9 +320,8 @@ export class ProgressForm5FmComponent implements OnInit {
             result.treatMent ? this.TreatmentOfNg.setValue(result.treatMent) : null
 
             this.File.setValue(result.file);
-            // result.file ? this.tempFileReport = (result.file).split('/')[6] : false
             // * เก็บชื่อReport ไฟล์
-            result.file ? this.tempFileReportName = (result.file).split('/')[5] : false
+            result.file ? this.tempFileReportName = this.fileUploadService.getFileName(result.file) : false
             result.file ? this.toggleAttReportEng = true : false
 
             // * เก็บ obj files
@@ -383,22 +386,22 @@ export class ProgressForm5FmComponent implements OnInit {
                     ? item.ftirSpectrumImagesGraph.slice(0, this.MAX_FTIR_IMAGES_PER_ITEM_GRAPH)
                     : [];
 
-                  const formGroup = new FormGroup({
-                    no: new FormControl(item.no || index + 1, Validators.required),
-                    fmPosition: new FormControl(item.fmPosition, Validators.required),
-                    tempFmPosition: new FormControl(null),
-                    microscopeImages: new FormControl(microscopeImages, Validators.required),
-                    sizeLength: new FormControl(item.sizeLength, Validators.required),
-                    sizeWidth: new FormControl(item.sizeWidth, Validators.required),
-                    ftirSpectrumImages: new FormControl(ftirSpectrumImages, Validators.required),
-                    ftirSpectrumImagesGraph: new FormControl(ftirSpectrumImagesGraph, Validators.required),
-                    material: new FormControl(item.material, Validators.required),
-                    tempMaterial: new FormControl(null),
-                    estimateResultProcess: new FormControl(item.estimateResultProcess, Validators.required),
-                    tempEstimateResultProcess: new FormControl(null),
-                    dataCode: new FormControl(item.dataCode, Validators.required),
-                    color: new FormControl(item.color, Validators.required),
-                    character: new FormControl(item.character, Validators.required),
+                  const formGroup = new UntypedFormGroup({
+                    no: new UntypedFormControl(item.no || index + 1, Validators.required),
+                    fmPosition: new UntypedFormControl(item.fmPosition, Validators.required),
+                    tempFmPosition: new UntypedFormControl(null),
+                    microscopeImages: new UntypedFormControl(microscopeImages, Validators.required),
+                    sizeLength: new UntypedFormControl(item.sizeLength, Validators.required),
+                    sizeWidth: new UntypedFormControl(item.sizeWidth, Validators.required),
+                    ftirSpectrumImages: new UntypedFormControl(ftirSpectrumImages, Validators.required),
+                    ftirSpectrumImagesGraph: new UntypedFormControl(ftirSpectrumImagesGraph, Validators.required),
+                    material: new UntypedFormControl(item.material, Validators.required),
+                    tempMaterial: new UntypedFormControl(null),
+                    estimateResultProcess: new UntypedFormControl(item.estimateResultProcess, Validators.required),
+                    tempEstimateResultProcess: new UntypedFormControl(null),
+                    dataCode: new UntypedFormControl(item.dataCode, Validators.required),
+                    color: new UntypedFormControl(item.color, Validators.required),
+                    character: new UntypedFormControl(item.character, Validators.required),
                   });
                   analysisArray.push(formGroup);
 
@@ -602,7 +605,7 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   FilterFmPosition() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const currentControl = analysisArray.at(this.currentAnalysisIndex);
     const searchValue = currentControl.get('fmPosition').value;
 
@@ -616,7 +619,7 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   SetFmPosition() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const currentControl = analysisArray.at(this.currentAnalysisIndex);
     currentControl.get('fmPosition').setValue(currentControl.get('tempFmPosition').value);
   }
@@ -626,7 +629,7 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   FilterMaterial() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const currentControl = analysisArray.at(this.currentAnalysisIndex);
     const searchValue = currentControl.get('material').value;
 
@@ -640,7 +643,7 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   SetMaterial() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const currentControl = analysisArray.at(this.currentAnalysisIndex);
     currentControl.get('material').setValue(currentControl.get('tempMaterial').value);
   }
@@ -650,7 +653,7 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   FilterEstimateResultProcess() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const currentControl = analysisArray.at(this.currentAnalysisIndex);
     const searchValue = currentControl.get('estimateResultProcess').value;
 
@@ -664,13 +667,13 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   SetEstimateResultProcess() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const currentControl = analysisArray.at(this.currentAnalysisIndex);
     currentControl.get('estimateResultProcess').setValue(currentControl.get('tempEstimateResultProcess').value);
   }
 
   initializeToggleArrays() {
-    const analysisArray = this.analysisForm.get('analysis') as FormArray;
+    const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
     const arrayLength = analysisArray.length;
 
     // Initialize or extend arrays to match the form array length
@@ -818,14 +821,10 @@ export class ProgressForm5FmComponent implements OnInit {
           const file = this.mappingPositionFiles[i];
           const fileName = `${requestNo}_MappingPosition_${i + 1}_${file.name}`;
 
-          const uploadPromise = this.api.UploadFileEng(file, fileName)
+          const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
             .then((data: any) => {
               if (data) {
-                const path = {
-                  path: data,
-                  name: fileName,
-                  size: file.size
-                };
+                const path = this.fileUploadService.toStoredFile(data, file, fileName);
                 this.uploadedMappingPositionPaths.push(path);
                 console.log(`Mapping Position image ${i + 1} uploaded successfully`);
                 return data;
@@ -855,14 +854,10 @@ export class ProgressForm5FmComponent implements OnInit {
               const file = imageArray[imgIdx];
               const fileName = `${requestNo}_Microscope_Item${analysisIdx + 1}_Img${imgIdx + 1}_${file.name}`;
 
-              const uploadPromise = this.api.UploadFileEng(file, fileName)
+              const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
                 .then((data: any) => {
                   if (data) {
-                    const path = {
-                      path: data,
-                      name: fileName,
-                      size: file.size
-                    };
+                    const path = this.fileUploadService.toStoredFile(data, file, fileName);
                     this.uploadedMicroscopeImagePaths[analysisIdx].push(path);
                     console.log(`Microscope image [${analysisIdx}][${imgIdx}] uploaded successfully`);
                     return data;
@@ -894,14 +889,10 @@ export class ProgressForm5FmComponent implements OnInit {
               const file = imageArray[imgIdx];
               const fileName = `${requestNo}_FTIR_Item${analysisIdx + 1}_Img${imgIdx + 1}_${file.name}`;
 
-              const uploadPromise = this.api.UploadFileEng(file, fileName)
+              const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
                 .then((data: any) => {
                   if (data) {
-                    const path = {
-                      path: data,
-                      name: fileName,
-                      size: file.size
-                    };
+                    const path = this.fileUploadService.toStoredFile(data, file, fileName);
                     this.uploadedFtirSpectrumImagePaths[analysisIdx].push(path);
                     console.log(`FT-IR Spectrum image [${analysisIdx}][${imgIdx}] uploaded successfully`);
                     return data;
@@ -933,14 +924,10 @@ export class ProgressForm5FmComponent implements OnInit {
               const file = imageArray[imgIdx];
               const fileName = `${requestNo}_FTIR_Graph_Item${analysisIdx + 1}_Img${imgIdx + 1}_${file.name}`;
 
-              const uploadPromise = this.api.UploadFileEng(file, fileName)
+              const uploadPromise = this.fileUploadService.uploadEngFile(file, fileName)
                 .then((data: any) => {
                   if (data) {
-                    const path = {
-                      path: data,
-                      name: fileName,
-                      size: file.size
-                    };
+                    const path = this.fileUploadService.toStoredFile(data, file, fileName);
                     this.uploadedFtirSpectrumImagesGraphPaths[analysisIdx].push(path);
                     console.log(`FT-IR Spectrum Graph image [${analysisIdx}][${imgIdx}] uploaded successfully`);
                     return data;
@@ -1103,36 +1090,18 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   async loopUploadFiles() {
-
-    this.tempFile.forEach(file => {
+    for (const file of this.tempFile) {
       const fileName = `${this.form.requestNumber}@${file.name}`
-      this.api.UploadFileEng(file, fileName).then((data) => {
-        if (data) {
-          const name = (data.toString()).split('/')
-          const path = {
-            path: data,
-            // name: name[6],
-            // name: name[5],
-            name: fileName,
-            size: file.size
-          }
-          this.tempEngFile.push(path)
-        }
-      })
-    });
-
-    // const b = await this.uploadReport();
-
+      const uploaded = await this.fileUploadService.uploadEngFile(file, fileName)
+      if (uploaded) {
+        this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, fileName))
+      }
+    }
   }
 
   async uploadReport() {
-    let all = new FormData();
-    all.append('File', this.FileReport, this.FileReport.name)
-    await this.api.uploadReport2(all).then(async (data: any) => {
-      this.FileReportPath = await data
-      // console.log(this.FileReportPath);
-
-    })
+    const uploaded = await this.fileUploadService.uploadEngReport(this.FileReport)
+    this.FileReportPath = uploaded ? this.fileUploadService.toReportFile(uploaded, this.FileReport) : null
   }
   // ResultForm = new FormGroup({
   //   AnalyzeDate: new FormControl(null, Validators.required),
@@ -1265,7 +1234,7 @@ export class ProgressForm5FmComponent implements OnInit {
                 let Lname = localStorage.getItem('AR_UserLastName')
                 if (data) {
                   const Content = "<p>To " + this.Users.FirstName + " " + this.Users.LastName + "</p><br>" +
-                    "Analysis request was closed as  link:  <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "Analysis request was closed as  link:  <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
                   const sendMail = {
                     Content: Content,
@@ -1328,7 +1297,7 @@ export class ProgressForm5FmComponent implements OnInit {
                   let Fname = localStorage.getItem('AR_UserFirstName')
                   let Lname = localStorage.getItem('AR_UserLastName')
                   const Content = "<p>To " + this.SendRejectUser.FirstName + " " + this.SendRejectUser.LastName + "(AE Engineer)</p><br>" +
-                    "AE Approval not approve report as  link : <a href='http://10.200.90.152:8081/Analysis-Report/'>http://10.200.90.152:8081/Analysis-Report/</a><br><br>" +
+                    "AE Approval not approve report as  link : <a href='" + environment.AppUrl + "'>" + environment.AppUrl + "</a><br><br>" +
                     "<p>From " + Fname + " " + Lname + "(AE Approval)</p>";
                   const sendMail = {
                     Content: Content,
@@ -1476,15 +1445,12 @@ export class ProgressForm5FmComponent implements OnInit {
 
         if (file.name == realFileName) {
 
-          let ReportFile = new FormData();
-          ReportFile.append('File', file, file.name)
-          this.api.uploadReport2(ReportFile).then(async (data: any) => {
-            await data
+          this.fileUploadService.uploadEngReport(file).then((uploaded) => {
             const temp = {
               startAnalyzeDate: this.AnalyzeDate.value,
               finishAnalyzeDate: this.ResultDate.value,
               finishReportDate: this.ReportDate.value,
-              file: data
+              file: this.fileUploadService.toReportFile(uploaded, file)
             }
 
             this.api.UpdateResult(this.ResultAPi._id, temp).subscribe((data: any) => {
@@ -1494,6 +1460,10 @@ export class ProgressForm5FmComponent implements OnInit {
                 this.getForm();
               }
             })
+          }).catch((error) => {
+            console.error(error);
+            this.htmlReport.reset();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Upload failed.' })
           })
 
         } else {
@@ -1513,7 +1483,7 @@ export class ProgressForm5FmComponent implements OnInit {
     Swal.fire({
       title: 'Do you want to delete ? ',
       icon: 'error',
-      text: `Delete ${event.name} (${event.size})`,
+      text: `Delete ${event.filename} (${event.size})`,
       confirmButtonText: 'Delete',
       showCancelButton: true
     }).then((result) => {
@@ -1522,11 +1492,8 @@ export class ProgressForm5FmComponent implements OnInit {
         if (indexToRemove >= 0) {
           this.tempFileENGTotal -= this.tempEngFile[indexToRemove].size;
           this.tempEngFile.splice(indexToRemove, 1)
-          const data = {
-            name: event.name
-          }
 
-          this.api.RemoveFileEng(data).then((res) => {
+          this.fileUploadService.deleteFile(event).toPromise().then((res) => {
             if (res) {
               const data = {
                 startAnalyzeDate: this.AnalyzeDate.value,
@@ -1542,6 +1509,9 @@ export class ProgressForm5FmComponent implements OnInit {
                 }
               })
             }
+          }).catch((error) => {
+            console.error(error);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Delete failed.' })
           })
 
         }
@@ -1567,23 +1537,13 @@ export class ProgressForm5FmComponent implements OnInit {
         //   CheckFileName = `${this.form.requestNumber}@${file.name}`
         // }
 
-        if (this.tempEngFile.filter(item => item.name == CheckFileName).length == 0) {
+        if (this.tempEngFile.filter(item => item.filename == CheckFileName).length == 0) {
           this.tempFileENGTotal += file.size;
           if (this.tempFileENGTotal < 31457280) {
-            // this.tempFile.push(file);
-            // ! to upload file
 
-
-            this.api.UploadFileEng(file, CheckFileName).then((data) => {
-              if (data) {
-
-                // const name = (data.toString()).split('/')
-                const TempFile = {
-                  path: data,
-                  name: CheckFileName,
-                  size: file.size
-                }
-                this.tempEngFile.push(TempFile);
+            this.fileUploadService.uploadEngFile(file, CheckFileName).then((uploaded) => {
+              if (uploaded) {
+                this.tempEngFile.push(this.fileUploadService.toStoredFile(uploaded, file, CheckFileName));
 
                 let tempData = {
                   startAnalyzeDate: this.AnalyzeDate.value,
@@ -1599,6 +1559,11 @@ export class ProgressForm5FmComponent implements OnInit {
                 })
 
               }
+            }).catch((error) => {
+              console.error(error);
+              this.tempFileENGTotal -= file.size;
+              this.inputFile.reset();
+              Swal.fire({ title: 'Error', icon: 'error', text: 'Upload failed.' })
             })
 
           } else {
@@ -1682,7 +1647,7 @@ export class ProgressForm5FmComponent implements OnInit {
             const result = data[0]
             this.toggleAttReportEng = true;
             this.File.setValue(result.file);
-            this.tempFileReportName = result.file ? result.file.replace('http://10.200.90.152:4501/ENG/Report/', '') : '';
+            this.tempFileReportName = this.fileUploadService.getFileName(result.file);
           }
         });
       },
@@ -1847,22 +1812,22 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   newResultFM() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     const isFM = this.isFM();
 
-    const newItem = new FormGroup({
-      item: new FormControl('', isFM ? Validators.required : null),
-      qty: new FormControl(0, isFM ? Validators.required : null),
-      tempItem: new FormControl(''),
-      dropdown: new FormControl(false),
-      rootCase: new FormControl(null),
-      material: new FormControl(null),
+    const newItem = new UntypedFormGroup({
+      item: new UntypedFormControl('', isFM ? Validators.required : null),
+      qty: new UntypedFormControl(0, isFM ? Validators.required : null),
+      tempItem: new UntypedFormControl(''),
+      dropdown: new UntypedFormControl(false),
+      rootCase: new UntypedFormControl(null),
+      material: new UntypedFormControl(null),
     });
     result2Array.push(newItem);
   }
 
   removeResultFM(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array.length > 1) {
       result2Array.removeAt(index);
     }
@@ -1870,7 +1835,7 @@ export class ProgressForm5FmComponent implements OnInit {
 
   moveResultFMUp(index: number) {
     if (index > 0) {
-      const result2Array = this.Result2 as FormArray;
+      const result2Array = this.Result2 as UntypedFormArray;
       const currentItem = result2Array.at(index);
       result2Array.removeAt(index);
       result2Array.insert(index - 1, currentItem);
@@ -1878,7 +1843,7 @@ export class ProgressForm5FmComponent implements OnInit {
   }
 
   moveResultFMDown(index: number) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (index < result2Array.length - 1) {
       const currentItem = result2Array.at(index);
       result2Array.removeAt(index);
@@ -1889,23 +1854,23 @@ export class ProgressForm5FmComponent implements OnInit {
   // Analysis Form Array Methods
   addAnalysisItem() {
     const analysisArray = this.analysisFormArray;
-    const newItem = new FormGroup({
-      no: new FormControl(analysisArray.length + 1, Validators.required),
-      fmPosition: new FormControl(null, Validators.required),
-      tempFmPosition: new FormControl(null),
-      microscopeImages: new FormControl([], Validators.required),
-      sizeLength: new FormControl(null, Validators.required),
-      sizeWidth: new FormControl(null, Validators.required),
-      ftirSpectrumImages: new FormControl([], Validators.required),
-      ftirSpectrumImagesGraph: new FormControl([], Validators.required),
-      material: new FormControl(null, Validators.required),
-      tempMaterial: new FormControl(null),
-      estimateResultProcess: new FormControl(null, Validators.required),
-      tempEstimateResultProcess: new FormControl(null),
-      dataCode: new FormControl(null, Validators.required),
-      color: new FormControl(null, Validators.required),
-      character: new FormControl(null, Validators.required),
-      result: new FormControl(null, Validators.required),
+    const newItem = new UntypedFormGroup({
+      no: new UntypedFormControl(analysisArray.length + 1, Validators.required),
+      fmPosition: new UntypedFormControl(null, Validators.required),
+      tempFmPosition: new UntypedFormControl(null),
+      microscopeImages: new UntypedFormControl([], Validators.required),
+      sizeLength: new UntypedFormControl(null, Validators.required),
+      sizeWidth: new UntypedFormControl(null, Validators.required),
+      ftirSpectrumImages: new UntypedFormControl([], Validators.required),
+      ftirSpectrumImagesGraph: new UntypedFormControl([], Validators.required),
+      material: new UntypedFormControl(null, Validators.required),
+      tempMaterial: new UntypedFormControl(null),
+      estimateResultProcess: new UntypedFormControl(null, Validators.required),
+      tempEstimateResultProcess: new UntypedFormControl(null),
+      dataCode: new UntypedFormControl(null, Validators.required),
+      color: new UntypedFormControl(null, Validators.required),
+      character: new UntypedFormControl(null, Validators.required),
+      result: new UntypedFormControl(null, Validators.required),
     });
     analysisArray.push(newItem);
 
@@ -2362,7 +2327,7 @@ export class ProgressForm5FmComponent implements OnInit {
 
   // Analysis Form getters
   get mappingPositionUrl() { return this.analysisForm.get('mappingPositionUrl') }
-  get analysisFormArray() { return this.analysisForm.get('analysis') as FormArray }
+  get analysisFormArray() { return this.analysisForm.get('analysis') as UntypedFormArray }
 
   alertSuccess() {
     Swal.fire({
@@ -2375,19 +2340,19 @@ export class ProgressForm5FmComponent implements OnInit {
 
   // อัปเดต validators สำหรับ Result2 ตามสถานะ FM
   updateResult2Validators() {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     const isFM = this.isFM();
 
     if (isFM) {
       // For FM requests, ensure Result2 has at least one item and fields are required
       if (result2Array.length === 0) {
-        const newItem = new FormGroup({
-          qty: new FormControl(0, Validators.required),
-          item: new FormControl(null, Validators.required),
-          tempItem: new FormControl(null),
-          dropdown: new FormControl(false),
-          rootCase: new FormControl(null),
-          material: new FormControl(null),
+        const newItem = new UntypedFormGroup({
+          qty: new UntypedFormControl(0, Validators.required),
+          item: new UntypedFormControl(null, Validators.required),
+          tempItem: new UntypedFormControl(null),
+          dropdown: new UntypedFormControl(false),
+          rootCase: new UntypedFormControl(null),
+          material: new UntypedFormControl(null),
         });
         result2Array.push(newItem);
       } else {
@@ -2465,7 +2430,7 @@ export class ProgressForm5FmComponent implements OnInit {
     });
 
     // ตรวจสอบ Result2 FormArray (สำหรับงาน FM)
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     if (result2Array) {
       console.log('\n--- Result2 FormArray Status ---');
       console.log('Result2 Array valid:', result2Array.valid);
@@ -2527,7 +2492,7 @@ export class ProgressForm5FmComponent implements OnInit {
     const value = this.ResultItemRequire.value;
 
     if (!value) {
-      const result2Array = this.Result2 as FormArray;
+      const result2Array = this.Result2 as UntypedFormArray;
       result2Array.clearValidators();
       result2Array.setErrors(null);
       result2Array.controls.forEach((control: any) => {

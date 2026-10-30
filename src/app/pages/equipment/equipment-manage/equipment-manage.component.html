@@ -37,7 +37,7 @@
                             <th>{{indexEQ +1}}</th>
                             <td>
                                 <div class="zoom" *ngIf="equipment['urlImage']">
-                                    <img [src]="equipment['urlImage']['url']" alt="" width="100%" height="150px">
+                                    <img [src]="equipment['urlImage']['path']" alt="" width="100%" height="150px">
                                 </div>
                                 <div class="zoom" *ngIf="!equipment['urlImage']">
                                     <img src="#" alt="" width="100%" height="150px">
@@ -101,6 +101,10 @@
                     <p *ngIf="FileUpload">
                         <strong>filename: </strong><span>{{FileUpload.name}}</span>
                         <strong class="ml-2">size: </strong><span>{{FileUpload.size |fileSize}}</span>
+                    </p>
+                    <p *ngIf="!FileUpload && EquipmentFormControl['urlImage'].value?.path">
+                        <strong>filename: </strong><span>{{EquipmentFormControl['urlImage'].value.filename}}</span>
+                        <strong class="ml-2">size: </strong><span>{{EquipmentFormControl['urlImage'].value.size |fileSize}}</span>
                     </p>
                 </div>
 
@@ -226,7 +230,7 @@
                                     {{item2.name}}
                                 </td>
                                 <td *ngIf="item2.files.length>0">
-                                    <a [download]="item2.files[0].name" target="_blank" [href]="item2.files[0].url">
+                                    <a [download]="item2.files[0].filename" target="_blank" [href]="item2.files[0].path">
                                         Quotation pdf file
                                     </a>
                                 </td>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 
 import Chart from 'chart.js/auto';
 import { HttpService } from 'app/service/http.service';
@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'dashboard-cmp',
-  moduleId: module.id,
   templateUrl: 'dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  standalone: false
 })
 
 export class DashboardComponent implements OnInit {
@@ -25,9 +25,9 @@ export class DashboardComponent implements OnInit {
   LoadingPage: boolean;
 
   // ? Form control
-  DateStart = new FormControl(null, Validators.required);
-  DateEnd = new FormControl(null, Validators.required);
-  Month = new FormControl(null, Validators.required)
+  DateStart = new UntypedFormControl(null, Validators.required);
+  DateEnd = new UntypedFormControl(null, Validators.required);
+  Month = new UntypedFormControl(null, Validators.required)
 
   Year: any;
 

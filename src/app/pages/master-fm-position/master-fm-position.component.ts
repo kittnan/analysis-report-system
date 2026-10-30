@@ -15,7 +15,8 @@ interface DataItem {
 @Component({
   selector: 'app-master-fm-position',
   templateUrl: './master-fm-position.component.html',
-  styleUrls: ['./master-fm-position.component.scss']
+  styleUrls: ['./master-fm-position.component.scss'],
+  standalone: false
 })
 export class MasterFmPositionComponent implements OnInit, AfterViewInit {
 

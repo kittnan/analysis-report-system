@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
+import { FileSizePipe } from 'app/pages/progress-form3/file-size.pipe';
 import { EditViewComponent } from './edit-view.component';
 
 describe('EditViewComponent', () => {
@@ -7,8 +10,10 @@ describe('EditViewComponent', () => {
   let fixture: ComponentFixture<EditViewComponent>;
 
   beforeEach(async () => {
+    sessionStorage.setItem('dataAll', JSON.stringify({ registerNo: '', urlFile: [] }));
     await TestBed.configureTestingModule({
-      declarations: [ EditViewComponent ]
+      declarations: [ EditViewComponent, FileSizePipe ],
+      providers: [ provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting() ]
     })
     .compileComponents();
   });
@@ -17,6 +22,10 @@ describe('EditViewComponent', () => {
     fixture = TestBed.createComponent(EditViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    sessionStorage.removeItem('dataAll');
   });
 
   it('should create', () => {

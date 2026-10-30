@@ -252,11 +252,11 @@
               </tr>
               <tr *ngFor="let item of FileList; let i=index">
                 <td>
-                  {{item.name}}
+                  {{item.filename}}
                 </td>
                 <td class="text-center">
 
-                  <a target="_blank" [download]="item.name" [href]="item.path"
+                  <a target="_blank" [download]="item.filename" [href]="item.path"
                     class="btn btn-sm btn-outline-primary mr-0" style="cursor: pointer;"><i class="bi bi-download"
                       style="font-size: 1rem;"></i></a>
                 </td>

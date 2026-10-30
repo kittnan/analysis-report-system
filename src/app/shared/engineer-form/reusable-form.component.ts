@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { environment } from 'environments/environment'
 import Swal from 'sweetalert2'
 
@@ -27,7 +27,8 @@ export interface FormConfig {
 @Component({
   selector: 'app-reusable-form',
   templateUrl: './reusable-form.component.html',
-  styleUrls: ['./reusable-form.component.scss', '../../pages/pagesStyle.css']
+  styleUrls: ['./reusable-form.component.scss', '../../pages/pagesStyle.css'],
+  standalone: false
 })
 export class ReusableFormComponent implements OnInit {
 
@@ -75,60 +76,60 @@ export class ReusableFormComponent implements OnInit {
   Report: any;
 
   // ? Form Control
-  ResultForm = new FormGroup({
-    AnalyzeDate: new FormControl(null, Validators.required),
-    ResultDate: new FormControl(null, Validators.required),
-    ReportDate: new FormControl(null, Validators.required),
-    Result: new FormControl(null, Validators.required),
-    Result2: new FormArray([
-      new FormGroup({
-        qty: new FormControl(0),
-        item: new FormControl(null),
-        tempItem: new FormControl(null),
-        dropdown: new FormControl(false),
-        rootCase: new FormControl(null),
-        material: new FormControl(null),
+  ResultForm = new UntypedFormGroup({
+    AnalyzeDate: new UntypedFormControl(null, Validators.required),
+    ResultDate: new UntypedFormControl(null, Validators.required),
+    ReportDate: new UntypedFormControl(null, Validators.required),
+    Result: new UntypedFormControl(null, Validators.required),
+    Result2: new UntypedFormArray([
+      new UntypedFormGroup({
+        qty: new UntypedFormControl(0),
+        item: new UntypedFormControl(null),
+        tempItem: new UntypedFormControl(null),
+        dropdown: new UntypedFormControl(false),
+        rootCase: new UntypedFormControl(null),
+        material: new UntypedFormControl(null),
       })
     ]),
-    SourceOfDefect: new FormControl(null, Validators.required),
-    CategoryCause: new FormControl(null, Validators.required),
-    AnalysisLevel: new FormControl(null, Validators.required),
-    CanAnalysis: new FormControl(null, Validators.required),
-    RelatedToESD: new FormControl(null, Validators.required),
-    ReportNo: new FormControl(null, Validators.required),
-    Approve: new FormControl(null, Validators.required),
-    File: new FormControl(null),
-    TempCause: new FormControl(null),
-    htmlReport: new FormControl(null),
-    JudgementDefect: new FormControl(null, Validators.required),
-    Remark: new FormControl(null),
-    OperatorName: new FormControl(null, Validators.required),
-    DifficultyOfWork: new FormControl(null, Validators.required),
-    CorrectOfWork: new FormControl(null, Validators.required),
-    AnalysisTime: new FormControl(null, Validators.required),
-    NoteReject: new FormControl(null), // Add NoteReject to main form
-    NoteApprove: new FormControl(null), // Add NoteApprove to main form
+    SourceOfDefect: new UntypedFormControl(null, Validators.required),
+    CategoryCause: new UntypedFormControl(null, Validators.required),
+    AnalysisLevel: new UntypedFormControl(null, Validators.required),
+    CanAnalysis: new UntypedFormControl(null, Validators.required),
+    RelatedToESD: new UntypedFormControl(null, Validators.required),
+    ReportNo: new UntypedFormControl(null, Validators.required),
+    Approve: new UntypedFormControl(null, Validators.required),
+    File: new UntypedFormControl(null),
+    TempCause: new UntypedFormControl(null),
+    htmlReport: new UntypedFormControl(null),
+    JudgementDefect: new UntypedFormControl(null, Validators.required),
+    Remark: new UntypedFormControl(null),
+    OperatorName: new UntypedFormControl(null, Validators.required),
+    DifficultyOfWork: new UntypedFormControl(null, Validators.required),
+    CorrectOfWork: new UntypedFormControl(null, Validators.required),
+    AnalysisTime: new UntypedFormControl(null, Validators.required),
+    NoteReject: new UntypedFormControl(null), // Add NoteReject to main form
+    NoteApprove: new UntypedFormControl(null), // Add NoteApprove to main form
   })
 
-  TreatmentOfNg = new FormControl(null, Validators.required);
+  TreatmentOfNg = new UntypedFormControl(null, Validators.required);
   // NoteReject and NoteApprove moved to main ResultForm
 
-  analysisForm = new FormGroup({
-    mappingPositionUrl: new FormControl([], Validators.required),
-    analysis: new FormArray([
-      new FormGroup({
-        no: new FormControl(1, Validators.required),
-        fmPosition: new FormControl(null, Validators.required),
-        microscopeImages: new FormControl([], Validators.required),
-        sizeLength: new FormControl(null, Validators.required),
-        sizeWidth: new FormControl(null, Validators.required),
-        ftirSpectrumImages: new FormControl([], Validators.required),
-        ftirSpectrumImagesGraph: new FormControl([], Validators.required),
-        material: new FormControl(null, Validators.required),
-        estimateResultProcess: new FormControl(null, Validators.required),
-        dataCode: new FormControl(null, Validators.required),
-        color: new FormControl(null, Validators.required),
-        character: new FormControl(null, Validators.required),
+  analysisForm = new UntypedFormGroup({
+    mappingPositionUrl: new UntypedFormControl([], Validators.required),
+    analysis: new UntypedFormArray([
+      new UntypedFormGroup({
+        no: new UntypedFormControl(1, Validators.required),
+        fmPosition: new UntypedFormControl(null, Validators.required),
+        microscopeImages: new UntypedFormControl([], Validators.required),
+        sizeLength: new UntypedFormControl(null, Validators.required),
+        sizeWidth: new UntypedFormControl(null, Validators.required),
+        ftirSpectrumImages: new UntypedFormControl([], Validators.required),
+        ftirSpectrumImagesGraph: new UntypedFormControl([], Validators.required),
+        material: new UntypedFormControl(null, Validators.required),
+        estimateResultProcess: new UntypedFormControl(null, Validators.required),
+        dataCode: new UntypedFormControl(null, Validators.required),
+        color: new UntypedFormControl(null, Validators.required),
+        character: new UntypedFormControl(null, Validators.required),
       })
     ])
   })
@@ -191,9 +192,9 @@ export class ReusableFormComponent implements OnInit {
   tempFileName: any = [];
   tempFileTotal: number = 0;
   tempFileENGTotal: number = 0;
-  inputFile = new FormControl(null);
+  inputFile = new UntypedFormControl(null);
 
-  SelectMDL = new FormControl(null, Validators.required);
+  SelectMDL = new UntypedFormControl(null, Validators.required);
 
   // ? comment
   CommentLists: any = [];
@@ -265,7 +266,7 @@ export class ReusableFormComponent implements OnInit {
       this.analysisForm.get('mappingPositionUrl')?.clearValidators();
       this.analysisForm.get('mappingPositionUrl')?.updateValueAndValidity();
       
-      const analysisArray = this.analysisForm.get('analysis') as FormArray;
+      const analysisArray = this.analysisForm.get('analysis') as UntypedFormArray;
       analysisArray.controls.forEach(control => {
         Object.keys(control.value).forEach(key => {
           control.get(key)?.clearValidators();
@@ -382,7 +383,7 @@ export class ReusableFormComponent implements OnInit {
     // Bind file information
     this.File.setValue(result.file);
     if (result.file) {
-      this.tempFileReportName = (result.file).split('/')[5];
+      this.tempFileReportName = result.file.filename || (result.file.path || '').split('/').pop();
       this.toggleAttReportEng = true;
     }
 
@@ -420,17 +421,17 @@ export class ReusableFormComponent implements OnInit {
   }
 
   private bindResult2Array(result2: any[]) {
-    const result2Array = this.Result2 as FormArray;
+    const result2Array = this.Result2 as UntypedFormArray;
     result2Array.clear();
     
     result2.forEach((res: any) => {
-      const formGroup = new FormGroup({
-        item: new FormControl(res.item || ''),
-        qty: new FormControl(res.qty || ''),
-        tempItem: new FormControl(res.item || ''),
-        dropdown: new FormControl(res.dropdown || ''),
-        rootCase: new FormControl(res.rootCase || ''),
-        material: new FormControl(res.material || ''),
+      const formGroup = new UntypedFormGroup({
+        item: new UntypedFormControl(res.item || ''),
+        qty: new UntypedFormControl(res.qty || ''),
+        tempItem: new UntypedFormControl(res.item || ''),
+        dropdown: new UntypedFormControl(res.dropdown || ''),
+        rootCase: new UntypedFormControl(res.rootCase || ''),
+        material: new UntypedFormControl(res.material || ''),
       });
       result2Array.push(formGroup);
     });
@@ -484,19 +485,19 @@ export class ReusableFormComponent implements OnInit {
         ? item.ftirSpectrumImagesGraph.slice(0, this.MAX_FTIR_IMAGES_PER_ITEM_GRAPH)
         : [];
 
-      const formGroup = new FormGroup({
-        no: new FormControl(item.no || index + 1, Validators.required),
-        fmPosition: new FormControl(item.fmPosition, Validators.required),
-        microscopeImages: new FormControl(microscopeImages, Validators.required),
-        sizeLength: new FormControl(item.sizeLength, Validators.required),
-        sizeWidth: new FormControl(item.sizeWidth, Validators.required),
-        ftirSpectrumImages: new FormControl(ftirSpectrumImages, Validators.required),
-        ftirSpectrumImagesGraph: new FormControl(ftirSpectrumImagesGraph, Validators.required),
-        material: new FormControl(item.material, Validators.required),
-        estimateResultProcess: new FormControl(item.estimateResultProcess, Validators.required),
-        dataCode: new FormControl(item.dataCode, Validators.required),
-        color: new FormControl(item.color, Validators.required),
-        character: new FormControl(item.character, Validators.required),
+      const formGroup = new UntypedFormGroup({
+        no: new UntypedFormControl(item.no || index + 1, Validators.required),
+        fmPosition: new UntypedFormControl(item.fmPosition, Validators.required),
+        microscopeImages: new UntypedFormControl(microscopeImages, Validators.required),
+        sizeLength: new UntypedFormControl(item.sizeLength, Validators.required),
+        sizeWidth: new UntypedFormControl(item.sizeWidth, Validators.required),
+        ftirSpectrumImages: new UntypedFormControl(ftirSpectrumImages, Validators.required),
+        ftirSpectrumImagesGraph: new UntypedFormControl(ftirSpectrumImagesGraph, Validators.required),
+        material: new UntypedFormControl(item.material, Validators.required),
+        estimateResultProcess: new UntypedFormControl(item.estimateResultProcess, Validators.required),
+        dataCode: new UntypedFormControl(item.dataCode, Validators.required),
+        color: new UntypedFormControl(item.color, Validators.required),
+        character: new UntypedFormControl(item.character, Validators.required),
       });
       analysisArray.push(formGroup);
 
@@ -623,7 +624,7 @@ export class ReusableFormComponent implements OnInit {
   get ResultDate() { return this.ResultForm.get('ResultDate'); }
   get ReportDate() { return this.ResultForm.get('ReportDate'); }
   get Result() { return this.ResultForm.get('Result'); }
-  get Result2() { return this.ResultForm.get('Result2') as FormArray; }
+  get Result2() { return this.ResultForm.get('Result2') as UntypedFormArray; }
   get SourceOfDefect() { return this.ResultForm.get('SourceOfDefect'); }
   get CategoryCause() { return this.ResultForm.get('CategoryCause'); }
   get AnalysisLevel() { return this.ResultForm.get('AnalysisLevel'); }
@@ -642,7 +643,7 @@ export class ReusableFormComponent implements OnInit {
   get NoteApprove() { return this.ResultForm.get('NoteApprove'); }
 
   get mappingPositionUrl() { return this.analysisForm.get('mappingPositionUrl'); }
-  get analysisFormArray() { return this.analysisForm.get('analysis') as FormArray; }
+  get analysisFormArray() { return this.analysisForm.get('analysis') as UntypedFormArray; }
 
   updateResult2Validators() {
     const result2Array = this.Result2;
@@ -911,13 +912,13 @@ export class ReusableFormComponent implements OnInit {
   // Additional utility methods that might be needed
   addResult2Item() {
     const result2Array = this.Result2;
-    const newGroup = new FormGroup({
-      qty: new FormControl(0),
-      item: new FormControl(null),
-      tempItem: new FormControl(null),
-      dropdown: new FormControl(false),
-      rootCase: new FormControl(null),
-      material: new FormControl(null),
+    const newGroup = new UntypedFormGroup({
+      qty: new UntypedFormControl(0),
+      item: new UntypedFormControl(null),
+      tempItem: new UntypedFormControl(null),
+      dropdown: new UntypedFormControl(false),
+      rootCase: new UntypedFormControl(null),
+      material: new UntypedFormControl(null),
     });
     result2Array.push(newGroup);
     this.updateResult2Validators();
@@ -933,19 +934,19 @@ export class ReusableFormComponent implements OnInit {
     if (!this.config.enableAnalysisForm) return;
 
     const analysisArray = this.analysisFormArray;
-    const newGroup = new FormGroup({
-      no: new FormControl(analysisArray.length + 1, Validators.required),
-      fmPosition: new FormControl(null, Validators.required),
-      microscopeImages: new FormControl([], Validators.required),
-      sizeLength: new FormControl(null, Validators.required),
-      sizeWidth: new FormControl(null, Validators.required),
-      ftirSpectrumImages: new FormControl([], Validators.required),
-      ftirSpectrumImagesGraph: new FormControl([], Validators.required),
-      material: new FormControl(null, Validators.required),
-      estimateResultProcess: new FormControl(null, Validators.required),
-      dataCode: new FormControl(null, Validators.required),
-      color: new FormControl(null, Validators.required),
-      character: new FormControl(null, Validators.required),
+    const newGroup = new UntypedFormGroup({
+      no: new UntypedFormControl(analysisArray.length + 1, Validators.required),
+      fmPosition: new UntypedFormControl(null, Validators.required),
+      microscopeImages: new UntypedFormControl([], Validators.required),
+      sizeLength: new UntypedFormControl(null, Validators.required),
+      sizeWidth: new UntypedFormControl(null, Validators.required),
+      ftirSpectrumImages: new UntypedFormControl([], Validators.required),
+      ftirSpectrumImagesGraph: new UntypedFormControl([], Validators.required),
+      material: new UntypedFormControl(null, Validators.required),
+      estimateResultProcess: new UntypedFormControl(null, Validators.required),
+      dataCode: new UntypedFormControl(null, Validators.required),
+      color: new UntypedFormControl(null, Validators.required),
+      character: new UntypedFormControl(null, Validators.required),
     });
     analysisArray.push(newGroup);
   }
